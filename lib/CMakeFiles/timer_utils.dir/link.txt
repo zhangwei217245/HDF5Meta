@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtimer_utils.a  CMakeFiles/timer_utils.dir/timer_utils.c.o
-/usr/bin/ranlib libtimer_utils.a
