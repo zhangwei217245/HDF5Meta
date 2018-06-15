@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 2.8)
+PROJECT(HDF5Meta)
+
+SET(CMAKE_C_FLAGS -dynamic)
+SET(LIB_PATH ${PROJECT_BINARY_DIR}/lib)
+
+ADD_SUBDIRECTORY(lib)
+ADD_SUBDIRECTORY(src bin)
+

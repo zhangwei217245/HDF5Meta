@@ -1,0 +1,2 @@
+/usr/bin/ar qc libquery_utils.a  CMakeFiles/query_utils.dir/query_utils.c.o
+/usr/bin/ranlib libquery_utils.a
