@@ -222,47 +222,47 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 println("%s",tmp_str);
             }
             /* display size, signed, endianess, etc. */
-        // } else if(t_class == H5T_FLOAT) {
-        //     /* puts(" 'H5T_FLOAT'."); */
-        //     if (1 == is_compound) {
-        //         sprintf(tmp_str, "F%lu,", size);
-        //         println("%s",tmp_str);
-        //     }
-        //     else {
-        //         double attr_float;
-        //         status = H5Aread (oid, tid, &attr_float);
-        //         if (status != 0) {
-        //             printf("==Error with H5Aread!\n");
-        //             // printf("==[%s]\n", tags_g);
-        //         }
-        //         /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */
-        //         if (attr_float == 0) {
-        //             println("%s","0");
-        //         }
-        //         else {
-        //             sprintf(tmp_str,"%.2f,", attr_float);
-        //             // Remove the trailing 0s to save space
-        //             for (i = strlen(tmp_str) - 2; i > 0; i--) {
-        //                 if (tmp_str[i] == '0') {
-        //                     tmp_str[i] = ',';
-        //                     tmp_str[i+1] = 0;
-        //                 }
-        //                 else if (tmp_str[i] == '.') {
-        //                     tmp_str[i] = ',';
-        //                     tmp_str[i+1] = 0;
-        //                     break;
-        //                 }
-        //                 else
-        //                     break;
-        //             }
+        } else if(t_class == H5T_FLOAT) {
+            /* puts(" 'H5T_FLOAT'."); */
+            if (1 == is_compound) {
+                sprintf(tmp_str, "F%lu,", size);
+                println("%s",tmp_str);
+            }
+            else {
+                double attr_float;
+                status = H5Aread (oid, tid, &attr_float);
+                if (status != 0) {
+                    printf("==Error with H5Aread!\n");
+                    // printf("==[%s]\n", tags_g);
+                }
+                /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */
+                if (attr_float == 0) {
+                    println("%s","0");
+                }
+                else {
+                    sprintf(tmp_str,"%.2f,", attr_float);
+                    // Remove the trailing 0s to save space
+                    for (i = strlen(tmp_str) - 2; i > 0; i--) {
+                        if (tmp_str[i] == '0') {
+                            tmp_str[i] = ',';
+                            tmp_str[i+1] = 0;
+                        }
+                        else if (tmp_str[i] == '.') {
+                            tmp_str[i] = ',';
+                            tmp_str[i+1] = 0;
+                            break;
+                        }
+                        else
+                            break;
+                    }
 
-        //             if (strlen(tmp_str) > 8) {
-        //                 sprintf(tmp_str,"%.2E,", attr_float);
-        //             }
-        //             println("%s",tmp_str);
-        //         }
-        //     }
-        //     /* display size, endianess, exponennt, etc. */
+                    if (strlen(tmp_str) > 8) {
+                        sprintf(tmp_str,"%.2E,", attr_float);
+                    }
+                    println("%s",tmp_str);
+                }
+            }
+            /* display size, endianess, exponennt, etc. */
         // } else if(t_class == H5T_STRING) {
         //     /* puts(" 'H5T_STRING'."); */
 
