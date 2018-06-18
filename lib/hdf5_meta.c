@@ -171,10 +171,10 @@ do_dset(hid_t did, char *name)
     /*         obj_name, tag_size_g, tags_g); */
     /* printf("size %d\n%s\n\n", tag_size_g, tags_g); */
     // fprintf(summary_fp_g, "%d\n", tag_size_g);
-    if (tag_size_g > max_tag_size_g) {
-        max_tag_size_g = tag_size_g;
-    }
-    tag_size_g = 0;
+    // if (tag_size_g > max_tag_size_g) {
+    //     max_tag_size_g = tag_size_g;
+    // }
+    // tag_size_g = 0;
 }
 
 
