@@ -1,5 +1,5 @@
 //
-// Created by 张威 on 7/14/17.
+// Created by Wei Zhang on 7/12/17.
 //
 
 #ifndef PDC_STRING_UTILS_H
@@ -10,10 +10,10 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define PATTERN_EXACT  0
-#define PATTERN_SUFFIX 1
-#define PATTERN_PREFIX 2
-#define PATTERN_MIDDLE 3
+// #define PATTERN_EXACT  0
+// #define PATTERN_SUFFIX 1
+// #define PATTERN_PREFIX 2
+// #define PATTERN_MIDDLE 3
 
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -22,6 +22,19 @@
 #define ANSI_COLOR_MAGENTA "\x1b[35m"
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
+
+
+typedef enum {
+    PATTERN_EXACT   = 2 ,
+    PATTERN_PREFIX  = 3 ,
+    PATTERN_SUFFIX  = 4 ,
+    PATTERN_MIDDLE  = 5
+} pattern_type_t;
+
+typedef struct {
+    char *start;
+    size_t length;
+} string;
 
 /**
  * take the part after start position
@@ -60,7 +73,16 @@ char *substring(const char* str, int start, int end);
  * @param pattern
  * @return
  */
-int determine_pattern_type(const char *pattern);
+pattern_type_t determine_pattern_type(const char *pattern);
+/**
+ * return the index of token tok in given string str.
+ * if not found, return -1
+ *
+ * @param str
+ * @param tok
+ * @return
+ */
+int indexOfStr(const char* str, char *tok);
 /**
  * return the index of character c in given string str.
  * if not found, return -1
@@ -77,28 +99,28 @@ int indexOf(const char* str, char c);
  * @param str
  * @return
  */
-int startsWith(const char *pre, const char *str);
+int startsWith(const char *str, const char *pre);
 /**
  * to determine if a string str ends with suffix suf
  * @param suf
  * @param str
  * @return
  */
-int endsWith(const char *suf, const char *str);
+int endsWith(const char *str, const char *suf);
 /**
  * to determine if a string str contains token tok
  * @param tok
  * @param str
  * @return
  */
-int contains(const char *tok, const char *str);
+int contains(const char *str, const char *tok);
 /**
  * to determine if a string str exactly matches a token tok.
  * @param tok
  * @param str
  * @return
  */
-int equals(const char *tok, const char *str);
+int equals(const char *str, const char *tok);
 
 /**
  * dynamically generate string for you according to the format you pass.
@@ -114,6 +136,7 @@ int equals(const char *tok, const char *str);
 char* dsprintf(const char *format, ...);
 
 /**
+ * Print anything on stdout.
  * Always put a line feed after the string you want to print.
  *
  * @param format
@@ -121,6 +144,14 @@ char* dsprintf(const char *format, ...);
  */
 void println(const char *format, ...);
 
+/**
+ * Print anything on stderr.
+ * Always put a line feed after the string you want to print.
+ *
+ * @param format
+ * @param ...
+ */
+void stderr_println(const char *format, ...);
 /**
  * Only support expressions like:
  *
@@ -134,5 +165,11 @@ void println(const char *format, ...);
  * @return
  */
 int simple_matches(const char *str, const char *pattern);
+
+/**
+ * get the reverse of a given string. 
+ * a new reversed string of the original will be generated. 
+ */
+char *reverse_str(char *str);
 
 #endif //PDC_STRING_UTILS_H

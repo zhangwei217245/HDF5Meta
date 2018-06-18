@@ -21,10 +21,10 @@
 
 typedef struct stopwatch_t
 {
-    suseconds_t start_mark; 	/* Timer start point */
-    suseconds_t pause_mark; 	/* In case we pause the timer */
-    bool running;				/* Is it running? */
-    bool paused;				/* Is it paused? */
+	suseconds_t start_mark; 	/* Timer start point */
+	suseconds_t pause_mark; 	/* In case we pause the timer */
+	bool running;				/* Is it running? */
+	bool paused;				/* Is it paused? */
 
 } stopwatch_t;
 

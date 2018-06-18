@@ -1,9 +1,12 @@
+//
+// Created by Wei Zhang on 7/10/17.
+//
 #ifndef PDC_QUERY_UTILS_H
 #define PDC_QUERY_UTILS_H
 
+#define TAG_DELIMITER ","
 #include "string_utils.h"
 
-#define TAG_DELIMITER ","
 
 
 /**
@@ -78,15 +81,4 @@ int is_value_match_p(const char *tagslist, const char *tagname, const char *patt
 int is_value_in_range(const char *tagslist, const char *tagname, int from, int to);
 
 
-
-
-
-
-
-
-
-void printa();
-
-
-
-#endif /* PDC_QUERY_UTILS_H */
+#endif //PDC_QUERY_UTILS_H

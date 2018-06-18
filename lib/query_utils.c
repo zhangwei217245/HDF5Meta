@@ -1,9 +1,8 @@
+//
+// Created by Wei Zhang on 7/10/17.
+//
 #include "query_utils.h"
 
-
-void printa(){
-    println("a");
-}
 
 /**
  *
@@ -131,38 +130,41 @@ char *k_v_matches_p(const char *tagslist, const char *key_pattern, const char *v
     // GO THROUGH EACH KV PAIR
     char *tag_kv = strtok(_tags_list, TAG_DELIMITER);
     while (tag_kv != NULL){
-        // get key and value
-        char *key = NULL; key = get_key(tag_kv, '=');
-        char *value = NULL; value = get_value(tag_kv, '=');
-
         /**
-         * if no value pattern is specified, we only match key pattern.
-         * otherwise, we match both.
+         * Check to see if the current key-value pair is valid
          */
-        int is_key_matched = simple_matches(key, key_pattern);
+        if (strchr(tag_kv, '=') != NULL) {
+            // get key and value
+            char *key = NULL; key = get_key(tag_kv, '=');
+            char *value = NULL; value = get_value(tag_kv, '=');
 
-        int is_value_matched = (value_pattern == NULL ? 0 : simple_matches(value, value_pattern));
+            /**
+             * if no value pattern is specified, we only match key pattern.
+             * otherwise, we match both.
+             */
+            int is_key_matched = simple_matches(key, key_pattern);
 
-        int pattern_matches = (value_pattern == NULL ? is_key_matched : (is_key_matched && is_value_matched));
+            int is_value_matched = (value_pattern == NULL ? 0 : simple_matches(value, value_pattern));
 
-        if (key != NULL) {
-            free(key);
+            int pattern_matches = (value_pattern == NULL ? is_key_matched : (is_key_matched && is_value_matched));
 
-        }
-        if (value != NULL) {
-            free(value);
+            if (key != NULL) {
+                free(key);
+            }
+            if (value != NULL) {
+                free(value);
+            }
 
-        }
-
-        if (pattern_matches) {
-            rst_kv = tag_kv;
-            break;
+            if (pattern_matches) {
+                rst_kv = tag_kv;
+                break;
+            }
         }
         tag_kv = strtok(NULL, TAG_DELIMITER);
     }
 
     if (_tags_list != NULL) {
-        free(_tags_list);
+        //free(_tags_list);
     }
     return rst_kv;
 }
