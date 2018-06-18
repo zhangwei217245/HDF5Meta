@@ -103,9 +103,11 @@ do_dset(hid_t did, char *name)
     char *obj_name;
     int name_len, i;
 
-    tag_size_g = 0;
-    memset(tags_g, 0, sizeof(char)*MAX_TAG_LEN);
-    tags_ptr_g = tags_g;
+    // TODO: prepare tag space
+    // tag_size_g = 0;
+    // memset(tags_g, 0, sizeof(char)*MAX_TAG_LEN);
+    // tags_ptr_g = tags_g;
+
     /*
      * Information about the group:
      *  Name and attributes
@@ -125,7 +127,7 @@ do_dset(hid_t did, char *name)
     }
     /* printf("[%s] {\n", obj_name); */
 
-    fprintf(summary_fp_g, "%s, ", ds_name);
+    // fprintf(summary_fp_g, "%s, ", ds_name);
 
     /*
      * Get dataset information: dataspace, data type
@@ -139,7 +141,7 @@ do_dset(hid_t did, char *name)
 
     println("%s",",");
 
-    ndset ++;
+    // ndset ++;
     /*
      *  process the attributes of the dataset, if any.
      */
@@ -168,7 +170,7 @@ do_dset(hid_t did, char *name)
     /* printf("} [%s] tag_size %d  \n========================\n%s\n========================\n\n\n", */
     /*         obj_name, tag_size_g, tags_g); */
     /* printf("size %d\n%s\n\n", tag_size_g, tags_g); */
-    fprintf(summary_fp_g, "%d\n", tag_size_g);
+    // fprintf(summary_fp_g, "%d\n", tag_size_g);
     if (tag_size_g > max_tag_size_g) {
         max_tag_size_g = tag_size_g;
     }
@@ -213,7 +215,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 status = H5Aread (oid, tid, &attr_int);
                 if (status != HG_SUCCESS) {
                     printf("==Error with H5Aread!\n");
-                    printf("==[%s]\n", tags_g);
+                    // printf("==[%s]\n", tags_g);
                 }
                 /* H5Aread (oid, H5T_NATIVE_INT, &attr_int); */
                 sprintf(tmp_str,"%d,", attr_int);
@@ -318,7 +320,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
 
         } else if(t_class == H5T_ARRAY) {
             if (is_compound == 0) {
-                tag_size_g += size;
+                // tag_size_g += size;
             }
             ndim = H5Tget_array_ndims(tid);
             H5Tget_array_dims2(tid, dims);
