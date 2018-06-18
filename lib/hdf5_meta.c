@@ -335,11 +335,11 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
             /* printf("\n                                                "); */
             do_dtype(H5Tget_super(tid), oid, 1);
             /* display  dimensions, base type  */
-        // } else if(t_class == H5T_ENUM) {
-        //     /* puts(" 'H5T_ENUM'."); */
-        //     sprintf(tmp_str, "E,");
-        //     println("%s",tmp_str);
-        //     /* display elements: name, value   */
+        } else if(t_class == H5T_ENUM) {
+            /* puts(" 'H5T_ENUM'."); */
+            sprintf(tmp_str, "E,");
+            println("%s",tmp_str);
+            /* display elements: name, value   */
         } else  {
             /* puts(" 'Other'."); */
             sprintf(tmp_str, "!OTHER!,");
