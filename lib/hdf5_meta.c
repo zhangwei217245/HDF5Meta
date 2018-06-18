@@ -188,7 +188,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
     int compound_nmember, i;
     hsize_t dims[8], ndim;
     char *mem_name;
-    char *attr_string[100], new_string[MAX_TAG_LEN], tmp_str[MAX_TAG_LEN];
+    char attr_string[100], new_string[MAX_TAG_LEN], tmp_str[MAX_TAG_LEN];
     hsize_t size, attr_len;
     hid_t mem_type;
     hid_t atype, aspace, naive_type;
@@ -284,7 +284,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                     H5Aread(oid, naive_type, &attr_string);
                 }
 
-                println("%s",attr_string[0]);
+                println("%s",attr_string);
                 println("%s",",");
 
             } // End if is_compound == 0
