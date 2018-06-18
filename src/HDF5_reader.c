@@ -8,7 +8,7 @@ FILE *summary_fp_g;
 int max_tag_size_g = 0;
 
 void print_usage() {
-    printf("Usage: srun -n ./h5boss_v2_import /path/to/h5boss_file\n");
+    printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
 }
 
 int
