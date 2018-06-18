@@ -1,4 +1,5 @@
-
+#ifndef HDF5_META_H
+#define HDF5_META_H
 
 #include "query_utils.h"
 #include "hdf5.h"
@@ -13,3 +14,5 @@ void scan_group(hid_t);
 void do_attr(hid_t);
 void scan_attrs(hid_t);
 void do_plist(hid_t);
+
+#endif //HDF5_META_H

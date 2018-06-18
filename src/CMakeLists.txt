@@ -10,10 +10,14 @@ message ("--   mongoc libraries \"${MONGOC_LIBRARIES}\"")
 add_executable (hello_mongoc hello_mongoc.c)
 target_include_directories (hello_mongoc PRIVATE "${MONGOC_INCLUDE_DIRS}")
 target_link_libraries (hello_mongoc PRIVATE "${MONGOC_LIBRARIES}" 
-    /global/homes/w/wzhang5/software/rust_mongo_bench/target/release/librust_mongo_bench.so     
+    ../lib/rust_mongo_bench/target/release/librust_mongo_bench.so     
     )
 target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
 
+add_executable (HDF5_reader HDF5_reader.c)
+include_directories (${PROJECT_SOURCE_DIR}/lib)
+link_directories (${PROJECT_BINARY_DIR}/lib)
+target_link_libraries(HDF5_reader query_utils timer_utils thpool indexds hdf5_meta)
 
 #ADD_EXECUTABLE(main main.c dira/printa.c dirb/printb.c)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)
