@@ -300,41 +300,41 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
             /* } else if(t_class == H5T_OPAQUE) { */
             /*       puts(" 'H5T_OPAQUE'."); */
             /* 	/1* display size, etc. *1/ */
-        // } else if(t_class == H5T_COMPOUND) {
-        //     // For compound type, the size would be calculated by its sub-types
-        //     /* puts(" 'H5T_COMPOUND' {"); */
-        //     println("%s","[");
-        //     /* recursively display each member: field name, type  */
-        //     compound_nmember = H5Tget_nmembers(tid);
-        //     for (i = 0; i < compound_nmember; i++) {
-        //         mem_name = H5Tget_member_name(tid, i);
-        //         /* printf("        Compound member [%20s]  ", mem_name); */
-        //         println("%s",mem_name);
-        //         println("%s","=");
-        //         mem_type = H5Tget_member_type(tid, i);
-        //         do_dtype(mem_type, oid, 1);
-        //     }
-        //     /* puts("    } End 'H5T_COMPOUND'.\n"); */
+        } else if(t_class == H5T_COMPOUND) {
+            // For compound type, the size would be calculated by its sub-types
+            /* puts(" 'H5T_COMPOUND' {"); */
+            println("%s","[");
+            /* recursively display each member: field name, type  */
+            compound_nmember = H5Tget_nmembers(tid);
+            for (i = 0; i < compound_nmember; i++) {
+                mem_name = H5Tget_member_name(tid, i);
+                /* printf("        Compound member [%20s]  ", mem_name); */
+                println("%s",mem_name);
+                println("%s","=");
+                mem_type = H5Tget_member_type(tid, i);
+                do_dtype(mem_type, oid, 1);
+            }
+            /* puts("    } End 'H5T_COMPOUND'.\n"); */
 
-        //     println("%s","]");
+            println("%s","]");
 
-        // } else if(t_class == H5T_ARRAY) {
-        //     if (is_compound == 0) {
-        //         // tag_size_g += size;
-        //     }
-        //     ndim = H5Tget_array_ndims(tid);
-        //     H5Tget_array_dims2(tid, dims);
-        //     /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
-        //     sprintf(tmp_str, "A%d", ndim);
-        //     println("%s",tmp_str);
-        //     for (i = 0; i < ndim; i++) {
-        //         /* printf("%d, ", dims[i]); */
-        //         sprintf(tmp_str, "_%d", dims[i]);
-        //         println("%s",tmp_str);
-        //     }
-        //     /* printf("\n                                                "); */
-        //     do_dtype(H5Tget_super(tid), oid, 1);
-        //     /* display  dimensions, base type  */
+        } else if(t_class == H5T_ARRAY) {
+            if (is_compound == 0) {
+                // tag_size_g += size;
+            }
+            ndim = H5Tget_array_ndims(tid);
+            H5Tget_array_dims2(tid, dims);
+            /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
+            sprintf(tmp_str, "A%d", ndim);
+            println("%s",tmp_str);
+            for (i = 0; i < ndim; i++) {
+                /* printf("%d, ", dims[i]); */
+                sprintf(tmp_str, "_%d", dims[i]);
+                println("%s",tmp_str);
+            }
+            /* printf("\n                                                "); */
+            do_dtype(H5Tget_super(tid), oid, 1);
+            /* display  dimensions, base type  */
         // } else if(t_class == H5T_ENUM) {
         //     /* puts(" 'H5T_ENUM'."); */
         //     sprintf(tmp_str, "E,");
