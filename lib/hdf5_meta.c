@@ -263,43 +263,43 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 }
             }
             /* display size, endianess, exponennt, etc. */
-        // } else if(t_class == H5T_STRING) {
-        //     /* puts(" 'H5T_STRING'."); */
+        } else if(t_class == H5T_STRING) {
+            /* puts(" 'H5T_STRING'."); */
 
-        //     // Only include the string in tag if it is an attribute,
-        //     // not any strings in compound datatype
-        //     if (is_compound == 0) {
-        //         hsize_t totsize;
-        //         aspace = H5Aget_space(oid);
-        //         atype  = H5Aget_type(oid);
-        //         ndim = H5Sget_simple_extent_ndims(aspace);
-        //         H5Sget_simple_extent_dims(aspace, dims, NULL);
-        //         // Deal with variable-length string
-        //         memset(attr_string, 0, 100);
-        //         if(H5Tis_variable_str(atype) != 1) {
-        //             H5Aread(oid, atype, &attr_string);
-        //         }
-        //         else {
-        //             naive_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
-        //             H5Aread(oid, naive_type, &attr_string);
-        //         }
+            // Only include the string in tag if it is an attribute,
+            // not any strings in compound datatype
+            if (is_compound == 0) {
+                hsize_t totsize;
+                aspace = H5Aget_space(oid);
+                atype  = H5Aget_type(oid);
+                ndim = H5Sget_simple_extent_ndims(aspace);
+                H5Sget_simple_extent_dims(aspace, dims, NULL);
+                // Deal with variable-length string
+                memset(attr_string, 0, 100);
+                if(H5Tis_variable_str(atype) != 1) {
+                    H5Aread(oid, atype, &attr_string);
+                }
+                else {
+                    naive_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
+                    H5Aread(oid, naive_type, &attr_string);
+                }
 
-        //         println("%s",attr_string[0]);
-        //         println("%s",",");
+                println("%s",attr_string[0]);
+                println("%s",",");
 
-        //     } // End if is_compound == 0
-        //     else {
-        //         sprintf(tmp_str, "S%lu,", size);
-        //         println("%s",tmp_str);
-        //     }
+            } // End if is_compound == 0
+            else {
+                sprintf(tmp_str, "S%lu,", size);
+                println("%s",tmp_str);
+            }
 
-        //     /* display size, padding, termination, etc. */
-        //     /* } else if(t_class == H5T_BITFIELD) { */
-        //     /*       puts(" 'H5T_BITFIELD'."); */
-        //     /* 	/1* display size, label, etc. *1/ */
-        //     /* } else if(t_class == H5T_OPAQUE) { */
-        //     /*       puts(" 'H5T_OPAQUE'."); */
-        //     /* 	/1* display size, etc. *1/ */
+            /* display size, padding, termination, etc. */
+            /* } else if(t_class == H5T_BITFIELD) { */
+            /*       puts(" 'H5T_BITFIELD'."); */
+            /* 	/1* display size, label, etc. *1/ */
+            /* } else if(t_class == H5T_OPAQUE) { */
+            /*       puts(" 'H5T_OPAQUE'."); */
+            /* 	/1* display size, etc. *1/ */
         // } else if(t_class == H5T_COMPOUND) {
         //     // For compound type, the size would be calculated by its sub-types
         //     /* puts(" 'H5T_COMPOUND' {"); */
