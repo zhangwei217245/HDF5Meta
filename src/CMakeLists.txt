@@ -10,7 +10,7 @@ message ("--   mongoc libraries \"${MONGOC_LIBRARIES}\"")
 add_executable (hello_mongoc hello_mongoc.c)
 target_include_directories (hello_mongoc PRIVATE "${MONGOC_INCLUDE_DIRS}")
 target_link_libraries (hello_mongoc PRIVATE "${MONGOC_LIBRARIES}" 
-    ../lib/rust_mongo_bench/target/release/librust_mongo_bench.so     
+    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so     
     )
 target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
 
