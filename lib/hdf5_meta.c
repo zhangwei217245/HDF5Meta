@@ -153,7 +153,7 @@ do_dset(hid_t did, char *name)
     pid = H5Dget_create_plist(did); /* get creation property list */
     do_plist(pid);
     size = H5Dget_storage_size(did);
-    printf("Total space currently written in file: %d\n",(int)size);
+    // printf("Total space currently written in file: %d\n",(int)size);
 
     /*
      * The datatype and dataspace can be used to read all or
@@ -184,169 +184,169 @@ do_dset(hid_t did, char *name)
 void
 do_dtype(hid_t tid, hid_t oid, int is_compound) {
 
-    // herr_t      status;
-    // int compound_nmember, i;
-    // hsize_t dims[8], ndim;
-    // char *mem_name;
-    // char *attr_string[100], new_string[MAX_TAG_LEN], tmp_str[MAX_TAG_LEN];
-    // hsize_t size, attr_len;
-    // hid_t mem_type;
-    // hid_t atype, aspace, naive_type;
-    // H5T_class_t t_class, compound_class;
-    // t_class = H5Tget_class(tid);
-    // if(t_class < 0) {
-    //     /* puts("   Invalid datatype.\n"); */
-    // } else {
-    //     size = H5Tget_size (tid);
-    //     /* printf("    Datasize %3d, type", size); */
-    //     /*
-    //      * Each class has specific properties that can be
-    //      * retrieved, e.g., size, byte order, exponent, etc.
-    //      */
-    //     if(t_class == H5T_INTEGER) {
-    //         /* puts(" 'H5T_INTEGER'."); */
+    herr_t      status;
+    int compound_nmember, i;
+    hsize_t dims[8], ndim;
+    char *mem_name;
+    char *attr_string[100], new_string[MAX_TAG_LEN], tmp_str[MAX_TAG_LEN];
+    hsize_t size, attr_len;
+    hid_t mem_type;
+    hid_t atype, aspace, naive_type;
+    H5T_class_t t_class, compound_class;
+    t_class = H5Tget_class(tid);
+    if(t_class < 0) {
+        /* puts("   Invalid datatype.\n"); */
+    } else {
+        size = H5Tget_size (tid);
+        /* printf("    Datasize %3d, type", size); */
+        /*
+         * Each class has specific properties that can be
+         * retrieved, e.g., size, byte order, exponent, etc.
+         */
+        if(t_class == H5T_INTEGER) {
+            /* puts(" 'H5T_INTEGER'."); */
 
-    //         if (1 == is_compound) {
-    //             sprintf(tmp_str, "I%lu,", size);
-    //             println("%s",tmp_str);
-    //         }
-    //         else {
-    //             int attr_int;
-    //             status = H5Aread (oid, tid, &attr_int);
-    //             if (status != HG_SUCCESS) {
-    //                 printf("==Error with H5Aread!\n");
-    //                 // printf("==[%s]\n", tags_g);
-    //             }
-    //             /* H5Aread (oid, H5T_NATIVE_INT, &attr_int); */
-    //             sprintf(tmp_str,"%d,", attr_int);
-    //             println("%s",tmp_str);
-    //         }
-    //         /* display size, signed, endianess, etc. */
-    //     } else if(t_class == H5T_FLOAT) {
-    //         /* puts(" 'H5T_FLOAT'."); */
-    //         if (1 == is_compound) {
-    //             sprintf(tmp_str, "F%lu,", size);
-    //             println("%s",tmp_str);
-    //         }
-    //         else {
-    //             double attr_float;
-    //             status = H5Aread (oid, tid, &attr_float);
-    //             if (status != HG_SUCCESS) {
-    //                 printf("==Error with H5Aread!\n");
-    //                 printf("==[%s]\n", tags_g);
-    //             }
-    //             /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */
-    //             if (attr_float == 0) {
-    //                 println("%s","0");
-    //             }
-    //             else {
-    //                 sprintf(tmp_str,"%.2f,", attr_float);
-    //                 // Remove the trailing 0s to save space
-    //                 for (i = strlen(tmp_str) - 2; i > 0; i--) {
-    //                     if (tmp_str[i] == '0') {
-    //                         tmp_str[i] = ',';
-    //                         tmp_str[i+1] = 0;
-    //                     }
-    //                     else if (tmp_str[i] == '.') {
-    //                         tmp_str[i] = ',';
-    //                         tmp_str[i+1] = 0;
-    //                         break;
-    //                     }
-    //                     else
-    //                         break;
-    //                 }
+            if (1 == is_compound) {
+                sprintf(tmp_str, "I%lu,", size);
+                println("%s",tmp_str);
+            }
+            else {
+                int attr_int;
+                status = H5Aread (oid, tid, &attr_int);
+                if (status != HG_SUCCESS) {
+                    printf("==Error with H5Aread!\n");
+                    // printf("==[%s]\n", tags_g);
+                }
+                /* H5Aread (oid, H5T_NATIVE_INT, &attr_int); */
+                sprintf(tmp_str,"%d,", attr_int);
+                println("%s",tmp_str);
+            }
+            /* display size, signed, endianess, etc. */
+        } else if(t_class == H5T_FLOAT) {
+            /* puts(" 'H5T_FLOAT'."); */
+            if (1 == is_compound) {
+                sprintf(tmp_str, "F%lu,", size);
+                println("%s",tmp_str);
+            }
+            else {
+                double attr_float;
+                status = H5Aread (oid, tid, &attr_float);
+                if (status != HG_SUCCESS) {
+                    printf("==Error with H5Aread!\n");
+                    printf("==[%s]\n", tags_g);
+                }
+                /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */
+                if (attr_float == 0) {
+                    println("%s","0");
+                }
+                else {
+                    sprintf(tmp_str,"%.2f,", attr_float);
+                    // Remove the trailing 0s to save space
+                    for (i = strlen(tmp_str) - 2; i > 0; i--) {
+                        if (tmp_str[i] == '0') {
+                            tmp_str[i] = ',';
+                            tmp_str[i+1] = 0;
+                        }
+                        else if (tmp_str[i] == '.') {
+                            tmp_str[i] = ',';
+                            tmp_str[i+1] = 0;
+                            break;
+                        }
+                        else
+                            break;
+                    }
 
-    //                 if (strlen(tmp_str) > 8) {
-    //                     sprintf(tmp_str,"%.2E,", attr_float);
-    //                 }
-    //                 println("%s",tmp_str);
-    //             }
-    //         }
-    //         /* display size, endianess, exponennt, etc. */
-    //     } else if(t_class == H5T_STRING) {
-    //         /* puts(" 'H5T_STRING'."); */
+                    if (strlen(tmp_str) > 8) {
+                        sprintf(tmp_str,"%.2E,", attr_float);
+                    }
+                    println("%s",tmp_str);
+                }
+            }
+            /* display size, endianess, exponennt, etc. */
+        } else if(t_class == H5T_STRING) {
+            /* puts(" 'H5T_STRING'."); */
 
-    //         // Only include the string in tag if it is an attribute,
-    //         // not any strings in compound datatype
-    //         if (is_compound == 0) {
-    //             hsize_t totsize;
-    //             aspace = H5Aget_space(oid);
-    //             atype  = H5Aget_type(oid);
-    //             ndim = H5Sget_simple_extent_ndims(aspace);
-    //             H5Sget_simple_extent_dims(aspace, dims, NULL);
-    //             // Deal with variable-length string
-    //             memset(attr_string, 0, 100);
-    //             if(H5Tis_variable_str(atype) != 1) {
-    //                 H5Aread(oid, atype, &attr_string);
-    //             }
-    //             else {
-    //                 naive_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
-    //                 H5Aread(oid, naive_type, &attr_string);
-    //             }
+            // Only include the string in tag if it is an attribute,
+            // not any strings in compound datatype
+            if (is_compound == 0) {
+                hsize_t totsize;
+                aspace = H5Aget_space(oid);
+                atype  = H5Aget_type(oid);
+                ndim = H5Sget_simple_extent_ndims(aspace);
+                H5Sget_simple_extent_dims(aspace, dims, NULL);
+                // Deal with variable-length string
+                memset(attr_string, 0, 100);
+                if(H5Tis_variable_str(atype) != 1) {
+                    H5Aread(oid, atype, &attr_string);
+                }
+                else {
+                    naive_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
+                    H5Aread(oid, naive_type, &attr_string);
+                }
 
-    //             println("%s",attr_string[0]);
-    //             println("%s",",");
+                println("%s",attr_string[0]);
+                println("%s",",");
 
-    //         } // End if is_compound == 0
-    //         else {
-    //             sprintf(tmp_str, "S%lu,", size);
-    //             println("%s",tmp_str);
-    //         }
+            } // End if is_compound == 0
+            else {
+                sprintf(tmp_str, "S%lu,", size);
+                println("%s",tmp_str);
+            }
 
-    //         /* display size, padding, termination, etc. */
-    //         /* } else if(t_class == H5T_BITFIELD) { */
-    //         /*       puts(" 'H5T_BITFIELD'."); */
-    //         /* 	/1* display size, label, etc. *1/ */
-    //         /* } else if(t_class == H5T_OPAQUE) { */
-    //         /*       puts(" 'H5T_OPAQUE'."); */
-    //         /* 	/1* display size, etc. *1/ */
-    //     } else if(t_class == H5T_COMPOUND) {
-    //         // For compound type, the size would be calculated by its sub-types
-    //         /* puts(" 'H5T_COMPOUND' {"); */
-    //         println("%s","[");
-    //         /* recursively display each member: field name, type  */
-    //         compound_nmember = H5Tget_nmembers(tid);
-    //         for (i = 0; i < compound_nmember; i++) {
-    //             mem_name = H5Tget_member_name(tid, i);
-    //             /* printf("        Compound member [%20s]  ", mem_name); */
-    //             println("%s",mem_name);
-    //             println("%s","=");
-    //             mem_type = H5Tget_member_type(tid, i);
-    //             do_dtype(mem_type, oid, 1);
-    //         }
-    //         /* puts("    } End 'H5T_COMPOUND'.\n"); */
+            /* display size, padding, termination, etc. */
+            /* } else if(t_class == H5T_BITFIELD) { */
+            /*       puts(" 'H5T_BITFIELD'."); */
+            /* 	/1* display size, label, etc. *1/ */
+            /* } else if(t_class == H5T_OPAQUE) { */
+            /*       puts(" 'H5T_OPAQUE'."); */
+            /* 	/1* display size, etc. *1/ */
+        } else if(t_class == H5T_COMPOUND) {
+            // For compound type, the size would be calculated by its sub-types
+            /* puts(" 'H5T_COMPOUND' {"); */
+            println("%s","[");
+            /* recursively display each member: field name, type  */
+            compound_nmember = H5Tget_nmembers(tid);
+            for (i = 0; i < compound_nmember; i++) {
+                mem_name = H5Tget_member_name(tid, i);
+                /* printf("        Compound member [%20s]  ", mem_name); */
+                println("%s",mem_name);
+                println("%s","=");
+                mem_type = H5Tget_member_type(tid, i);
+                do_dtype(mem_type, oid, 1);
+            }
+            /* puts("    } End 'H5T_COMPOUND'.\n"); */
 
-    //         println("%s","]");
+            println("%s","]");
 
-    //     } else if(t_class == H5T_ARRAY) {
-    //         if (is_compound == 0) {
-    //             // tag_size_g += size;
-    //         }
-    //         ndim = H5Tget_array_ndims(tid);
-    //         H5Tget_array_dims2(tid, dims);
-    //         /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
-    //         sprintf(tmp_str, "A%d", ndim);
-    //         println("%s",tmp_str);
-    //         for (i = 0; i < ndim; i++) {
-    //             /* printf("%d, ", dims[i]); */
-    //             sprintf(tmp_str, "_%d", dims[i]);
-    //             println("%s",tmp_str);
-    //         }
-    //         /* printf("\n                                                "); */
-    //         do_dtype(H5Tget_super(tid), oid, 1);
-    //         /* display  dimensions, base type  */
-    //     } else if(t_class == H5T_ENUM) {
-    //         /* puts(" 'H5T_ENUM'."); */
-    //         sprintf(tmp_str, "E,");
-    //         println("%s",tmp_str);
-    //         /* display elements: name, value   */
-    //     } else  {
-    //         /* puts(" 'Other'."); */
-    //         sprintf(tmp_str, "!OTHER!,");
-    //         println("%s",tmp_str);
-    //         /* eg. Object Reference, ...and so on ... */
-    //     }
-    // }
+        } else if(t_class == H5T_ARRAY) {
+            if (is_compound == 0) {
+                // tag_size_g += size;
+            }
+            ndim = H5Tget_array_ndims(tid);
+            H5Tget_array_dims2(tid, dims);
+            /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
+            sprintf(tmp_str, "A%d", ndim);
+            println("%s",tmp_str);
+            for (i = 0; i < ndim; i++) {
+                /* printf("%d, ", dims[i]); */
+                sprintf(tmp_str, "_%d", dims[i]);
+                println("%s",tmp_str);
+            }
+            /* printf("\n                                                "); */
+            do_dtype(H5Tget_super(tid), oid, 1);
+            /* display  dimensions, base type  */
+        } else if(t_class == H5T_ENUM) {
+            /* puts(" 'H5T_ENUM'."); */
+            sprintf(tmp_str, "E,");
+            println("%s",tmp_str);
+            /* display elements: name, value   */
+        } else  {
+            /* puts(" 'Other'."); */
+            sprintf(tmp_str, "!OTHER!,");
+            println("%s",tmp_str);
+            /* eg. Object Reference, ...and so on ... */
+        }
+    }
 }
 
 /*
