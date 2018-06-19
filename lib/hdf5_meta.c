@@ -277,11 +277,11 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 // Deal with variable-length string
                 memset(attr_string, 0, 100);
                 if(H5Tis_variable_str(atype) != 1) {
-                    H5Aread(oid, atype, &attr_string);
+                    H5Aread(oid, atype, attr_string);
                 }
                 else {
                     naive_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
-                    H5Aread(oid, naive_type, &attr_string);
+                    H5Aread(oid, naive_type, attr_string);
                 }
 
                 println("%s",attr_string);
