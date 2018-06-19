@@ -113,6 +113,35 @@ int indexOf(const char* str, char c) {
     return -1;
 }
 
+
+
+int str_append(char **result_ptr, const char *format, ...)
+{
+    char *str = NULL;
+    char *old_json = NULL, *new_json = NULL;
+
+    va_list arg_ptr;
+    va_start(arg_ptr, format);
+    vasprintf(&str, format, arg_ptr);
+
+    // save old result
+    asprintf(&old_json, "%s", (*result_ptr == NULL ? "" : *result_ptr));
+
+    // calloc new json memory
+    new_json = (char *)calloc(strlen(old_json) + strlen(str) + 1, sizeof(char));
+
+    strcat(new_json, old_json);
+    strcat(new_json, str);
+
+    if (*result_ptr) free(*result_ptr);
+    *result_ptr = new_json;
+
+    free(old_json);
+    free(str);
+
+    return 0;
+}
+
 void println(const char *format, ...){
     //1. declare argument list
     va_list args;

@@ -61,13 +61,13 @@ char *get_value(const char *kv_pair, char delim) {
 char *gen_tags(int obj_id){
     int j;
     int tag_num = obj_id%20;
-    char *ret="";
+    char *ret=NULL;
     for (j=0 ; j <= tag_num; j++){
-        char *fspace=ret;
-        ret = dsprintf("%stag%d=%d%d,", ret, j, obj_id, j);
-        if (strlen(fspace)>0){
-            free(fspace);
-        }
+        // char *fspace=ret;
+        asprintf(&ret, "%stag%d=%d%d,", j, obj_id, j);
+        // if (strlen(fspace)>0){
+        //     free(fspace);
+        // }
     }
     ret[strlen(ret)-1]='\0';
     return ret;

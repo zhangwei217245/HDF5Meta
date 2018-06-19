@@ -160,4 +160,12 @@ int simple_matches(const char *str, const char *pattern);
  */
 char *reverse_str(char *str);
 
+/**
+ * Append string to the string staring with *result_ptr. 
+ * 
+ * After this operation, the address of result_ptr[0][0] will be changed. 
+ * But the string starting at result_ptr[0][0] is still the same. 
+ */
+int str_append(char **result_ptr, const char *format, ...);
+
 #endif //PDC_STRING_UTILS_H
