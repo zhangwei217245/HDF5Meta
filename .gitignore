@@ -1,2 +1,4 @@
 CMakeFiles
 *.cmake
+build
+cmake-build
