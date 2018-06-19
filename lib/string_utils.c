@@ -113,23 +113,6 @@ int indexOf(const char* str, char c) {
     return -1;
 }
 
-char* dsprintf(const char *format, ...){
-    char* ret;
-    //1. declare argument list
-    va_list args;
-    //2. starting argument list
-    va_start(args, format);
-    //3. get arguments value
-    int numbytes = vsnprintf( (char*)NULL,0, format, args);
-    ret = (char*) calloc( (numbytes+1), sizeof(char) );
-
-    va_start(args, format);
-    vsprintf(ret, format, args);
-    //4. ending argument list
-    va_end(args);
-    return ret;
-}
-
 void println(const char *format, ...){
     //1. declare argument list
     va_list args;

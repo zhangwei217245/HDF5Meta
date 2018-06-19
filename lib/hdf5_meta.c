@@ -214,7 +214,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 int attr_int;
                 status = H5Aread (oid, tid, &attr_int);
                 if (status != 0) {
-                    printf("==Error with H5Aread!\n");
+                    printf("==Error with H5Aread! int \n");
                     // printf("==[%s]\n", tags_g);
                 }
                 /* H5Aread (oid, H5T_NATIVE_INT, &attr_int); */
@@ -232,7 +232,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 double attr_float;
                 status = H5Aread (oid, tid, &attr_float);
                 if (status != 0) {
-                    printf("==Error with H5Aread!\n");
+                    printf("==Error with H5Aread! float \n");
                     // printf("==[%s]\n", tags_g);
                 }
                 /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */

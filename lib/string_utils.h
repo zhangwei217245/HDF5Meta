@@ -122,18 +122,6 @@ int contains(const char *str, const char *tok);
  */
 int equals(const char *str, const char *tok);
 
-/**
- * dynamically generate string for you according to the format you pass.
- * Since usually, it is hard to predict how much memory should be allocated
- * before generating an arbitrary string.
- *
- * remember to free the generated string after use.
- *
- * @param format
- * @param ...
- * @return
- */
-char* dsprintf(const char *format, ...);
 
 /**
  * Print anything on stdout.
