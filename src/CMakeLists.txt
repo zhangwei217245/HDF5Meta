@@ -6,7 +6,7 @@ message ("--   mongoc found version \"${MONGOC_VERSION}\"")
 message ("--   mongoc include path \"${MONGOC_INCLUDE_DIRS}\"")
 message ("--   mongoc libraries \"${MONGOC_LIBRARIES}\"")
 
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSON_C REQUIRED json-c)
 
 
