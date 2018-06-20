@@ -6,7 +6,9 @@ message ("--   mongoc found version \"${MONGOC_VERSION}\"")
 message ("--   mongoc include path \"${MONGOC_INCLUDE_DIRS}\"")
 message ("--   mongoc libraries \"${MONGOC_LIBRARIES}\"")
 
-find_package (json-c 1.7 REQUIRED)
+find_package(PkgConfig)
+pkg_check_modules(JSON_C REQUIRED json-c)
+
 
 # The "hello_mongoc.c" sample program is shared among four tests.
 add_executable (hello_mongoc hello_mongoc.c)
@@ -23,6 +25,7 @@ link_directories (${PROJECT_BINARY_DIR}/lib)
 target_include_directories(hdf5_reader PRIVATE "${JSON_C_INCLUDE_DIRS}")
 target_link_libraries(hdf5_reader PRIVATE "${JSON_C_LIBRARIES}" query_utils timer_utils thpool indexds hdf5_meta)
 target_compile_definitions (hdf5_reader PRIVATE "${JSON_C_DEFINITIONS}")
+target_compile_options(hdf5_reader PRIVATE ${JSON_C_CFLAGS} ${JSON_C_LIBS});
 
 #ADD_EXECUTABLE(main main.c dira/printa.c dirb/printb.c)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)
