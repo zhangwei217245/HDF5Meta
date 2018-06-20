@@ -5,10 +5,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
 
 find_package (libmongoc-1.0 1.7 REQUIRED)
 
-message ("--   mongoc found version \"${MONGOC_VERSION}\"")
-message ("--   mongoc include path \"${MONGOC_INCLUDE_DIRS}\"")
-message ("--   mongoc libraries \"${MONGOC_LIBRARIES}\"")
+#message ("--   mongoc found version \"${MONGOC_VERSION}\"")
+#message ("--   mongoc include path \"${MONGOC_INCLUDE_DIRS}\"")
+#message ("--   mongoc libraries \"${MONGOC_LIBRARIES}\"")
 
+find_package(JSON-C REQUIRED)
 
 # The "hello_mongoc.c" sample program is shared among four tests.
 add_executable (hello_mongoc hello_mongoc.c)
@@ -18,18 +19,14 @@ target_link_libraries (hello_mongoc PRIVATE "${MONGOC_LIBRARIES}"
     )
 target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
 
-
-
+# build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
-include_directories (${PROJECT_SOURCE_DIR}/lib
-                    ${JSON-C_INCLUDE_DIR})
+include_directories(${JSON-C_INCLUDE_DIR})
+include_directories (${PROJECT_SOURCE_DIR}/lib)
 link_directories (${PROJECT_BINARY_DIR}/lib)
 target_include_directories(hdf5_reader PRIVATE "${JSON-C_INCLUDE_DIR}")
-target_link_libraries(hdf5_reader PRIVATE "${JSON-C_LIBRARY}" query_utils timer_utils thpool indexds hdf5_meta)
+target_link_libraries(hdf5_reader PRIVATE "${JSON-C_LIBRARIES}" query_utils timer_utils thpool indexds hdf5_meta)
 
-find_package(JSON-C REQUIRED)
-include_directories(${JSON-C_INCLUDE_DIR})
-target_link_libraries(hdf5_reader ${JSON-C_LIBRARIES})
 
 #target_compile_definitions (hdf5_reader PRIVATE "${JSON_C_DEFINITIONS}")
 #target_compile_options(hdf5_reader PRIVATE ${JSON_C_CFLAGS} ${JSON_C_LIBS})
