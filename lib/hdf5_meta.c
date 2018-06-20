@@ -1,17 +1,31 @@
 #include "hdf5_meta.h"
+#include "json.h"
+#include "parse_flags.h"
 
 
-void parse_hdf5_file(char *filepath){
+void parse_hdf5_file(char *filepath, json_object *rootobj){
     hid_t    file;
     hid_t    grp;
     herr_t   status;
 
     file = H5Fopen(filepath, H5F_ACC_RDWR, H5P_DEFAULT);
+    
+    json_object_object_add(rootobj, "object_path", json_object_new_string(filepath));
+    json_object_object_add(rootobj, "type", json_object_new_string("file"));
+    json_object *group_array = json_object_new_array();
 
     grp = H5Gopen(file,"/", H5P_DEFAULT);
-    scan_group(grp);
+
+    json_object *root_group = json_object_new_object();
+    
+    json_object_object_add(root_group, "object_path", json_object_new_string("/"));
+
+    scan_group(grp, root_group);
+    json_object_array_add(group_array, root_group);
+    json_object_object_add(rootobj, "sub_objects", group_array);
 
     status = H5Fclose(file);
+    printf("final json = %s\n", json_object_to_json_string(rootobj));
 }
 
 /*
@@ -22,7 +36,7 @@ void parse_hdf5_file(char *filepath){
  */
 
 void
-scan_group(hid_t gid) {
+scan_group(hid_t gid, json_object *group_obj) {
     int i;
     ssize_t len;
     hsize_t nobj;
@@ -31,7 +45,7 @@ scan_group(hid_t gid) {
     hid_t grpid, typeid, dsid;
     char group_name[MAX_NAME];
     char memb_name[MAX_NAME];
-
+    json_object_object_add(group_obj, "type", json_object_new_string("group"));
     /*
      * Information about the group:
      *  Name and attributes
@@ -40,13 +54,20 @@ scan_group(hid_t gid) {
      */
     len = H5Iget_name (gid, group_name, MAX_NAME);
 
+    json_object_object_add(group_obj, "group_name", json_object_new_string(group_name));
+    
     /* printf("Group Name: %s\n",group_name); */
-
+    json_object *attributes = json_object_new_object();
     /*
      *  process the attributes of the group, if any.
      */
-    scan_attrs(gid);
+    scan_attrs(gid, attributes);
 
+    json_object_object_add(group_obj, "attributes", attributes);
+
+    json_object *objects_in_group = json_object_new_array();
+
+    json_object_object_add(group_obj, "sub_objects", objects_in_group);
     /*
      *  Get all the members of the groups, one at a time.
      */
@@ -63,37 +84,39 @@ scan_group(hid_t gid) {
         /* printf("  Member: \"%s\" ",memb_name);fflush(stdout); */
         otype =  H5Gget_objtype_by_idx(gid, (size_t)i );
 
+        json_object *subobject = json_object_new_object();
+        json_object_object_add(subobject, "object_path", json_object_new_string(memb_name));
         /*
          * process each object according to its type
          */
         switch(otype) {
         case H5G_LINK:
             /* printf(" SYM_LINK:\n"); */
-            do_link(gid,memb_name);
+            do_link(gid,memb_name, subobject);
             break;
         case H5G_GROUP:
             /* printf(" GROUP:\n"); */
             grpid = H5Gopen(gid,memb_name, H5P_DEFAULT);
-            scan_group(grpid);
+            scan_group(grpid,subobject);
             H5Gclose(grpid);
             break;
         case H5G_DATASET:
             /* printf(" DATASET:\n"); */
             dsid = H5Dopen(gid,memb_name, H5P_DEFAULT);
-            do_dset(dsid, memb_name);
+            do_dset(dsid, memb_name, subobject);
             H5Dclose(dsid);
             break;
         case H5G_TYPE:
             /* printf(" DATA TYPE:\n"); */
             typeid = H5Topen(gid,memb_name, H5P_DEFAULT);
-            do_dtype(typeid, gid, 0);
+            do_dtype(typeid, gid, 0, memb_name, subobject);
             H5Tclose(typeid);
             break;
         default:
             printf(" Unknown Object Type!\n");
             break;
         }
-
+        json_object_array_add(objects_in_group, subobject);
     }
 }
 
@@ -106,7 +129,7 @@ scan_group(hid_t gid) {
  *  This example does not read the data of the dataset.
  */
 void
-do_dset(hid_t did, char *name)
+do_dset(hid_t did, char *name, json_object *current_object)
 {
     hid_t tid;
     hid_t pid;
@@ -115,7 +138,7 @@ do_dset(hid_t did, char *name)
     char ds_name[MAX_NAME];
     char *obj_name;
     int name_len, i;
-
+    json_object_object_add(current_object, "type", json_object_new_string("dataset"));
     // TODO: prepare tag space
     // tag_size_g = 0;
     // memset(tags_g, 0, sizeof(char)*MAX_TAG_LEN);
@@ -128,8 +151,9 @@ do_dset(hid_t did, char *name)
      *  Other info., not shown here: number of links, object id
      */
     H5Iget_name(did, ds_name, MAX_NAME  );
-    
+    json_object_object_add(current_object, "dataset_name", json_object_new_string(ds_name));
     println("%s",ds_name);
+
 
     name_len = strlen(ds_name);
     for (i = name_len; i >= 0; i--) {
@@ -150,7 +174,7 @@ do_dset(hid_t did, char *name)
     /* printf(" DATA TYPE:\n"); */
     println("%s",",DT:");
 
-    do_dtype(tid, did, 0);
+    do_dtype(tid, did, 0, ds_name, current_object);
 
     println("%s",",");
 
@@ -158,7 +182,13 @@ do_dset(hid_t did, char *name)
     /*
      *  process the attributes of the dataset, if any.
      */
-    scan_attrs(did);
+
+    json_object *attributes = json_object_new_object();
+    
+    scan_attrs(did, attributes);
+
+    json_object_object_add(current_object, "attributes", attributes);
+    
 
     /*
      * Retrieve and analyse the dataset properties
@@ -195,7 +225,7 @@ do_dset(hid_t did, char *name)
  *  Analyze a data type description
  */
 void
-do_dtype(hid_t tid, hid_t oid, int is_compound) {
+do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jsonobj) {
 
     herr_t      status;
     int compound_nmember, i;
@@ -222,6 +252,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
             if (1 == is_compound) {
                 sprintf(tmp_str, "I%lu,", size);
                 println("%s",tmp_str);
+                json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             }
             else {
                 int attr_int;
@@ -233,6 +264,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 /* H5Aread (oid, H5T_NATIVE_INT, &attr_int); */
                 sprintf(tmp_str,"%d,", attr_int);
                 println("%s",tmp_str);
+                json_object_object_add(jsonobj, key_name, json_object_new_int(attr_int));
             }
             /* display size, signed, endianess, etc. */
         } else if(t_class == H5T_FLOAT) {
@@ -240,6 +272,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
             if (1 == is_compound) {
                 sprintf(tmp_str, "F%lu,", size);
                 println("%s",tmp_str);
+                json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             }
             else {
                 double attr_float;
@@ -251,6 +284,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                 /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */
                 if (attr_float == 0) {
                     println("%s","0");
+                    json_object_object_add(jsonobj, key_name, json_object_new_double(0));
                 }
                 else {
                     sprintf(tmp_str,"%.2f,", attr_float);
@@ -273,6 +307,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
                         sprintf(tmp_str,"%.2E,", attr_float);
                     }
                     println("%s",tmp_str);
+                    json_object_object_add(jsonobj, key_name, json_object_new_double_s(attr_float));
                 }
             }
             /* display size, endianess, exponennt, etc. */
@@ -299,11 +334,12 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
 
                 println("%s",attr_string);
                 println("%s",",");
-
+                json_object_object_add(jsonobj, key_name, json_object_new_string(attr_string));
             } // End if is_compound == 0
             else {
                 sprintf(tmp_str, "S%lu,", size);
                 println("%s",tmp_str);
+                json_object_object_add(jsonobj, key_name, json_object_new_string(attr_string));
             }
 
             /* display size, padding, termination, etc. */
@@ -319,44 +355,54 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
             println("%s","[");
             /* recursively display each member: field name, type  */
             compound_nmember = H5Tget_nmembers(tid);
+            json_object *compound_obj = json_object_new_object();
+
             for (i = 0; i < compound_nmember; i++) {
                 mem_name = H5Tget_member_name(tid, i);
                 /* printf("        Compound member [%20s]  ", mem_name); */
                 println("%s",mem_name);
                 println("%s","=");
                 mem_type = H5Tget_member_type(tid, i);
-                do_dtype(mem_type, oid, 1);
+                do_dtype(mem_type, oid, 1, mem_name, compound_obj);
             }
             /* puts("    } End 'H5T_COMPOUND'.\n"); */
-
+            json_object_object_add(jsonobj, key_name, compound_obj);
             println("%s","]");
 
         } else if(t_class == H5T_ARRAY) {
             if (is_compound == 0) {
                 // tag_size_g += size;
             }
+            // json_object *subarray = json_object_new_array();
             ndim = H5Tget_array_ndims(tid);
             H5Tget_array_dims2(tid, dims);
             /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
+            // FIXME: to confirm what is the structure of this array. Should we include 'ndim' in the array?
             sprintf(tmp_str, "A%d", ndim);
             println("%s",tmp_str);
             for (i = 0; i < ndim; i++) {
                 /* printf("%d, ", dims[i]); */
                 sprintf(tmp_str, "_%d", dims[i]);
                 println("%s",tmp_str);
+                // json_object_array_add(subarray, json_object_new_int(dims[i]));
             }
             /* printf("\n                                                "); */
-            do_dtype(H5Tget_super(tid), oid, 1);
+            //FIXME: Currently don't know what to do with this line below.
+            // do_dtype(H5Tget_super(tid), oid, 1);
+            
+            // json_object_object_add(jsonobj, key_name, subarray);
             /* display  dimensions, base type  */
         } else if(t_class == H5T_ENUM) {
             /* puts(" 'H5T_ENUM'."); */
             sprintf(tmp_str, "E,");
             println("%s",tmp_str);
+            json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             /* display elements: name, value   */
         } else  {
             /* puts(" 'Other'."); */
             sprintf(tmp_str, "!OTHER!,");
             println("%s",tmp_str);
+            json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             /* eg. Object Reference, ...and so on ... */
         }
     }
@@ -369,10 +415,13 @@ do_dtype(hid_t tid, hid_t oid, int is_compound) {
  * what it points to.
  */
 void
-do_link(hid_t gid, char *name) {
+do_link(hid_t gid, char *name, json_object *current_object) {
     herr_t status;
     char target[MAX_NAME];
 
+    json_object_object_add(current_object, "type", json_object_new_string("link"));
+    json_object_object_add(current_object, "target", json_object_new_string(target));
+    
     status = H5Gget_linkval(gid, name, MAX_NAME, target  ) ;
     /* printf("Symlink: %s points to: %s\n", name, target); */
 }
@@ -383,7 +432,7 @@ do_link(hid_t gid, char *name) {
  *  This is similar to iterating through a group.
  */
 void
-scan_attrs(hid_t oid) {
+scan_attrs(hid_t oid, json_object *attributes_obj) {
     int na;
     hid_t aid;
     int i;
@@ -392,7 +441,7 @@ scan_attrs(hid_t oid) {
 
     for (i = 0; i < na; i++) {
         aid =	H5Aopen_idx(oid, (unsigned int)i );
-        do_attr(aid);
+        do_attr(aid, attributes_obj);
         H5Aclose(aid);
     }
 }
@@ -401,7 +450,7 @@ scan_attrs(hid_t oid) {
  *  Process one attribute.
  *  This is similar to the information about a dataset.
  */
-void do_attr(hid_t aid) {
+void do_attr(hid_t aid, json_object *attributes_obj) {
     ssize_t len;
     hid_t atype;
     hid_t aspace;
@@ -425,7 +474,7 @@ void do_attr(hid_t aid) {
     aspace = H5Aget_space(aid); /* the dimensions of the attribute data */
 
     atype  = H5Aget_type(aid);
-    do_dtype(atype, aid, 0);
+    do_dtype(atype, aid, 0, buf, attributes_obj);
 
     /*
      * The datatype and dataspace can be used to read all or
