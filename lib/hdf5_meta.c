@@ -1,6 +1,19 @@
 #include "hdf5_meta.h"
 
 
+void parse_hdf5_file(char *filepath){
+    hid_t    file;
+    hid_t    grp;
+    herr_t   status;
+
+    file = H5Fopen(filepath, H5F_ACC_RDWR, H5P_DEFAULT);
+
+    grp = H5Gopen(file,"/", H5P_DEFAULT);
+    scan_group(grp);
+
+    status = H5Fclose(file);
+}
+
 /*
  * Process a group and all it's members
  *

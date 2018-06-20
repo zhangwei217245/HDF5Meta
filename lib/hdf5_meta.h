@@ -7,6 +7,7 @@
 #define MAX_NAME 1024
 #define MAX_TAG_LEN 16384
 
+void parse_hdf5_file(char *);
 void do_dtype(hid_t, hid_t, int);
 void do_dset(hid_t did, char *name);
 void do_link(hid_t, char *);
