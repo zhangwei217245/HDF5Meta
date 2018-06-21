@@ -1,7 +1,14 @@
 #include "hdf5_meta.h"
 
 
-
+void parse_hdf5_meta_as_json_str(char *filepath, char **result){
+    json_object *rootObj = json_object_new_object();
+    parse_hdf5_file(filename, rootObj);
+    char *json_str = json_object_to_json_string(rootObj);
+    if (result != NULL) {
+        *result = json_str;
+    }
+}
 
 void parse_hdf5_file(char *filepath, json_object *rootobj){
     hid_t    file;
