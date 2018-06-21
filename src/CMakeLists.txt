@@ -15,10 +15,10 @@ target_link_libraries (hello_mongoc PRIVATE
 
 # build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
-include_directories(${JSON-C_INCLUDE_DIR})
+include_directories(${JSON-C_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/lib)
 link_directories (${PROJECT_BINARY_DIR}/lib)
-target_include_directories(hdf5_reader PRIVATE "${JSON-C_INCLUDE_DIR}")
+target_include_directories(hdf5_reader PRIVATE "${JSON-C_INCLUDE_DIRS}")
 target_link_libraries(hdf5_reader PRIVATE "${JSON-C_LIBRARIES}" query_utils timer_utils thpool indexds hdf5_meta)
 
 
