@@ -3,7 +3,7 @@
 
 #include "query_utils.h"
 #include "hdf5.h"
-#include "json.h"
+#include <json-c/json.h>
 
 #define MAX_NAME 1024
 #define MAX_TAG_LEN 16384
