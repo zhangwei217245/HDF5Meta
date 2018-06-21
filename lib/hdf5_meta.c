@@ -307,7 +307,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
                         sprintf(tmp_str,"%.2E,", attr_float);
                     }
                     println("%s",tmp_str);
-                    json_object_object_add(jsonobj, key_name, json_object_new_double_s(attr_float));
+                    json_object_object_add(jsonobj, key_name, json_object_new_double(attr_float));
                 }
             }
             /* display size, endianess, exponennt, etc. */
