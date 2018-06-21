@@ -152,7 +152,7 @@ do_dset(hid_t did, char *name, json_object *current_object)
      */
     H5Iget_name(did, ds_name, MAX_NAME  );
     json_object_object_add(current_object, "dataset_name", json_object_new_string(ds_name));
-    println("%s",ds_name);
+    //println("%s",ds_name);
 
 
     name_len = strlen(ds_name);
@@ -172,11 +172,11 @@ do_dset(hid_t did, char *name, json_object *current_object)
     sid = H5Dget_space(did); /* the dimensions of the dataset (not shown) */
     tid = H5Dget_type(did);
     /* printf(" DATA TYPE:\n"); */
-    println("%s",",DT:");
+    //println("%s",",DT:");
 
     do_dtype(tid, did, 0, ds_name, current_object);
 
-    println("%s",",");
+    //println("%s",",");
 
     // ndset ++;
     /*
@@ -251,7 +251,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
 
             if (1 == is_compound) {
                 sprintf(tmp_str, "I%lu,", size);
-                println("%s",tmp_str);
+                //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             }
             else {
@@ -263,7 +263,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
                 }
                 /* H5Aread (oid, H5T_NATIVE_INT, &attr_int); */
                 sprintf(tmp_str,"%d,", attr_int);
-                println("%s",tmp_str);
+                //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_int(attr_int));
             }
             /* display size, signed, endianess, etc. */
@@ -271,7 +271,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
             /* puts(" 'H5T_FLOAT'."); */
             if (1 == is_compound) {
                 sprintf(tmp_str, "F%lu,", size);
-                println("%s",tmp_str);
+                //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             }
             else {
@@ -283,7 +283,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
                 }
                 /* H5Aread (oid, H5T_NATIVE_DOUBLE, &attr_float); */
                 if (attr_float == 0) {
-                    println("%s","0");
+                    //println("%s","0");
                     json_object_object_add(jsonobj, key_name, json_object_new_double(0));
                 }
                 else {
@@ -306,7 +306,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
                     if (strlen(tmp_str) > 8) {
                         sprintf(tmp_str,"%.2E,", attr_float);
                     }
-                    println("%s",tmp_str);
+                    //println("%s",tmp_str);
                     json_object_object_add(jsonobj, key_name, json_object_new_double(attr_float));
                 }
             }
@@ -332,13 +332,13 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
                     H5Aread(oid, naive_type, attr_string);
                 }
 
-                println("%s",attr_string);
-                println("%s",",");
+                //println("%s",attr_string);
+                //println("%s",",");
                 json_object_object_add(jsonobj, key_name, json_object_new_string(attr_string));
             } // End if is_compound == 0
             else {
                 sprintf(tmp_str, "S%lu,", size);
-                println("%s",tmp_str);
+                //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_string(attr_string));
             }
 
@@ -352,7 +352,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
         } else if(t_class == H5T_COMPOUND) {
             // For compound type, the size would be calculated by its sub-types
             /* puts(" 'H5T_COMPOUND' {"); */
-            println("%s","[");
+            //println("%s","[");
             /* recursively display each member: field name, type  */
             compound_nmember = H5Tget_nmembers(tid);
             json_object *compound_obj = json_object_new_object();
@@ -360,14 +360,14 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
             for (i = 0; i < compound_nmember; i++) {
                 mem_name = H5Tget_member_name(tid, i);
                 /* printf("        Compound member [%20s]  ", mem_name); */
-                println("%s",mem_name);
-                println("%s","=");
+                //println("%s",mem_name);
+                //println("%s","=");
                 mem_type = H5Tget_member_type(tid, i);
                 do_dtype(mem_type, oid, 1, mem_name, compound_obj);
             }
             /* puts("    } End 'H5T_COMPOUND'.\n"); */
             json_object_object_add(jsonobj, key_name, compound_obj);
-            println("%s","]");
+            //println("%s","]");
 
         } else if(t_class == H5T_ARRAY) {
             if (is_compound == 0) {
@@ -379,11 +379,11 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
             /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
             // FIXME: to confirm what is the structure of this array. Should we include 'ndim' in the array?
             sprintf(tmp_str, "A%d", ndim);
-            println("%s",tmp_str);
+            //println("%s",tmp_str);
             for (i = 0; i < ndim; i++) {
                 /* printf("%d, ", dims[i]); */
                 sprintf(tmp_str, "_%d", dims[i]);
-                println("%s",tmp_str);
+                //println("%s",tmp_str);
                 // json_object_array_add(subarray, json_object_new_int(dims[i]));
             }
             /* printf("\n                                                "); */
@@ -395,13 +395,13 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
         } else if(t_class == H5T_ENUM) {
             /* puts(" 'H5T_ENUM'."); */
             sprintf(tmp_str, "E,");
-            println("%s",tmp_str);
+            //println("%s",tmp_str);
             json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             /* display elements: name, value   */
         } else  {
             /* puts(" 'Other'."); */
             sprintf(tmp_str, "!OTHER!,");
-            println("%s",tmp_str);
+            //println("%s",tmp_str);
             json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             /* eg. Object Reference, ...and so on ... */
         }
@@ -466,8 +466,8 @@ void do_attr(hid_t aid, json_object *attributes_obj) {
     if (strcmp("COMMENT", buf) == 0 || strcmp("comments", buf) == 0)
         return;
 
-    println("%s",buf);
-    println("%s","=");
+    //println("%s",buf);
+    //println("%s","="); 
     /*
      * Get attribute information: dataspace, data type
      */
