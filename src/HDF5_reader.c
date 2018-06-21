@@ -13,7 +13,8 @@ main(int argc, char **argv)
         print_usage();
     else {
         filename = argv[1];
-        parse_hdf5_file(filename);
+        json_object *rootObj = json_object_new_object();
+        parse_hdf5_file(filename, rootObj);
     }
     return 0;
 }
