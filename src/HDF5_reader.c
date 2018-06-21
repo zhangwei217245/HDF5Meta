@@ -15,6 +15,7 @@ main(int argc, char **argv)
         filename = argv[1];
         json_object *rootObj = json_object_new_object();
         parse_hdf5_file(filename, rootObj);
+        printf("%s\n", json_object_to_json_string(rootObj));
     }
     return 0;
 }

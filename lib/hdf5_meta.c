@@ -25,7 +25,6 @@ void parse_hdf5_file(char *filepath, json_object *rootobj){
     json_object_object_add(rootobj, "sub_objects", group_array);
 
     status = H5Fclose(file);
-    printf("final json = %s\n", json_object_to_json_string(rootobj));
 }
 
 /*
