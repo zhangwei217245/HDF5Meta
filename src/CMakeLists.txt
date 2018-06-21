@@ -1,10 +1,4 @@
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
-
-# Specify the minimum version you require.
-
-
-
 # The "hello_mongoc.c" sample program is shared among four tests.
 add_executable (hello_mongoc hello_mongoc.c)
 #target_include_directories (hello_mongoc PRIVATE "${MONGOC_INCLUDE_DIRS}")

@@ -1,3 +1,5 @@
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
+
 find_package(JSON-C REQUIRED)
 
 ADD_LIBRARY(string_utils SHARED string_utils.c string_utils.h)
