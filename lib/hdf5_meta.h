@@ -8,6 +8,8 @@
 #define MAX_NAME 1024
 #define MAX_TAG_LEN 16384
 
+void parse_hdf5_meta_as_json_str(char *filepath, char **result);
+
 void parse_hdf5_file(char *filepath, json_object *rootobj);
 
 /*
