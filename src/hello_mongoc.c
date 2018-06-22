@@ -32,7 +32,7 @@ main (int argc, char *argv[])
         printf("%s\n", json_str);
     }
 
-    int32_t import_rst = import_json_to_mongo(json_str);
+    int32_t import_rst = importing_json_doc_to_db(json_str);
     printf("import_rst = %d\n");
 
     return 0;
