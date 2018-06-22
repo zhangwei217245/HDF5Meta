@@ -30,10 +30,11 @@ main (int argc, char *argv[])
         char *json_str = NULL;
         parse_hdf5_meta_as_json_str(filename, &json_str);
         printf("%s\n", json_str);
+        
+        int32_t import_rst = importing_json_doc_to_db(json_str);
+        printf("import_rst = %d\n");
     }
 
-    int32_t import_rst = importing_json_doc_to_db(json_str);
-    printf("import_rst = %d\n");
-
+    
     return 0;
 }
