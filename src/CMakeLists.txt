@@ -2,14 +2,16 @@
 # The "hello_mongoc.c" sample program is shared among four tests.
 add_executable (hello_mongoc hello_mongoc.c)
 #target_include_directories (hello_mongoc PRIVATE "${MONGOC_INCLUDE_DIRS}")
-target_link_libraries (hello_mongoc PRIVATE 
+target_link_libraries (hello_mongoc PRIVATE hdf5_meta 
     ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so     
     )
 #target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
 
 # build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
-target_link_libraries(hdf5_reader PRIVATE hdf5_meta)
+target_link_libraries(hdf5_reader PRIVATE 
+    hdf5_meta
+    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 
 
 #target_compile_definitions (hdf5_reader PRIVATE "${JSON_C_DEFINITIONS}")
