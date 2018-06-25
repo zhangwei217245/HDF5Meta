@@ -40,42 +40,42 @@ void test_inserting_query_no_index (const char *json_str) {
     println("=============== Inserting Document Done! ===============\n");
     int i = 0;
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"type\":\"file\"");
+        int64_t rst_count = query_count("{\"type\":\"file\"}");
         println("internal rst_count on matched condition = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"type\":\"object_path\"");
+        int64_t rst_count = query_count("{\"type\":\"object_path\"}");
         println("internal rst_count on unmatched condition = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"type\":\"file\"");
+        int64_t rst_count = query_result_count("{\"type\":\"file\"}");
         println("external rst_count on matched condition= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"type\":\"object_path\"");
+        int64_t rst_count = query_result_count("{\"type\":\"object_path\"}");
         println("external rst_count on unmatched condition= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
         println("internal rst_count on embedded matched condition = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
         println("internal rst_count on embedded unmatched condition = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
         println("external rst_count on embedded matched condition= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
         println("external rst_count on embedded unmatched condition= %d\n", rst_count);
     }
 }
@@ -95,51 +95,51 @@ void test_inserting_query_no_index (const char *json_str) {
  */
 
 void test_creating_index_and_then_query() {
-    const char *index_key1 = "\"type\":\"text\"";
+    const char *index_key1 = "{\"type\":\"text\"}";
     create_index(index_key1);
     println("============== created index 1. ============== ");
-    const char *index_key2 = "\"sub_objects.sub_objects.sub_objects.attributes.dim2\":1";
+    const char *index_key2 = "{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":1";
     create_index(index_key2);
     println("============== created index 2. ============== ");
 
     int i = 0;
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"type\":\"file\"");
+        int64_t rst_count = query_count("{\"type\":\"file\"}");
         println("internal rst_count on matched condition = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"type\":\"object_path\"");
+        int64_t rst_count = query_count("{\"type\":\"object_path\"}");
         println("internal rst_count on unmatched condition = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"type\":\"file\"");
+        int64_t rst_count = query_result_count("{\"type\":\"file\"}");
         println("external rst_count on matched condition= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"type\":\"object_path\"");
+        int64_t rst_count = query_result_count("{\"type\":\"object_path\"}");
         println("external rst_count on unmatched condition= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
         println("internal rst_count on embedded matched condition = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
         println("internal rst_count on embedded unmatched condition = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
         println("external rst_count on embedded matched condition= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
         println("external rst_count on embedded unmatched condition= %d\n", rst_count);
     }
 }
@@ -155,7 +155,7 @@ void test_creating_index_and_then_query() {
  */
 void import_with_single_index(const char *json_str){
     clear_everything();
-    const char *index_key1 = "\"type\":\"text\"";
+    const char *index_key1 = "{\"type\":\"text\"}";
     create_index(index_key1);
     importing_json_doc_to_db(json_str);
 }
@@ -169,10 +169,10 @@ void import_with_single_index(const char *json_str){
  *      Time for each insertion operation.
  */
 void import_with_two_indexes(const char *json_str){
-    const char *index_key1 = "\"type\":\"text\"";
+    const char *index_key1 = "{\"type\":\"text\"}";
     create_index(index_key1);
     println("============== created index 1. ============== ");
-    const char *index_key2 = "\"sub_objects.sub_objects.sub_objects.attributes.dim2\":1";
+    const char *index_key2 = "{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":1";
     create_index(index_key2);
     println("============== created index 2. ============== ");
     importing_json_doc_to_db(json_str);
