@@ -33,7 +33,7 @@ void print_usage() {
 void test_inserting_query_no_index (const char *json_str) {
     clear_all_indexes();
     clear_all_docs();
-    importing_json_doc_to_db(json_str);
+    // importing_json_doc_to_db(json_str);
     println("=============== Inserting Document Done! ===============\n");
     int i = 0;
     for (i = 0; i < 100; i++) {
@@ -207,15 +207,15 @@ main (int argc, char *argv[])
         println("================= BENCH A ==============");
         test_inserting_query_no_index(json_str);
         // Bench B. 
-        println("================= BENCH B ==============");
-        test_creating_index_and_then_query();
-        // Bench C, D. 
-        println("================= BENCH C,D ==============");
-        import_with_single_index(json_str);
-        // Bench E, F.
-        println("================= BENCH E,F ==============");
-        import_with_two_indexes(json_str);
-        println("================= TEST END ==============");
+        // println("================= BENCH B ==============");
+        // test_creating_index_and_then_query();
+        // // Bench C, D. 
+        // println("================= BENCH C,D ==============");
+        // import_with_single_index(json_str);
+        // // Bench E, F.
+        // println("================= BENCH E,F ==============");
+        // import_with_two_indexes(json_str);
+        // println("================= TEST END ==============");
     }
     return 0;
 }
