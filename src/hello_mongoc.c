@@ -31,8 +31,8 @@ void print_usage() {
  *      Time for each query. on 'type' and on 'sub_objects.sub_objects.sub_objects.type'
  */
 void test_inserting_query_no_index (const char *json_str) {
-    clear_all_indexes();
-    clear_all_docs();
+    // clear_all_indexes();
+    // clear_all_docs();
     // importing_json_doc_to_db(json_str);
     println("=============== Inserting Document Done! ===============\n");
     int i = 0;
