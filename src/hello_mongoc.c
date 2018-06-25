@@ -13,7 +13,7 @@ extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
 extern int64_t get_all_doc_count();
-extern int64_t import_json_to_mongo(const char *json_str);
+extern int64_t importing_json_doc_to_db(const char *json_str);
 extern void random_test();
 
 
