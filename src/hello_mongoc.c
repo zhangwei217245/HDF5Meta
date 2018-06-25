@@ -31,9 +31,8 @@ void print_usage() {
  *      Time for each query. on 'type' and on 'sub_objects.sub_objects.sub_objects.type'
  */
 void test_inserting_query_no_index (const char *json_str) {
-    // clear_all_indexes();
-    // clear_all_docs();
-    // importing_json_doc_to_db(json_str);
+    clear_everything();
+    importing_json_doc_to_db(json_str);
     println("=============== Inserting Document Done! ===============\n");
     int i = 0;
     for (i = 0; i < 100; i++) {
@@ -190,8 +189,8 @@ main (int argc, char *argv[])
 {
     int64_t doc_count = init_db();
     printf("successfully init db, %d documents in mongodb.\n", doc_count);
-    random_test();
-    clear_everything();
+    // random_test();
+    // clear_everything();
 
     char* filename;
 
