@@ -17,6 +17,10 @@ extern int64_t importing_json_doc_to_db(const char *json_str);
 extern void random_test();
 
 
+void clear_everything(){
+    clear_all_docs();
+    clear_all_indexes();
+}
 
 void print_usage() {
     printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
@@ -144,10 +148,7 @@ void test_creating_index_and_then_query() {
  * C. Removing all documents and all indexes.
  */
 
-void clear_everything(){
-    clear_all_docs();
-    clear_all_indexes();
-}
+
 /**
  * D. Creating non-embedded field index, like 'type'. Inserting documents
  *      Time for each insertion operation.
