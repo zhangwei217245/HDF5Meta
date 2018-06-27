@@ -84,12 +84,12 @@ void issue_queries() {
 }
 
 void create_index_on_docid(){
-    const char *index_key1 = "{\"h5doc_id\":1}";
+    const char *index_key1 = "{ h5doc_id: 1 }";
     create_index(index_key1);
 }
 
 void create_index_on_dataset_name() {
-    const char *index_key2 = "{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"text\"}";
+    const char *index_key2 = "{ sub_objects.sub_objects.sub_objects.dataset_name: \"text\"}";
     create_index(index_key2);
 }
 
