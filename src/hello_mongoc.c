@@ -25,19 +25,72 @@ void clear_everything(){
 void print_usage() {
     printf("Usage: ./hdf5_reader /path/to/hdf5/file [A/B/C/D]\n");
     
-        // Bench A.
-        println("================= BENCH A ==============");
-        println("test_inserting_query_no_index(json_str)");
-        // Bench B. 
-        println("================= BENCH B ==============");
-        println("test_creating_index_and_then_query()");
-        // Bench C. 
-        println("================= BENCH C ==============");
-        println("import_with_single_index(json_str)");
-        // Bench D.
-        println("================= BENCH D ==============");
-        println("import_with_two_indexes(json_str)");
+    // Bench A.
+    println("================= BENCH A ==============");
+    println("test_inserting_query_no_index(json_str)");
+    // Bench B. 
+    println("================= BENCH B ==============");
+    println("test_creating_index_and_then_query()");
+    // Bench C. 
+    println("================= BENCH C ==============");
+    println("import_with_single_index(json_str)");
+    // Bench D.
+    println("================= BENCH D ==============");
+    println("import_with_two_indexes(json_str)");
         
+}
+
+void issue_queries() {
+    int i = 0;
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_count("{\"h5doc_id\":5}");
+        println("internal rst_count on matched condition = %d\n", rst_count);
+    }
+
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_count("{\"h5doc_id\":\"object_path\"}");
+        println("internal rst_count on unmatched condition = %d\n", rst_count);
+    }
+    
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_result_count("{\"h5doc_id\":5}");
+        println("external rst_count on matched condition= %d\n", rst_count);
+    }
+
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_result_count("{\"h5doc_id\":\"object_path\"}");
+        println("external rst_count on unmatched condition= %d\n", rst_count);
+    }
+
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"");
+        println("internal rst_count on embedded matched condition = %d\n", rst_count);
+    }
+
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"");
+        println("internal rst_count on embedded unmatched condition = %d\n", rst_count);
+    }
+    
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"");
+        println("external rst_count on embedded matched condition= %d\n", rst_count);
+    }
+
+    for (i = 0; i < 100; i++) {
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"");
+        println("external rst_count on embedded unmatched condition= %d\n", rst_count);
+    }
+}
+
+void create_index_on_docid(){
+    const char *index_key1 = "{\"h5doc_id\":1}";
+    create_index(index_key1);
+}
+
+void create_index_on_dataset_name() {
+    const char *index_key2 = "{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"text\"}";
+    create_index(index_key2);
 }
 
 /**
@@ -50,50 +103,9 @@ void print_usage() {
  */
 void test_inserting_query_no_index (const char *json_str) {
     clear_everything();
-    
     importing_json_doc_to_db(json_str);
-
     println("=============== Inserting Document Done! ===============\n");
-    int i = 0;
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"type\":\"file\"}");
-        println("internal rst_count on matched condition = %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"type\":\"object_path\"}");
-        println("internal rst_count on unmatched condition = %d\n", rst_count);
-    }
-    
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"type\":\"file\"}");
-        println("external rst_count on matched condition= %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"type\":\"object_path\"}");
-        println("external rst_count on unmatched condition= %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
-        println("internal rst_count on embedded matched condition = %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
-        println("internal rst_count on embedded unmatched condition = %d\n", rst_count);
-    }
-    
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
-        println("external rst_count on embedded matched condition= %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
-        println("external rst_count on embedded unmatched condition= %d\n", rst_count);
-    }
+    issue_queries();
 }
 
 /**
@@ -111,53 +123,11 @@ void test_inserting_query_no_index (const char *json_str) {
  */
 
 void test_creating_index_and_then_query() {
-    const char *index_key1 = "{\"type\":\"text\"}";
-    create_index(index_key1);
+    create_index_on_docid();
     println("============== created index 1. ============== ");
-    const char *index_key2 = "{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":1";
-    create_index(index_key2);
+    create_index_on_dataset_name();
     println("============== created index 2. ============== ");
-
-    int i = 0;
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"type\":\"file\"}");
-        println("internal rst_count on matched condition = %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"type\":\"object_path\"}");
-        println("internal rst_count on unmatched condition = %d\n", rst_count);
-    }
-    
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"type\":\"file\"}");
-        println("external rst_count on matched condition= %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"type\":\"object_path\"}");
-        println("external rst_count on unmatched condition= %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
-        println("internal rst_count on embedded matched condition = %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
-        println("internal rst_count on embedded unmatched condition = %d\n", rst_count);
-    }
-    
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":2160");
-        println("external rst_count on embedded matched condition= %d\n", rst_count);
-    }
-
-    for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":21");
-        println("external rst_count on embedded unmatched condition= %d\n", rst_count);
-    }
+    issue_queries();
 }
 
 /** 
@@ -171,8 +141,8 @@ void test_creating_index_and_then_query() {
  */
 void import_with_single_index(const char *json_str){
     clear_everything();
-    const char *index_key1 = "{\"type\":\"text\"}";
-    create_index(index_key1);
+    create_index_on_docid();
+    println("============== created index 1. ============== ");
     importing_json_doc_to_db(json_str);
 }
 
@@ -186,11 +156,9 @@ void import_with_single_index(const char *json_str){
  */
 void import_with_two_indexes(const char *json_str){
     clear_everything();
-    const char *index_key1 = "{\"type\":\"text\"}";
-    create_index(index_key1);
+    create_index_on_docid();
     println("============== created index 1. ============== ");
-    const char *index_key2 = "{\"sub_objects.sub_objects.sub_objects.attributes.dim2\":1";
-    create_index(index_key2);
+    create_index_on_dataset_name();
     println("============== created index 2. ============== ");
     importing_json_doc_to_db(json_str);
 }
@@ -207,9 +175,7 @@ main (int argc, char *argv[])
 {
 
     int64_t doc_count = init_db();
-    printf("successfully init db, %d documents in mongodb.\n", doc_count);
-    // random_test();
-    // clear_everything();
+    printf("successfully init db, %d documents in mongodb.\n", doc_count);    
 
     char* filename;
     char test_opt;
