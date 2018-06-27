@@ -218,6 +218,7 @@ main (int argc, char *argv[])
                 println("Undefined test.");
                 break;
         }
+        println("================= Benchmark done. =================");
     }
     return 0;
 }
