@@ -8,6 +8,7 @@
 extern int64_t init_db();
 extern int64_t clear_all_docs();
 extern void clear_all_indexes();
+extern void drop_current_coll();
 extern void create_index(const char *index_key);
 extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
@@ -18,8 +19,7 @@ extern void random_test();
 
 
 void clear_everything(){
-    clear_all_docs();
-    clear_all_indexes();
+    drop_current_coll();
 }
 
 void print_usage() {
@@ -185,6 +185,7 @@ void import_with_single_index(const char *json_str){
  *      Time for each insertion operation.
  */
 void import_with_two_indexes(const char *json_str){
+    clear_everything();
     const char *index_key1 = "{\"type\":\"text\"}";
     create_index(index_key1);
     println("============== created index 1. ============== ");
