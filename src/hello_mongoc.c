@@ -204,34 +204,53 @@ void import_with_two_indexes(const char *json_str){
 int
 main (int argc, char *argv[])
 {
+
     int64_t doc_count = init_db();
     printf("successfully init db, %d documents in mongodb.\n", doc_count);
     // random_test();
     // clear_everything();
 
     char* filename;
+    char test_opt;
 
     if (argc != 2)
         print_usage();
     else {
         filename = argv[1];
+        test_opt = argv[2][0];
+
         char *json_str = NULL;
+
+        println("================= EXTRACTING HDF5 METADATA ==============");
         parse_hdf5_meta_as_json_str(filename, &json_str);
         println("%s\n", json_str);
-        println("================= TEST BEGIN ==============");
-        // Bench A.
-        println("================= BENCH A ==============");
-        test_inserting_query_no_index(json_str);
-        // Bench B. 
-        // println("================= BENCH B ==============");
-        // test_creating_index_and_then_query();
-        // // Bench C, D. 
-        // println("================= BENCH C,D ==============");
-        // import_with_single_index(json_str);
-        // // Bench E, F.
-        // println("================= BENCH E,F ==============");
-        // import_with_two_indexes(json_str);
-        // println("================= TEST END ==============");
+        println("================= ENDING EXTRACTING HDF5 METADATA ==============");
+
+        switch(test_opt) {
+            case 'A':
+                // Bench A.
+                println("================= BENCH A ==============");
+                test_inserting_query_no_index(json_str);
+                break;
+            case 'B':
+                // Bench B. 
+                println("================= BENCH B ==============");
+                test_creating_index_and_then_query();
+                break;
+            case 'C':
+                // Bench C. 
+                println("================= BENCH C ==============");
+                import_with_single_index(json_str);
+                break;
+            case 'D':
+                // Bench D.
+                println("================= BENCH D ==============");
+                import_with_two_indexes(json_str);
+                break;
+            default:
+                println("Undefined test.");
+                break;
+        }
     }
     return 0;
 }
