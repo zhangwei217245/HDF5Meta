@@ -180,7 +180,7 @@ main (int argc, char *argv[])
     char* filename;
     char test_opt;
 
-    if (argc != 2)
+    if (argc != 3)
         print_usage();
     else {
         filename = argv[1];
