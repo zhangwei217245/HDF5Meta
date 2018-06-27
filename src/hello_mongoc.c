@@ -23,7 +23,21 @@ void clear_everything(){
 }
 
 void print_usage() {
-    printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
+    printf("Usage: ./hdf5_reader /path/to/hdf5/file [A/B/C/D]\n");
+    
+        // Bench A.
+        println("================= BENCH A ==============");
+        println("test_inserting_query_no_index(json_str)");
+        // Bench B. 
+        println("================= BENCH B ==============");
+        println("test_creating_index_and_then_query()");
+        // Bench C. 
+        println("================= BENCH C ==============");
+        println("import_with_single_index(json_str)");
+        // Bench D.
+        println("================= BENCH D ==============");
+        println("import_with_two_indexes(json_str)");
+        
 }
 
 /**
@@ -38,7 +52,7 @@ void test_inserting_query_no_index (const char *json_str) {
     clear_everything();
     
     importing_json_doc_to_db(json_str);
-    
+
     println("=============== Inserting Document Done! ===============\n");
     int i = 0;
     for (i = 0; i < 100; i++) {
