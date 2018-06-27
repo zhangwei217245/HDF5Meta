@@ -44,42 +44,42 @@ void issue_queries() {
     int i = 0;
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_count("{\"h5doc_id\":5}");
-        println("internal rst_count on matched condition = %d\n", rst_count);
+        println("internal rst_count on matched h5doc_id = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_count("{\"h5doc_id\":\"object_path\"}");
-        println("internal rst_count on unmatched condition = %d\n", rst_count);
+        println("internal rst_count on unmatched h5doc_id = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_result_count("{\"h5doc_id\":5}");
-        println("external rst_count on matched condition= %d\n", rst_count);
+        println("external rst_count on matched h5doc_id= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_result_count("{\"h5doc_id\":\"object_path\"}");
-        println("external rst_count on unmatched condition= %d\n", rst_count);
+        println("external rst_count on unmatched h5doc_id= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"");
-        println("internal rst_count on embedded matched condition = %d\n", rst_count);
+        println("internal rst_count on embedded matched dataset_name = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"");
-        println("internal rst_count on embedded unmatched condition = %d\n", rst_count);
+        println("internal rst_count on embedded unmatched dataset_name = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"");
-        println("external rst_count on embedded matched condition= %d\n", rst_count);
+        println("external rst_count on embedded matched dataset_name= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
         int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"");
-        println("external rst_count on embedded unmatched condition= %d\n", rst_count);
+        println("external rst_count on embedded unmatched dataset_name= %d\n", rst_count);
     }
 }
 
