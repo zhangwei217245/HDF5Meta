@@ -63,22 +63,22 @@ void issue_queries() {
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"");
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"}");
         println("internal rst_count on embedded matched dataset_name = %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"");
+        int64_t rst_count = query_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"}");
         println("internal rst_count on embedded unmatched dataset_name = %d\n", rst_count);
     }
     
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"");
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50/20140212_071649_HN18_RT_60N_6hr_scan50_0000_0027.tif\"}");
         println("external rst_count on embedded matched dataset_name= %d\n", rst_count);
     }
 
     for (i = 0; i < 100; i++) {
-        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"");
+        int64_t rst_count = query_result_count("{\"sub_objects.sub_objects.sub_objects.dataset_name\":\"/20140212_071649_HN18_RT_60N_6hr_scan50\"}");
         println("external rst_count on embedded unmatched dataset_name= %d\n", rst_count);
     }
 }
