@@ -36,7 +36,9 @@ void print_usage() {
  */
 void test_inserting_query_no_index (const char *json_str) {
     clear_everything();
+    
     importing_json_doc_to_db(json_str);
+    
     println("=============== Inserting Document Done! ===============\n");
     int i = 0;
     for (i = 0; i < 100; i++) {
