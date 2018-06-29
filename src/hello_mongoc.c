@@ -10,6 +10,7 @@ extern int64_t clear_all_docs();
 extern void clear_all_indexes();
 extern void drop_current_coll();
 extern void create_index(const char *index_key);
+extern void create_doc_id_index();
 extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
@@ -123,8 +124,8 @@ void test_inserting_query_no_index (const char *json_str) {
  */
 
 void test_creating_index_and_then_query() {
-    create_index_on_docid();
-    println("============== created index 1. ============== ");
+    // create_index_on_docid();
+    // println("============== created index 1. ============== ");
     create_index_on_dataset_name();
     println("============== created index 2. ============== ");
     issue_queries();
