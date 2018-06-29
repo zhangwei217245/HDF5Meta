@@ -124,8 +124,8 @@ void test_inserting_query_no_index (const char *json_str) {
  */
 
 void test_creating_index_and_then_query() {
-    // create_index_on_docid();
-    // println("============== created index 1. ============== ");
+    create_doc_id_index();
+    println("============== created index 1. ============== ");
     create_index_on_dataset_name();
     println("============== created index 2. ============== ");
     issue_queries();
