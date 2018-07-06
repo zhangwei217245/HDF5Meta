@@ -223,6 +223,11 @@ void import_with_five_indexes(const char *json_str){
     importing_json_doc_to_db(json_str);
 }
 
+void import_with_no_index(const char *json_str){
+    clear_everything();
+    importing_json_doc_to_db(json_str);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -281,6 +286,11 @@ main (int argc, char *argv[])
                 // Bench G.
                 println("================= BENCH G ==============");
                 import_with_four_indexes(json_str);
+                break;
+            case 'H':
+                // Bench H.
+                println("================= BENCH H ==============");
+                import_with_no_index(json_str);
                 break;
             default:
                 println("Undefined test.");
