@@ -13,6 +13,8 @@ extern void create_index(const char *index_key);
 extern void create_doc_id_index();
 extern void create_dataset_name_index();
 extern void create_root_obj_path_index();
+extern void create_lv2_obj_path_index();
+extern void create_lv3_obj_path_index();
 extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
