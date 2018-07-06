@@ -12,6 +12,7 @@ extern void drop_current_coll();
 extern void create_index(const char *index_key);
 extern void create_doc_id_index();
 extern void create_dataset_name_index();
+extern void create_root_obj_path_index();
 extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
@@ -39,6 +40,15 @@ void print_usage() {
     // Bench D.
     println("================= BENCH D ==============");
     println("import_with_two_indexes(json_str)");
+
+    println("================= BENCH E ==============");
+    println("import_with_three_indexes(json_str)");
+
+    println("================= BENCH F ==============");
+    println("import_with_four_indexes(json_str)");
+
+    println("================= BENCH G ==============");
+    println("import_with_five_indexes(json_str)");
         
 }
 
@@ -143,7 +153,7 @@ void test_creating_index_and_then_query() {
  */
 void import_with_single_index(const char *json_str){
     clear_everything();
-    create_index_on_docid();
+    create_doc_id_index();
     println("============== created index 1. ============== ");
     importing_json_doc_to_db(json_str);
 }
@@ -158,9 +168,9 @@ void import_with_single_index(const char *json_str){
  */
 void import_with_two_indexes(const char *json_str){
     clear_everything();
-    create_index_on_docid();
+    create_doc_id_index();
     println("============== created index 1. ============== ");
-    create_index_on_dataset_name();
+    create_dataset_name_index();
     println("============== created index 2. ============== ");
     importing_json_doc_to_db(json_str);
 }
@@ -171,6 +181,45 @@ void import_with_two_indexes(const char *json_str){
  *      Time for each insertion operation. 
  * 
  */ 
+
+void import_with_three_indexes(const char *json_str){
+    clear_everything();
+    create_doc_id_index();
+    println("============== created index 1. ============== ");
+    create_dataset_name_index();
+    println("============== created index 2. ============== ");
+    create_root_obj_path_index();
+    println("============== created index 3. ============== ");
+    importing_json_doc_to_db(json_str);
+}
+
+void import_with_four_indexes(const char *json_str){
+    clear_everything();
+    create_doc_id_index();
+    println("============== created index 1. ============== ");
+    create_dataset_name_index();
+    println("============== created index 2. ============== ");
+    create_root_obj_path_index();
+    println("============== created index 3. ============== ");
+    create_lv2_obj_path_index();
+    println("============== created index 4. ============== ");
+    importing_json_doc_to_db(json_str);
+}
+
+void import_with_five_indexes(const char *json_str){
+    clear_everything();
+    create_doc_id_index();
+    println("============== created index 1. ============== ");
+    create_dataset_name_index();
+    println("============== created index 2. ============== ");
+    create_root_obj_path_index();
+    println("============== created index 3. ============== ");
+    create_lv2_obj_path_index();
+    println("============== created index 4. ============== ");
+    create_lv3_obj_path_index();
+    println("============== created index 5. ============== ");
+    importing_json_doc_to_db(json_str);
+}
 
 int
 main (int argc, char *argv[])
@@ -215,6 +264,21 @@ main (int argc, char *argv[])
                 // Bench D.
                 println("================= BENCH D ==============");
                 import_with_two_indexes(json_str);
+                break;
+            case 'E':
+                // Bench E.
+                println("================= BENCH E ==============");
+                import_with_three_indexes(json_str);
+                break;
+            case 'F':
+                // Bench F.
+                println("================= BENCH F ==============");
+                import_with_four_indexes(json_str);
+                break;
+            case 'G':
+                // Bench G.
+                println("================= BENCH G ==============");
+                import_with_four_indexes(json_str);
                 break;
             default:
                 println("Undefined test.");
