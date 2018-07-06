@@ -285,7 +285,7 @@ main (int argc, char *argv[])
             case 'G':
                 // Bench G.
                 println("================= BENCH G ==============");
-                import_with_four_indexes(json_str);
+                import_with_five_indexes(json_str);
                 break;
             case 'H':
                 // Bench H.
