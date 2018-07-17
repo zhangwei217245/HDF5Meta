@@ -80,25 +80,10 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
             void *operator_data)
 {
     H5O_info_t object_info;
-
-    int na ;
+    hid_t curr_obj_id = H5Oopen(loc_id, name, H5P_DEFAULT);
 
     printf ("/");               /* Print root group in object path */
 
-    H5Oget_info(loc_id, &object_info);
-    switch (object_info.type) {
-        case H5O_TYPE_GROUP:
-            printf ("%s . (Group)\n", name);
-            break;
-        case H5O_TYPE_DATASET:
-            printf ("%s . (Dataset)\n", name);
-            break;
-        case H5O_TYPE_NAMED_DATATYPE:
-            printf ("%s . (Datatype)\n", name);
-            break;
-        default:
-            printf ("%s . (Unknown)\n", name);
-    }
     /*
      * Check if the current object is the root group, and if not print
      * the full path name and type.
@@ -120,11 +105,10 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
                 printf ("%s  (Unknown)\n", name);
         }
 
-    // H5Oget_info(loc_id, &object_info);
-    na = H5Aget_num_attrs(loc_id);
+    int na = H5Aget_num_attrs(curr_obj_id);
     if (na > 0) {
-        printf ("\n%d Attributes are:\n", object_info.num_attrs);
-        H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
+        printf ("\n%d Attributes are:\n", na);
+        H5Aiterate(curr_obj_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     }
     return 0;
 }
