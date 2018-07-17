@@ -165,17 +165,17 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     rank = H5Sget_simple_extent_ndims(aspace);
     ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
 
-    // /* Get dataspace type */
-    // class = H5Sget_simple_extent_type (aspace);
-    // printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", class);
+    /* Get dataspace type */
+    class = H5Sget_simple_extent_type (aspace);
+    printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", class);
 
-    // /* Display rank and dimension sizes for the array attribute.  */
-    // if(rank > 0) {
-    //    printf("Rank : %d \n", rank); 
-    //    printf("Dimension sizes : ");
-    //    for (i=0; i< rank; i++) printf("%d ", (int)sdim[i]);
-    //    printf("\n");
-    // }
+    /* Display rank and dimension sizes for the array attribute.  */
+    if(rank > 0) {
+       printf("Rank : %d \n", rank); 
+       printf("Dimension sizes : ");
+       for (i=0; i< rank; i++) printf("%d ", (int)sdim[i]);
+       printf("\n");
+    }
 
     // if (H5T_INTEGER == H5Tget_class(atype)) {
     //    printf("Type : INTEGER \n");
