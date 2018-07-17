@@ -103,7 +103,7 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         }
 
     printf ("\nAttributes are:\n");
-    H5Aiterate(loc_id, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, NULL);
+    H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     
 
     return 0;
@@ -150,75 +150,75 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     float *float_array;         /* Pointer to the array attribute. */
     H5S_class_t  class;
 
-    /* avoid warnings */
-    opdata = opdata;
+    // /* avoid warnings */
+    // opdata = opdata;
 
-    /*  Open the attribute using its name.  */    
-    attr = H5Aopen_name(loc_id, name);
+    // /*  Open the attribute using its name.  */    
+    // attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
     printf("\nName : ");
     puts(name);
 
-    /* Get attribute datatype, dataspace, rank, and dimensions.  */
-    atype  = H5Aget_type(attr);
-    aspace = H5Aget_space(attr);
-    rank = H5Sget_simple_extent_ndims(aspace);
-    ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
+    // /* Get attribute datatype, dataspace, rank, and dimensions.  */
+    // atype  = H5Aget_type(attr);
+    // aspace = H5Aget_space(attr);
+    // rank = H5Sget_simple_extent_ndims(aspace);
+    // ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
 
-    /* Get dataspace type */
-    class = H5Sget_simple_extent_type (aspace);
-    printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", class);
+    // /* Get dataspace type */
+    // class = H5Sget_simple_extent_type (aspace);
+    // printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", class);
 
-    /* Display rank and dimension sizes for the array attribute.  */
-    if(rank > 0) {
-       printf("Rank : %d \n", rank); 
-       printf("Dimension sizes : ");
-       for (i=0; i< rank; i++) printf("%d ", (int)sdim[i]);
-       printf("\n");
-    }
+    // /* Display rank and dimension sizes for the array attribute.  */
+    // if(rank > 0) {
+    //    printf("Rank : %d \n", rank); 
+    //    printf("Dimension sizes : ");
+    //    for (i=0; i< rank; i++) printf("%d ", (int)sdim[i]);
+    //    printf("\n");
+    // }
 
-    if (H5T_INTEGER == H5Tget_class(atype)) {
-       printf("Type : INTEGER \n");
-       ret  = H5Aread(attr, atype, &point_out);
-       printf("The value of the attribute \"Integer attribute\" is %d \n", 
-               point_out);
-    }
+    // if (H5T_INTEGER == H5Tget_class(atype)) {
+    //    printf("Type : INTEGER \n");
+    //    ret  = H5Aread(attr, atype, &point_out);
+    //    printf("The value of the attribute \"Integer attribute\" is %d \n", 
+    //            point_out);
+    // }
 
-    if (H5T_FLOAT == H5Tget_class(atype)) {
-       printf("Type : FLOAT \n"); 
-       npoints = H5Sget_simple_extent_npoints(aspace);
-       float_array = (float *)malloc(sizeof(float)*(int)npoints); 
-       ret = H5Aread(attr, atype, float_array);
-       printf("Values : ");
-       for( i = 0; i < (int)npoints; i++) printf("%f ", float_array[i]); 
-       printf("\n");
-       free(float_array);
-    }
+    // if (H5T_FLOAT == H5Tget_class(atype)) {
+    //    printf("Type : FLOAT \n"); 
+    //    npoints = H5Sget_simple_extent_npoints(aspace);
+    //    float_array = (float *)malloc(sizeof(float)*(int)npoints); 
+    //    ret = H5Aread(attr, atype, float_array);
+    //    printf("Values : ");
+    //    for( i = 0; i < (int)npoints; i++) printf("%f ", float_array[i]); 
+    //    printf("\n");
+    //    free(float_array);
+    // }
 
-    if (H5T_STRING == H5Tget_class (atype)) {
-      printf ("Type: STRING \n");
-      size = H5Tget_size (atype);
-      printf ("Size of Each String is: %i\n", size);
-      totsize = size*sdim[0]*sdim[1];
-      string_out = calloc (totsize, sizeof(char));
-      ret = H5Aread(attr, atype, string_out);
-      printf("The value of the attribute with index 2 is:\n");
-      j=0;
-      for (i=0; i<totsize; i++) {
-        printf ("%c", string_out[i]);
-        if (j==3) {
-          printf(" ");
-          j=0;
-        }
-        else j++;
-      }
-      printf ("\n");
-    }
+    // if (H5T_STRING == H5Tget_class (atype)) {
+    //   printf ("Type: STRING \n");
+    //   size = H5Tget_size (atype);
+    //   printf ("Size of Each String is: %i\n", size);
+    //   totsize = size*sdim[0]*sdim[1];
+    //   string_out = calloc (totsize, sizeof(char));
+    //   ret = H5Aread(attr, atype, string_out);
+    //   printf("The value of the attribute with index 2 is:\n");
+    //   j=0;
+    //   for (i=0; i<totsize; i++) {
+    //     printf ("%c", string_out[i]);
+    //     if (j==3) {
+    //       printf(" ");
+    //       j=0;
+    //     }
+    //     else j++;
+    //   }
+    //   printf ("\n");
+    // }
 
-    ret = H5Tclose(atype);
-    ret = H5Sclose(aspace);
-    ret = H5Aclose(attr);
+    // ret = H5Tclose(atype);
+    // ret = H5Sclose(aspace);
+    // ret = H5Aclose(attr);
 
     return 0;
 }
