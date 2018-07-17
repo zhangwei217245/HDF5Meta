@@ -81,6 +81,8 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 {
     H5O_info_t object_info;
 
+    int na ;
+
     printf ("/");               /* Print root group in object path */
 
     /*
@@ -104,8 +106,9 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
                 printf ("%s  (Unknown)\n", name);
         }
 
-    H5Oget_info(loc_id, &object_info);
-    if (object_info.num_attrs > 0) {
+    // H5Oget_info(loc_id, &object_info);
+    na = H5Aget_num_attrs(loc_id);
+    if (na > 0) {
         printf ("\n%d Attributes are:\n", object_info.num_attrs);
         H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     }
@@ -149,7 +152,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     int i, j ;
     size_t size, totsize;
     size_t npoints;             /* Number of elements in the array attribute. */ 
-    int point_out;    
+    int *point_out;    
     float *float_array;         /* Pointer to the array attribute. */
     H5S_class_t  class;
 
@@ -160,8 +163,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
-    printf("\nName : ");
-    puts(name);
+    printf("|%s", name);
 
     /* Get attribute datatype, dataspace, rank, and dimensions.  */
     atype  = H5Aget_type(attr);
