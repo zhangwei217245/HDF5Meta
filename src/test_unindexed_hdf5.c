@@ -214,11 +214,11 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
       j=0;
       for (i=0; i<totsize; i++) {
         printf ("%c", string_out[i]);
-        if (j==3) {
-          printf(" ");
-          j=0;
-        }
-        else j++;
+        // if (j==3) {
+        //   printf(" ");
+        //   j=0;
+        // }
+        // else j++;
       }
     //   printf ("\n");
     }
