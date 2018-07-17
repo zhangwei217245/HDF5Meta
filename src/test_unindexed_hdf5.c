@@ -79,7 +79,7 @@ main(int argc, char const *argv[])
 herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
             void *operator_data)
 {
-    H5O_info_t *object_info;
+    H5O_info_t object_info;
 
     printf ("/");               /* Print root group in object path */
 
@@ -104,9 +104,9 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
                 printf ("%s  (Unknown)\n", name);
         }
 
-    H5Oget_info(loc_id, object_info);
-    if (object_info->num_attrs > 0) {
-        printf ("\n%d Attributes are:\n", object_info->num_attrs);
+    H5Oget_info(loc_id, &object_info);
+    if (object_info.num_attrs > 0) {
+        printf ("\n%d Attributes are:\n", object_info.num_attrs);
         H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     }
     return 0;
