@@ -17,7 +17,7 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 herr_t op_func_L (hid_t loc_id, const char *name, const H5L_info_t *info,
             void *operator_data);
 
-static herr_t attr_info(hid_t loc_id, const char *name, void *opdata);
+static herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
                                      
 
 int scan_hdf5(char *file_path) {
@@ -103,7 +103,7 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         }
 
     printf ("\nAttributes are:\n");
-    H5Aiterate(loc_id, NULL, attr_info, NULL);
+    H5Aiterate(loc_id, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, NULL);
     
 
     return 0;
@@ -136,7 +136,7 @@ herr_t op_func_L (hid_t loc_id, const char *name, const H5L_info_t *info,
  * Operator function.
  */
 static herr_t 
-attr_info(hid_t loc_id, const char *name, void *opdata)
+attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
     hid_t attr, atype, aspace;  /* Attribute, datatype, dataspace identifiers */
     char    *string_out=NULL;
