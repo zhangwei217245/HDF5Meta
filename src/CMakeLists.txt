@@ -7,6 +7,12 @@ target_link_libraries (hello_mongoc PRIVATE hdf5_meta
     )
 #target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
 
+add_executable (test_unindexed_hdf5 test_unindexed_hdf5.c)
+target_link_libraries(test_unindexed_hdf5 PRIVATE 
+    hdf5_meta
+    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
+
+
 # build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
 target_link_libraries(hdf5_reader PRIVATE 
