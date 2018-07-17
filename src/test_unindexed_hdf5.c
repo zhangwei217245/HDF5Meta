@@ -105,7 +105,6 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     printf ("\nAttributes are:\n");
     H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     
-
     return 0;
 }
 
@@ -154,17 +153,17 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     // opdata = opdata;
 
     // /*  Open the attribute using its name.  */    
-    // attr = H5Aopen_name(loc_id, name);
+    attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
     printf("\nName : ");
     puts(name);
 
-    // /* Get attribute datatype, dataspace, rank, and dimensions.  */
-    // atype  = H5Aget_type(attr);
-    // aspace = H5Aget_space(attr);
-    // rank = H5Sget_simple_extent_ndims(aspace);
-    // ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
+    /* Get attribute datatype, dataspace, rank, and dimensions.  */
+    atype  = H5Aget_type(attr);
+    aspace = H5Aget_space(attr);
+    rank = H5Sget_simple_extent_ndims(aspace);
+    ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
 
     // /* Get dataspace type */
     // class = H5Sget_simple_extent_type (aspace);
