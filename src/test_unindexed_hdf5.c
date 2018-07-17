@@ -86,7 +86,7 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     printf ("/");               /* Print root group in object path */
 
     H5Oget_info(loc_id, &object_info);
-    switch (object_info->type) {
+    switch (object_info.type) {
         case H5O_TYPE_GROUP:
             printf ("%s  (Group)\n", name);
             break;
