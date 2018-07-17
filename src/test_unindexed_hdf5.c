@@ -93,27 +93,22 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         switch (info->type) {
             case H5O_TYPE_GROUP:
                 printf ("%s  (Group)\n", name);
-                H5Oget_info(loc_id, object_info);
-                printf ("\n%d Attributes are:\n", object_info->num_attrs);
-                H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
                 break;
             case H5O_TYPE_DATASET:
                 printf ("%s  (Dataset)\n", name);
-                H5Oget_info(loc_id, object_info);
-                printf ("\n%d Attributes are:\n", object_info->num_attrs);
-                H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
                 break;
             case H5O_TYPE_NAMED_DATATYPE:
                 printf ("%s  (Datatype)\n", name);
-                H5Oget_info(loc_id, object_info);
-                printf ("\n%d Attributes are:\n", object_info->num_attrs);
-                H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
                 break;
             default:
                 printf ("%s  (Unknown)\n", name);
         }
 
-    
+    H5Oget_info(loc_id, object_info);
+    if (object_info->num_attrs > 0) {
+        printf ("\n%d Attributes are:\n", object_info->num_attrs);
+        H5Aiterate(loc_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
+    }
     return 0;
 }
 
