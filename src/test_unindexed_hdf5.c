@@ -1,5 +1,6 @@
 #include "query_utils.h"
 #include "hdf5.h"
+#include "../lib/hdf5_meta.h"
 
 
 void print_usage() {
