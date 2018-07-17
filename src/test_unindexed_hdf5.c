@@ -110,6 +110,8 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         printf ("\n%d Attributes are:\n", na);
         H5Aiterate(curr_obj_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     }
+
+    H5Oclose(curr_obj_id);
     return 0;
 }
 
@@ -142,8 +144,8 @@ herr_t op_func_L (hid_t loc_id, const char *name, const H5L_info_t *info,
 static herr_t 
 attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
-    hid_t attr, atype, aspace;  /* Attribute, datatype, dataspace identifiers */
-    char  *string_out=NULL;
+    hid_t attr, atype, aspace, str_type;  /* Attribute, datatype, dataspace, string_datatype identifiers */
+    char  **string_out=NULL;
     int   rank;
     hsize_t *sdim; 
     herr_t ret;
@@ -201,19 +203,25 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     }
 
     if (H5T_STRING == H5Tget_class (atype)) {
-      printf ("|(STRING) ");
-      size = H5Tget_size (atype);
-    //   printf ("Size of Each String is: %i\n", size);
-      totsize = size*npoints;
-      string_out = calloc (totsize, sizeof(char));
-      ret = H5Aread(attr, atype, string_out);
+        printf ("|(STRING) ");
+        size = H5Tget_size (atype);
+        str_type = atype;
 
+        if(H5Tis_variable_str(atype) == 1) {
+            str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
+        } 
+
+        //   printf ("Size of Each String is: %i\n", size);
+        // totsize = size*npoints;
+        // string_out = calloc (totsize, sizeof(char));
+        string_out = (char **)calloc(npoints, sizeof(char *));
+        ret = H5Aread(attr, str_type, &string_out);
 
     //   printf("%s ", string_out);
     //   printf("The value of the attribute with index 2 is:\n");
-      j=0;
-      for (i=0; i<totsize; i++) {
-        printf ("%c", string_out[i]);
+    //   j=0;
+      for (i=0; i<npoints; i++) {
+        printf ("%s ", string_out[i]);
         // if (j==3) {
         //   printf(" ");
         //   j=0;
