@@ -177,12 +177,12 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
        printf("\n");
     }
 
-    // if (H5T_INTEGER == H5Tget_class(atype)) {
-    //    printf("Type : INTEGER \n");
-    //    ret  = H5Aread(attr, atype, &point_out);
-    //    printf("The value of the attribute \"Integer attribute\" is %d \n", 
-    //            point_out);
-    // }
+    if (H5T_INTEGER == H5Tget_class(atype)) {
+       printf("Type : INTEGER \n");
+       ret  = H5Aread(attr, atype, &point_out);
+       printf("The value of the attribute \"Integer attribute\" is %d \n", 
+               point_out);
+    }
 
     // if (H5T_FLOAT == H5Tget_class(atype)) {
     //    printf("Type : FLOAT \n"); 
