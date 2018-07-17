@@ -226,7 +226,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     ret = H5Tclose(atype);
     ret = H5Sclose(aspace);
     ret = H5Aclose(attr);
-    printf("|");
+    printf("|\n");
 
     return 0;
 }
