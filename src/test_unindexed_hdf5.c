@@ -103,7 +103,7 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         }
 
     printf ("\nAttributes are:\n");
-    H5Aiterate(dataset, NULL, attr_info, NULL);
+    H5Aiterate(loc_id, NULL, attr_info, NULL);
     
 
     return 0;
