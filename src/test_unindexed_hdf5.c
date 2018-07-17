@@ -17,7 +17,7 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 herr_t op_func_L (hid_t loc_id, const char *name, const H5L_info_t *info,
             void *operator_data);
 
-static herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
+static herr_t attr_info(hid_t loc_id, const char *name, void *opdata);
                                      
 
 int scan_hdf5(char *file_path) {
@@ -102,7 +102,9 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
                 printf ("%s  (Unknown)\n", name);
         }
 
-    ret = H5Aiterate2(loc_id, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, NULL);
+    printf ("\nAttributes are:\n");
+    H5Aiterate(dataset, NULL, attr_info, NULL);
+    
 
     return 0;
 }
