@@ -209,17 +209,17 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
       ret = H5Aread(attr, atype, string_out);
 
 
-      printf("%s ", string_out);
+    //   printf("%s ", string_out);
     //   printf("The value of the attribute with index 2 is:\n");
-    //   j=0;
-    //   for (i=0; i<totsize; i++) {
-    //     printf ("%s", string_out);
-    //     if (j==3) {
-    //       printf(" ");
-    //       j=0;
-    //     }
-    //     else j++;
-    //   }
+      j=0;
+      for (i=0; i<totsize; i++) {
+        printf ("%s", string_out);
+        if (j==3) {
+          printf(" ");
+          j=0;
+        }
+        else j++;
+      }
     //   printf ("\n");
     }
 
