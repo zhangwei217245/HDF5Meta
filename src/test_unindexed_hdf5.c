@@ -142,7 +142,7 @@ static herr_t
 attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
     hid_t attr, atype, aspace;  /* Attribute, datatype, dataspace identifiers */
-    char    *string_out=NULL;
+    char  *string_out=NULL;
     int   rank;
     hsize_t sdim[64]; 
     herr_t ret;
@@ -172,6 +172,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     /* Get dataspace type */
     class = H5Sget_simple_extent_type (aspace);
     printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", class);
+    npoints = H5Sget_simple_extent_npoints(aspace);
+
 
     /* Display rank and dimension sizes for the array attribute.  */
     if(rank > 0) {
@@ -190,7 +192,6 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
     if (H5T_FLOAT == H5Tget_class(atype)) {
        printf("Type : FLOAT \n"); 
-       npoints = H5Sget_simple_extent_npoints(aspace);
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
        printf("Values : ");
@@ -203,7 +204,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
       printf ("Type: STRING \n");
       size = H5Tget_size (atype);
       printf ("Size of Each String is: %i\n", size);
-      totsize = size*sdim[0]*sdim[1];
+      totsize = size*npoints;
       string_out = calloc (totsize, sizeof(char));
       ret = H5Aread(attr, atype, string_out);
       printf("The value of the attribute with index 2 is:\n");
