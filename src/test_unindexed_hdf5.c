@@ -208,10 +208,10 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     if (H5T_STRING == H5Tget_class (atype)) {
         size = H5Tget_size (atype);
         
+        totsize = size*npoints;
         printf ("|(STRING %d) ", totsize);
-        
-        str_type = atype;
 
+        str_type = atype;
         if(H5Tis_variable_str(atype) == 1) {
             str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
             ret = H5Aread(attr, str_type, &string_out);
@@ -220,12 +220,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
                 free(string_out[i]);
             }
         } else {
-            totsize = size*npoints;
-            
             char_out = calloc(totsize+1, sizeof(char));
-
             ret = H5Aread(attr, str_type, char_out);
-
             printf("%s", char_out);
         }
     }
