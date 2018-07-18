@@ -189,9 +189,9 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     /* Get dataspace type */
     class = H5Sget_simple_extent_type (aspace);
     // printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", class);
-    printf(" | Class: %i", class);
+    // printf(" | Class: %i", class);
     npoints = H5Sget_simple_extent_npoints(aspace);
-    printf(" | npoints: %d", npoints);
+    // printf(" | npoints: %d", npoints);
 
     if (H5T_INTEGER == H5Tget_class(atype)) {
        printf(" | <INTEGER> ");
