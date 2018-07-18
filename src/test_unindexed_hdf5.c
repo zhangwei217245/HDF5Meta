@@ -194,7 +194,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     // printf(" | npoints: %d", npoints);
 
     if (H5T_INTEGER == H5Tget_class(atype)) {
-       printf("| <INTEGER> | ");
+       printf(" | %-*s| ", 10, "<INTEGER>");
        point_out = (int *)calloc(npoints, sizeof(int));
        ret  = H5Aread(attr, atype, point_out);
        for (i = 0; i < npoints; i++) printf("%d\t",point_out[i]);
@@ -202,7 +202,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     }
 
     if (H5T_FLOAT == H5Tget_class(atype)) {
-       printf("| <FLOAT> | "); 
+       printf(" | %-*s| ", 10, "<FLOAT>");
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
        for( i = 0; i < (int)npoints; i++) printf("%f\t", float_array[i]); 
@@ -217,7 +217,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
         str_type = atype;
         if(H5Tis_variable_str(atype) == 1) {
-            printf ("| <VARCHAR> |\t");
+            printf(" | %-*s| ", 10, "<VARCHAR>");
             str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
             ret = H5Aread(attr, str_type, &string_out);
             for (i=0; i<npoints; i++) {
@@ -225,7 +225,9 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
                 free(string_out[i]);
             }
         } else {
-            printf ("| <CHAR(%d)> |\t", totsize);
+            char tmp[20];
+            sprintf(tmp, "<CHAR(%d)>", totsize);
+            printf ("| %-*s |\t", 10, tmp);
             char_out = calloc(totsize+1, sizeof(char));
             ret = H5Aread(attr, str_type, char_out);
             printf("%s", char_out);
