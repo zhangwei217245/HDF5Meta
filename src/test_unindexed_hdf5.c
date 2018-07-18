@@ -208,10 +208,10 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     if (H5T_STRING == H5Tget_class (atype)) {
         size = H5Tget_size (atype);
         totsize = size*npoints;
-        str_str_out = (char **)calloc(npoints, sizeof(char *));
-        for (i=0; i<npoints; i++) {
-            str_str_out[i] = (char *)calloc(size, sizeof(char));
-        }
+        // str_str_out = (char **)calloc(npoints, sizeof(char *));
+        // for (i=0; i<npoints; i++) {
+        //     str_str_out[i] = (char *)calloc(size, sizeof(char));
+        // }
         printf ("|(STRING %d) ", totsize);
         
         str_type = atype;
@@ -226,20 +226,20 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
         // 
         // memset(str_str_out, 0, 100);
         
-        ret = H5Aread(attr, str_type, &str_str_out);
+        // ret = H5Aread(attr, str_type, &str_str_out);
 
-        // ret = H5Aread(attr, str_type, &string_out);
+        ret = H5Aread(attr, str_type, &string_out);
     //   printf("%s ", string_out);
     //   printf("The value of the attribute with index 2 is:\n");
     //   j=0;
       for (i=0; i<npoints; i++) {
-        printf ("%s ", str_str_out[i]);
+        printf ("%s ", string_out[i]);
         // if (j==3) {
         //   printf(" ");
         //   j=0;
         // }
         // else j++;
-        free(str_str_out[i]);
+        free(string_out[i]);
       }
     //   free(string_out);
     //   printf ("\n");
