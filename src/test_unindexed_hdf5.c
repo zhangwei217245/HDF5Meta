@@ -79,35 +79,39 @@ main(int argc, char const *argv[])
 herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
             void *operator_data)
 {
+    char obj_type[20];
+
     H5O_info_t object_info;
     hid_t curr_obj_id = H5Oopen(loc_id, name, H5P_DEFAULT);
 
-    printf ("/");               /* Print root group in object path */
+    switch (info->type) {
+        case H5O_TYPE_GROUP:
+            sprintf (obj_type, "GROUP");
+            break;
+        case H5O_TYPE_DATASET:
+            sprintf (obj_type, "DATASET");
+            break;
+        case H5O_TYPE_NAMED_DATATYPE:
+            sprintf (obj_type, "NAMED_DATATYPE");
+            break;
+        default:
+            sprintf (obj_type, "UNKNOWN");
+    }
+
+    printf ("| %s : /", obj_type);               /* Print root group in object path */
 
     /*
      * Check if the current object is the root group, and if not print
      * the full path name and type.
      */
-    if (name[0] == '.')         /* Root group, do not print '.' */
-        printf ("  (Group)\n");
-    else
-        switch (info->type) {
-            case H5O_TYPE_GROUP:
-                printf ("%s  (Group)\n", name);
-                break;
-            case H5O_TYPE_DATASET:
-                printf ("%s  (Dataset)\n", name);
-                break;
-            case H5O_TYPE_NAMED_DATATYPE:
-                printf ("%s  (Datatype)\n", name);
-                break;
-            default:
-                printf ("%s  (Unknown)\n", name);
-        }
+    if (name[0] != '.'){
+        printf("%s", name);
+    } 
+    printf(" | \n");     
 
     int na = H5Aget_num_attrs(curr_obj_id);
     if (na > 0) {
-        printf ("\n%d Attributes are:\n", na);
+        // printf ("\n%d Attributes are:\n", na);
         H5Aiterate(curr_obj_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, NULL);
     }
 
@@ -166,7 +170,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
-    printf("| %s", name);
+    printf("\t| %s", name);
 
     /* Get attribute datatype, dataspace, rank, and dimensions.  */
     atype  = H5Aget_type(attr);
@@ -190,7 +194,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     printf(" | npoints: %d", npoints);
 
     if (H5T_INTEGER == H5Tget_class(atype)) {
-       printf(" |<INTEGER> ");
+       printf(" | <INTEGER> ");
        point_out = (int *)calloc(npoints, sizeof(int));
        ret  = H5Aread(attr, atype, point_out);
        for (i = 0; i < npoints; i++) printf("%d ",point_out[i]);
@@ -198,7 +202,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     }
 
     if (H5T_FLOAT == H5Tget_class(atype)) {
-       printf(" |<FLOAT> "); 
+       printf(" | <FLOAT> "); 
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
        for( i = 0; i < (int)npoints; i++) printf("%f ", float_array[i]); 
@@ -213,7 +217,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
         str_type = atype;
         if(H5Tis_variable_str(atype) == 1) {
-            printf (" |<VARCHAR> ");
+            printf (" | <VARCHAR> ");
             str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
             ret = H5Aread(attr, str_type, &string_out);
             for (i=0; i<npoints; i++) {
@@ -221,7 +225,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
                 free(string_out[i]);
             }
         } else {
-            printf (" |<CHAR(%d)> ", totsize);
+            printf (" | <CHAR(%d)> ", totsize);
             char_out = calloc(totsize+1, sizeof(char));
             ret = H5Aread(attr, str_type, char_out);
             printf("%s", char_out);
