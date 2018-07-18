@@ -170,7 +170,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
-    printf("\t| %s", name);
+    printf("\t| %s\t", name);
 
     /* Get attribute datatype, dataspace, rank, and dimensions.  */
     atype  = H5Aget_type(attr);
@@ -194,18 +194,18 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     // printf(" | npoints: %d", npoints);
 
     if (H5T_INTEGER == H5Tget_class(atype)) {
-       printf(" | <INTEGER> ");
+       printf("| <INTEGER> | ");
        point_out = (int *)calloc(npoints, sizeof(int));
        ret  = H5Aread(attr, atype, point_out);
-       for (i = 0; i < npoints; i++) printf("%d ",point_out[i]);
+       for (i = 0; i < npoints; i++) printf("%d\t",point_out[i]);
        free(point_out);
     }
 
     if (H5T_FLOAT == H5Tget_class(atype)) {
-       printf(" | <FLOAT> "); 
+       printf("| <FLOAT> | "); 
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
-       for( i = 0; i < (int)npoints; i++) printf("%f ", float_array[i]); 
+       for( i = 0; i < (int)npoints; i++) printf("%f\t", float_array[i]); 
        free(float_array);
     }
 
@@ -217,7 +217,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
         str_type = atype;
         if(H5Tis_variable_str(atype) == 1) {
-            printf (" | <VARCHAR> ");
+            printf ("| <VARCHAR> |\t");
             str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
             ret = H5Aread(attr, str_type, &string_out);
             for (i=0; i<npoints; i++) {
@@ -225,7 +225,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
                 free(string_out[i]);
             }
         } else {
-            printf (" | <CHAR(%d)> ", totsize);
+            printf ("| <CHAR(%d)> |\t", totsize);
             char_out = calloc(totsize+1, sizeof(char));
             ret = H5Aread(attr, str_type, char_out);
             printf("%s", char_out);
