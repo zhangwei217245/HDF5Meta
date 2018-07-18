@@ -207,7 +207,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
     if (H5T_STRING == H5Tget_class (atype)) {
         size = H5Tget_size (atype);
-        printf ("|(STRING %d) ", size);
+        totsize = size*npoints;
+        printf ("|(STRING %d) ", totsize);
         
         str_type = atype;
 
@@ -216,7 +217,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
         } 
 
         //   printf ("Size of Each String is: %i\n", size);
-        // totsize = size*npoints;
+        
         // // string_out = calloc (totsize, sizeof(char));
         // str_str_out = (char **)calloc(100, sizeof(char *));
         // memset(str_str_out, 0, 100);
@@ -227,8 +228,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     //   printf("%s ", string_out);
     //   printf("The value of the attribute with index 2 is:\n");
     //   j=0;
-      for (i=0; i<npoints; i++) {
-        printf ("%s", string_out[i]);
+      for (i=0; i<100; i++) {
+        printf ("%s ", string_out[i]);
         // if (j==3) {
         //   printf(" ");
         //   j=0;
