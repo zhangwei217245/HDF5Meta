@@ -146,7 +146,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
     hid_t attr, atype, aspace, str_type;  /* Attribute, datatype, dataspace, string_datatype identifiers */
     char  *string_out[100];
-    char  **str_str_out;
+    char  *char_out;
     int   rank;
     hsize_t *sdim; 
     herr_t ret;
@@ -207,42 +207,27 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
     if (H5T_STRING == H5Tget_class (atype)) {
         size = H5Tget_size (atype);
-        totsize = size*npoints;
-        // str_str_out = (char **)calloc(npoints, sizeof(char *));
-        // for (i=0; i<npoints; i++) {
-        //     str_str_out[i] = (char *)calloc(size, sizeof(char));
-        // }
+        
         printf ("|(STRING %d) ", totsize);
         
         str_type = atype;
 
         if(H5Tis_variable_str(atype) == 1) {
             str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
-        } 
+            ret = H5Aread(attr, str_type, &string_out);
+            for (i=0; i<npoints; i++) {
+                printf ("%s ", string_out[i]);
+                free(string_out[i]);
+            }
+        } else {
+            totsize = size*npoints;
+            
+            char_out = calloc(totsize+1, sizeof(char));
 
-        //   printf ("Size of Each String is: %i\n", size);
-        
-        // // string_out = calloc (totsize, sizeof(char));
-        // 
-        // memset(str_str_out, 0, 100);
-        
-        // ret = H5Aread(attr, str_type, &str_str_out);
+            ret = H5Aread(attr, str_type, char_out);
 
-        ret = H5Aread(attr, str_type, &string_out);
-    //   printf("%s ", string_out);
-    //   printf("The value of the attribute with index 2 is:\n");
-    //   j=0;
-      for (i=0; i<npoints; i++) {
-        printf ("%s ", string_out[i]);
-        // if (j==3) {
-        //   printf(" ");
-        //   j=0;
-        // }
-        // else j++;
-        free(string_out[i]);
-      }
-    //   free(string_out);
-    //   printf ("\n");
+            printf("%s", char_out);
+        }
     }
 
     ret = H5Tclose(atype);
