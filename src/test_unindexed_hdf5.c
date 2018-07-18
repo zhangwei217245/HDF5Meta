@@ -216,7 +216,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
         //   printf ("Size of Each String is: %i\n", size);
         totsize = size*npoints;
         // string_out = calloc (totsize, sizeof(char));
-        str_str_out = (char **)calloc(100, sizeof(char *));
+        // str_str_out = (char **)calloc(100, sizeof(char *));
         //memset(str_str_out, 0, npoints);
         
         ret = H5Aread(attr, str_type, &str_str_out);
