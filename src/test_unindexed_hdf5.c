@@ -145,7 +145,7 @@ static herr_t
 attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
     hid_t attr, atype, aspace, str_type;  /* Attribute, datatype, dataspace, string_datatype identifiers */
-    char  **string_out;
+    char  *string_out;
     int   rank;
     hsize_t *sdim; 
     herr_t ret;
@@ -212,24 +212,25 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
         } 
 
         //   printf ("Size of Each String is: %i\n", size);
-        // totsize = size*npoints;
-        // string_out = calloc (totsize, sizeof(char));
-        string_out = (char **)calloc(npoints, sizeof(char *));
-        memset(string_out, 0, npoints);
-        ret = H5Aread(attr, str_type, &string_out);
+        totsize = size*npoints;
+        string_out = calloc (totsize, sizeof(char));
+        // string_out = (char **)calloc(npoints, sizeof(char *));
+        // memset(string_out, 0, npoints);
+        ret = H5Aread(attr, str_type, string_out);
 
     //   printf("%s ", string_out);
     //   printf("The value of the attribute with index 2 is:\n");
     //   j=0;
       for (i=0; i<npoints; i++) {
-        printf ("%s ", string_out[i]);
+        printf ("%c", string_out[i]);
         // if (j==3) {
         //   printf(" ");
         //   j=0;
         // }
         // else j++;
-        free(string_out[i]);
+        // free(string_out[i]);
       }
+      free(string_out);
     //   printf ("\n");
     }
 
