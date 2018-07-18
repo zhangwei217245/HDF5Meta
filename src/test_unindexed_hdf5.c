@@ -170,7 +170,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
-    printf("\t| %s\t", name);
+    printf("\t| %-*s", 20, name);
 
     /* Get attribute datatype, dataspace, rank, and dimensions.  */
     atype  = H5Aget_type(attr);
