@@ -228,7 +228,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     //   printf("%s ", string_out);
     //   printf("The value of the attribute with index 2 is:\n");
     //   j=0;
-      for (i=0; i<100; i++) {
+      for (i=0; i<2; i++) {
         printf ("%s ", string_out[i]);
         // if (j==3) {
         //   printf(" ");
