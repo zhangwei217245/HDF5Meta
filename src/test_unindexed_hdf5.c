@@ -160,6 +160,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     /* avoid warnings */
     opdata = opdata;
 
+    printf("%p", string_out);
+
     /*  Open the attribute using its name.  */    
     attr = H5Aopen_name(loc_id, name);
 
