@@ -145,7 +145,7 @@ static herr_t
 attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
     hid_t attr, atype, aspace, str_type;  /* Attribute, datatype, dataspace, string_datatype identifiers */
-    char  **string_out=NULL;
+    char  **string_out;
     int   rank;
     hsize_t *sdim; 
     herr_t ret;
@@ -227,6 +227,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
         //   j=0;
         // }
         // else j++;
+        free(string_out[i]);
       }
     //   printf ("\n");
     }
