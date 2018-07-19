@@ -52,7 +52,7 @@ int get_bitmap_seg_index_by_file_id(int file_id) {
 uint64_t get_file_mask(int file_id) {
     uint64_t bit_shift = (uint64_t)(file_id % (sizeof(uint64_t)*8));
     uint64_t bit_mask = 1;
-    bit_mast = bit_mask << bit_shift;
+    bit_mask = bit_mask << bit_shift;
     return bit_mask;
 }
 
