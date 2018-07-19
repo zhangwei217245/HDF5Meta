@@ -338,7 +338,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
             printf("%d\t",point_out[i]);
             int k = point_out[i];
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
-            if (v == NULL || v == 0) {
+            if (v == NULL || v == 0 || v == 0xffffffffffffffff ) {
                     v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
                     //TODO: need to change the b+tree implementation so that value is a generic pointer.
                     bplus_tree_put(leaf_cnt->bpt, k, (long)v);
@@ -362,7 +362,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
            printf("%f\t", float_array[i]);
            int k = (int)float_array[i];
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
-            if (v == NULL || v == 0) {
+            if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
                 v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
                 //TODO: need to change the b+tree implementation so that value is a generic pointer.
                 bplus_tree_put(leaf_cnt->bpt, k, (long)v);
