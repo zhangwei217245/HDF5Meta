@@ -68,7 +68,7 @@ static void destroy_node(art_node *n) {
     }
 
     // Handle each node type
-    int i;
+    int i, idx;
     union {
         art_node4 *p1;
         art_node16 *p2;
@@ -92,8 +92,10 @@ static void destroy_node(art_node *n) {
 
         case NODE48:
             p.p3 = (art_node48*)n;
-            for (i=0;i<n->num_children;i++) {
-                destroy_node(p.p3->children[i]);
+            for (i=0;i<256;i++) {
+                idx = ((art_node48*)n)->keys[i]; 
+                if (!idx) continue; 
+                destroy_node(p.p3->children[idx-1]);
             }
             break;
 
@@ -160,7 +162,7 @@ static art_node** find_child(art_node *n, unsigned char c) {
                 __m128i cmp;
                 cmp = _mm_cmpeq_epi8(_mm_set1_epi8(c),
                         _mm_loadu_si128((__m128i*)p.p2->keys));
-
+                
                 // Use a mask to ignore children that don't exist
                 mask = (1 << n->num_children) - 1;
                 bitfield = _mm_movemask_epi8(cmp) & mask;
@@ -408,7 +410,7 @@ static void add_child48(art_node48 *n, art_node **ref, unsigned char c, void *ch
 static void add_child16(art_node16 *n, art_node **ref, unsigned char c, void *child) {
     if (n->n.num_children < 16) {
         unsigned mask = (1 << n->n.num_children) - 1;
-
+        
         // support non-x86 architectures
         #ifdef __i386__
             __m128i cmp;
@@ -438,7 +440,7 @@ static void add_child16(art_node16 *n, art_node **ref, unsigned char c, void *ch
             }
 
             // Use a mask to ignore children that don't exist
-            bitfield &= mask;
+            bitfield &= mask;    
         #endif
         #endif
 

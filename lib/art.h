@@ -24,13 +24,6 @@ extern "C" {
 # endif
 #endif
 
-#define TYPE_NUMERIC    0
-#define TYPE_DATE       1
-#define TYPE_TIME       2
-#define TYPE_STRING     3
-#define TYPE_CHAR       4
-
-
 typedef int(*art_callback)(void *data, const unsigned char *key, uint32_t key_len, void *value);
 
 /**
