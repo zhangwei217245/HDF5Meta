@@ -208,16 +208,16 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
             sprintf (obj_type, "UNKNOWN");
     }
 
-    printf ("| %s : /", obj_type);               /* Print root group in object path */
+    // printf ("| %s : /", obj_type);               /* Print root group in object path */
 
     /*
      * Check if the current object is the root group, and if not print
      * the full path name and type.
      */
     if (name[0] != '.'){
-        printf("%s", name);
+        // printf("%s", name);
     } 
-    printf(" | \n");     
+    // printf(" | \n");     
 
     int na = H5Aget_num_attrs(curr_obj_id);
     if (na > 0) {
@@ -282,7 +282,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
     for (i = 0; i < opdata->num_indexed_attr; i++) {
         indexed_attr_name = opdata->indexed_attr[i];
         if (indexed_attr_name != NULL && strcmp(indexed_attr_name, name)==0) {
-            printf("Attr to be indexed : %s\n", indexed_attr_name);
+            // printf("Attr to be indexed : %s\n", indexed_attr_name);
             break;
         } else {
             return 0;
@@ -301,7 +301,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
     attr = H5Aopen_name(loc_id, name);
 
     /*  Display attribute name.  */
-    printf("\t| %-*s", 12, name);
+    // printf("\t| %-*s", 12, name);
 
     /* Get attribute datatype, dataspace, rank, and dimensions.  */
     atype  = H5Aget_type(attr);
@@ -325,7 +325,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
     // printf(" | npoints: %d", npoints);
 
     if (H5T_INTEGER == H5Tget_class(atype)) {
-       printf(" | %-*s| ", 10, "<INTEGER>");
+    //    printf(" | %-*s| ", 10, "<INTEGER>");
        point_out = (int *)calloc(npoints, sizeof(int));
        ret  = H5Aread(attr, atype, point_out);
         
@@ -335,13 +335,13 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
         }
 
        for (i = 0; i < npoints; i++) {
-            printf("%d\t",point_out[i]);
+            // printf("%d\t",point_out[i]);
             int k = point_out[i];
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
             if (v == NULL || v == 0 || v == 0xffffffffffffffff ) {
-                    v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
-                    //TODO: need to change the b+tree implementation so that value is a generic pointer.
-                    bplus_tree_put(leaf_cnt->bpt, k, (long)v);
+                v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
+                //TODO: need to change the b+tree implementation so that value is a generic pointer.
+                bplus_tree_put(leaf_cnt->bpt, k, (long)v);
             }
             set_file_bit(v, file_id);
         }
@@ -349,7 +349,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
     }
 
     if (H5T_FLOAT == H5Tget_class(atype)) {
-       printf(" | %-*s| ", 10, "<FLOAT>");
+    //    printf(" | %-*s| ", 10, "<FLOAT>");
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
 
@@ -359,7 +359,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
         }
 
        for( i = 0; i < (int)npoints; i++) {
-           printf("%f\t", float_array[i]);
+        //    printf("%f\t", float_array[i]);
            int k = (int)float_array[i];
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
             if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
@@ -386,11 +386,11 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
         }
 
         if(H5Tis_variable_str(atype) == 1) {
-            printf(" | %-*s| ", 10, "<VARCHAR>");
+            // printf(" | %-*s| ", 10, "<VARCHAR>");
             str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
             ret = H5Aread(attr, str_type, &string_out);
             for (i=0; i<npoints; i++) {
-                printf ("%s ", string_out[i]);
+                // printf ("%s ", string_out[i]);
                 char *key = string_out[i];
                 uint64_t *v = (uint64_t *)art_search(leaf_cnt->art, key, strlen(key));
                 if (v == NULL || v == 0) {
@@ -401,12 +401,12 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
                 // free(string_out[i]);
             }
         } else {
-            char tmp[20];
-            sprintf(tmp, "<CHAR(%d)>", totsize);
-            printf ("| %-*s |\t", 10, tmp);
+            // char tmp[20];
+            // sprintf(tmp, "<CHAR(%d)>", totsize);
+            // printf ("| %-*s |\t", 10, tmp);
             char_out = calloc(totsize+1, sizeof(char));
             ret = H5Aread(attr, str_type, char_out);
-            printf("%s", char_out);
+            // printf("%s", char_out);
             char *key = char_out;
             uint64_t *v = (uint64_t *)art_search(leaf_cnt->art, key, strlen(key));
             if (v == NULL || v == 0) {
@@ -420,7 +420,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
     ret = H5Tclose(atype);
     ret = H5Sclose(aspace);
     ret = H5Aclose(attr);
-    printf("|\n");
+    // printf("|\n");
 
     return 0;
 }
