@@ -2,6 +2,7 @@
 #define HDF5_META_H
 
 #include "query_utils.h"
+#include "timer_utils.h"
 #include "hdf5.h"
 #include <json-c/json.h>
 
