@@ -196,11 +196,11 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     opdata = opdata;
     char *indexed_attr_name = NULL;
 
-    printf("file_id = %d\n", opdata.file_id);
-    for (i = 0; i < opdata.num_indexed_attr; i++) {
-        indexed_attr_name = opdata.indexed_attr[i];
+    printf("file_id = %d\n", opdata->file_id);
+    for (i = 0; i < opdata->num_indexed_attr; i++) {
+        indexed_attr_name = opdata->indexed_attr[i];
         if (indexed_attr_name != NULL && strcmp(indexed_attr_name, name)==0) {
-            printf("Attr to be indexed : %s\n", opdata.indexed_attr[i]);
+            printf("Attr to be indexed : %s\n", indexed_attr_name);
             break;
         } else {
             return 0;
