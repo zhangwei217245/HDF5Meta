@@ -1,1000 +1,1000 @@
-Time to index file 0 is 120565478 microseconds.
-Time to index file 1 is 14359194 microseconds.
-Time to index file 2 is 13943879 microseconds.
-Time to index file 3 is 14304630 microseconds.
-Time to index file 4 is 14805408 microseconds.
-Time to index file 5 is 14033809 microseconds.
-Time to index file 6 is 14420447 microseconds.
-Time to index file 7 is 14600316 microseconds.
-Time to index file 8 is 13003826 microseconds.
-Time to index file 9 is 13852112 microseconds.
-Time to index file 10 is 15184251 microseconds.
-Time to index file 11 is 14086381 microseconds.
-Time to index file 12 is 13969328 microseconds.
-Time to index file 13 is 14140573 microseconds.
-Time to index file 14 is 16084499 microseconds.
-Time to index file 15 is 14499639 microseconds.
-Time to index file 16 is 13597793 microseconds.
-Time to index file 17 is 13310518 microseconds.
-Time to index file 18 is 14576151 microseconds.
-Time to index file 19 is 13968332 microseconds.
-Time to index file 20 is 15231493 microseconds.
-Time to index file 21 is 25047455 microseconds.
-Time to index file 22 is 14692718 microseconds.
-Time to index file 23 is 14594364 microseconds.
-Time to index file 24 is 13443915 microseconds.
-Time to index file 25 is 12236492 microseconds.
-Time to index file 26 is 12620407 microseconds.
-Time to index file 27 is 13252319 microseconds.
-Time to index file 28 is 12066512 microseconds.
-Time to index file 29 is 12771929 microseconds.
-Time to index file 30 is 12085043 microseconds.
-Time to index file 31 is 13929982 microseconds.
-Time to index file 32 is 12277474 microseconds.
-Time to index file 33 is 12279194 microseconds.
-Time to index file 34 is 13697544 microseconds.
-Time to index file 35 is 12985959 microseconds.
-Time to index file 36 is 12556071 microseconds.
-Time to index file 37 is 12461801 microseconds.
-Time to index file 38 is 11922741 microseconds.
-Time to index file 39 is 12273422 microseconds.
-Time to index file 40 is 13859871 microseconds.
-Time to index file 41 is 12649605 microseconds.
-Time to index file 42 is 12140416 microseconds.
-Time to index file 43 is 12990740 microseconds.
-Time to index file 44 is 12969186 microseconds.
-Time to index file 45 is 13045178 microseconds.
-Time to index file 46 is 13292770 microseconds.
-Time to index file 47 is 12955119 microseconds.
-Time to index file 48 is 12393512 microseconds.
-Time to index file 49 is 12698776 microseconds.
-Time to index file 50 is 13060701 microseconds.
-Time to index file 51 is 11878662 microseconds.
-Time to index file 52 is 13243676 microseconds.
-Time to index file 53 is 12787669 microseconds.
-Time to index file 54 is 12022856 microseconds.
-Time to index file 55 is 11718533 microseconds.
-Time to index file 56 is 11995500 microseconds.
-Time to index file 57 is 12085940 microseconds.
-Time to index file 58 is 11293749 microseconds.
-Time to index file 59 is 11904154 microseconds.
-Time to index file 60 is 12614988 microseconds.
-Time to index file 61 is 15732660 microseconds.
-Time to index file 62 is 12055296 microseconds.
-Time to index file 63 is 12258326 microseconds.
-Time to index file 64 is 12599094 microseconds.
-Time to index file 65 is 12585280 microseconds.
-Time to index file 66 is 12674700 microseconds.
-Time to index file 67 is 12054826 microseconds.
-Time to index file 68 is 11811022 microseconds.
-Time to index file 69 is 12481253 microseconds.
-Time to index file 70 is 13962568 microseconds.
-Time to index file 71 is 11596034 microseconds.
-Time to index file 72 is 12448219 microseconds.
-Time to index file 73 is 12926486 microseconds.
-Time to index file 74 is 12486042 microseconds.
-Time to index file 75 is 11450005 microseconds.
-Time to index file 76 is 12740339 microseconds.
-Time to index file 77 is 13238228 microseconds.
-Time to index file 78 is 12878558 microseconds.
-Time to index file 79 is 13114531 microseconds.
-Time to index file 80 is 12952648 microseconds.
-Time to index file 81 is 11590011 microseconds.
-Time to index file 82 is 12788802 microseconds.
-Time to index file 83 is 13615985 microseconds.
-Time to index file 84 is 12770875 microseconds.
-Time to index file 85 is 11858148 microseconds.
-Time to index file 86 is 13594875 microseconds.
-Time to index file 87 is 12463869 microseconds.
-Time to index file 88 is 12313836 microseconds.
-Time to index file 89 is 12643792 microseconds.
-Time to index file 90 is 12538373 microseconds.
-Time to index file 91 is 11909824 microseconds.
-Time to index file 92 is 15859151 microseconds.
-Time to index file 93 is 13056750 microseconds.
-Time to index file 94 is 12430729 microseconds.
-Time to index file 95 is 13766264 microseconds.
-Time to index file 96 is 13132392 microseconds.
-Time to index file 97 is 13415706 microseconds.
-Time to index file 98 is 13178695 microseconds.
-Time to index file 99 is 12603666 microseconds.
-Time to index file 100 is 14088920 microseconds.
-Time to index file 101 is 12992230 microseconds.
-Time to index file 102 is 12802177 microseconds.
-Time to index file 103 is 12682251 microseconds.
-Time to index file 104 is 13395628 microseconds.
-Time to index file 105 is 12853586 microseconds.
-Time to index file 106 is 12773131 microseconds.
-Time to index file 107 is 11610069 microseconds.
-Time to index file 108 is 13879510 microseconds.
-Time to index file 109 is 12670239 microseconds.
-Time to index file 110 is 11104096 microseconds.
-Time to index file 111 is 13508883 microseconds.
-Time to index file 112 is 12651501 microseconds.
-Time to index file 113 is 12871500 microseconds.
-Time to index file 114 is 12550814 microseconds.
-Time to index file 115 is 12927671 microseconds.
-Time to index file 116 is 14703143 microseconds.
-Time to index file 117 is 12464472 microseconds.
-Time to index file 118 is 12294053 microseconds.
-Time to index file 119 is 12048123 microseconds.
-Time to index file 120 is 11781819 microseconds.
-Time to index file 121 is 12089355 microseconds.
-Time to index file 122 is 12436053 microseconds.
-Time to index file 123 is 12062774 microseconds.
-Time to index file 124 is 11581523 microseconds.
-Time to index file 125 is 12936512 microseconds.
-Time to index file 126 is 12765648 microseconds.
-Time to index file 127 is 12022521 microseconds.
-Time to index file 128 is 13500263 microseconds.
-Time to index file 129 is 13037390 microseconds.
-Time to index file 130 is 12464628 microseconds.
-Time to index file 131 is 12667976 microseconds.
-Time to index file 132 is 13646670 microseconds.
-Time to index file 133 is 12540771 microseconds.
-Time to index file 134 is 11567276 microseconds.
-Time to index file 135 is 12858252 microseconds.
-Time to index file 136 is 12926023 microseconds.
-Time to index file 137 is 12420307 microseconds.
-Time to index file 138 is 12354319 microseconds.
-Time to index file 139 is 12633879 microseconds.
-Time to index file 140 is 12992207 microseconds.
-Time to index file 141 is 13596649 microseconds.
-Time to index file 142 is 12410020 microseconds.
-Time to index file 143 is 12593188 microseconds.
-Time to index file 144 is 11493680 microseconds.
-Time to index file 145 is 12263959 microseconds.
-Time to index file 146 is 12662171 microseconds.
-Time to index file 147 is 12971231 microseconds.
-Time to index file 148 is 13900069 microseconds.
-Time to index file 149 is 12517276 microseconds.
-Time to index file 150 is 13147999 microseconds.
-Time to index file 151 is 12902241 microseconds.
-Time to index file 152 is 12946338 microseconds.
-Time to index file 153 is 11548644 microseconds.
-Time to index file 154 is 11668318 microseconds.
-Time to index file 155 is 11364413 microseconds.
-Time to index file 156 is 11251389 microseconds.
-Time to index file 157 is 11036690 microseconds.
-Time to index file 158 is 11839891 microseconds.
-Time to index file 159 is 11485079 microseconds.
-Time to index file 160 is 11502394 microseconds.
-Time to index file 161 is 11644208 microseconds.
-Time to index file 162 is 12390242 microseconds.
-Time to index file 163 is 12069789 microseconds.
-Time to index file 164 is 12246080 microseconds.
-Time to index file 165 is 13326933 microseconds.
-Time to index file 166 is 11781194 microseconds.
-Time to index file 167 is 11538181 microseconds.
-Time to index file 168 is 11431792 microseconds.
-Time to index file 169 is 11434402 microseconds.
-Time to index file 170 is 11762160 microseconds.
-Time to index file 171 is 11896835 microseconds.
-Time to index file 172 is 18045224 microseconds.
-Time to index file 173 is 11713878 microseconds.
-Time to index file 174 is 11477747 microseconds.
-Time to index file 175 is 10856400 microseconds.
-Time to index file 176 is 12291991 microseconds.
-Time to index file 177 is 10624058 microseconds.
-Time to index file 178 is 10855911 microseconds.
-Time to index file 179 is 11126721 microseconds.
-Time to index file 180 is 10767684 microseconds.
-Time to index file 181 is 10742384 microseconds.
-Time to index file 182 is 10816037 microseconds.
-Time to index file 183 is 10510749 microseconds.
-Time to index file 184 is 10949040 microseconds.
-Time to index file 185 is 11055994 microseconds.
-Time to index file 186 is 11903292 microseconds.
-Time to index file 187 is 11353447 microseconds.
-Time to index file 188 is 12377855 microseconds.
-Time to index file 189 is 11101140 microseconds.
-Time to index file 190 is 11014220 microseconds.
-Time to index file 191 is 14229405 microseconds.
-Time to index file 192 is 11072134 microseconds.
-Time to index file 193 is 11371381 microseconds.
-Time to index file 194 is 10819419 microseconds.
-Time to index file 195 is 13902389 microseconds.
-Time to index file 196 is 13252594 microseconds.
-Time to index file 197 is 12671287 microseconds.
-Time to index file 198 is 13616812 microseconds.
-Time to index file 199 is 13524875 microseconds.
-Time to index file 200 is 13356140 microseconds.
-Time to index file 201 is 12892881 microseconds.
-Time to index file 202 is 13318431 microseconds.
-Time to index file 203 is 12865981 microseconds.
-Time to index file 204 is 12457419 microseconds.
-Time to index file 205 is 12980043 microseconds.
-Time to index file 206 is 13390271 microseconds.
-Time to index file 207 is 12450247 microseconds.
-Time to index file 208 is 12317285 microseconds.
-Time to index file 209 is 12292907 microseconds.
-Time to index file 210 is 12580313 microseconds.
-Time to index file 211 is 15408452 microseconds.
-Time to index file 212 is 12307102 microseconds.
-Time to index file 213 is 14678441 microseconds.
-Time to index file 214 is 12485075 microseconds.
-Time to index file 215 is 12483053 microseconds.
-Time to index file 216 is 12984288 microseconds.
-Time to index file 217 is 11421129 microseconds.
-Time to index file 218 is 12318675 microseconds.
-Time to index file 219 is 12566365 microseconds.
-Time to index file 220 is 11976993 microseconds.
-Time to index file 221 is 13930174 microseconds.
-Time to index file 222 is 12709180 microseconds.
-Time to index file 223 is 12432603 microseconds.
-Time to index file 224 is 16200527 microseconds.
-Time to index file 225 is 12501353 microseconds.
-Time to index file 226 is 11861863 microseconds.
-Time to index file 227 is 11778796 microseconds.
-Time to index file 228 is 12273328 microseconds.
-Time to index file 229 is 12271615 microseconds.
-Time to index file 230 is 11507128 microseconds.
-Time to index file 231 is 12036136 microseconds.
-Time to index file 232 is 11923364 microseconds.
-Time to index file 233 is 12857302 microseconds.
-Time to index file 234 is 12630782 microseconds.
-Time to index file 235 is 12210312 microseconds.
-Time to index file 236 is 12018606 microseconds.
-Time to index file 237 is 11366557 microseconds.
-Time to index file 238 is 13653082 microseconds.
-Time to index file 239 is 12480816 microseconds.
-Time to index file 240 is 15695155 microseconds.
-Time to index file 241 is 12448481 microseconds.
-Time to index file 242 is 11160536 microseconds.
-Time to index file 243 is 11123624 microseconds.
-Time to index file 244 is 10583431 microseconds.
-Time to index file 245 is 11371550 microseconds.
-Time to index file 246 is 11076885 microseconds.
-Time to index file 247 is 11090048 microseconds.
-Time to index file 248 is 10703213 microseconds.
-Time to index file 249 is 12167972 microseconds.
-Time to index file 250 is 11859047 microseconds.
-Time to index file 251 is 11250437 microseconds.
-Time to index file 252 is 10670203 microseconds.
-Time to index file 253 is 11228066 microseconds.
-Time to index file 254 is 11010539 microseconds.
-Time to index file 255 is 11011255 microseconds.
-Time to index file 256 is 13207436 microseconds.
-Time to index file 257 is 13089129 microseconds.
-Time to index file 258 is 11694704 microseconds.
-Time to index file 259 is 12630191 microseconds.
-Time to index file 260 is 12649594 microseconds.
-Time to index file 261 is 12205775 microseconds.
-Time to index file 262 is 12250833 microseconds.
-Time to index file 263 is 12668137 microseconds.
-Time to index file 264 is 12426239 microseconds.
-Time to index file 265 is 11185413 microseconds.
-Time to index file 266 is 12243823 microseconds.
-Time to index file 267 is 12592171 microseconds.
-Time to index file 268 is 12466996 microseconds.
-Time to index file 269 is 12590288 microseconds.
-Time to index file 270 is 12902315 microseconds.
-Time to index file 271 is 11708308 microseconds.
-Time to index file 272 is 11575352 microseconds.
-Time to index file 273 is 12579777 microseconds.
-Time to index file 274 is 12278118 microseconds.
-Time to index file 275 is 12184949 microseconds.
-Time to index file 276 is 12120656 microseconds.
-Time to index file 277 is 12449566 microseconds.
-Time to index file 278 is 12017307 microseconds.
-Time to index file 279 is 12923219 microseconds.
-Time to index file 280 is 12236534 microseconds.
-Time to index file 281 is 11548077 microseconds.
-Time to index file 282 is 10586406 microseconds.
-Time to index file 283 is 11514625 microseconds.
-Time to index file 284 is 12889529 microseconds.
-Time to index file 285 is 11646185 microseconds.
-Time to index file 286 is 11488366 microseconds.
-Time to index file 287 is 11602562 microseconds.
-Time to index file 288 is 11548783 microseconds.
-Time to index file 289 is 11588277 microseconds.
-Time to index file 290 is 12484662 microseconds.
-Time to index file 291 is 11822383 microseconds.
-Time to index file 292 is 13791972 microseconds.
-Time to index file 293 is 11187451 microseconds.
-Time to index file 294 is 11517892 microseconds.
-Time to index file 295 is 12916997 microseconds.
-Time to index file 296 is 11798417 microseconds.
-Time to index file 297 is 11541772 microseconds.
-Time to index file 298 is 11718941 microseconds.
-Time to index file 299 is 11436684 microseconds.
-Time to index file 300 is 14976669 microseconds.
-Time to index file 301 is 11042322 microseconds.
-Time to index file 302 is 11010007 microseconds.
-Time to index file 303 is 11182767 microseconds.
-Time to index file 304 is 10783139 microseconds.
-Time to index file 305 is 10795955 microseconds.
-Time to index file 306 is 11284960 microseconds.
-Time to index file 307 is 10955997 microseconds.
-Time to index file 308 is 10641505 microseconds.
-Time to index file 309 is 11359919 microseconds.
-Time to index file 310 is 11614359 microseconds.
-Time to index file 311 is 11726975 microseconds.
-Time to index file 312 is 11183142 microseconds.
-Time to index file 313 is 11020978 microseconds.
-Time to index file 314 is 10953553 microseconds.
-Time to index file 315 is 10847501 microseconds.
-Time to index file 316 is 11916932 microseconds.
-Time to index file 317 is 11463839 microseconds.
-Time to index file 318 is 11775609 microseconds.
-Time to index file 319 is 12059355 microseconds.
-Time to index file 320 is 11962164 microseconds.
-Time to index file 321 is 11015120 microseconds.
-Time to index file 322 is 12113420 microseconds.
-Time to index file 323 is 11700638 microseconds.
-Time to index file 324 is 11525165 microseconds.
-Time to index file 325 is 11747490 microseconds.
-Time to index file 326 is 11636643 microseconds.
-Time to index file 327 is 11395666 microseconds.
-Time to index file 328 is 11810062 microseconds.
-Time to index file 329 is 11909508 microseconds.
-Time to index file 330 is 12351339 microseconds.
-Time to index file 331 is 11261606 microseconds.
-Time to index file 332 is 11649345 microseconds.
-Time to index file 333 is 11488478 microseconds.
-Time to index file 334 is 11353618 microseconds.
-Time to index file 335 is 11925656 microseconds.
-Time to index file 336 is 12479835 microseconds.
-Time to index file 337 is 11162096 microseconds.
-Time to index file 338 is 11646203 microseconds.
-Time to index file 339 is 11730092 microseconds.
-Time to index file 340 is 11395203 microseconds.
-Time to index file 341 is 11639870 microseconds.
-Time to index file 342 is 11545402 microseconds.
-Time to index file 343 is 11651440 microseconds.
-Time to index file 344 is 11304084 microseconds.
-Time to index file 345 is 11422789 microseconds.
-Time to index file 346 is 11396706 microseconds.
-Time to index file 347 is 11378003 microseconds.
-Time to index file 348 is 14219717 microseconds.
-Time to index file 349 is 11914248 microseconds.
-Time to index file 350 is 12014767 microseconds.
-Time to index file 351 is 18511539 microseconds.
-Time to index file 352 is 12644888 microseconds.
-Time to index file 353 is 13026972 microseconds.
-Time to index file 354 is 10606234 microseconds.
-Time to index file 355 is 12387040 microseconds.
-Time to index file 356 is 12407036 microseconds.
-Time to index file 357 is 12455760 microseconds.
-Time to index file 358 is 11639700 microseconds.
-Time to index file 359 is 16515763 microseconds.
-Time to index file 360 is 12158485 microseconds.
-Time to index file 361 is 12182575 microseconds.
-Time to index file 362 is 11786098 microseconds.
-Time to index file 363 is 13268290 microseconds.
-Time to index file 364 is 11741463 microseconds.
-Time to index file 365 is 11103919 microseconds.
-Time to index file 366 is 10556929 microseconds.
-Time to index file 367 is 15960178 microseconds.
-Time to index file 368 is 11357156 microseconds.
-Time to index file 369 is 11418043 microseconds.
-Time to index file 370 is 18653678 microseconds.
-Time to index file 371 is 11961643 microseconds.
-Time to index file 372 is 11896316 microseconds.
-Time to index file 373 is 11693351 microseconds.
-Time to index file 374 is 12322147 microseconds.
-Time to index file 375 is 11897724 microseconds.
-Time to index file 376 is 11661055 microseconds.
-Time to index file 377 is 11412266 microseconds.
-Time to index file 378 is 10605880 microseconds.
-Time to index file 379 is 11176656 microseconds.
-Time to index file 380 is 11268958 microseconds.
-Time to index file 381 is 12573284 microseconds.
-Time to index file 382 is 16587724 microseconds.
-Time to index file 383 is 13924371 microseconds.
-Time to index file 384 is 13947613 microseconds.
-Time to index file 385 is 13208293 microseconds.
-Time to index file 386 is 12144448 microseconds.
-Time to index file 387 is 13347163 microseconds.
-Time to index file 388 is 12716464 microseconds.
-Time to index file 389 is 12621686 microseconds.
-Time to index file 390 is 13209258 microseconds.
-Time to index file 391 is 13817507 microseconds.
-Time to index file 392 is 14976054 microseconds.
-Time to index file 393 is 13725290 microseconds.
-Time to index file 394 is 13135212 microseconds.
-Time to index file 395 is 14098049 microseconds.
-Time to index file 396 is 11626509 microseconds.
-Time to index file 397 is 16817097 microseconds.
-Time to index file 398 is 13338753 microseconds.
-Time to index file 399 is 12802963 microseconds.
-Time to index file 400 is 12731126 microseconds.
-Time to index file 401 is 13492435 microseconds.
-Time to index file 402 is 13410236 microseconds.
-Time to index file 403 is 12628282 microseconds.
-Time to index file 404 is 15538084 microseconds.
-Time to index file 405 is 13332948 microseconds.
-Time to index file 406 is 15222932 microseconds.
-Time to index file 407 is 12505817 microseconds.
-Time to index file 408 is 13738421 microseconds.
-Time to index file 409 is 13997109 microseconds.
-Time to index file 410 is 12147538 microseconds.
-Time to index file 411 is 12580123 microseconds.
-Time to index file 412 is 13637339 microseconds.
-Time to index file 413 is 13336020 microseconds.
-Time to index file 414 is 13132111 microseconds.
-Time to index file 415 is 20926188 microseconds.
-Time to index file 416 is 14306353 microseconds.
-Time to index file 417 is 14006783 microseconds.
-Time to index file 418 is 13724509 microseconds.
-Time to index file 419 is 15845347 microseconds.
-Time to index file 420 is 14232062 microseconds.
-Time to index file 421 is 13445844 microseconds.
-Time to index file 422 is 12602376 microseconds.
-Time to index file 423 is 13575912 microseconds.
-Time to index file 424 is 13935014 microseconds.
-Time to index file 425 is 13655034 microseconds.
-Time to index file 426 is 13947426 microseconds.
-Time to index file 427 is 14101757 microseconds.
-Time to index file 428 is 13541284 microseconds.
-Time to index file 429 is 12732416 microseconds.
-Time to index file 430 is 13590022 microseconds.
-Time to index file 431 is 13078402 microseconds.
-Time to index file 432 is 11741328 microseconds.
-Time to index file 433 is 22237161 microseconds.
-Time to index file 434 is 11548485 microseconds.
-Time to index file 435 is 12312836 microseconds.
-Time to index file 436 is 12850908 microseconds.
-Time to index file 437 is 12744567 microseconds.
-Time to index file 438 is 12667853 microseconds.
-Time to index file 439 is 12472189 microseconds.
-Time to index file 440 is 10899843 microseconds.
-Time to index file 441 is 12144620 microseconds.
-Time to index file 442 is 12148811 microseconds.
-Time to index file 443 is 15310514 microseconds.
-Time to index file 444 is 11060367 microseconds.
-Time to index file 445 is 14728006 microseconds.
-Time to index file 446 is 13870354 microseconds.
-Time to index file 447 is 13418895 microseconds.
-Time to index file 448 is 12993065 microseconds.
-Time to index file 449 is 14519937 microseconds.
-Time to index file 450 is 13248838 microseconds.
-Time to index file 451 is 16477011 microseconds.
-Time to index file 452 is 14425869 microseconds.
-Time to index file 453 is 13963012 microseconds.
-Time to index file 454 is 12773381 microseconds.
-Time to index file 455 is 14420171 microseconds.
-Time to index file 456 is 14306712 microseconds.
-Time to index file 457 is 14292516 microseconds.
-Time to index file 458 is 12586364 microseconds.
-Time to index file 459 is 16736032 microseconds.
-Time to index file 460 is 14776467 microseconds.
-Time to index file 461 is 17160795 microseconds.
-Time to index file 462 is 13311056 microseconds.
-Time to index file 463 is 13463846 microseconds.
-Time to index file 464 is 13750352 microseconds.
-Time to index file 465 is 14123132 microseconds.
-Time to index file 466 is 14306662 microseconds.
-Time to index file 467 is 13960489 microseconds.
-Time to index file 468 is 14298620 microseconds.
-Time to index file 469 is 14815860 microseconds.
-Time to index file 470 is 13796779 microseconds.
-Time to index file 471 is 13634016 microseconds.
-Time to index file 472 is 14487051 microseconds.
-Time to index file 473 is 14404300 microseconds.
-Time to index file 474 is 13219557 microseconds.
-Time to index file 475 is 13670551 microseconds.
-Time to index file 476 is 13911623 microseconds.
-Time to index file 477 is 13653184 microseconds.
-Time to index file 478 is 11765517 microseconds.
-Time to index file 479 is 15266757 microseconds.
-Time to index file 480 is 14092052 microseconds.
-Time to index file 481 is 13381844 microseconds.
-Time to index file 482 is 13423808 microseconds.
-Time to index file 483 is 14579727 microseconds.
-Time to index file 484 is 14665605 microseconds.
-Time to index file 485 is 12039698 microseconds.
-Time to index file 486 is 13523632 microseconds.
-Time to index file 487 is 15135244 microseconds.
-Time to index file 488 is 20330514 microseconds.
-Time to index file 489 is 11639767 microseconds.
-Time to index file 490 is 13320219 microseconds.
-Time to index file 491 is 12701661 microseconds.
-Time to index file 492 is 12118756 microseconds.
-Time to index file 493 is 12591275 microseconds.
-Time to index file 494 is 13905623 microseconds.
-Time to index file 495 is 13256552 microseconds.
-Time to index file 496 is 13067921 microseconds.
-Time to index file 497 is 11952048 microseconds.
-Time to index file 498 is 11833197 microseconds.
-Time to index file 499 is 11725380 microseconds.
-Time to index file 500 is 14217139 microseconds.
-Time to index file 501 is 14324633 microseconds.
-Time to index file 502 is 13409413 microseconds.
-Time to index file 503 is 13708989 microseconds.
-Time to index file 504 is 15870162 microseconds.
-Time to index file 505 is 14314612 microseconds.
-Time to index file 506 is 14487123 microseconds.
-Time to index file 507 is 13535605 microseconds.
-Time to index file 508 is 12209802 microseconds.
-Time to index file 509 is 13775617 microseconds.
-Time to index file 510 is 13868572 microseconds.
-Time to index file 511 is 12281067 microseconds.
-Time to index file 512 is 12400204 microseconds.
-Time to index file 513 is 13949479 microseconds.
-Time to index file 514 is 13670213 microseconds.
-Time to index file 515 is 13295099 microseconds.
-Time to index file 516 is 14539018 microseconds.
-Time to index file 517 is 14330607 microseconds.
-Time to index file 518 is 13210996 microseconds.
-Time to index file 519 is 14234653 microseconds.
-Time to index file 520 is 14522931 microseconds.
-Time to index file 521 is 13532967 microseconds.
-Time to index file 522 is 14571899 microseconds.
-Time to index file 523 is 15267315 microseconds.
-Time to index file 524 is 14367743 microseconds.
-Time to index file 525 is 14989586 microseconds.
-Time to index file 526 is 14502473 microseconds.
-Time to index file 527 is 13986752 microseconds.
-Time to index file 528 is 13171852 microseconds.
-Time to index file 529 is 14199229 microseconds.
-Time to index file 530 is 13876196 microseconds.
-Time to index file 531 is 18057265 microseconds.
-Time to index file 532 is 14382611 microseconds.
-Time to index file 533 is 14433607 microseconds.
-Time to index file 534 is 13885412 microseconds.
-Time to index file 535 is 11971800 microseconds.
-Time to index file 536 is 22003463 microseconds.
-Time to index file 537 is 17980925 microseconds.
-Time to index file 538 is 14193844 microseconds.
-Time to index file 539 is 14784982 microseconds.
-Time to index file 540 is 14522887 microseconds.
-Time to index file 541 is 20200129 microseconds.
-Time to index file 542 is 14432687 microseconds.
-Time to index file 543 is 14562981 microseconds.
-Time to index file 544 is 13904863 microseconds.
-Time to index file 545 is 19042858 microseconds.
-Time to index file 546 is 13908470 microseconds.
-Time to index file 547 is 12944180 microseconds.
-Time to index file 548 is 25603456 microseconds.
-Time to index file 549 is 14506248 microseconds.
-Time to index file 550 is 23070787 microseconds.
-Time to index file 551 is 13448092 microseconds.
-Time to index file 552 is 12826228 microseconds.
-Time to index file 553 is 13365761 microseconds.
-Time to index file 554 is 11885483 microseconds.
-Time to index file 555 is 13152717 microseconds.
-Time to index file 556 is 12960027 microseconds.
-Time to index file 557 is 12619667 microseconds.
-Time to index file 558 is 11831435 microseconds.
-Time to index file 559 is 13125284 microseconds.
-Time to index file 560 is 13272338 microseconds.
-Time to index file 561 is 12307084 microseconds.
-Time to index file 562 is 11535112 microseconds.
-Time to index file 563 is 12358037 microseconds.
-Time to index file 564 is 13928120 microseconds.
-Time to index file 565 is 13250383 microseconds.
-Time to index file 566 is 13321540 microseconds.
-Time to index file 567 is 13315463 microseconds.
-Time to index file 568 is 13746867 microseconds.
-Time to index file 569 is 13566683 microseconds.
-Time to index file 570 is 13328211 microseconds.
-Time to index file 571 is 13649471 microseconds.
-Time to index file 572 is 13079140 microseconds.
-Time to index file 573 is 11207223 microseconds.
-Time to index file 574 is 14274499 microseconds.
-Time to index file 575 is 13573891 microseconds.
-Time to index file 576 is 13423713 microseconds.
-Time to index file 577 is 13568819 microseconds.
-Time to index file 578 is 14280491 microseconds.
-Time to index file 579 is 13379963 microseconds.
-Time to index file 580 is 12036483 microseconds.
-Time to index file 581 is 13621373 microseconds.
-Time to index file 582 is 13949280 microseconds.
-Time to index file 583 is 13556313 microseconds.
-Time to index file 584 is 20460511 microseconds.
-Time to index file 585 is 15786385 microseconds.
-Time to index file 586 is 13682155 microseconds.
-Time to index file 587 is 12259323 microseconds.
-Time to index file 588 is 14359115 microseconds.
-Time to index file 589 is 14311450 microseconds.
-Time to index file 590 is 12639547 microseconds.
-Time to index file 591 is 15842217 microseconds.
-Time to index file 592 is 14531088 microseconds.
-Time to index file 593 is 13529071 microseconds.
-Time to index file 594 is 12871922 microseconds.
-Time to index file 595 is 13566725 microseconds.
-Time to index file 596 is 13969021 microseconds.
-Time to index file 597 is 15012773 microseconds.
-Time to index file 598 is 13738605 microseconds.
-Time to index file 599 is 14672142 microseconds.
-Time to index file 600 is 12851659 microseconds.
-Time to index file 601 is 13786198 microseconds.
-Time to index file 602 is 13841097 microseconds.
-Time to index file 603 is 14202507 microseconds.
-Time to index file 604 is 13811625 microseconds.
-Time to index file 605 is 15423698 microseconds.
-Time to index file 606 is 14103534 microseconds.
-Time to index file 607 is 13447528 microseconds.
-Time to index file 608 is 15805797 microseconds.
-Time to index file 609 is 14532281 microseconds.
-Time to index file 610 is 13687222 microseconds.
-Time to index file 611 is 12410828 microseconds.
-Time to index file 612 is 19538651 microseconds.
-Time to index file 613 is 13522870 microseconds.
-Time to index file 614 is 14471055 microseconds.
-Time to index file 615 is 12245027 microseconds.
-Time to index file 616 is 12801629 microseconds.
-Time to index file 617 is 12989561 microseconds.
-Time to index file 618 is 13905861 microseconds.
-Time to index file 619 is 12300787 microseconds.
-Time to index file 620 is 13309248 microseconds.
-Time to index file 621 is 13431416 microseconds.
-Time to index file 622 is 16003253 microseconds.
-Time to index file 623 is 15085158 microseconds.
-Time to index file 624 is 14719632 microseconds.
-Time to index file 625 is 13776556 microseconds.
-Time to index file 626 is 20581020 microseconds.
-Time to index file 627 is 14561620 microseconds.
-Time to index file 628 is 18687088 microseconds.
-Time to index file 629 is 14674807 microseconds.
-Time to index file 630 is 14310393 microseconds.
-Time to index file 631 is 23489529 microseconds.
-Time to index file 632 is 14629535 microseconds.
-Time to index file 633 is 16451261 microseconds.
-Time to index file 634 is 16178441 microseconds.
-Time to index file 635 is 13585618 microseconds.
-Time to index file 636 is 13695876 microseconds.
-Time to index file 637 is 17906067 microseconds.
-Time to index file 638 is 13824413 microseconds.
-Time to index file 639 is 14666489 microseconds.
-Time to index file 640 is 16513123 microseconds.
-Time to index file 641 is 13791622 microseconds.
-Time to index file 642 is 14124570 microseconds.
-Time to index file 643 is 15847221 microseconds.
-Time to index file 644 is 12018936 microseconds.
-Time to index file 645 is 14256526 microseconds.
-Time to index file 646 is 14300252 microseconds.
-Time to index file 647 is 12729980 microseconds.
-Time to index file 648 is 18637182 microseconds.
-Time to index file 649 is 15680151 microseconds.
-Time to index file 650 is 13547210 microseconds.
-Time to index file 651 is 17610350 microseconds.
-Time to index file 652 is 15004959 microseconds.
-Time to index file 653 is 13622319 microseconds.
-Time to index file 654 is 14766210 microseconds.
-Time to index file 655 is 15261602 microseconds.
-Time to index file 656 is 14195241 microseconds.
-Time to index file 657 is 13525060 microseconds.
-Time to index file 658 is 14649016 microseconds.
-Time to index file 659 is 19968249 microseconds.
-Time to index file 660 is 13101366 microseconds.
-Time to index file 661 is 14723348 microseconds.
-Time to index file 662 is 14696280 microseconds.
-Time to index file 663 is 13262597 microseconds.
-Time to index file 664 is 14254383 microseconds.
-Time to index file 665 is 14636113 microseconds.
-Time to index file 666 is 12831916 microseconds.
-Time to index file 667 is 14219721 microseconds.
-Time to index file 668 is 14590089 microseconds.
-Time to index file 669 is 14541200 microseconds.
-Time to index file 670 is 17237912 microseconds.
-Time to index file 671 is 12693266 microseconds.
-Time to index file 672 is 13337092 microseconds.
-Time to index file 673 is 16772377 microseconds.
-Time to index file 674 is 13218393 microseconds.
-Time to index file 675 is 14172897 microseconds.
-Time to index file 676 is 14642025 microseconds.
-Time to index file 677 is 13124564 microseconds.
-Time to index file 678 is 12873692 microseconds.
-Time to index file 679 is 12682944 microseconds.
-Time to index file 680 is 12109814 microseconds.
-Time to index file 681 is 13628838 microseconds.
-Time to index file 682 is 14468981 microseconds.
-Time to index file 683 is 12906345 microseconds.
-Time to index file 684 is 14166300 microseconds.
-Time to index file 685 is 15035012 microseconds.
-Time to index file 686 is 17844898 microseconds.
-Time to index file 687 is 14804021 microseconds.
-Time to index file 688 is 15165597 microseconds.
-Time to index file 689 is 13760701 microseconds.
-Time to index file 690 is 13167518 microseconds.
-Time to index file 691 is 15059047 microseconds.
-Time to index file 692 is 14118100 microseconds.
-Time to index file 693 is 12744139 microseconds.
-Time to index file 694 is 14650021 microseconds.
-Time to index file 695 is 14446158 microseconds.
-Time to index file 696 is 12122095 microseconds.
-Time to index file 697 is 15178838 microseconds.
-Time to index file 698 is 14283487 microseconds.
-Time to index file 699 is 12297614 microseconds.
-Time to index file 700 is 15032875 microseconds.
-Time to index file 701 is 13702147 microseconds.
-Time to index file 702 is 12333835 microseconds.
-Time to index file 703 is 15987674 microseconds.
-Time to index file 704 is 14595419 microseconds.
-Time to index file 705 is 13093761 microseconds.
-Time to index file 706 is 17851921 microseconds.
-Time to index file 707 is 14369260 microseconds.
-Time to index file 708 is 12954555 microseconds.
-Time to index file 709 is 15650395 microseconds.
-Time to index file 710 is 25724642 microseconds.
-Time to index file 711 is 17720134 microseconds.
-Time to index file 712 is 13449743 microseconds.
-Time to index file 713 is 11849976 microseconds.
-Time to index file 714 is 14320072 microseconds.
-Time to index file 715 is 13901815 microseconds.
-Time to index file 716 is 12375040 microseconds.
-Time to index file 717 is 13013395 microseconds.
-Time to index file 718 is 13759285 microseconds.
-Time to index file 719 is 13712846 microseconds.
-Time to index file 720 is 16938142 microseconds.
-Time to index file 721 is 14362166 microseconds.
-Time to index file 722 is 12902101 microseconds.
-Time to index file 723 is 14043034 microseconds.
-Time to index file 724 is 13826533 microseconds.
-Time to index file 725 is 12201426 microseconds.
-Time to index file 726 is 13867975 microseconds.
-Time to index file 727 is 13912803 microseconds.
-Time to index file 728 is 13284135 microseconds.
-Time to index file 729 is 16214626 microseconds.
-Time to index file 730 is 13229110 microseconds.
-Time to index file 731 is 12100754 microseconds.
-Time to index file 732 is 14208412 microseconds.
-Time to index file 733 is 12794027 microseconds.
-Time to index file 734 is 12889943 microseconds.
-Time to index file 735 is 12255215 microseconds.
-Time to index file 736 is 12795721 microseconds.
-Time to index file 737 is 12302232 microseconds.
-Time to index file 738 is 12070631 microseconds.
-Time to index file 739 is 13698923 microseconds.
-Time to index file 740 is 12849768 microseconds.
-Time to index file 741 is 11353346 microseconds.
-Time to index file 742 is 12198446 microseconds.
-Time to index file 743 is 10686273 microseconds.
-Time to index file 744 is 10629765 microseconds.
-Time to index file 745 is 11010140 microseconds.
-Time to index file 746 is 13102526 microseconds.
-Time to index file 747 is 14165354 microseconds.
-Time to index file 748 is 13025271 microseconds.
-Time to index file 749 is 13059286 microseconds.
-Time to index file 750 is 13650167 microseconds.
-Time to index file 751 is 12306730 microseconds.
-Time to index file 752 is 12326626 microseconds.
-Time to index file 753 is 12262997 microseconds.
-Time to index file 754 is 12743223 microseconds.
-Time to index file 755 is 10555379 microseconds.
-Time to index file 756 is 12444006 microseconds.
-Time to index file 757 is 13047233 microseconds.
-Time to index file 758 is 12161305 microseconds.
-Time to index file 759 is 11667311 microseconds.
-Time to index file 760 is 12841070 microseconds.
-Time to index file 761 is 11466488 microseconds.
-Time to index file 762 is 11802831 microseconds.
-Time to index file 763 is 11816054 microseconds.
-Time to index file 764 is 11864210 microseconds.
-Time to index file 765 is 11350276 microseconds.
-Time to index file 766 is 10560160 microseconds.
-Time to index file 767 is 11197145 microseconds.
-Time to index file 768 is 11169736 microseconds.
-Time to index file 769 is 10710145 microseconds.
-Time to index file 770 is 10984930 microseconds.
-Time to index file 771 is 12882699 microseconds.
-Time to index file 772 is 11650620 microseconds.
-Time to index file 773 is 12079772 microseconds.
-Time to index file 774 is 10624813 microseconds.
-Time to index file 775 is 11829376 microseconds.
-Time to index file 776 is 12324574 microseconds.
-Time to index file 777 is 11828908 microseconds.
-Time to index file 778 is 12682027 microseconds.
-Time to index file 779 is 12509331 microseconds.
-Time to index file 780 is 12781304 microseconds.
-Time to index file 781 is 11686355 microseconds.
-Time to index file 782 is 12300237 microseconds.
-Time to index file 783 is 11769183 microseconds.
-Time to index file 784 is 11165355 microseconds.
-Time to index file 785 is 12982343 microseconds.
-Time to index file 786 is 11027762 microseconds.
-Time to index file 787 is 10992061 microseconds.
-Time to index file 788 is 10585535 microseconds.
-Time to index file 789 is 12246354 microseconds.
-Time to index file 790 is 11754339 microseconds.
-Time to index file 791 is 11397434 microseconds.
-Time to index file 792 is 11886724 microseconds.
-Time to index file 793 is 12819910 microseconds.
-Time to index file 794 is 12368803 microseconds.
-Time to index file 795 is 9812725 microseconds.
-Time to index file 796 is 13750508 microseconds.
-Time to index file 797 is 12879138 microseconds.
-Time to index file 798 is 12222186 microseconds.
-Time to index file 799 is 11923417 microseconds.
-Time to index file 800 is 12265583 microseconds.
-Time to index file 801 is 11981820 microseconds.
-Time to index file 802 is 11305198 microseconds.
-Time to index file 803 is 12444369 microseconds.
-Time to index file 804 is 12055430 microseconds.
-Time to index file 805 is 11316565 microseconds.
-Time to index file 806 is 10943144 microseconds.
-Time to index file 807 is 11469887 microseconds.
-Time to index file 808 is 12373358 microseconds.
-Time to index file 809 is 11795424 microseconds.
-Time to index file 810 is 11250885 microseconds.
-Time to index file 811 is 11921382 microseconds.
-Time to index file 812 is 12455794 microseconds.
-Time to index file 813 is 11362387 microseconds.
-Time to index file 814 is 11690406 microseconds.
-Time to index file 815 is 12445260 microseconds.
-Time to index file 816 is 14013272 microseconds.
-Time to index file 817 is 12033237 microseconds.
-Time to index file 818 is 11366573 microseconds.
-Time to index file 819 is 12065207 microseconds.
-Time to index file 820 is 10825750 microseconds.
-Time to index file 821 is 14056753 microseconds.
-Time to index file 822 is 12417264 microseconds.
-Time to index file 823 is 12257070 microseconds.
-Time to index file 824 is 9852737 microseconds.
-Time to index file 825 is 11724113 microseconds.
-Time to index file 826 is 11938544 microseconds.
-Time to index file 827 is 11646796 microseconds.
-Time to index file 828 is 11367688 microseconds.
-Time to index file 829 is 11789130 microseconds.
-Time to index file 830 is 12104480 microseconds.
-Time to index file 831 is 11755902 microseconds.
-Time to index file 832 is 11937831 microseconds.
-Time to index file 833 is 12649569 microseconds.
-Time to index file 834 is 12469989 microseconds.
-Time to index file 835 is 11881348 microseconds.
-Time to index file 836 is 11857936 microseconds.
-Time to index file 837 is 11886196 microseconds.
-Time to index file 838 is 12017448 microseconds.
-Time to index file 839 is 11404576 microseconds.
-Time to index file 840 is 12542458 microseconds.
-Time to index file 841 is 12024220 microseconds.
-Time to index file 842 is 15554617 microseconds.
-Time to index file 843 is 12432534 microseconds.
-Time to index file 844 is 12386521 microseconds.
-Time to index file 845 is 12071949 microseconds.
-Time to index file 846 is 11183467 microseconds.
-Time to index file 847 is 12866757 microseconds.
-Time to index file 848 is 13316129 microseconds.
-Time to index file 849 is 12826283 microseconds.
-Time to index file 850 is 12188187 microseconds.
-Time to index file 851 is 14273419 microseconds.
-Time to index file 852 is 13344594 microseconds.
-Time to index file 853 is 13058336 microseconds.
-Time to index file 854 is 13491402 microseconds.
-Time to index file 855 is 13560841 microseconds.
-Time to index file 856 is 10985847 microseconds.
-Time to index file 857 is 15823103 microseconds.
-Time to index file 858 is 13343679 microseconds.
-Time to index file 859 is 12682646 microseconds.
-Time to index file 860 is 14163909 microseconds.
-Time to index file 861 is 13105188 microseconds.
-Time to index file 862 is 12781615 microseconds.
-Time to index file 863 is 12736384 microseconds.
-Time to index file 864 is 13818289 microseconds.
-Time to index file 865 is 13019100 microseconds.
-Time to index file 866 is 11845500 microseconds.
-Time to index file 867 is 13068634 microseconds.
-Time to index file 868 is 14374218 microseconds.
-Time to index file 869 is 12288926 microseconds.
-Time to index file 870 is 16115380 microseconds.
-Time to index file 871 is 13540320 microseconds.
-Time to index file 872 is 11814491 microseconds.
-Time to index file 873 is 16402639 microseconds.
-Time to index file 874 is 13469560 microseconds.
-Time to index file 875 is 11965740 microseconds.
-Time to index file 876 is 16359793 microseconds.
-Time to index file 877 is 13055311 microseconds.
-Time to index file 878 is 13437970 microseconds.
-Time to index file 879 is 11303756 microseconds.
-Time to index file 880 is 13592029 microseconds.
-Time to index file 881 is 13724635 microseconds.
-Time to index file 882 is 12851411 microseconds.
-Time to index file 883 is 17733514 microseconds.
-Time to index file 884 is 13489939 microseconds.
-Time to index file 885 is 12372314 microseconds.
-Time to index file 886 is 12945869 microseconds.
-Time to index file 887 is 13281187 microseconds.
-Time to index file 888 is 13162772 microseconds.
-Time to index file 889 is 12116497 microseconds.
-Time to index file 890 is 13743000 microseconds.
-Time to index file 891 is 12683346 microseconds.
-Time to index file 892 is 10920667 microseconds.
-Time to index file 893 is 13812503 microseconds.
-Time to index file 894 is 13330738 microseconds.
-Time to index file 895 is 12338975 microseconds.
-Time to index file 896 is 12841573 microseconds.
-Time to index file 897 is 13374945 microseconds.
-Time to index file 898 is 12775066 microseconds.
-Time to index file 899 is 13355921 microseconds.
-Time to index file 900 is 13011234 microseconds.
-Time to index file 901 is 13241462 microseconds.
-Time to index file 902 is 12789599 microseconds.
-Time to index file 903 is 13395218 microseconds.
-Time to index file 904 is 13150211 microseconds.
-Time to index file 905 is 11761114 microseconds.
-Time to index file 906 is 12906596 microseconds.
-Time to index file 907 is 15735471 microseconds.
-Time to index file 908 is 10779732 microseconds.
-Time to index file 909 is 13290681 microseconds.
-Time to index file 910 is 13271084 microseconds.
-Time to index file 911 is 12482993 microseconds.
-Time to index file 912 is 13594490 microseconds.
-Time to index file 913 is 13099594 microseconds.
-Time to index file 914 is 12324153 microseconds.
-Time to index file 915 is 13970257 microseconds.
-Time to index file 916 is 14259353 microseconds.
-Time to index file 917 is 13888253 microseconds.
-Time to index file 918 is 12386869 microseconds.
-Time to index file 919 is 12558956 microseconds.
-Time to index file 920 is 12340896 microseconds.
-Time to index file 921 is 11077294 microseconds.
-Time to index file 922 is 12723637 microseconds.
-Time to index file 923 is 14495792 microseconds.
-Time to index file 924 is 12351670 microseconds.
-Time to index file 925 is 12065764 microseconds.
-Time to index file 926 is 11656102 microseconds.
-Time to index file 927 is 11874907 microseconds.
-Time to index file 928 is 11232859 microseconds.
-Time to index file 929 is 16076848 microseconds.
-Time to index file 930 is 12192384 microseconds.
-Time to index file 931 is 11944576 microseconds.
-Time to index file 932 is 14697946 microseconds.
-Time to index file 933 is 12231114 microseconds.
-Time to index file 934 is 12636563 microseconds.
-Time to index file 935 is 10839316 microseconds.
-Time to index file 936 is 12661874 microseconds.
-Time to index file 937 is 12109676 microseconds.
-Time to index file 938 is 12214476 microseconds.
-Time to index file 939 is 13289124 microseconds.
-Time to index file 940 is 12171292 microseconds.
-Time to index file 941 is 12675617 microseconds.
-Time to index file 942 is 12596105 microseconds.
-Time to index file 943 is 12656906 microseconds.
-Time to index file 944 is 12187895 microseconds.
-Time to index file 945 is 12634734 microseconds.
-Time to index file 946 is 11047064 microseconds.
-Time to index file 947 is 12423803 microseconds.
-Time to index file 948 is 11808587 microseconds.
-Time to index file 949 is 11482626 microseconds.
-Time to index file 950 is 13404489 microseconds.
-Time to index file 951 is 11996172 microseconds.
-Time to index file 952 is 12217690 microseconds.
-Time to index file 953 is 13048878 microseconds.
-Time to index file 954 is 13488802 microseconds.
-Time to index file 955 is 11738996 microseconds.
-Time to index file 956 is 11094376 microseconds.
-Time to index file 957 is 12077489 microseconds.
-Time to index file 958 is 13218394 microseconds.
-Time to index file 959 is 12399445 microseconds.
-Time to index file 960 is 12840622 microseconds.
-Time to index file 961 is 12099036 microseconds.
-Time to index file 962 is 11549641 microseconds.
-Time to index file 963 is 11625294 microseconds.
-Time to index file 964 is 11767872 microseconds.
-Time to index file 965 is 12603162 microseconds.
-Time to index file 966 is 11879170 microseconds.
-Time to index file 967 is 12004514 microseconds.
-Time to index file 968 is 11967116 microseconds.
-Time to index file 969 is 13350796 microseconds.
-Time to index file 970 is 10762962 microseconds.
-Time to index file 971 is 11952422 microseconds.
-Time to index file 972 is 12170200 microseconds.
-Time to index file 973 is 12632044 microseconds.
-Time to index file 974 is 11690792 microseconds.
-Time to index file 975 is 12665592 microseconds.
-Time to index file 976 is 11680113 microseconds.
-Time to index file 977 is 11153083 microseconds.
-Time to index file 978 is 11999063 microseconds.
-Time to index file 979 is 12354875 microseconds.
-Time to index file 980 is 12154091 microseconds.
-Time to index file 981 is 16611816 microseconds.
-Time to index file 982 is 12691036 microseconds.
-Time to index file 983 is 11706950 microseconds.
-Time to index file 984 is 14335955 microseconds.
-Time to index file 985 is 13118953 microseconds.
-Time to index file 986 is 12204787 microseconds.
-Time to index file 987 is 11269312 microseconds.
-Time to index file 988 is 11809988 microseconds.
-Time to index file 989 is 12618926 microseconds.
-Time to index file 990 is 12141033 microseconds.
-Time to index file 991 is 10067157 microseconds.
-Time to index file 992 is 12262455 microseconds.
-Time to index file 993 is 12112192 microseconds.
-Time to index file 994 is 11560740 microseconds.
-Time to index file 995 is 12199877 microseconds.
-Time to index file 996 is 14072718 microseconds.
-Time to index file 997 is 13638149 microseconds.
-Time to index file 998 is 11299171 microseconds.
-Time to index file 999 is 11625537 microseconds.
+120565478
+14359194
+13943879
+14304630
+14805408
+14033809
+14420447
+14600316
+13003826
+13852112
+15184251
+14086381
+13969328
+14140573
+16084499
+14499639
+13597793
+13310518
+14576151
+13968332
+15231493
+25047455
+14692718
+14594364
+13443915
+12236492
+12620407
+13252319
+12066512
+12771929
+12085043
+13929982
+12277474
+12279194
+13697544
+12985959
+12556071
+12461801
+11922741
+12273422
+13859871
+12649605
+12140416
+12990740
+12969186
+13045178
+13292770
+12955119
+12393512
+12698776
+13060701
+11878662
+13243676
+12787669
+12022856
+11718533
+11995500
+12085940
+11293749
+11904154
+12614988
+15732660
+12055296
+12258326
+12599094
+12585280
+12674700
+12054826
+11811022
+12481253
+13962568
+11596034
+12448219
+12926486
+12486042
+11450005
+12740339
+13238228
+12878558
+13114531
+12952648
+11590011
+12788802
+13615985
+12770875
+11858148
+13594875
+12463869
+12313836
+12643792
+12538373
+11909824
+15859151
+13056750
+12430729
+13766264
+13132392
+13415706
+13178695
+12603666
+14088920
+12992230
+12802177
+12682251
+13395628
+12853586
+12773131
+11610069
+13879510
+12670239
+11104096
+13508883
+12651501
+12871500
+12550814
+12927671
+14703143
+12464472
+12294053
+12048123
+11781819
+12089355
+12436053
+12062774
+11581523
+12936512
+12765648
+12022521
+13500263
+13037390
+12464628
+12667976
+13646670
+12540771
+11567276
+12858252
+12926023
+12420307
+12354319
+12633879
+12992207
+13596649
+12410020
+12593188
+11493680
+12263959
+12662171
+12971231
+13900069
+12517276
+13147999
+12902241
+12946338
+11548644
+11668318
+11364413
+11251389
+11036690
+11839891
+11485079
+11502394
+11644208
+12390242
+12069789
+12246080
+13326933
+11781194
+11538181
+11431792
+11434402
+11762160
+11896835
+18045224
+11713878
+11477747
+10856400
+12291991
+10624058
+10855911
+11126721
+10767684
+10742384
+10816037
+10510749
+10949040
+11055994
+11903292
+11353447
+12377855
+11101140
+11014220
+14229405
+11072134
+11371381
+10819419
+13902389
+13252594
+12671287
+13616812
+13524875
+13356140
+12892881
+13318431
+12865981
+12457419
+12980043
+13390271
+12450247
+12317285
+12292907
+12580313
+15408452
+12307102
+14678441
+12485075
+12483053
+12984288
+11421129
+12318675
+12566365
+11976993
+13930174
+12709180
+12432603
+16200527
+12501353
+11861863
+11778796
+12273328
+12271615
+11507128
+12036136
+11923364
+12857302
+12630782
+12210312
+12018606
+11366557
+13653082
+12480816
+15695155
+12448481
+11160536
+11123624
+10583431
+11371550
+11076885
+11090048
+10703213
+12167972
+11859047
+11250437
+10670203
+11228066
+11010539
+11011255
+13207436
+13089129
+11694704
+12630191
+12649594
+12205775
+12250833
+12668137
+12426239
+11185413
+12243823
+12592171
+12466996
+12590288
+12902315
+11708308
+11575352
+12579777
+12278118
+12184949
+12120656
+12449566
+12017307
+12923219
+12236534
+11548077
+10586406
+11514625
+12889529
+11646185
+11488366
+11602562
+11548783
+11588277
+12484662
+11822383
+13791972
+11187451
+11517892
+12916997
+11798417
+11541772
+11718941
+11436684
+14976669
+11042322
+11010007
+11182767
+10783139
+10795955
+11284960
+10955997
+10641505
+11359919
+11614359
+11726975
+11183142
+11020978
+10953553
+10847501
+11916932
+11463839
+11775609
+12059355
+11962164
+11015120
+12113420
+11700638
+11525165
+11747490
+11636643
+11395666
+11810062
+11909508
+12351339
+11261606
+11649345
+11488478
+11353618
+11925656
+12479835
+11162096
+11646203
+11730092
+11395203
+11639870
+11545402
+11651440
+11304084
+11422789
+11396706
+11378003
+14219717
+11914248
+12014767
+18511539
+12644888
+13026972
+10606234
+12387040
+12407036
+12455760
+11639700
+16515763
+12158485
+12182575
+11786098
+13268290
+11741463
+11103919
+10556929
+15960178
+11357156
+11418043
+18653678
+11961643
+11896316
+11693351
+12322147
+11897724
+11661055
+11412266
+10605880
+11176656
+11268958
+12573284
+16587724
+13924371
+13947613
+13208293
+12144448
+13347163
+12716464
+12621686
+13209258
+13817507
+14976054
+13725290
+13135212
+14098049
+11626509
+16817097
+13338753
+12802963
+12731126
+13492435
+13410236
+12628282
+15538084
+13332948
+15222932
+12505817
+13738421
+13997109
+12147538
+12580123
+13637339
+13336020
+13132111
+20926188
+14306353
+14006783
+13724509
+15845347
+14232062
+13445844
+12602376
+13575912
+13935014
+13655034
+13947426
+14101757
+13541284
+12732416
+13590022
+13078402
+11741328
+22237161
+11548485
+12312836
+12850908
+12744567
+12667853
+12472189
+10899843
+12144620
+12148811
+15310514
+11060367
+14728006
+13870354
+13418895
+12993065
+14519937
+13248838
+16477011
+14425869
+13963012
+12773381
+14420171
+14306712
+14292516
+12586364
+16736032
+14776467
+17160795
+13311056
+13463846
+13750352
+14123132
+14306662
+13960489
+14298620
+14815860
+13796779
+13634016
+14487051
+14404300
+13219557
+13670551
+13911623
+13653184
+11765517
+15266757
+14092052
+13381844
+13423808
+14579727
+14665605
+12039698
+13523632
+15135244
+20330514
+11639767
+13320219
+12701661
+12118756
+12591275
+13905623
+13256552
+13067921
+11952048
+11833197
+11725380
+14217139
+14324633
+13409413
+13708989
+15870162
+14314612
+14487123
+13535605
+12209802
+13775617
+13868572
+12281067
+12400204
+13949479
+13670213
+13295099
+14539018
+14330607
+13210996
+14234653
+14522931
+13532967
+14571899
+15267315
+14367743
+14989586
+14502473
+13986752
+13171852
+14199229
+13876196
+18057265
+14382611
+14433607
+13885412
+11971800
+22003463
+17980925
+14193844
+14784982
+14522887
+20200129
+14432687
+14562981
+13904863
+19042858
+13908470
+12944180
+25603456
+14506248
+23070787
+13448092
+12826228
+13365761
+11885483
+13152717
+12960027
+12619667
+11831435
+13125284
+13272338
+12307084
+11535112
+12358037
+13928120
+13250383
+13321540
+13315463
+13746867
+13566683
+13328211
+13649471
+13079140
+11207223
+14274499
+13573891
+13423713
+13568819
+14280491
+13379963
+12036483
+13621373
+13949280
+13556313
+20460511
+15786385
+13682155
+12259323
+14359115
+14311450
+12639547
+15842217
+14531088
+13529071
+12871922
+13566725
+13969021
+15012773
+13738605
+14672142
+12851659
+13786198
+13841097
+14202507
+13811625
+15423698
+14103534
+13447528
+15805797
+14532281
+13687222
+12410828
+19538651
+13522870
+14471055
+12245027
+12801629
+12989561
+13905861
+12300787
+13309248
+13431416
+16003253
+15085158
+14719632
+13776556
+20581020
+14561620
+18687088
+14674807
+14310393
+23489529
+14629535
+16451261
+16178441
+13585618
+13695876
+17906067
+13824413
+14666489
+16513123
+13791622
+14124570
+15847221
+12018936
+14256526
+14300252
+12729980
+18637182
+15680151
+13547210
+17610350
+15004959
+13622319
+14766210
+15261602
+14195241
+13525060
+14649016
+19968249
+13101366
+14723348
+14696280
+13262597
+14254383
+14636113
+12831916
+14219721
+14590089
+14541200
+17237912
+12693266
+13337092
+16772377
+13218393
+14172897
+14642025
+13124564
+12873692
+12682944
+12109814
+13628838
+14468981
+12906345
+14166300
+15035012
+17844898
+14804021
+15165597
+13760701
+13167518
+15059047
+14118100
+12744139
+14650021
+14446158
+12122095
+15178838
+14283487
+12297614
+15032875
+13702147
+12333835
+15987674
+14595419
+13093761
+17851921
+14369260
+12954555
+15650395
+25724642
+17720134
+13449743
+11849976
+14320072
+13901815
+12375040
+13013395
+13759285
+13712846
+16938142
+14362166
+12902101
+14043034
+13826533
+12201426
+13867975
+13912803
+13284135
+16214626
+13229110
+12100754
+14208412
+12794027
+12889943
+12255215
+12795721
+12302232
+12070631
+13698923
+12849768
+11353346
+12198446
+10686273
+10629765
+11010140
+13102526
+14165354
+13025271
+13059286
+13650167
+12306730
+12326626
+12262997
+12743223
+10555379
+12444006
+13047233
+12161305
+11667311
+12841070
+11466488
+11802831
+11816054
+11864210
+11350276
+10560160
+11197145
+11169736
+10710145
+10984930
+12882699
+11650620
+12079772
+10624813
+11829376
+12324574
+11828908
+12682027
+12509331
+12781304
+11686355
+12300237
+11769183
+11165355
+12982343
+11027762
+10992061
+10585535
+12246354
+11754339
+11397434
+11886724
+12819910
+12368803
+9812725
+13750508
+12879138
+12222186
+11923417
+12265583
+11981820
+11305198
+12444369
+12055430
+11316565
+10943144
+11469887
+12373358
+11795424
+11250885
+11921382
+12455794
+11362387
+11690406
+12445260
+14013272
+12033237
+11366573
+12065207
+10825750
+14056753
+12417264
+12257070
+9852737
+11724113
+11938544
+11646796
+11367688
+11789130
+12104480
+11755902
+11937831
+12649569
+12469989
+11881348
+11857936
+11886196
+12017448
+11404576
+12542458
+12024220
+15554617
+12432534
+12386521
+12071949
+11183467
+12866757
+13316129
+12826283
+12188187
+14273419
+13344594
+13058336
+13491402
+13560841
+10985847
+15823103
+13343679
+12682646
+14163909
+13105188
+12781615
+12736384
+13818289
+13019100
+11845500
+13068634
+14374218
+12288926
+16115380
+13540320
+11814491
+16402639
+13469560
+11965740
+16359793
+13055311
+13437970
+11303756
+13592029
+13724635
+12851411
+17733514
+13489939
+12372314
+12945869
+13281187
+13162772
+12116497
+13743000
+12683346
+10920667
+13812503
+13330738
+12338975
+12841573
+13374945
+12775066
+13355921
+13011234
+13241462
+12789599
+13395218
+13150211
+11761114
+12906596
+15735471
+10779732
+13290681
+13271084
+12482993
+13594490
+13099594
+12324153
+13970257
+14259353
+13888253
+12386869
+12558956
+12340896
+11077294
+12723637
+14495792
+12351670
+12065764
+11656102
+11874907
+11232859
+16076848
+12192384
+11944576
+14697946
+12231114
+12636563
+10839316
+12661874
+12109676
+12214476
+13289124
+12171292
+12675617
+12596105
+12656906
+12187895
+12634734
+11047064
+12423803
+11808587
+11482626
+13404489
+11996172
+12217690
+13048878
+13488802
+11738996
+11094376
+12077489
+13218394
+12399445
+12840622
+12099036
+11549641
+11625294
+11767872
+12603162
+11879170
+12004514
+11967116
+13350796
+10762962
+11952422
+12170200
+12632044
+11690792
+12665592
+11680113
+11153083
+11999063
+12354875
+12154091
+16611816
+12691036
+11706950
+14335955
+13118953
+12204787
+11269312
+11809988
+12618926
+12141033
+10067157
+12262455
+12112192
+11560740
+12199877
+14072718
+13638149
+11299171
+11625537
