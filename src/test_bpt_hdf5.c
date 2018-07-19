@@ -74,7 +74,7 @@ main(int argc, char const *argv[])
     return 0;
 }
 
-int scan_hdf5(char *file_path, int file_id, char **indexed_attr, void *opdata) {
+int scan_hdf5(char *file_path, void *opdata) {
     hid_t           file;           /* Handle */
     herr_t          status;
 
@@ -177,7 +177,7 @@ herr_t op_func_L (hid_t loc_id, const char *name, const H5L_info_t *info,
  * Operator function.
  */
 static herr_t 
-attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
+attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_p)
 {
     hid_t attr, atype, aspace, str_type;  /* Attribute, datatype, dataspace, string_datatype identifiers */
     char  *string_out[100];
@@ -193,7 +193,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
     H5S_class_t  class;
 
     /* avoid warnings */
-    opdata = opdata;
+    op_data_struct_t *opdata = (op_data_struct_t *)opdata_p;
     char *indexed_attr_name = NULL;
 
     printf("file_id = %d\n", opdata->file_id);
