@@ -283,3 +283,9 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
 
     return 0;
 }
+
+
+void perform_search(int seed){
+    printf("Unsupported function \n");
+    return;
+}
