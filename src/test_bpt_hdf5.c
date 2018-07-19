@@ -290,8 +290,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
     }
 
     art_leaf_content_t *leaf_cnt = (art_leaf_content_t *)art_search(global_art, name, strlen(name));
-    if (leafcnt == NULL){
-        leafcnt = (art_leaf_content_t *)calloc(1, sizeof(art_leaf_content_t));
+    if (leaf_cnt == NULL){
+        leaf_cnt = (art_leaf_content_t *)calloc(1, sizeof(art_leaf_content_t));
         art_insert(global_art, name, strlen(name), leaf_cnt);
     }
 
@@ -329,7 +329,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
        point_out = (int *)calloc(npoints, sizeof(int));
        ret  = H5Aread(attr, atype, point_out);
         
-        leafcnt->is_numeric = 1;
+        leaf_cnt->is_numeric = 1;
         if (leaf_cnt->bpt == NULL) {
             leaf_cnt->bpt = new_bplus_tree(name, 4096);
         }
@@ -353,7 +353,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
 
-        leafcnt->is_numeric = 1;
+        leaf_cnt->is_numeric = 1;
         if (leaf_cnt->bpt == NULL) {
             leaf_cnt->bpt = new_bplus_tree(name, 4096);
         }
@@ -379,7 +379,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
 
         str_type = atype;
 
-        leafcnt->is_numeric = 0;
+        leaf_cnt->is_numeric = 0;
         if (leaf_cnt->art == NULL) {
             leaf_cnt->art = (art_tree *)calloc(1, sizeof(art_tree));
             art_tree_init((art_tree *)leaf_cnt->art);
