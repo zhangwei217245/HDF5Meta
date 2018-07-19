@@ -336,7 +336,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
 
        for (i = 0; i < npoints; i++) {
             // printf("%d\t",point_out[i]);
-            int k = point_out[i];
+            int k = point_out[i] + file_id;
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
             if (v == NULL || v == 0 || v == 0xffffffffffffffff ) {
                 v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
@@ -361,6 +361,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
        for( i = 0; i < (int)npoints; i++) {
         //    printf("%f\t", float_array[i]);
            int k = (int)float_array[i];
+           k+=file_id;
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
             if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
                 v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
@@ -391,7 +392,9 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
             ret = H5Aread(attr, str_type, &string_out);
             for (i=0; i<npoints; i++) {
                 // printf ("%s ", string_out[i]);
-                char *key = string_out[i];
+                char tmp_key[100];
+                sprintf(tmp_key,"%d%s", file_id, string_out[i]);
+                char *key = tmp_key;
                 uint64_t *v = (uint64_t *)art_search(leaf_cnt->art, key, strlen(key));
                 if (v == NULL || v == 0) {
                     v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
@@ -407,7 +410,10 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
             char_out = calloc(totsize+1, sizeof(char));
             ret = H5Aread(attr, str_type, char_out);
             // printf("%s", char_out);
-            char *key = char_out;
+
+            char tmp_key[100];
+            sprintf(tmp_key,"%d%s", file_id, char_out);
+            char *key = tmp_key;
             uint64_t *v = (uint64_t *)art_search(leaf_cnt->art, key, strlen(key));
             if (v == NULL || v == 0) {
                 v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
@@ -433,17 +439,18 @@ void perform_search(int seed, void *opdata_p){
     art_leaf_content_t *art_leaf = (art_leaf_content_t *)art_search(global_art, attr, strlen(attr));
     if (art_leaf != NULL) {
         if (art_leaf->is_numeric) {
-            int v_query = atoi(opdata->search_values[pos]);
+            int v_query = atoi(opdata->search_values[pos]) + seed;
             uint64_t *bitmap = bplus_tree_get(art_leaf->bpt, v_query);
             int num_matched_files = get_num_ones_in_bitmap(bitmap, opdata->bitmap_int64_arr_len);
             printf("%d Matched files on query %s=%d.\n", num_matched_files, attr, v_query);
         } else {
-            char *v_query = opdata->search_values[pos];
+            char tmp_v_query[100];
+            sprintf(tmp_v_query, "%d%s", seed, opdata->search_values[pos]);
+            char *v_query = tmp_v_query;
             uint64_t *bitmap = art_search(art_leaf->art, v_query, strlen(v_query));
             int num_matched_files = get_num_ones_in_bitmap(bitmap, opdata->bitmap_int64_arr_len);
             printf("%d Matched files on query %s=%s.\n", num_matched_files, attr, v_query);
         }
     }
-
     return;
 }
