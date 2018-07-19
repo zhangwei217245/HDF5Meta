@@ -58,7 +58,11 @@ main(int argc, char const *argv[])
     char *file_path = argv[1];
     char *_str_num_file = argv[2];
 
-    int num_file = atoi(_str_num_file);
+    int num_file = 2500;
+
+    if (_str_num_file != NULL) {
+        num_file = atoi(_str_num_file);
+    }  
 
     int i = 0;
 
