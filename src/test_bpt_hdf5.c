@@ -1,6 +1,7 @@
 #include "../lib/hdf5_meta.h"
 #include "../lib/art.h"
 #include "../lib/bplustree.h"
+#include <math.h>
 
 
 typedef struct op_data_struct {
