@@ -208,16 +208,16 @@ herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
             sprintf (obj_type, "UNKNOWN");
     }
 
-    // printf ("| %s : /", obj_type);               /* Print root group in object path */
+    printf ("| %s : /", obj_type);               /* Print root group in object path */
 
     /*
      * Check if the current object is the root group, and if not print
      * the full path name and type.
      */
     if (name[0] != '.'){
-        // printf("%s", name);
+        printf("%s", name);
     } 
-    // printf(" | \n");     
+    println(" | ");     
 
     int na = H5Aget_num_attrs(curr_obj_id);
     if (na > 0) {
