@@ -135,7 +135,7 @@ main(int argc, char const *argv[])
 
         timer_pause(&timer_create);
 
-        printf("Time to index file %d is %d microseconds.\n", i, timer_delta_us(&timer_create));
+        println("Time to index file %d is %d microseconds.\n", i, timer_delta_us(&timer_create));
     }
 
     for (i = 0; i < 1000; i++) {
@@ -147,7 +147,7 @@ main(int argc, char const *argv[])
 
         timer_pause(&timer_search);
 
-        printf("Time to %d search is %d microseconds.\n", i, timer_delta_us(&timer_search));
+        println("Time to %d search is %d microseconds.\n", i, timer_delta_us(&timer_search));
     }
 
     return 0;
@@ -165,13 +165,13 @@ int scan_hdf5(char *file_path, void *opdata) {
     /*
      * Begin iteration using H5Ovisit
      */
-    printf ("Objects in the file:\n");
+    println ("Objects in the file:\n");
     status = H5Ovisit (file, H5_INDEX_NAME, H5_ITER_NATIVE, op_func, opdata);
 
     /*
      * Repeat the same process using H5Lvisit
      */
-    printf ("\nLinks in the file:\n");
+    println ("\nLinks in the file:\n");
     status = H5Lvisit (file, H5_INDEX_NAME, H5_ITER_NATIVE, op_func_L, opdata);
 
     /*
@@ -346,9 +346,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
             set_file_bit(v, file_id);
         }
        free(point_out);
-    }
-
-    if (H5T_FLOAT == H5Tget_class(atype)) {
+    } else if (H5T_FLOAT == H5Tget_class(atype)) {
     //    printf(" | %-*s| ", 10, "<FLOAT>");
        float_array = (float *)malloc(sizeof(float)*(int)npoints); 
        ret = H5Aread(attr, atype, float_array);
@@ -371,9 +369,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
             set_file_bit(v, file_id);
         }
        free(float_array);
-    }
-
-    if (H5T_STRING == H5Tget_class (atype)) {
+    } else if (H5T_STRING == H5Tget_class (atype)) {
         size = H5Tget_size (atype);
         
         totsize = size*npoints;
@@ -421,6 +417,9 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
             }
             set_file_bit(v, file_id);
         }
+    } else {
+        // Currently Unsupported type.
+        return 0;
     }
 
     ret = H5Tclose(atype);
@@ -442,14 +441,14 @@ void perform_search(int seed, void *opdata_p){
             int v_query = atoi(opdata->search_values[pos]) + seed;
             uint64_t *bitmap = bplus_tree_get(art_leaf->bpt, v_query);
             int num_matched_files = get_num_ones_in_bitmap(bitmap, opdata->bitmap_int64_arr_len);
-            printf("%d Matched files on query %s=%d.\n", num_matched_files, attr, v_query);
+            println("%d Matched files on query %s=%d.\n", num_matched_files, attr, v_query);
         } else {
             char tmp_v_query[100];
             sprintf(tmp_v_query, "%d%s", seed, opdata->search_values[pos]);
             char *v_query = tmp_v_query;
             uint64_t *bitmap = art_search(art_leaf->art, v_query, strlen(v_query));
             int num_matched_files = get_num_ones_in_bitmap(bitmap, opdata->bitmap_int64_arr_len);
-            printf("%d Matched files on query %s=%s.\n", num_matched_files, attr, v_query);
+            println("%d Matched files on query %s=%s.\n", num_matched_files, attr, v_query);
         }
     }
     return;
