@@ -96,7 +96,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 
     if (h5object_list_head == NULL) {
         h5object_list_head = object;
-        meta_coll->object_linked_list = h5object_list_head;
+        object->head = NULL;
     } else {
         h5object_t *h5object_list_tail = h5object_list_head->tail;
         if (h5object_list_tail==NULL) {
@@ -109,6 +109,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         }
         object->head = h5object_list_head;
     }
+    meta_coll->object_linked_list = h5object_list_head;
     meta_coll->num_objs+=1;
 
     // calling on_obj function of metadata collector. The on_obj function is a user-defined operation.
