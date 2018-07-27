@@ -8,7 +8,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
     init_metadata_collector(meta_collector, 0, NULL, NULL, NULL, NULL);
 
-    int scanning_rst = scan_hdf5(filepath, metadata_collector_t *meta_collector, int is_visit_link);
+    int scanning_rst = scan_hdf5(filepath, metadata_collector_t *meta_collector, 0);
 
     h5object_t *curr_obj = meta_collector->object_linked_list;
     while (curr_obj) {
