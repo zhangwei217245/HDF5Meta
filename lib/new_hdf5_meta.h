@@ -26,7 +26,7 @@ typedef struct h5object{
 
     struct h5object *sub_obj_list;
     int num_sub_objs;
-    int (*on_sub_obj)(void *opdata, h5object_t *obj);
+    int (*on_sub_obj)(void *opdata, struct h5object *obj);
 
     int num_attrs;
     h5attribute_t *attr_linked_list; 
