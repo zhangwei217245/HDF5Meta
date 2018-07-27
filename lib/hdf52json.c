@@ -39,8 +39,8 @@ void parse_hdf5_file(char *filepath, json_object **out){
         while (curr_attr) {
             
             switch(curr_attr->attr_type) {
-                case H5T_INTEGER:
-                    int *int_value ;//= (int *)curr_attr->attribute_value;
+                case H5T_INTEGER: {
+                    int *int_value = (int *)curr_attr->attribute_value;
                     if (curr_attr->attribute_value_length > 1) {
                         json_object *json_int_array = json_object_new_array();
                         int j = 0;
@@ -54,6 +54,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
             curr_attr->attr_name, json_object_new_int(int_value[0]));
                     }
                     break;
+                }
                 case H5T_FLOAT:
                     double *double_value = (double *)curr_attr->attribute_value;
                     if (curr_attr->attribute_value_length > 1) {
