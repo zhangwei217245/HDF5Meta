@@ -23,13 +23,13 @@ static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, double **out
 
 static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, char ***out);
 
-h5object_t get_h5obj_from_meta_coll(metadata_collector_t *meta_coll, int index){
-    if (index >= meta_coll->num_objs || index < 0) {
-        printf("Index %d out of bound for meta_coll of size %d \n", index, meta_coll->num_objs);
-        exit(1);
-    }
-    return meta_coll->h5obj_data[index];
-}
+// h5object_t get_h5obj_from_meta_coll(metadata_collector_t *meta_coll, int index){
+//     if (index >= meta_coll->num_objs || index < 0) {
+//         printf("Index %d out of bound for meta_coll of size %d \n", index, meta_coll->num_objs);
+//         exit(1);
+//     }
+//     return meta_coll->h5obj_data[index];
+// }
 
 int scan_hdf5(char *file_path, metadata_collector_t *meta_collector, int is_visit_link){
     hid_t           file;           /* Handle */
