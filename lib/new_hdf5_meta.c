@@ -120,7 +120,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         }
     }
 
-    H5Oclose(curr_obj_id);
+    H5Oclose(object->obj_id);
     return 0;
 }
 
@@ -224,7 +224,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
 
 static herr_t read_int_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr) {
     int *out = (int *)calloc(npoints, sizeof(int));
-    herr_t ret = H5Aread(attr, atype, *out);
+    herr_t ret = H5Aread(attr, atype, out);
     curr_attr->attribute_value = out;
     curr_attr->attribute_value_length = npoints;
     return ret;
@@ -232,7 +232,7 @@ static herr_t read_int_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t 
 
 static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr) {
     double *out = (double *)calloc(npoints, sizeof(double)); 
-    herr_t ret = H5Aread(attr, atype, *out);
+    herr_t ret = H5Aread(attr, atype, out);
     curr_attr->attribute_value = out;
     curr_attr->attribute_value_length = npoints;
     return ret;
@@ -255,7 +255,7 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
         curr_attr->attribute_value = string_out;
         curr_attr->attribute_value_length = npoints;
     } else {
-        char_out = calloc(totsize+1, sizeof(char));
+        char_out = (char *)calloc(totsize+1, sizeof(char));
         ret = H5Aread(attr, str_type, char_out);
         curr_attr->attribute_value = &char_out;
         curr_attr->attribute_value_length=1;
