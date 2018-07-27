@@ -97,7 +97,6 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 
     if (h5object_list_head == NULL) {
         h5object_list_head = object;
-        object->head = NULL;
     } else {
         h5object_t *h5object_list_tail = h5object_list_head->tail;
         if (h5object_list_tail==NULL) {
@@ -106,7 +105,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
             h5object_list_head->tail = object;
         } else {
             h5object_list_tail->next = object;
-            h5object_list_tail->tail = NULL;
+            h5object_list_head->tail = object;
         }
         object->head = h5object_list_head;
     }
