@@ -10,6 +10,8 @@ void parse_hdf5_file(char *filepath, json_object **out){
 
     scan_hdf5(filepath, meta_collector, 0);
 
+    println("num_objs = %d", meta_collector->num_objs);
+
     h5object_t *curr_obj = meta_collector->object_linked_list;
     while (curr_obj) {
         json_object *curr_json_obj = json_object_new_object();
