@@ -2,7 +2,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
 
 find_package(JSON-C REQUIRED)
 
-ADD_LIBRARY(c_base_utils SHARED base_stdlib.h c95_stdlib.h c99_stdlib.h c11_stdlib.h)
+ADD_LIBRARY(c_base_utils SHARED c_base_stdlib.c base_stdlib.h c95_stdlib.h c99_stdlib.h c11_stdlib.h)
 ADD_LIBRARY(string_utils SHARED string_utils.c string_utils.h)
 TARGET_LINK_LIBRARIES(string_utils c_base_utils)
 
