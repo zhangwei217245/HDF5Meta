@@ -185,7 +185,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
             break;
     }
-
+    println("attr: %s", name);
     // Append attribute element to object attribute list.
     h5object_t *h5object = (h5object_t *)h5obj;
 
