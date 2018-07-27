@@ -193,7 +193,6 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
 
     if (h5attr_list_head == NULL) {
         h5attr_list_head = curr_attr;
-        h5object->attr_linked_list = h5attr_list_head;
     } else {
         h5attribute_t *h5attr_list_tail = h5attr_list_head->tail;
         if (h5attr_list_tail==NULL) {
@@ -202,10 +201,11 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
             h5attr_list_head->tail = curr_attr;
         } else {
             h5attr_list_tail->next = curr_attr;
-            h5attr_list_tail->tail = NULL;
+            h5attr_list_head->tail = curr_attr;
         }
         curr_attr->head = h5attr_list_head;
     }
+    h5object->attr_linked_list = h5attr_list_head;
 
     // Call user defined function on attribute:
     if (h5object -> on_attr != NULL) {
