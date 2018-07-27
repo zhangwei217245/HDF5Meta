@@ -1,4 +1,4 @@
-#include "../lib/hdf5_meta.h"
+#include "../lib/hdf52json.h"
 
 void print_usage() {
     printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
