@@ -79,10 +79,12 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     h5object_t *object = (h5object_t *)calloc(1,sizeof(h5object_t));
 
     object->obj_id = H5Oopen(loc_id, name, H5P_DEFAULT);
-    object->obj_name = name;
+
+    object->obj_name = (char *)calloc(strlen(name)+1, sizeof(char));
+    sprintf(object->obj_name, "%s", name);
     object->obj_info = info;
     object->num_attrs = H5Aget_num_attrs(object->obj_id);
-    println("obj : %s", object->obj_name);
+    // println("obj : %s", object->obj_name);
 
     if (meta_coll->on_attr != NULL) {
         object->on_attr = meta_coll->on_attr;
@@ -168,7 +170,9 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
 
     H5T_class_t attr_type = H5Tget_class(atype);
 
-    curr_attr->attr_name = name;
+    curr_attr->attr_name = (char *)calloc(strlen(name)+1, sizeof(char));
+    sprintf(curr_attr->attr_name, "%s", name);
+
     curr_attr->attr_type = attr_type;
 
     switch(attr_type) {
