@@ -8,7 +8,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
     init_metadata_collector(meta_collector, 0, NULL, NULL, NULL, NULL);
 
-    int scanning_rst = scan_hdf5(filepath, metadata_collector_t *meta_collector, 0);
+    scan_hdf5(filepath, meta_collector, 0);
 
     h5object_t *curr_obj = meta_collector->object_linked_list;
     while (curr_obj) {
@@ -25,7 +25,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
         strftime(ctime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->ctime)));
         strftime(btime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->btime)));
 
-        json_object *curr_json_obj = json_object_new_object();
+        // json_object *curr_json_obj = json_object_new_object();
         json_object_object_add(curr_json_obj, "name", json_object_new_string(curr_obj->obj_name));
         json_object_object_add(curr_json_obj, "type", json_object_new_string(obj_type_buff));
         json_object_object_add(curr_json_obj, "atime", json_object_new_string(atime_buff));
