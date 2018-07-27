@@ -20,10 +20,11 @@ void parse_hdf5_file(char *filepath, json_object **out){
         char btime_buff[20];
         char *obj_type_buff = get_obj_type_str(curr_obj->obj_info->type);
 
-        strftime(atime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->atime)));
-        strftime(mtime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->mtime)));
-        strftime(ctime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->ctime)));
-        strftime(btime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->btime)));
+        // strftime(atime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->atime)));
+        // strftime(mtime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->mtime)));
+        // strftime(ctime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->ctime)));
+        // //FIXME : a SIGSEGV here. Checkout what is going on. 
+        // strftime(btime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->btime)));
 
         // json_object *curr_json_obj = json_object_new_object();
         json_object_object_add(curr_json_obj, "name", json_object_new_string(curr_obj->obj_name));
