@@ -17,7 +17,7 @@ ADD_LIBRARY(indexds art.c art.h hashset.c hashset.h vector.c vector.h bplustree.
 
 ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
 
-ADD_LIBRARY(new_hdf5_meta hdf5_meta.c hdf5_meta.h hdf52json.c hdf52json.h)
+ADD_LIBRARY(new_hdf5_meta new_hdf5_meta.c new_hdf5_meta.h hdf52json.c hdf52json.h)
 
 include_directories(${JSON-C_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/lib)
