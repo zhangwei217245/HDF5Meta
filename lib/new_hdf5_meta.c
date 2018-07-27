@@ -82,6 +82,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     object->obj_name = name;
     object->obj_info = info;
     object->num_attrs = H5Aget_num_attrs(object->obj_id);
+    println("obj : %s", object->obj_name);
 
     if (meta_coll->on_attr != NULL) {
         object->on_attr = meta_coll->on_attr;
