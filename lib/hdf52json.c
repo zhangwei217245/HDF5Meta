@@ -18,7 +18,9 @@ void parse_hdf5_file(char *filepath, json_object **out){
         char mtime_buff[20];
         char ctime_buff[20];
         char btime_buff[20];
-        char *obj_type_buff = get_obj_type_str(curr_obj->obj_info->type);
+        char *obj_type_buff;
+        
+        get_obj_type_str(curr_obj->obj_info->type, &obj_type_buff);
 
         // strftime(atime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->atime)));
         // strftime(mtime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->mtime)));

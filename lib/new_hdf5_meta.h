@@ -59,7 +59,7 @@ int scan_hdf5(char *file_path, metadata_collector_t *meta_collector, int is_visi
 /**
  * Auxiliary function that translate H5O_type_t enumeration into string
  */
-char *get_obj_type_str(H5O_type_t obj_type);
+void get_obj_type_str(H5O_type_t obj_type, char **out);
 
 void init_metadata_collector(metadata_collector_t *meta_coll,
     int num_objs, void *opdata, h5object_t *obj_list_head,

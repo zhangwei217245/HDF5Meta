@@ -263,22 +263,21 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
     return ret;
 }
 
-char *get_obj_type_str(H5O_type_t obj_type){
-    char rst[20];
+void get_obj_type_str(H5O_type_t obj_type, char **out){
+    *out = (char *)calloc(20, sizeof(char));
     switch (obj_type) {
         case H5O_TYPE_GROUP:
-            sprintf (rst, "GROUP");
+            sprintf (*out, "GROUP");
             break;
         case H5O_TYPE_DATASET:
-            sprintf (rst, "DATASET");
+            sprintf (*out, "DATASET");
             break;
         case H5O_TYPE_NAMED_DATATYPE:
-            sprintf (rst, "NAMED_DATATYPE");
+            sprintf (*out, "NAMED_DATATYPE");
             break;
         default:
-            sprintf (rst, "UNKNOWN");
+            sprintf (*out, "UNKNOWN");
     }
-    return rst;
 }
 
 void init_metadata_collector(metadata_collector_t *meta_coll,
