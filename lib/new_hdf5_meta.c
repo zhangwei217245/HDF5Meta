@@ -17,11 +17,11 @@ static herr_t op_func_L (hid_t loc_id, const char *name, const H5L_info_t *info,
  */
 static herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
 
-static herr_t read_int_attr(int npoints, hid_t attr, hid_t atype, int **out);
+static herr_t read_int_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr);
 
-static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, double **out);
+static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr);
 
-static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, char ***out);
+static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr);
 
 // h5object_t get_h5obj_from_meta_coll(metadata_collector_t *meta_coll, int index){
 //     if (index >= meta_coll->num_objs || index < 0) {
@@ -81,15 +81,15 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     object->obj_id = H5Oopen(loc_id, name, H5P_DEFAULT);
     object->obj_name = name;
     object->obj_info = info;
-    object->num_attr = H5Aget_num_attrs(object.obj_id);
+    object->num_attrs = H5Aget_num_attrs(object->obj_id);
 
     if (meta_coll->on_attr != NULL) {
         object->on_attr = meta_coll->on_attr;
         object->opdata = meta_coll->opdata;
     }
 
-    if (object->num_attr > 0) {
-        H5Aiterate(curr_obj_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, object);
+    if (object->num_attrs > 0) {
+        H5Aiterate(object->obj_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, object);
     }
 
     h5object_t *h5object_list_head = meta_coll->object_linked_list;
@@ -115,7 +115,8 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     if (meta_coll -> on_obj != NULL) {
         int udf_rst = meta_coll->on_obj(meta_coll->opdata, object);
         if (udf_rst < 0) {
-            perror("user defined function got problem when collecting object %s\n", name);
+            fprintf(stderr, "user defined function got problem when collecting object %s\n", name);
+            fflush(stderr);
         }
     }
 
@@ -209,7 +210,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
     if (h5object -> on_attr != NULL) {
         int udf_rst = h5object->on_attr(h5object->opdata, curr_attr);
         if (udf_rst < 0) {
-            perror("user defined function got problem when iterating %s->%s\n", h5object->obj_name, curr_attr->attr_name);
+            fprintf(stderr, "user defined function got problem when iterating %s->%s\n", h5object->obj_name, curr_attr->attr_name);
+            fflush(stderr);
         }
     }
 
