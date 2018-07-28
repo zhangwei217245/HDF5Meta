@@ -46,67 +46,65 @@ void parse_hdf5_file(char *filepath, json_object **out){
 
         while (curr_attr) {
             println("attr_name:%s, attr_type:%d", curr_attr->attr_name, curr_attr->attr_type);
-            // switch(curr_attr->attr_type) {
-            //     case H5T_INTEGER: {
-            //         int *int_value = (int *)curr_attr->attribute_value;
-            //         if (curr_attr->attribute_value_length > 1) {
-            //             json_object *json_int_array = json_object_new_array();
-            //             int j = 0;
-            //             for (j = 0; j < curr_attr->attribute_value_length; j++) {
-            //                 json_object_array_add(json_int_array, json_object_new_int(int_value[j]));
-            //             }
-            //             json_object_object_add(curr_json_attr_coll, 
-            // curr_attr->attr_name, json_int_array);
-            //         } else {
-            //             json_object_object_add(curr_json_attr_coll, 
-            // curr_attr->attr_name, json_object_new_int(int_value[0]));
-            //         }
-            //         break;
-            //     }
-            //     case H5T_FLOAT: {
-            //         double *double_value = (double *)curr_attr->attribute_value;
-            //         if (curr_attr->attribute_value_length > 1) {
-            //             json_object *json_double_array = json_object_new_array();
-            //             int j = 0;
-            //             for (j = 0; j < curr_attr->attribute_value_length; j++) {
-            //                 json_object_array_add(json_double_array, json_object_new_double(double_value[j]));
-            //             }
-            //             json_object_object_add(curr_json_attr_coll, 
-            // curr_attr->attr_name, json_double_array);
-            //         } else {
-            //             json_object_object_add(curr_json_attr_coll, 
-            // curr_attr->attr_name, json_object_new_double(double_value[0]));
-            //         }
-            //         break;
-            //     }
-            //     case H5T_STRING: {
-            //         char **string_value = (char **)curr_attr->attribute_value;
-            //         if (curr_attr->attribute_value_length > 1) {
-            //             json_object *json_string_array = json_object_new_array();
-            //             int j = 0;
-            //             for (j = 0; j < curr_attr->attribute_value_length; j++) {
-            //                 json_object_array_add(json_string_array, json_object_new_string(string_value[j]));
-            //             }
-            //             json_object_object_add(curr_json_attr_coll, 
-            // curr_attr->attr_name, json_string_array);
-            //         } else {
-            //             json_object_object_add(curr_json_attr_coll, 
-            // curr_attr->attr_name, json_object_new_string(string_value[0]));
-            //         }
-            //         break;
-            //     }
-            //     default:
-            //         continue;
-            // }
-            // json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
-            // println("attr = %s", curr_attr->attr_name);
-            curr_attr = curr_attr->next;
+            if (curr_attr->attr_type == H5T_INTEGER) {
+                
+                int *int_value = (int *)curr_attr->attribute_value;
+                if (curr_attr->attribute_value_length > 1) {
+                    json_object *json_int_array = json_object_new_array();
+                    int j = 0;
+                    for (j = 0; j < curr_attr->attribute_value_length; j++) {
+                        json_object_array_add(json_int_array, json_object_new_int(int_value[j]));
+                    }
+                    json_object_object_add(curr_json_attr_coll, 
+        curr_attr->attr_name, json_int_array);
+                } else {
+                    json_object_object_add(curr_json_attr_coll, 
+        curr_attr->attr_name, json_object_new_int(int_value[0]));
+                }
+                    
+                    
+            } else if (curr_attr->attr_type ==  H5T_FLOAT ){
+                double *double_value = (double *)curr_attr->attribute_value;
+                if (curr_attr->attribute_value_length > 1) {
+                    json_object *json_double_array = json_object_new_array();
+                    int j = 0;
+                    for (j = 0; j < curr_attr->attribute_value_length; j++) {
+                        json_object_array_add(json_double_array, json_object_new_double(double_value[j]));
+                    }
+                    json_object_object_add(curr_json_attr_coll, 
+        curr_attr->attr_name, json_double_array);
+                } else {
+                    json_object_object_add(curr_json_attr_coll, 
+        curr_attr->attr_name, json_object_new_double(double_value[0]));
+                }
+                    
+            } else if (curr_attr->attr_type == H5T_STRING){
+                char **string_value = (char **)curr_attr->attribute_value;
+                if (curr_attr->attribute_value_length > 1) {
+                    json_object *json_string_array = json_object_new_array();
+                    int j = 0;
+                    for (j = 0; j < curr_attr->attribute_value_length; j++) {
+                        json_object_array_add(json_string_array, json_object_new_string(string_value[j]));
+                    }
+                    json_object_object_add(curr_json_attr_coll, 
+        curr_attr->attr_name, json_string_array);
+                } else {
+                    json_object_object_add(curr_json_attr_coll, 
+        curr_attr->attr_name, json_object_new_string(string_value[0]));
+                }
+                    
+            } else {
+                continue;
+            }
         }
-        json_object_array_add(json_root_array,curr_json_obj);
-        println("obj = %s", curr_obj->obj_name);
-        curr_obj = curr_obj->next;
+        // json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
+        // println("attr = %s", curr_attr->attr_name);
+        curr_attr = curr_attr->next;
     }
-
+    json_object_array_add(json_root_array,curr_json_obj);
+    println("obj = %s", curr_obj->obj_name);
+    curr_obj = curr_obj->next;
+    
     if (out != NULL) {
         *out = json_root_array;
     }
