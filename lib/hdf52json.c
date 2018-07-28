@@ -24,9 +24,6 @@ void parse_hdf5_file(char *filepath, json_object **out){
         
         get_obj_type_str(curr_obj->obj_info->type, &obj_type_buff);
 
-        
-
-        // json_object *curr_json_obj = json_object_new_object();
         json_object_object_add(curr_json_obj, "name", json_object_new_string(curr_obj->obj_name));
         json_object_object_add(curr_json_obj, "type", json_object_new_string(obj_type_buff));
 
@@ -96,14 +93,14 @@ void parse_hdf5_file(char *filepath, json_object **out){
             } else {
                 continue;
             }
+            // json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
+            // println("attr = %s", curr_attr->attr_name);
+            curr_attr = curr_attr->next;
         }
-        // json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
-        // println("attr = %s", curr_attr->attr_name);
-        curr_attr = curr_attr->next;
+        json_object_array_add(json_root_array, curr_json_obj);
+        println("obj = %s", curr_obj->obj_name);
+        curr_obj = curr_obj->next;
     }
-    json_object_array_add(json_root_array,curr_json_obj);
-    println("obj = %s", curr_obj->obj_name);
-    curr_obj = curr_obj->next;
     
     if (out != NULL) {
         *out = json_root_array;
