@@ -251,7 +251,7 @@ static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, h5attribute_
 static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr){
 
     herr_t ret;
-    char  *string_out[100];
+    char  **string_out;
     char  **char_out;
 
     size_t size = H5Tget_size (atype);
@@ -261,7 +261,13 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
 
     if(H5Tis_variable_str(str_type) == 1) {
         str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
-        ret = H5Aread(attr, str_type, &string_out);
+        char *tempout[100];
+        ret = H5Aread(attr, str_type, &tempout);
+        string_out = (char **)calloc(npoints, sizeof(char *));//string_out;
+        int i  = 0;
+        for (i = 0; i < npoints; i++) {
+            string_out[i] = tempout[i];
+        }
         curr_attr->attribute_value = string_out;
         curr_attr->attribute_value_length = npoints;
     } else {
