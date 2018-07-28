@@ -267,11 +267,11 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
     } else {
         char *tempout = (char *)calloc(totsize+1, sizeof(char));
         ret = H5Aread(attr, str_type, tempout);
-        char_out = (char *)calloc(strlen(tempout)+2, sizeof(char));
-        sprintf(char_out, "%s", tempout);
-        curr_attr->attribute_value = &char_out;
+        // char_out = (char *)calloc(strlen(tempout)+2, sizeof(char));
+        // sprintf(char_out, "%s", tempout);
+        curr_attr->attribute_value = tempout;
         curr_attr->attribute_value_length=1;
-        free(tempout);
+        // free(tempout);
     }
     return ret;
 }
