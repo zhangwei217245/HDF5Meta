@@ -28,15 +28,15 @@ void parse_hdf5_file(char *filepath, json_object **out){
         json_object_object_add(curr_json_obj, "type", json_object_new_string(obj_type_buff));
 
 
-        // strftime(atime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->atime)));
-        // strftime(mtime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->mtime)));
-        // strftime(ctime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->ctime)));
-        // //FIXME : a SIGSEGV here. Checkout what is going on. 
-        // strftime(btime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->btime)));
-        // json_object_object_add(curr_json_obj, "atime", json_object_new_string(atime_buff));
-        // json_object_object_add(curr_json_obj, "mtime", json_object_new_string(mtime_buff));
-        // json_object_object_add(curr_json_obj, "ctime", json_object_new_string(ctime_buff));
-        // json_object_object_add(curr_json_obj, "btime", json_object_new_string(btime_buff));
+        strftime(atime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->atime)));
+        strftime(mtime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->mtime)));
+        strftime(ctime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->ctime)));
+        //FIXME : a SIGSEGV here. Checkout what is going on. 
+        strftime(btime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj->obj_info->btime)));
+        json_object_object_add(curr_json_obj, "atime", json_object_new_string(atime_buff));
+        json_object_object_add(curr_json_obj, "mtime", json_object_new_string(mtime_buff));
+        json_object_object_add(curr_json_obj, "ctime", json_object_new_string(ctime_buff));
+        json_object_object_add(curr_json_obj, "btime", json_object_new_string(btime_buff));
         
         // json_object *curr_json_attr_coll = json_object_new_object();
         h5attribute_t *curr_attr = curr_obj->attr_linked_list;
