@@ -73,9 +73,8 @@ void parse_hdf5_file(char *filepath, json_object **out){
                 }
                     
             } else if (curr_attr->attr_type == H5T_STRING){
-                
+                char **string_value = (char **)curr_attr->attribute_value;
                 if (curr_attr->attribute_value_length > 1) {
-                    char **string_value = (char **)curr_attr->attribute_value;
                     json_object *json_string_array = json_object_new_array();
                     int j = 0;
                     for (j = 0; j < curr_attr->attribute_value_length; j++) {
@@ -85,8 +84,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
                     json_object_object_add(curr_json_obj, 
         curr_attr->attr_name, json_string_array);
                 } else {
-                    char *asv=(char *)curr_attr->attribute_value;
-                    asv = (asv)?"":asv;
+                    char *asv= (string_value && string_value[0])?string_value[0]:"";
                     json_object_object_add(curr_json_obj, 
         curr_attr->attr_name, json_object_new_string(asv));
                 }
