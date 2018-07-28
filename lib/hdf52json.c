@@ -44,7 +44,6 @@ void parse_hdf5_file(char *filepath, json_object **out){
         while (curr_attr) {
             println("attr_name:%s, attr_type:%d", curr_attr->attr_name, curr_attr->attr_type);
             if (curr_attr->attr_type == H5T_INTEGER) {
-                
                 int *int_value = (int *)curr_attr->attribute_value;
                 if (curr_attr->attribute_value_length > 1) {
                     json_object *json_int_array = json_object_new_array();
@@ -58,8 +57,6 @@ void parse_hdf5_file(char *filepath, json_object **out){
                     json_object_object_add(curr_json_attr_coll, 
         curr_attr->attr_name, json_object_new_int(int_value[0]));
                 }
-                    
-                    
             } else if (curr_attr->attr_type ==  H5T_FLOAT ){
                 double *double_value = (double *)curr_attr->attribute_value;
                 if (curr_attr->attribute_value_length > 1) {
@@ -81,21 +78,21 @@ void parse_hdf5_file(char *filepath, json_object **out){
                     json_object *json_string_array = json_object_new_array();
                     int j = 0;
                     for (j = 0; j < curr_attr->attribute_value_length; j++) {
-                        json_object_array_add(json_string_array, json_object_new_string(string_value[j]));
+                        char *asv=(string_value[j]==NULL)?"":string_value[j];
+                        json_object_array_add(json_string_array, json_object_new_string(asv));
                     }
                     json_object_object_add(curr_json_attr_coll, 
         curr_attr->attr_name, json_string_array);
                 } else {
+                    char *asv=(string_value[0]==NULL)?"":string_value[0];
                     json_object_object_add(curr_json_attr_coll, 
-        curr_attr->attr_name, json_object_new_string(string_value[0]));
+        curr_attr->attr_name, json_object_new_string(asv));
                 }
-                    
             } else {
                 curr_attr = curr_attr->next;
                 continue;
             }
-            // json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
-            // println("attr = %s", curr_attr->attr_name);
+            json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
             curr_attr = curr_attr->next;
         }
         json_object_array_add(json_root_array, curr_json_obj);
