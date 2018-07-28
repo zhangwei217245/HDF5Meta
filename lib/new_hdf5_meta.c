@@ -174,6 +174,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
     H5T_class_t attr_type = H5Tget_class(atype);
 
     curr_attr->attr_name = (char *)calloc(strlen(name)+1, sizeof(char));
+    curr_attr->next = NULL;
     sprintf(curr_attr->attr_name, "%s", name);
 
     curr_attr->attr_type = attr_type;
@@ -213,6 +214,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
         curr_attr->head = h5attr_list_head;
     }
     h5object->attr_linked_list = h5attr_list_head;
+    h5object->num_attrs+=1;
 
     // Call user defined function on attribute:
     if (h5object -> on_attr != NULL) {
