@@ -40,9 +40,8 @@ void parse_hdf5_file(char *filepath, json_object **out){
         
         
         h5attribute_t *curr_attr = curr_obj->attr_linked_list;
-
+        json_object *curr_json_attr_coll = json_object_new_object();
         while (curr_attr) {
-            json_object *curr_json_attr_coll = json_object_new_object();
             // println("attr_name:%s, attr_type:%d", curr_attr->attr_name, curr_attr->attr_type);
             if (curr_attr->attr_type == H5T_INTEGER) {
                 int *int_value = (int *)curr_attr->attribute_value;
@@ -92,10 +91,10 @@ void parse_hdf5_file(char *filepath, json_object **out){
             } else {
                 curr_attr = curr_attr->next;
                 continue;
-            }
-            json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
+            } 
             curr_attr = curr_attr->next;
         }
+        json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
         json_object_array_add(json_root_array, curr_json_obj);
         println("obj = %s", curr_obj->obj_name);
         curr_obj = curr_obj->next;
