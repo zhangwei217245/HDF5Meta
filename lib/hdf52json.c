@@ -38,10 +38,11 @@ void parse_hdf5_file(char *filepath, json_object **out){
         json_object_object_add(curr_json_obj, "ctime", json_object_new_string(ctime_buff));
         json_object_object_add(curr_json_obj, "btime", json_object_new_string(btime_buff));
         
-        json_object *curr_json_attr_coll = json_object_new_object();
+        
         h5attribute_t *curr_attr = curr_obj->attr_linked_list;
 
         while (curr_attr) {
+            json_object *curr_json_attr_coll = json_object_new_object();
             // println("attr_name:%s, attr_type:%d", curr_attr->attr_name, curr_attr->attr_type);
             if (curr_attr->attr_type == H5T_INTEGER) {
                 int *int_value = (int *)curr_attr->attribute_value;
