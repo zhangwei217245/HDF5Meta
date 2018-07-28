@@ -84,7 +84,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
                     json_object_object_add(curr_json_obj, 
         curr_attr->attr_name, json_string_array);
                 } else {
-                    char *asv= (string_value && string_value[0])?string_value[0]:"";
+                    char *asv=(string_value[0]==NULL)?"":string_value[0];
                     json_object_object_add(curr_json_obj, 
         curr_attr->attr_name, json_object_new_string(asv));
                 }
