@@ -26,5 +26,8 @@ typedef struct dir_entry {
 } dir_entry_t;
 
 int init_dir_entry(const char *path, dir_entry_t *start_dir);
+int deinit_dir_entry(dir_entry_t *entry);
 
-void collect_dir(dir_entry_t *start_dir, int (*filter)(struct dirent *dir_entry));
+void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
+    int (*on_file)(dir_entry_t *f_entry), 
+    int (*on_dir)(dir_entry_t *d_entry));

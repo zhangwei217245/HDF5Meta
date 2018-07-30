@@ -18,6 +18,12 @@ target_link_libraries(test_bpt_hdf5 PRIVATE
     ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 
 
+add_executable (test_dir_scan test_dir_scan.c)
+target_link_libraries(test_bpt_hdf5 PRIVATE 
+    new_hdf5_meta 
+    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
+
+
 # build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
 target_link_libraries(hdf5_reader PRIVATE 
