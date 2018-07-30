@@ -1,5 +1,5 @@
 #include "../lib/fs_ops.h"
-#include "../lib/string_utils.h"
+#include "string_utils.h"
 
 int is_hdf5(dir_entry_t *d_entry){
     if (d_entry->dir_type==FILE_ENTRY && endsWith(d_entry->name, ".hdf5")){
