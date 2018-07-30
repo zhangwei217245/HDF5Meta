@@ -18,7 +18,7 @@ target_link_libraries(test_bpt_hdf5 PRIVATE
 
 add_executable (test_dir_scan test_dir_scan.c)
 target_link_libraries(test_dir_scan PRIVATE 
-    new_hdf5_meta filesys)
+    new_hdf5_meta filesys string_utils)
 
 
 # build hdf5_reader
