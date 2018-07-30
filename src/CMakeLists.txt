@@ -9,26 +9,22 @@ target_link_libraries (hello_mongoc PRIVATE hdf5_meta
 
 add_executable (test_unindexed_hdf5 test_unindexed_hdf5.c)
 target_link_libraries(test_unindexed_hdf5 PRIVATE 
-    hdf5_meta
-    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
+    hdf5_meta)
 
 add_executable (test_bpt_hdf5 test_bpt_hdf5.c)
 target_link_libraries(test_bpt_hdf5 PRIVATE 
-    hdf5_meta
-    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
+    hdf5_meta)
 
 
 add_executable (test_dir_scan test_dir_scan.c)
 target_link_libraries(test_dir_scan PRIVATE 
-    new_hdf5_meta filesys
-    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
+    new_hdf5_meta filesys)
 
 
 # build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
 target_link_libraries(hdf5_reader PRIVATE 
-    new_hdf5_meta
-    ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
+    new_hdf5_meta)
 
 
 #target_compile_definitions (hdf5_reader PRIVATE "${JSON_C_DEFINITIONS}")
