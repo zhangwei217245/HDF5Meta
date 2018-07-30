@@ -19,6 +19,8 @@ ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
 
 ADD_LIBRARY(new_hdf5_meta new_hdf5_meta.c new_hdf5_meta.h hdf52json.c hdf52json.h)
 
+ADD_LIBRARY(filesys fs_ops.c fs_ops.h)
+
 include_directories(${JSON-C_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/lib)
 link_directories (${PROJECT_BINARY_DIR}/lib)
