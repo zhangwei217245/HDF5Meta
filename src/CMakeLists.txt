@@ -13,7 +13,7 @@ target_link_libraries(test_unindexed_hdf5 PRIVATE
 
 add_executable (test_bpt_hdf5 test_bpt_hdf5.c)
 target_link_libraries(test_bpt_hdf5 PRIVATE 
-    hdf5_meta)
+    hdf5_meta timer_utils)
 
 
 add_executable (test_dir_scan test_dir_scan.c)
