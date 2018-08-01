@@ -74,6 +74,7 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
     int (*on_dir)(dir_entry_t *d_entry)){
     DIR *dir;
     struct dirent *entry;
+    struct stat s_buf;
     
     if (!(dir = opendir(start_dir->name))) {
         return;
@@ -85,6 +86,7 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
             continue;
         }
+        stat(entry->d_name, &s_buf);
         dir_entry_t *last = sub_dir_head;
         sub_dir_head = (dir_entry_t *)calloc(1, sizeof(dir_entry_t));
         char *path = (char *)calloc(1024, sizeof(char));
@@ -98,13 +100,13 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
                 deinit_dir_entry(sub_dir_head);
                 continue;
         }
-        if (entry->d_type == DT_DIR) {
+        if (S_ISDIR(s_buf.st_mode)) {
             sub_dir_head->dir_type = DIR_ENTRY;
             if (on_dir) {
                 on_dir(sub_dir_head);
             }
             collect_dir(sub_dir_head, filter, on_dir, on_file);
-        } else if (entry->d_type == DT_REG){
+        } else if (S_ISREG(s_buf.st_mode)){
             sub_dir_head->dir_type = FILE_ENTRY;
             if (on_file) {
                 on_file(sub_dir_head);
