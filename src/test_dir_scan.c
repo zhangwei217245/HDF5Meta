@@ -18,12 +18,12 @@ int is_hdf5(dir_entry_t *d_entry){
 }
 
 int on_file(dir_entry_t *f_entry) {
-    printf("%*s- %s\n", f_entry->depth+1, "", f_entry->name);
+    printf("%*s- %s\n", f_entry->depth+1, " ", f_entry->name);
     return 1;
 }
 
 int on_dir(dir_entry_t *d_entry) {
-    printf("%*s[%s]\n", d_entry->depth+1, "", d_entry->name);
+    printf("%*s[%s]\n", d_entry->depth+1, " ", d_entry->name);
     return 1;
 }
 
