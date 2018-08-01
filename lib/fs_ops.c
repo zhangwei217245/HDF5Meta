@@ -82,6 +82,9 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
     dir_entry_t *sub_dir_head = NULL;
 
     while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+            continue;
+        }
         dir_entry_t *last = sub_dir_head;
         sub_dir_head = (dir_entry_t *)calloc(1, sizeof(dir_entry_t));
         char *path = (char *)calloc(1024, sizeof(char));
@@ -110,10 +113,15 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
                 on_file(sub_dir_head);
             }
         }
+        
         if (last) {
             last->next = sub_dir_head;
-            last->head->tail = sub_dir_head;
-            sub_dir_head->head = last->head;
+            if (last->head) {
+                last->head->tail = sub_dir_head;
+                sub_dir_head->head = last->head;
+            } else {
+                last->head = sub_dir_head;
+            }
         } else {
             sub_dir_head->head = sub_dir_head;
         }
