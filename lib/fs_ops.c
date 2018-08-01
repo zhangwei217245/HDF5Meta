@@ -104,7 +104,7 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
                 on_dir(sub_dir_head);
             }
             collect_dir(sub_dir_head, filter, on_dir, on_file);
-        } else {
+        } else if (entry->d_type == DT_REG){
             sub_dir_head->dir_type = FILE_ENTRY;
             if (on_file) {
                 on_file(sub_dir_head);
