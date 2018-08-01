@@ -16,26 +16,29 @@ int init_dir_entry(const char *name, dir_entry_t *start_dir) {
 
     
     int result = chdir(name);
-    switch(result){
-        case EACCES: 
-            perror("Permission denied\n"); return -1;
-            break;
-        case EIO:
-            perror("An input output error occurred\n");return -1;
-            break;
-        case ENAMETOOLONG: 
-            perror("Path is to long\n");return -1;
-            break;
-        case ENOTDIR: 
-            perror("A component of path not a directory\n"); return -1;
-            break;
-        case ENOENT: 
-            perror("No such file or directory\n"); fprintf(stderr, "enoent\n"); return -1;
-            break;
-        default: 
-            fprintf(stderr, "Couldn't change directory to %s\n", name); return -1;
-            break;
+    if (result!=0){
+        switch(result){
+            case EACCES: 
+                perror("Permission denied\n"); return -1;
+                break;
+            case EIO:
+                perror("An input output error occurred\n");return -1;
+                break;
+            case ENAMETOOLONG: 
+                perror("Path is to long\n");return -1;
+                break;
+            case ENOTDIR: 
+                perror("A component of path not a directory\n"); return -1;
+                break;
+            case ENOENT: 
+                perror("No such file or directory\n"); fprintf(stderr, "enoent\n"); return -1;
+                break;
+            default: 
+                fprintf(stderr, "Couldn't change directory to %s\n", name);return -1;
+                break;
+        }
     }
+    
     getcwd(specified_dir, sizeof(specified_dir));
     chdir(original_cwd);
     
