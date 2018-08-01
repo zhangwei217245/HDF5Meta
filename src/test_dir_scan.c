@@ -1,6 +1,10 @@
 #include "../lib/fs_ops.h"
 #include "../lib/string_utils.h"
 
+extern void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
+    int (*on_file)(dir_entry_t *f_entry), 
+    int (*on_dir)(dir_entry_t *d_entry));
+
 int is_hdf5(dir_entry_t *d_entry){
     int ends_with_HDF5 = endsWith(d_entry->name, ".hdf5");
     if (d_entry->dir_type==FILE_ENTRY && ends_with_HDF5){
