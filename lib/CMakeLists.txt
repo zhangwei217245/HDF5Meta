@@ -15,16 +15,20 @@ ADD_LIBRARY(thpool SHARED thpool.c thpool.h)
 
 ADD_LIBRARY(indexds art.c art.h hashset.c hashset.h vector.c vector.h bplustree.c bplustree.h)
 
-ADD_LIBRARY(filesys fs_ops.c fs_ops.h)
+ADD_LIBRARY(fs_utils fs_ops.c fs_ops.h)
+TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
 
 ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
 
-ADD_LIBRARY(new_hdf5_meta new_hdf5_meta.c new_hdf5_meta.h hdf52json.c hdf52json.h)
+
 
 include_directories(${JSON-C_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/lib)
 link_directories (${PROJECT_BINARY_DIR}/lib)
 target_include_directories(hdf5_meta PRIVATE "${JSON-C_INCLUDE_DIRS}")
-target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m query_utils timer_utils thpool indexds c_base_utils)
+target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils timer_utils thpool indexds fs_utils c_base_utils)
 
-target_link_libraries(new_hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m filesys query_utils timer_utils thpool indexds c_base_utils)
+
+ADD_LIBRARY(new_hdf5_meta new_hdf5_meta.c new_hdf5_meta.h hdf52json.c hdf52json.h)
+target_include_directories(new_hdf5_meta "${JSON-C_INCLUDE_DIRS}")
+target_link_libraries(new_hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils timer_utils thpool indexds fs_utils c_base_utils)
