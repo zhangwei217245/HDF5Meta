@@ -6,7 +6,7 @@
 
 typedef enum entry_type {
     DIR_ENTRY, FILE_ENTRY, UNKNOWN_ENTRY
-}entry_type_t;
+} entry_type_t;
 
 /**
  * When depth = 0, the entry is equal to the given dir specified by given dir path.
@@ -18,7 +18,6 @@ typedef struct dir_entry {
     entry_type_t dir_type;
 
     struct dir_entry *subdir_entries;
-
     struct dir_entry *next;
     struct dir_entry *head;
     struct dir_entry *tail;

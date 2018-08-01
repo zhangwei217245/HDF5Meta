@@ -27,5 +27,5 @@ int main(int argc, char *argv[]) {
     char *path = argv[1];
     dir_entry_t *start_dir = (dir_entry_t *)calloc(1, sizeof(dir_entry_t));
     init_dir_entry(path, start_dir);
-    collect_dir(start_dir, &is_hdf5, &on_file, &on_dir);
+    collect_dir(start_dir, is_hdf5, on_file, on_dir);
 }
