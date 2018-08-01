@@ -6,13 +6,15 @@ extern void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_ent
     int (*on_dir)(dir_entry_t *d_entry));
 
 int is_hdf5(dir_entry_t *d_entry){
-    int ends_with_HDF5 = endsWith(d_entry->name, ".hdf5");
-    ends_with_HDF5 = 1;
-    if (d_entry->dir_type==FILE_ENTRY && ends_with_HDF5){
-        return 1;
-    } else {
-        return 0;
-    }
+    // int ends_with_HDF5 = endsWith(d_entry->name, ".hdf5");
+    
+    // if (d_entry->dir_type==FILE_ENTRY && ends_with_HDF5){
+    //     return 1;
+    // } else {
+    //     return 0;
+    // }
+
+    return 1;
 }
 
 int on_file(dir_entry_t *f_entry) {
