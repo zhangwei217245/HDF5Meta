@@ -99,9 +99,6 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
                 continue;
         }
         if (entry->d_type == DT_DIR) {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-                continue;
-            }
             sub_dir_head->dir_type = DIR_ENTRY;
             if (on_dir) {
                 on_dir(sub_dir_head);
@@ -113,7 +110,6 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
                 on_file(sub_dir_head);
             }
         }
-        
         if (last) {
             last->next = sub_dir_head;
             if (last->head) {
