@@ -127,26 +127,3 @@ void collect_dir(dir_entry_t *start_dir, int (*filter)(dir_entry_t *d_entry),
     start_dir->subdir_entries = sub_dir_head->head;
     closedir(dir);
 }
-
-// void listdir(const char *name, dir_entry_t *dir_entry)
-// {
-//     DIR *dir;
-//     struct dirent *entry;
-
-//     if (!(dir = opendir(name)))
-//         return;
-
-//     while ((entry = readdir(dir)) != NULL) {
-//         if (entry->d_type == DT_DIR) {
-//             char path[1024];
-//             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-//                 continue;
-//             snprintf(path, sizeof(path), "%s/%s", name, entry->d_name);
-//             printf("%*s[%s]\n", indent, "", entry->d_name);
-//             listdir(path, indent + 2);
-//         } else {
-//             printf("%*s- %s\n", indent, "", entry->d_name);
-//         }
-//     }
-//     closedir(dir);
-// }
