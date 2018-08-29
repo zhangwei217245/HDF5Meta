@@ -68,7 +68,7 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         return;
     }
 
-    printf("start = %s\n", dir_path);
+    
 
     DIR *dir;
     // struct stat s_buf;
@@ -86,7 +86,9 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         char *name = (char *)calloc(1024, sizeof(char));
         snprintf(name,1023, "%s", entry->d_name);
         snprintf(path, 1023, "%s/%s", dir_path, entry->d_name);
-       
+
+        printf("entry = %s\n", path);
+
         if (filter!=NULL && filter(entry)==0) {
                 continue;
         }
