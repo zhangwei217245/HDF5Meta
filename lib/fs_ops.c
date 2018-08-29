@@ -92,6 +92,7 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         }
 
         if (entry->d_type == DT_DIR) {
+            printf("dir: %s\n", path);
             if (on_dir) {
                 on_dir(entry, on_dir_args);
             }
