@@ -68,6 +68,8 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         return;
     }
 
+    printf("start = %s\n", dir_path);
+
     DIR *dir;
     // struct stat s_buf;
     
