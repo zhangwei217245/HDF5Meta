@@ -87,14 +87,14 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         snprintf(name,1023, "%s", entry->d_name);
         snprintf(path, 1023, "%s/%s", dir_path, entry->d_name);
 
-        printf("entry = %s\n", path);
+        // printf("entry = %s\n", path);
 
         if (filter!=NULL && filter(entry)==0) {
                 continue;
         }
    
         if (entry->d_type == DT_DIR) {
-            printf("dir: %s\n", path);
+            // printf("dir: %s\n", path);
             if (on_dir) {
                 on_dir(entry, on_dir_args);
             }
