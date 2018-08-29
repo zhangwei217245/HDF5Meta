@@ -13,7 +13,7 @@ extern void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry
 int is_hdf5(struct dirent *entry){
     int ends_with_HDF5 = endsWith(entry->d_name, ".hdf5") || endsWith(entry->d_name, ".h5") ;
     
-    if (entry->d_type != DT_DIR && ends_with_HDF5){
+    if ( /*entry->d_type != DT_DIR &&*/ ends_with_HDF5){
         return 1;
     } else {
         return 0;

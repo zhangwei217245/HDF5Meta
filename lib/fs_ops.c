@@ -90,7 +90,7 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         if (filter!=NULL && filter(entry)==0) {
                 continue;
         }
-
+   
         if (entry->d_type == DT_DIR) {
             printf("dir: %s\n", path);
             if (on_dir) {
