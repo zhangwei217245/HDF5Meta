@@ -62,7 +62,8 @@
 void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
     int (*on_file)(struct dirent *f_entry, void *args), 
     int (*on_dir)(struct dirent *d_entry, void *args), 
-    void *on_file_args, void *on_dir_args, void *coll_args){
+    // void *on_file_args, void *on_dir_args, 
+    void *coll_args){
 
     if (dir_path == NULL) { // if the given start_dir is not a valid struct.
         return;
@@ -93,12 +94,14 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         if (entry->d_type == DT_DIR) {
             // printf("dir: %s\n", path);
             if (on_dir) {
-                on_dir(entry, on_dir_args);
+                on_dir(entry, coll_args);
             }
-            collect_dir(path, filter, on_file, on_dir, on_file_args, on_dir_args, coll_args);
+            collect_dir(path, filter, on_file, on_dir, 
+            // on_file_args, on_dir_args, 
+            coll_args);
         } else {
             if (on_file) {
-                on_file(entry, on_file_args);
+                on_file(entry, coll_args);
             }
         }
 

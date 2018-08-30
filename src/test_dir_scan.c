@@ -43,5 +43,7 @@ int main(int argc, char *argv[]) {
     // branch_depth_t *f_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     branch_depth_t *d_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     
-    collect_dir(path, is_hdf5, on_file, on_dir, d_depth, d_depth, NULL);
+    collect_dir(path, is_hdf5, on_file, on_dir, 
+    // d_depth, d_depth, 
+    d_depth);
 }
