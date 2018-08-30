@@ -6,9 +6,8 @@ typedef struct branch_depth{
 } branch_depth_t;
 
 extern void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
-    int (*on_file)(struct dirent *f_entry, void *args), 
-    int (*on_dir)(struct dirent *d_entry, void *args), 
-    // void *on_file_args, void *on_dir_args,
+    int (*on_file)(struct dirent *f_entry, const char *parent_path, void *args), 
+    int (*on_dir)(struct dirent *d_entry, const char *parent_path, void *args), 
     void *coll_args);
 
 int is_hdf5(struct dirent *entry){
@@ -22,13 +21,13 @@ int is_hdf5(struct dirent *entry){
     return 0;
 }
 
-int on_file(struct dirent *f_entry, void *args) {
+int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
     branch_depth_t *b_depth = (branch_depth_t *)args;
     printf("%*s- %s\n", b_depth->depth, " ", f_entry->d_name);
     return 1;
 }
 
-int on_dir(struct dirent *d_entry, void *args) {
+int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
     branch_depth_t *b_depth = (branch_depth_t *)args;
     b_depth->depth+=1;
     printf("%*s[%s]\n", b_depth->depth, " ", d_entry->d_name);
@@ -43,8 +42,6 @@ int main(int argc, char *argv[]) {
     
     branch_depth_t *d_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     d_depth->depth = 1;
-    
-    collect_dir(path, is_hdf5, on_file, on_dir, 
-    // d_depth, d_depth, 
-    d_depth);
+
+    collect_dir(path, is_hdf5, on_file, on_dir, d_depth);
 }

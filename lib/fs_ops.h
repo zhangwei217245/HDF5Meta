@@ -29,7 +29,6 @@
 // int deinit_dir_entry(dir_entry_t *entry);
 
 void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
-    int (*on_file)(struct dirent *f_entry, void *args), 
-    int (*on_dir)(struct dirent *d_entry, void *args), 
-    // void *on_file_args, void *on_dir_args, 
+    int (*on_file)(struct dirent *f_entry, const char *parent_path, void *args), 
+    int (*on_dir)(struct dirent *d_entry, const char *parent_path, void *args), 
     void *coll_args);
