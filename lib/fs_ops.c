@@ -68,8 +68,6 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
         return;
     }
 
-    
-
     DIR *dir;
     // struct stat s_buf;
     
@@ -82,17 +80,16 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
             // Not visiting current directory and parental directory
             continue;
         }
+
+        if (filter!=NULL && filter(entry)==0) {
+                continue;
+        }
+
         char *path = (char *)calloc(1024, sizeof(char));
         char *name = (char *)calloc(1024, sizeof(char));
         snprintf(name,1023, "%s", entry->d_name);
         snprintf(path, 1023, "%s/%s", dir_path, entry->d_name);
 
-        // printf("entry = %s\n", path);
-
-        if (filter!=NULL && filter(entry)==0) {
-                continue;
-        }
-   
         if (entry->d_type == DT_DIR) {
             // printf("dir: %s\n", path);
             if (on_dir) {
@@ -104,6 +101,9 @@ void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
                 on_file(entry, on_file_args);
             }
         }
+
+        free(path);
+        free(name);
     }
     closedir(dir);
 }
