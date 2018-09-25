@@ -9,7 +9,7 @@ void print_usage() {
 int parse_single_file(char *filepath) {
     char *json_str = NULL;
     parse_hdf5_meta_as_json_str(filepath, &json_str);
-    printf("%s\n", filepath);
+    printf("======== %s =============\n", filepath);
     printf("%s\n", json_str);
     return 0;
 }
