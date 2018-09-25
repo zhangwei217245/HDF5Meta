@@ -1,4 +1,6 @@
 #include "../lib/hdf52json.h"
+#include "../lib/fs_ops.h"
+#include "../lib/string_utils.h"
 
 void print_usage() {
     printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
