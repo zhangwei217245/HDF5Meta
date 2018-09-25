@@ -55,6 +55,7 @@ main(int argc, char **argv)
     if (argc != 2)
         print_usage();
     else {
+        path = argv[1];
         if (is_regular_file(path)) {
             rst = parse_single_file(path);
         } else {
