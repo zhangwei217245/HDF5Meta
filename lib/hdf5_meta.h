@@ -6,6 +6,13 @@
 #include "hdf5.h"
 #include <json-c/json.h>
 
+/***************************************************************************/
+/* This one follows the old HDF5 metadata reader and translate HDF5        */
+/* metadata into JSON format. However, with such hierarchical access path, */
+/* Maintaining the relationship between HDF5 parent and child is difficult */
+/***************************************************************************/
+
+
 #define MAX_NAME 1024
 #define MAX_TAG_LEN 16384
 

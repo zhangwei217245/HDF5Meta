@@ -1,7 +1,11 @@
 #include "query_utils.h"
 #include "hdf5.h"
 
-
+/**************************************************************************/
+/* This is an old implementation of HDF5 metadata reader.                 */
+/* With this one, we can follow the hierarchical structure of HDF5 file   */
+/* But this one has many issues, as it is not very flexible               */
+/**************************************************************************/
 
 #define MAX_NAME 1024
 #define MAX_TAG_LEN 16384

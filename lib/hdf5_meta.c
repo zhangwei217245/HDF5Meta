@@ -1,5 +1,10 @@
 #include "hdf5_meta.h"
 
+/***************************************************************************/
+/* This one follows the old HDF5 metadata reader and translate HDF5        */
+/* metadata into JSON format. However, with such hierarchical access path, */
+/* Maintaining the relationship between HDF5 parent and child is difficult */
+/***************************************************************************/
 
 void parse_hdf5_meta_as_json_str(char *filepath, char **result){
     json_object *rootObj = json_object_new_object();

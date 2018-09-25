@@ -24,7 +24,7 @@ target_link_libraries(test_dir_scan PRIVATE
 # build hdf5_reader
 add_executable (hdf5_reader HDF5_reader.c)
 target_link_libraries(hdf5_reader PRIVATE 
-    new_hdf5_meta)
+    hdf52json)
 
 
 #target_compile_definitions (hdf5_reader PRIVATE "${JSON_C_DEFINITIONS}")
