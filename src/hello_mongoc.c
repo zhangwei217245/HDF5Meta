@@ -19,7 +19,7 @@ extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
 extern int64_t get_all_doc_count();
-extern int64_t importing_fake_json_docs_to_db(const char *json_str, const int count);
+extern int64_t importing_fake_json_docs_to_db(const char *json_str, int count);
 extern void random_test();
 
 
