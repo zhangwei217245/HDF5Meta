@@ -19,7 +19,7 @@ extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
 extern int64_t get_all_doc_count();
-extern int64_t importing_json_doc_to_db(const char *json_str);
+extern int64_t importing_fake_json_docs_to_db(const char *json_str, const int count);
 extern void random_test();
 
 
@@ -117,7 +117,7 @@ void create_index_on_dataset_name() {
  */
 void test_inserting_query_no_index (const char *json_str) {
     clear_everything();
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str, 1000);
     println("=============== Inserting Document Done! ===============\n");
     issue_queries();
 }
@@ -157,7 +157,7 @@ void import_with_single_index(const char *json_str){
     clear_everything();
     create_doc_id_index();
     println("============== created index 1. ============== ");
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str,1000);
 }
 
 
@@ -174,7 +174,7 @@ void import_with_two_indexes(const char *json_str){
     println("============== created index 1. ============== ");
     create_dataset_name_index();
     println("============== created index 2. ============== ");
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str, 1000);
 }
 /**
  * G. Removing everything.
@@ -192,7 +192,7 @@ void import_with_three_indexes(const char *json_str){
     println("============== created index 2. ============== ");
     create_root_obj_path_index();
     println("============== created index 3. ============== ");
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str, 1000);
 }
 
 void import_with_four_indexes(const char *json_str){
@@ -205,7 +205,7 @@ void import_with_four_indexes(const char *json_str){
     println("============== created index 3. ============== ");
     create_lv2_obj_path_index();
     println("============== created index 4. ============== ");
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str, 1000);
 }
 
 void import_with_five_indexes(const char *json_str){
@@ -220,12 +220,12 @@ void import_with_five_indexes(const char *json_str){
     println("============== created index 4. ============== ");
     create_lv3_obj_path_index();
     println("============== created index 5. ============== ");
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str, 1000);
 }
 
 void import_with_no_index(const char *json_str){
     clear_everything();
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str, 1000);
 }
 
 int
