@@ -2,6 +2,23 @@
 #include "../lib/fs_ops.h"
 #include "../lib/string_utils.h"
 
+extern int64_t init_db();
+extern int64_t clear_all_docs();
+extern void clear_all_indexes();
+extern void drop_current_coll();
+extern void create_index(const char *index_key);
+extern void create_doc_id_index();
+extern void create_dataset_name_index();
+extern void create_root_obj_path_index();
+extern void create_lv2_obj_path_index();
+extern void create_lv3_obj_path_index();
+extern int64_t query_count(const char *query_condition);
+extern int64_t query_result_count(const char *query_condition);
+extern void query_result_and_print(const char *query_condition);
+extern int64_t get_all_doc_count();
+extern int64_t importing_json_doc_to_db(const char *json_str);
+extern void random_test();
+
 void print_usage() {
     printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
 }
@@ -9,7 +26,7 @@ void print_usage() {
 int parse_single_file(char *filepath) {
     char *json_str = NULL;
     parse_hdf5_meta_as_json_str(filepath, &json_str);
-    printf("======== %s =============\n", filepath);
+    printf("============= %s =============\n", filepath);
     printf("%s\n", json_str);
     return 0;
 }
@@ -51,6 +68,9 @@ main(int argc, char **argv)
 {
     char* path;
     int rst = 0;
+
+    int64_t doc_count = init_db();
+    printf("successfully init db, %d documents in mongodb.\n", doc_count);
 
     if (argc != 2)
         print_usage();

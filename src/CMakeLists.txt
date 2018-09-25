@@ -21,14 +21,11 @@ target_link_libraries(test_dir_scan PRIVATE
     new_hdf5_meta ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 
 
-# build hdf5_reader
-add_executable (hdf5_reader HDF5_reader.c)
-target_link_libraries(hdf5_reader PRIVATE 
-    hdf52json)
+# build hdf5_set_2_mongo
+add_executable (hdf5_set_2_mongo HDF5_set_2_mongo.c)
+target_link_libraries(hdf5_set_2_mongo PRIVATE 
+    hdf52json ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 
-
-#target_compile_definitions (hdf5_reader PRIVATE "${JSON_C_DEFINITIONS}")
-#target_compile_options(hdf5_reader PRIVATE ${JSON_C_CFLAGS} ${JSON_C_LIBS})
 
 #ADD_EXECUTABLE(main main.c dira/printa.c dirb/printb.c)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)
