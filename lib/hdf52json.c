@@ -96,7 +96,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
         }
         json_object_object_add(curr_json_obj, "attributes", curr_json_attr_coll);
         json_object_array_add(json_root_array, curr_json_obj);
-        println("obj = %s", curr_obj->obj_name);
+        // println("obj = %s", curr_obj->obj_name);
         curr_obj = curr_obj->next;
     }
     
