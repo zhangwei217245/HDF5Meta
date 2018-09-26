@@ -3,6 +3,10 @@
 
 void parse_hdf5_file(char *filepath, json_object **out){
     int i = 0;
+    json_object *json_root_object = json_object_new_object();
+
+    json_object_object_add(json_root_object, "file", json_object_new_string(filepath));
+
     json_object *json_root_array = json_object_new_array();
 
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
@@ -101,7 +105,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
     }
     
     if (out != NULL) {
-        *out = json_root_array;
+        *out = json_root_object;
     }
 }
 
