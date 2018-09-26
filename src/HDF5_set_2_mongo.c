@@ -34,7 +34,7 @@ int parse_single_file(char *filepath) {
     parse_hdf5_meta_as_json_str(filepath, &json_str);
     printf("============= Importing %s to MongoDB =============\n", filepath);
     // printf("%s\n", json_str);
-    importing_fake_json_docs_to_db(json_str,10);
+    importing_fake_json_docs_to_db((const char *)json_str,10);
     return 0;
 }
 
