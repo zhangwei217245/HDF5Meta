@@ -20,7 +20,7 @@ extern int64_t importing_json_doc_to_db(const char *json_str);
 extern void random_test();
 
 void print_usage() {
-    printf("Usage: ./hdf5_reader /path/to/hdf5/file\n");
+    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file\n");
 }
 
 int parse_single_file(char *filepath) {
