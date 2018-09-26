@@ -33,7 +33,7 @@ int parse_single_file(char *filepath) {
     char *json_str = NULL;
     parse_hdf5_meta_as_json_str(filepath, &json_str);
     // printf("%s\n", json_str);
-    printf("============= Importing %s to MongoDB =============\n", filepath);
+    // printf("============= Importing %s to MongoDB =============\n", filepath);
     importing_json_doc_to_db(json_str);
     return 0;
 }
