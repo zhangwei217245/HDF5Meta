@@ -73,9 +73,8 @@ main(int argc, char **argv)
     int64_t doc_count = init_db();
     printf("successfully init db, %d documents in mongodb.\n", doc_count);
 
-    clear_everything();
-    uint64_t doc_count = 1;
-    while (doc_count == 0) {
+    while (doc_count != 0) {
+        clear_everything();
         doc_count = get_all_doc_count();
     }
     printf("db cleaned!\n");
