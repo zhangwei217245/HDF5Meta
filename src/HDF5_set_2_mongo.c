@@ -23,6 +23,11 @@ void print_usage() {
     printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file\n");
 }
 
+
+void clear_everything(){
+    drop_current_coll();
+}
+
 int parse_single_file(char *filepath) {
     char *json_str = NULL;
     parse_hdf5_meta_as_json_str(filepath, &json_str);
