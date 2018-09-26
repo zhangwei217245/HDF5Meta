@@ -17,6 +17,7 @@ extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
 extern int64_t get_all_doc_count();
 extern int64_t importing_json_doc_to_db(const char *json_str);
+extern int64_t importing_fake_json_docs_to_db(const char *json_str, int count);
 extern void random_test();
 
 void print_usage() {
@@ -33,7 +34,7 @@ int parse_single_file(char *filepath) {
     parse_hdf5_meta_as_json_str(filepath, &json_str);
     printf("============= Importing %s to MongoDB =============\n", filepath);
     // printf("%s\n", json_str);
-    importing_json_doc_to_db(json_str);
+    importing_fake_json_docs_to_db(json_str,10);
     return 0;
 }
 
