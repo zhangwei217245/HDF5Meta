@@ -32,9 +32,9 @@ void clear_everything(){
 int parse_single_file(char *filepath) {
     char *json_str = NULL;
     parse_hdf5_meta_as_json_str(filepath, &json_str);
+    printf("%s\n", json_str);
     printf("============= Importing %s to MongoDB =============\n", filepath);
-    // printf("%s\n", json_str);
-    importing_fake_json_docs_to_db((const char *)json_str,10);
+    importing_fake_json_docs_to_db(json_str,10);
     return 0;
 }
 
@@ -79,10 +79,10 @@ main(int argc, char **argv)
     int64_t doc_count = init_db();
     printf("successfully init db, %d documents in mongodb.\n", doc_count);
 
-    while (doc_count != 0) {
-        clear_everything();
-        doc_count = get_all_doc_count();
-    }
+    // while (doc_count != 0) {
+    clear_everything();
+    // doc_count = get_all_doc_count();
+    // }
     printf("db cleaned!\n");
 
     if (argc != 2)
