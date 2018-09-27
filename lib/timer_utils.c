@@ -51,6 +51,7 @@ suseconds_t timer_delta_us (stopwatch_t* t)
 	return (t->pause_mark) - (t->start_mark);
 }
 
+
 long timer_delta_ms(stopwatch_t* t)
 {
 	return (timer_delta_us(t) / 1000);
