@@ -41,6 +41,8 @@ int parse_single_file(char *filepath) {
 
 
     // ****** Let's split the entire JSON into multiple sub objects ******
+    
+    // // TODO: To confirm that you need to uncomment line #32 in hdf52json.c 
     // json_object *rootObj;
     // parse_hdf5_file(filepath, &rootObj);
     // json_object *root_array = NULL;
@@ -54,16 +56,12 @@ int parse_single_file(char *filepath) {
     //     importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
     // }
 
-
     // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
     // TODO: Timing for extracting and importing metadata object
     // TODO: To confirm that you need to uncomment line #32 in hdf52json.c 
     char *json_str = NULL;
     // TODO: timing for extracting HDF5 metadata
     parse_hdf5_meta_as_json_str(filepath, &json_str);
-    // printf("%s\n", json_str);
-    // printf("============= Importing %s to MongoDB =============\n", filepath);
-    // TODO: timing for insert many.
     split_sub_objects_to_db(json_str);
     return 0;
 }
