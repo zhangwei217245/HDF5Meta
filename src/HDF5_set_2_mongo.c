@@ -71,7 +71,7 @@ int parse_single_file(char *filepath) {
     suseconds_t parse_file_duration = timer_delta_us(&parse_file);
     suseconds_t import_one_doc_duration = timer_delta_us(&import_one_doc);
     printf("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.\n",
-        one_file_duration, filename, parse_file_duration, import_one_doc_duration);
+        one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration);
 
     // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
     // // TODO: Timing for extracting and importing metadata object
