@@ -1,3 +1,4 @@
+#include <libgen.h>
 #include "../lib/hdf52json.h"
 #include "../lib/fs_ops.h"
 #include "../lib/string_utils.h"
@@ -30,11 +31,24 @@ void clear_everything(){
 }
 
 int parse_single_file(char *filepath) {
-    char *json_str = NULL;
-    parse_hdf5_meta_as_json_str(filepath, &json_str);
+    // ****** MongoDB has 16MB size limit on each document. ******
+    // char *json_str = NULL;
+    // parse_hdf5_meta_as_json_str(filepath, &json_str);
     // printf("%s\n", json_str);
     // printf("============= Importing %s to MongoDB =============\n", filepath);
-    importing_json_doc_to_db(json_str);
+    // importing_json_doc_to_db(json_str);
+    // ****** Let's split the entire JSON into multiple sub objects ******
+    json_object *rootObj;
+    parse_hdf5_file(filepath, &rootObj);
+    json_object *root_array = json_object_object_get(rootObj, "sub_objects");
+    size_t json_array_len = json_object_array_length(root_array);
+    size_t idx = 0;
+    for (idx = 0; idx < json_array_len; idx++) {
+        json_object *sub_group_object = json_object_array_get_idx(root_array, idx);
+        json_object_object_add(sub_group_object, "hdf5_filename", 
+            json_object_new_string(basename(filepath)));
+        importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
+    }
     return 0;
 }
 
