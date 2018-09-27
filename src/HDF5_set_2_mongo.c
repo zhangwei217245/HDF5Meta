@@ -80,7 +80,7 @@ int parse_single_file(char *filepath) {
     // // TODO: timing for extracting HDF5 metadata
     // parse_hdf5_meta_as_json_str(filepath, &json_str);
     // split_sub_objects_to_db(json_str);
-    json_object_put(rootObj);
+    // json_object_put(rootObj);
 
     return 0;
 }
