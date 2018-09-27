@@ -32,8 +32,6 @@ void clear_everything(){
 }
 
 int parse_single_file(char *filepath) {
-    char *filename = basename(filepath);
-    json_object *filename_str = json_object_new_string(filename);
     // ****** MongoDB has 16MB size limit on each document. ******
     // TODO: To confirm that you need to comment off line #32 in hdf52json.c
     // char *json_str = NULL;
@@ -62,16 +60,13 @@ int parse_single_file(char *filepath) {
     for (idx = 0; idx < json_array_len; idx++) {
         json_object *sub_group_object = json_object_array_get_idx(root_array, idx);
         json_object_object_add(sub_group_object, "hdf5_filename", 
-            filename_str);
+            json_object_new_string(basename(filepath)));
         importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
         json_object_put(sub_group_object);
     }
     
     timer_pause(&import_one_doc);
     timer_pause(&one_file);
-
-    json_object_put(rootObj);
-    json_object_put(filename_str);
     suseconds_t one_file_duration = timer_delta_us(&one_file);
     suseconds_t parse_file_duration = timer_delta_us(&parse_file);
     suseconds_t import_one_doc_duration = timer_delta_us(&import_one_doc);
@@ -85,6 +80,8 @@ int parse_single_file(char *filepath) {
     // // TODO: timing for extracting HDF5 metadata
     // parse_hdf5_meta_as_json_str(filepath, &json_str);
     // split_sub_objects_to_db(json_str);
+    json_object_put(rootObj);
+
     return 0;
 }
 
