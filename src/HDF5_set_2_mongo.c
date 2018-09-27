@@ -33,6 +33,7 @@ void clear_everything(){
 
 int parse_single_file(char *filepath) {
     char *filename = basename(filepath);
+    json_object *filename_str = json_object_new_string(filename);
     // ****** MongoDB has 16MB size limit on each document. ******
     // TODO: To confirm that you need to comment off line #32 in hdf52json.c
     // char *json_str = NULL;
@@ -61,16 +62,21 @@ int parse_single_file(char *filepath) {
     for (idx = 0; idx < json_array_len; idx++) {
         json_object *sub_group_object = json_object_array_get_idx(root_array, idx);
         json_object_object_add(sub_group_object, "hdf5_filename", 
-            json_object_new_string(filename));
+            filename_str);
         importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
+        json_object_put(sub_group_object);
     }
+    
     timer_pause(&import_one_doc);
     timer_pause(&one_file);
 
+    json_object_put(rootObj);
+    json_object_put(filename_str);
     suseconds_t one_file_duration = timer_delta_us(&one_file);
     suseconds_t parse_file_duration = timer_delta_us(&parse_file);
     suseconds_t import_one_doc_duration = timer_delta_us(&import_one_doc);
-    printf("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting. \n");
+    printf("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.\n",
+        one_file_duration, filename, parse_file_duration, import_one_doc_duration);
 
     // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
     // // TODO: Timing for extracting and importing metadata object
