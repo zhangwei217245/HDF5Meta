@@ -28,6 +28,9 @@ void parse_hdf5_file(char *filepath, json_object **out){
         
         get_obj_type_str(curr_obj->obj_info->type, &obj_type_buff);
 
+        //FIXME: this can be ugly if you don't need to split the entire JSON object.
+        json_object_object_add(curr_json_obj, "hdf5_filename", json_object_new_string(basename(filepath)));
+
         json_object_object_add(curr_json_obj, "name", json_object_new_string(curr_obj->obj_name));
         json_object_object_add(curr_json_obj, "type", json_object_new_string(obj_type_buff));
 

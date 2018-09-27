@@ -1,5 +1,6 @@
 #include "new_hdf5_meta.h"
 #include <json-c/json.h>
+#include <libgen.h>
 
 void parse_hdf5_file(char *filepath, json_object **out);
 

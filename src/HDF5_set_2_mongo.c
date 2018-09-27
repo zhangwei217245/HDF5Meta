@@ -1,4 +1,3 @@
-#include <libgen.h>
 #include "../lib/hdf52json.h"
 #include "../lib/fs_ops.h"
 #include "../lib/string_utils.h"
@@ -18,6 +17,7 @@ extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
 extern int64_t get_all_doc_count();
 extern int64_t importing_json_doc_to_db(const char *json_str);
+extern int64_t split_sub_objects_to_db(const char *json_str);
 extern int64_t importing_fake_json_docs_to_db(const char *json_str, int count);
 extern void random_test();
 
@@ -32,24 +32,39 @@ void clear_everything(){
 
 int parse_single_file(char *filepath) {
     // ****** MongoDB has 16MB size limit on each document. ******
+    // TODO: To confirm that you need to comment off line #32 in hdf52json.c
     // char *json_str = NULL;
     // parse_hdf5_meta_as_json_str(filepath, &json_str);
     // printf("%s\n", json_str);
     // printf("============= Importing %s to MongoDB =============\n", filepath);
     // importing_json_doc_to_db(json_str);
+
+
     // ****** Let's split the entire JSON into multiple sub objects ******
-    json_object *rootObj;
-    parse_hdf5_file(filepath, &rootObj);
-    json_object *root_array = NULL;
-    json_object_object_get_ex(rootObj, "sub_objects", &root_array);
-    size_t json_array_len = json_object_array_length(root_array);
-    size_t idx = 0;
-    for (idx = 0; idx < json_array_len; idx++) {
-        json_object *sub_group_object = json_object_array_get_idx(root_array, idx);
-        json_object_object_add(sub_group_object, "hdf5_filename", 
-            json_object_new_string(basename(filepath)));
-        importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
-    }
+    // json_object *rootObj;
+    // parse_hdf5_file(filepath, &rootObj);
+    // json_object *root_array = NULL;
+    // json_object_object_get_ex(rootObj, "sub_objects", &root_array);
+    // size_t json_array_len = json_object_array_length(root_array);
+    // size_t idx = 0;
+    // for (idx = 0; idx < json_array_len; idx++) {
+    //     json_object *sub_group_object = json_object_array_get_idx(root_array, idx);
+    //     json_object_object_add(sub_group_object, "hdf5_filename", 
+    //         json_object_new_string(basename(filepath)));
+    //     importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
+    // }
+
+
+    // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
+    // TODO: Timing for extracting and importing metadata object
+    // TODO: To confirm that you need to uncomment line #32 in hdf52json.c 
+    char *json_str = NULL;
+    // TODO: timing for extracting HDF5 metadata
+    parse_hdf5_meta_as_json_str(filepath, &json_str);
+    // printf("%s\n", json_str);
+    // printf("============= Importing %s to MongoDB =============\n", filepath);
+    // TODO: timing for insert many.
+    split_sub_objects_to_db(json_str);
     return 0;
 }
 
