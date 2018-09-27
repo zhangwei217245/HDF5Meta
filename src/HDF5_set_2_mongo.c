@@ -40,7 +40,8 @@ int parse_single_file(char *filepath) {
     // ****** Let's split the entire JSON into multiple sub objects ******
     json_object *rootObj;
     parse_hdf5_file(filepath, &rootObj);
-    json_object *root_array = json_object_object_get(rootObj, "sub_objects");
+    json_object *root_array = NULL;
+    json_object_object_get_ex(rootObj, "sub_objects", &root_array);
     size_t json_array_len = json_object_array_length(root_array);
     size_t idx = 0;
     for (idx = 0; idx < json_array_len; idx++) {
