@@ -68,6 +68,8 @@ void init_metadata_collector(metadata_collector_t *meta_coll,
     int (*on_attr)(void *opdata, h5attribute_t *attr)
     );
 
+void de_init_metadata_collector(metadata_collector_t *meta_coll) ;
+
 void init_h5object(h5object_t *h5object,
     void *opdata, hid_t obj_id, char *obj_name, H5O_info_t *obj_info,
     int num_attrs, h5attribute_t *attr_list_head, 

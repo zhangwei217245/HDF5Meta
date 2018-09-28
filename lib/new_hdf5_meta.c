@@ -310,6 +310,23 @@ void init_metadata_collector(metadata_collector_t *meta_coll,
     meta_coll->on_attr = on_attr;
 }
 
+void de_init_metadata_collector(metadata_collector_t *meta_coll) {
+    h5object_t *curr_obj = meta_collector->object_linked_list;
+    while (curr_obj) {
+        h5object_t *_tempobj = curr_obj;
+        free(curr_obj->obj_info);
+        h5attribute_t *curr_attr = curr_obj->attr_linked_list;
+        while (curr_attr) {
+            free(curr_attr->attribute_value);
+            h5attribute_t *_temp_attr = curr_attr;
+            curr_attr = curr_attr->next;
+            free(_temp_attr);
+        }
+        curr_obj = curr_obj->next;
+        free(_tempobj);
+    }
+}
+
 void init_h5object(h5object_t *h5object,
     void *opdata, hid_t obj_id, char *obj_name, H5O_info_t *obj_info,
     int num_attrs, h5attribute_t *attr_list_head, 

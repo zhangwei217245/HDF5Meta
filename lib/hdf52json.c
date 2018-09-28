@@ -112,6 +112,7 @@ void parse_hdf5_file(char *filepath, json_object **out){
     if (out != NULL) {
         *out = json_root_object;
     }
+    de_init_metadata_collector(meta_collector);
 }
 
 void parse_hdf5_meta_as_json_str(char *filepath, char **result){
