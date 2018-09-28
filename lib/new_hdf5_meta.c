@@ -311,7 +311,7 @@ void init_metadata_collector(metadata_collector_t *meta_coll,
 }
 
 void de_init_metadata_collector(metadata_collector_t *meta_coll) {
-    h5object_t *curr_obj = meta_collector->object_linked_list;
+    h5object_t *curr_obj = meta_coll->object_linked_list;
     while (curr_obj) {
         h5object_t *_tempobj = curr_obj;
         free(curr_obj->obj_info);
