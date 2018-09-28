@@ -64,7 +64,7 @@ int parse_single_file(char *filepath) {
         char *json_doc = json_object_to_json_string(sub_group_object);
         importing_json_doc_to_db(json_doc);
         json_object_put(sub_group_object);
-        free(json_doc);
+        // free(json_doc);
     }
     
     timer_pause(&import_one_doc);
