@@ -62,7 +62,10 @@ int parse_single_file(char *filepath) {
         json_object_object_add(sub_group_object, "hdf5_filename", 
             json_object_new_string(basename(filepath)));
         importing_json_doc_to_db(json_object_to_json_string(sub_group_object));
+        json_object *attrs = NULL;
+        json_object_object_get_ex(sub_group_object, "attributes", &attrs);
         json_object_put(sub_group_object);
+        json_object_put(attrs);
     }
     
     timer_pause(&import_one_doc);
