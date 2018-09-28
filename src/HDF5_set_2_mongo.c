@@ -75,7 +75,8 @@ int parse_single_file(char *filepath) {
     suseconds_t import_one_doc_duration = timer_delta_us(&import_one_doc);
     printf("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.\n",
         one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration);
-
+    json_object_put(root_array);
+    json_object_put(rootObj);
     // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
     // // TODO: Timing for extracting and importing metadata object
     // // TODO: To confirm that you need to uncomment line #32 in hdf52json.c 
@@ -83,7 +84,6 @@ int parse_single_file(char *filepath) {
     // // TODO: timing for extracting HDF5 metadata
     // parse_hdf5_meta_as_json_str(filepath, &json_str);
     // split_sub_objects_to_db(json_str);
-    // json_object_put(rootObj);
 
     return 0;
 }
