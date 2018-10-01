@@ -71,7 +71,7 @@ int parse_single_file(char *filepath) {
     suseconds_t one_file_duration = timer_delta_us(&one_file);
     suseconds_t parse_file_duration = timer_delta_us(&parse_file);
     suseconds_t import_one_doc_duration = timer_delta_us(&import_one_doc);
-    printf("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.\n",
+    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.",
         one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration);
     
     json_object_put(rootObj);
@@ -125,13 +125,13 @@ main(int argc, char **argv)
     int rst = 0;
 
     int64_t doc_count = init_db();
-    printf("successfully init db, %d documents in mongodb.\n", doc_count);
+    println("successfully init db, %d documents in mongodb.", doc_count);
 
     // while (doc_count != 0) {
     clear_everything();
     // doc_count = get_all_doc_count();
     // }
-    printf("db cleaned!\n");
+    println("db cleaned!");
 
     if (argc != 2)
         print_usage();
