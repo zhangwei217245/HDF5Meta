@@ -17,9 +17,9 @@ ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/vector
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
 
-TARGET_LINK_LIBRARIES(fs_utils SHARED string_utils c_base_utils)
+TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
 
-ADD_LIBRARY(hdf5_meta SHARED hdf5_meta.c hdf5_meta.h)
+ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
 
 include_directories(${JSON-C_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/lib)
@@ -31,9 +31,9 @@ target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils tim
 ADD_LIBRARY(new_hdf5_meta SHARED hdf5/new_hdf5_meta.c hdf5/new_hdf5_meta.h)
 target_link_libraries(new_hdf5_meta PRIVATE m  query_utils timer_utils thpool indexds fs_utils c_base_utils)
 
-ADD_LIBRARY(hdf52json SHARED hdf5/hdf52json.c hdf5/hdf52json.h)
+ADD_LIBRARY(hdf52json hdf5/hdf52json.c hdf5/hdf52json.h)
 target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIRS}")
 target_link_libraries(hdf52json PRIVATE "${JSON-C_LIBRARIES}" new_hdf5_meta)
 
-#ADD_LIBRARY(hdf52index SHARED hdf5/hdf52index.c hdf5/hdf52index.h)
+#ADD_LIBRARY(hdf52index hdf5/hdf52index.c hdf5/hdf52index.h)
 #target_link_libraries(hdf52json PRIVATE new_hdf5_meta indexds)
