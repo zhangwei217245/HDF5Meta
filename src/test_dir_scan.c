@@ -1,4 +1,4 @@
-#include "../lib/fs/fs_ops.h"
+#include "fs_ops.h"
 #include "../lib/utils/string_utils.h"
 
 typedef struct branch_depth{
