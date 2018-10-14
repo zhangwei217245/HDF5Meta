@@ -1,6 +1,6 @@
 #include "../lib/hdf5_meta.h"
-#include "../lib/art.h"
-#include "../lib/bplustree.h"
+#include "../lib/ds/art.h"
+#include "../lib/ds/bplustree.h"
 #include <math.h>
 
 

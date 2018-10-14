@@ -1,7 +1,7 @@
-#include "../lib/hdf52json.h"
-#include "../lib/fs_ops.h"
-#include "../lib/string_utils.h"
-#include "../lib/timer_utils.h"
+#include "../lib/hdf5/hdf52json.h"
+#include "../lib/fs/fs_ops.h"
+#include "../lib/utils/string_utils.h"
+#include "timer_utils.h"
 
 extern int64_t init_db();
 extern int64_t clear_all_docs();
