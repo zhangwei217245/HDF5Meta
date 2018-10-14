@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "query_utils.h"
+#include "../lib/utils/query_utils.h"
 #include "dira/printa.h"
 #include "dirb/printb.h"
 
