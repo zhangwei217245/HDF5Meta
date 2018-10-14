@@ -85,8 +85,8 @@ main(int argc, char const *argv[])
         print_usage();
     }
     
-    char *file_path = argv[1];
-    char *_str_num_file = argv[2];
+    const char *file_path = argv[1];
+    const char *_str_num_file = argv[2];
 
     char *indexed_attr[]={"COLLA", "DARKTIME", "BADPIXEL", "FILENAME", "EXPOSURE", "COLLB", NULL};
     char *search_values[]={"27089", "0", "badpixels-56149-b1.fits.gz", "sdR-b2-00154990.fit", "155701", "26660", NULL};
@@ -329,14 +329,14 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
         
         leaf_cnt->is_numeric = 1;
         if (leaf_cnt->bpt == NULL) {
-            leaf_cnt->bpt = new_bplus_tree(name, 4096);
+            leaf_cnt->bpt = new_bplus_tree((char *)name, 4096);
         }
 
        for (i = 0; i < npoints; i++) {
             // printf("%d\t",point_out[i]);
             int k = point_out[i] + file_id;
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
-            if (v == NULL || v == 0 || v == 0xffffffffffffffff ) {
+            if (v == NULL || v == 0 || ((size_t)v == (size_t)0xffffffffffffffff)) {
                 v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
                 //TODO: need to change the b+tree implementation so that value is a generic pointer.
                 bplus_tree_put(leaf_cnt->bpt, k, (long)v);
@@ -437,7 +437,7 @@ void perform_search(int seed, void *opdata_p){
     if (art_leaf != NULL) {
         if (art_leaf->is_numeric) {
             int v_query = atoi(opdata->search_values[pos]) + seed;
-            uint64_t *bitmap = bplus_tree_get(art_leaf->bpt, v_query);
+            uint64_t *bitmap = (uint64_t *)bplus_tree_get(art_leaf->bpt, v_query);
             int num_matched_files = get_num_ones_in_bitmap(bitmap, opdata->bitmap_int64_arr_len);
             println("%d Matched files on query %s=%d.\n", num_matched_files, attr, v_query);
         } else {

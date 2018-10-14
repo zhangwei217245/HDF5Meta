@@ -9,9 +9,9 @@
 void parse_hdf5_meta_as_json_str(char *filepath, char **result){
     json_object *rootObj = json_object_new_object();
     parse_hdf5_file(filepath, rootObj);
-    char *json_str = json_object_to_json_string(rootObj);
+    const char *json_str = json_object_to_json_string(rootObj);
     if (result != NULL) {
-        *result = json_str;
+        *result = (char *)json_str;
     }
 }
 

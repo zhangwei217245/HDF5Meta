@@ -55,8 +55,8 @@ main(int argc, char const *argv[])
         print_usage();
     }
     
-    char *file_path = argv[1];
-    char *_str_num_file = argv[2];
+    const char *file_path = argv[1];
+    const char *_str_num_file = argv[2];
 
     int num_file = 2500;
 
