@@ -28,7 +28,12 @@
 // int init_dir_entry(const char *path, dir_entry_t *start_dir);
 // int deinit_dir_entry(dir_entry_t *entry);
 
-void collect_dir(const char *dir_path, int (*filter)(struct dirent *entry),
+typedef enum {
+    ASC, DESC
+}sorting_direction_t;
+
+void collect_dir(const char *dir_path, int (*selector) (const struct dirent *),
+    int (*cmp) (const struct dirent **, const struct dirent **), sorting_direction_t sd, 
     int (*on_file)(struct dirent *f_entry, const char *parent_path, void *args), 
     int (*on_dir)(struct dirent *d_entry, const char *parent_path, void *args), 
     void *coll_args);

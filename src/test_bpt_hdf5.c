@@ -78,8 +78,6 @@ struct bplus_tree *new_bplus_tree(char *filename, int block_size) {
 
 art_tree *global_art;
 
-
-
 int 
 main(int argc, char const *argv[])
 {
