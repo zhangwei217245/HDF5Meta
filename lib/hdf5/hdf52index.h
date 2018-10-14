@@ -1,6 +1,6 @@
 #include "new_hdf5_meta.h"
-#include "art.h"
-#include "bplustree.h"
+#include "../ds/art.h"
+#include "../ds/bplustree.h"
 
 // For index creation,
 // This is the opdata that will be passed to on_obj and on_attr functions.

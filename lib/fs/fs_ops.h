@@ -1,4 +1,4 @@
-#include "base_stdlib.h"
+#include "../include/base_stdlib.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -6,7 +6,7 @@
 
 typedef enum {
     ASC, DESC
-}sorting_direction_t;
+} sorting_direction_t;
 
 void collect_dir(const char *dir_path, int (*selector) (const struct dirent *),
     int (*cmp) (const struct dirent **, const struct dirent **), sorting_direction_t sd, 

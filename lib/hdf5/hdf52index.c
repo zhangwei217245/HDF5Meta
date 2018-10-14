@@ -138,6 +138,7 @@ void parse_hdf5_file(char *filepath, art_tree *artree){
 
     index_anchor *idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
     idx_anchor->file_path = file_path;
+    idx_anchor->root_art = artree;
     
 
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));

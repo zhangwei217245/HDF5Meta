@@ -1,9 +1,9 @@
-#include "base_stdlib.h"
-#include "c95_stdlib.h"
-#include "c99_stdlib.h"
-#include "query_utils.h"
-#include "timer_utils.h"
-#include "vector.h"
+#include "../include/base_stdlib.h"
+#include "../include/c95_stdlib.h"
+#include "../include/c99_stdlib.h"
+#include "../utils/query_utils.h"
+#include "../utils/timer_utils.h"
+#include "../ds/vector.h"
 #include "hdf5.h"
 
 

@@ -87,7 +87,9 @@ int parse_single_file(char *filepath) {
 }
 
 int is_hdf5(struct dirent *entry){
-
+    if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
+        return 0;
+    }
     if (entry->d_type == DT_DIR){
         return 1;
     }
@@ -114,7 +116,7 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
 }
 
 int parse_files_in_dir(char *path) {
-    collect_dir(path, is_hdf5, on_file, on_dir, NULL);
+    collect_dir(path, is_hdf5, alphasort, ASC, on_file, on_dir, NULL);
     return 0;
 }
 
