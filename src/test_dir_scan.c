@@ -6,7 +6,7 @@ typedef struct branch_depth{
 } branch_depth_t;
 
 
-int is_hdf5(struct dirent *entry){
+int is_hdf5(const struct dirent *entry){
     if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
         return 0;
     }

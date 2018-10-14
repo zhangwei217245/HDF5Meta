@@ -10,7 +10,7 @@ void print_usage() {
     printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir\n");
 }
 
-int is_hdf5(struct dirent *entry){
+int is_hdf5(const struct dirent *entry){
     if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
         return 0;
     }

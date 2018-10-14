@@ -86,7 +86,7 @@ int parse_single_file(char *filepath) {
     return 0;
 }
 
-int is_hdf5(struct dirent *entry){
+int is_hdf5(const struct dirent *entry){
     if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
         return 0;
     }
