@@ -1,8 +1,8 @@
 #ifndef HDF5_META_H
 #define HDF5_META_H
 
-#include "query_utils.h"
-#include "timer_utils.h"
+#include "utils/query_utils.h"
+#include "utils/timer_utils.h"
 #include "hdf5.h"
 #include <json-c/json.h>
 
