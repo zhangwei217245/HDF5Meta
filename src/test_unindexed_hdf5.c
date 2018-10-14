@@ -67,7 +67,7 @@ main(int argc, char const *argv[])
     int i = 0;
 
     for (i = 0; i < num_file; i++) {
-        scan_hdf5(file_path);
+        scan_hdf5((char *)file_path);
     }
 
     return 0;

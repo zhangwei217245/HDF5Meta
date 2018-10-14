@@ -129,7 +129,7 @@ main(int argc, char const *argv[])
         opdata.file_id = i;
 
         // scan file and build index
-        scan_hdf5(file_path, &opdata);
+        scan_hdf5((char *)file_path, &opdata);
 
         timer_pause(&timer_create);
 
@@ -351,7 +351,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
 
         leaf_cnt->is_numeric = 1;
         if (leaf_cnt->bpt == NULL) {
-            leaf_cnt->bpt = new_bplus_tree(name, 4096);
+            leaf_cnt->bpt = new_bplus_tree((char *)name, 4096);
         }
 
        for( i = 0; i < (int)npoints; i++) {
@@ -359,7 +359,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata_
            int k = (int)float_array[i];
            k+=file_id;
             uint64_t *v = (uint64_t *)bplus_tree_get(leaf_cnt->bpt, k);
-            if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
+            if (v == NULL || v == 0 || ((size_t)v == (size_t)0xffffffffffffffff)) {
                 v = (uint64_t *)calloc(bitmap_int64_arr_len, sizeof(uint64_t));
                 //TODO: need to change the b+tree implementation so that value is a generic pointer.
                 bplus_tree_put(leaf_cnt->bpt, k, (long)v);

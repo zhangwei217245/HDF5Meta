@@ -36,6 +36,10 @@ typedef struct {
     size_t length;
 } string;
 
+
+extern int asprintf(char **strp, const char *fmt, ...);
+extern int vasprintf(char **strp, const char *fmt, va_list ap);
+
 /**
  * take the part after start position
  * you need to free str after use.
