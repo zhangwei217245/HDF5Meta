@@ -5,6 +5,12 @@ typedef struct branch_depth{
     int depth;
 } branch_depth_t;
 
+int only_sub(const struct dirent *entry) {
+    if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
+        return 0;
+    }
+    return 1;
+}
 
 int is_hdf5(const struct dirent *entry){
     if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
@@ -57,5 +63,5 @@ int main(int argc, char *argv[]) {
     branch_depth_t *d_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     d_depth->depth = 1;
 
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, d_depth, pre_op, post_op);
+    collect_dir(path, only_sub, alphasort, ASC, topk, on_file, on_dir, d_depth, pre_op, post_op);
 }
