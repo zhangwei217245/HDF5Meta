@@ -50,7 +50,7 @@ int post_op(void *arg){
 }
 
 int dir_alphasort(const struct dirent **a, const struct dirent **b){
-    int dir_rst = (((*a)->d_type - (*b)->d_type) < 0);
+    int dir_rst = (((*a)->d_type - (*b)->d_type) > 0);
     return dir_rst && alphasort(a, b);
 }
 
