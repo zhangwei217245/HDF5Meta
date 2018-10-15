@@ -18,3 +18,4 @@ void collect_dir(const char *dir_path, int (*selector) (const struct dirent *),
     int (*post_op)(void *coll_args));
 
 
+int is_regular_file(const char *path);
