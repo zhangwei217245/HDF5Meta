@@ -21,7 +21,7 @@ int is_hdf5(const struct dirent *entry){
 
 int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
     branch_depth_t *b_depth = (branch_depth_t *)args;
-    printf("%*s- %s/%s\n", b_depth->depth+2, " ", parent_path, f_entry->d_name);
+    printf("%*s- %s/%s\n", b_depth->depth, " ", parent_path, f_entry->d_name);
     return 1;
 }
 
