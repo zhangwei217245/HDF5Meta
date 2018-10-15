@@ -49,6 +49,11 @@ int post_op(void *arg){
     return 1;
 }
 
+int dir_alphasort(const struct dirent **a, const struct dirent **b){
+    int dir_rst = (((*a)->d_type - (*b)->d_type) < 0);
+    return dir_rst && alphasort(a, b);
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("test_dir_scan <file_path>");
@@ -63,5 +68,5 @@ int main(int argc, char *argv[]) {
     branch_depth_t *d_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     d_depth->depth = 1;
 
-    collect_dir(path, only_sub, alphasort, ASC, topk, on_file, on_dir, d_depth, pre_op, post_op);
+    collect_dir(path, only_sub, dir_alphasort, ASC, topk, on_file, on_dir, d_depth, pre_op, post_op);
 }
