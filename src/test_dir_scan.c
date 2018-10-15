@@ -27,8 +27,8 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
 
 int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
     branch_depth_t *b_depth = (branch_depth_t *)args;
-    b_depth->depth+=2;
-    printf("%*s[%s/%s]\n", b_depth->depth, " ", parent_path, d_entry->d_name);
+    // b_depth->depth+=2;
+    printf("%*s[%s/%s]\n", b_depth->depth+2, " ", parent_path, d_entry->d_name);
     return 1;
 }
 
