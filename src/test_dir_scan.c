@@ -35,11 +35,16 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("test_dir_scan <file_path>");
+        return 0;
     }
+    int topk = 0;
     char *path = argv[1];
+    if (argc == 3) {
+        topk = atoi(argv[2]);
+    }
     
     branch_depth_t *d_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     d_depth->depth = 1;
 
-    collect_dir(path, is_hdf5, alphasort, ASC, on_file, on_dir, d_depth);
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, d_depth);
 }

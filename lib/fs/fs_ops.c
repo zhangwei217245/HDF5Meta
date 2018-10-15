@@ -17,7 +17,8 @@ int decr(int a){
 }
 
 void collect_dir(const char *dir_path, int (*filter) (const struct dirent *), 
-    int (*cmp) (const struct dirent **, const struct dirent **), sorting_direction_t sd,
+    int (*cmp) (const struct dirent **, const struct dirent **), 
+    sorting_direction_t sd, const int topk,
     int (*on_file)(struct dirent *f_entry, const char *parent_path, void *args), 
     int (*on_dir)(struct dirent *d_entry, const char *parent_path, void *args), 
     void *coll_args){
@@ -35,6 +36,7 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
         int v, end;
         int (*cmp_nl)(int, int);
         int (*v_act)(int);
+        int count = 0;
         if (sd == DESC) {
             v = n - 1;
             end = 0;
@@ -46,7 +48,7 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
             cmp_nl = asc_cmp;
             v_act = incr;
         }
-        while (cmp_nl(v, end)) {
+        while (cmp_nl(v, end) && count < topk) {
             struct dirent *entry = namelist[v];
             char *path = (char *)calloc(1024, sizeof(char));
             char *name = (char *)calloc(1024, sizeof(char));
@@ -56,7 +58,7 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
                 if (on_dir) {
                     on_dir(entry, dir_path, coll_args);
                 }
-                collect_dir(path, filter, cmp, sd, on_file, on_dir, coll_args);
+                collect_dir(path, filter, cmp, sd, topk, on_file, on_dir, coll_args);
             } else {
                 if (on_file) {
                     on_file(entry, dir_path, coll_args);
@@ -64,8 +66,9 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
             }
             free(path);
             free(name);
-            free(namelist[v]); 
+            free(namelist[v]);
             v = v_act(v);
+            count++;
         }
         free(namelist);
     }

@@ -61,8 +61,8 @@ int parse_single_file(char *filepath, void *arg) {
     return 0;
 }
 
-int parse_files_in_dir(char *path) {
-    collect_dir(path, is_hdf5, alphasort, ASC, on_file, on_dir, root_art);
+int parse_files_in_dir(char *path, const int topk) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, root_art);
     return 0;
 }
 
@@ -77,9 +77,14 @@ main(int argc, char const *argv[])
 {
     if (argc < 2) {
         print_usage();
+        return 0;
     }
     
+    int topk = 0;
     char *path = argv[1];
+    if (argc == 3) {
+        topk = atoi(argv[2]);
+    }
 
     char *indexed_attr[]={"COLLA", "DARKTIME", "BADPIXEL", "FILENAME", "EXPOSURE", "COLLB", NULL};
     char *search_values[]={"27089", "0", "badpixels-56149-b1.fits.gz", "sdR-b2-00154990.fit", "155701", "26660", NULL};
@@ -90,7 +95,7 @@ main(int argc, char const *argv[])
     if (is_regular_file(path)) {
         rst = parse_single_file(path);
     } else {
-        rst = parse_files_in_dir(path);
+        rst = parse_files_in_dir(path, topk);
     }
     
     for (i = 0; i < 1000; i++) {

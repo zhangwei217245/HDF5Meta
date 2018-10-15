@@ -23,7 +23,7 @@ extern int64_t importing_fake_json_docs_to_db(const char *json_str, int count);
 extern void random_test();
 
 void print_usage() {
-    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file\n");
+    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file <number_of_file_to_be_scanned>\n");
 }
 
 
@@ -115,8 +115,8 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
     return 1;
 }
 
-int parse_files_in_dir(char *path) {
-    collect_dir(path, is_hdf5, alphasort, ASC, on_file, on_dir, NULL);
+int parse_files_in_dir(char *path, const int topk) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, NULL);
     return 0;
 }
 
@@ -125,6 +125,7 @@ main(int argc, char **argv)
 {
     char* path;
     int rst = 0;
+    int topk = 0;
 
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);
@@ -135,14 +136,17 @@ main(int argc, char **argv)
     // }
     println("db cleaned!");
 
-    if (argc != 2)
+    if (argc < 2)
         print_usage();
     else {
         path = argv[1];
+        if (argc == 3) {
+            topk = atoi(argv[2]);
+        }
         if (is_regular_file(path)) {
             rst = parse_single_file(path);
         } else {
-            rst = parse_files_in_dir(path);
+            rst = parse_files_in_dir(path, topk);
         }
     }
     return rst;

@@ -4,9 +4,6 @@
 
 #include "string_utils.h"
 
-extern int asprintf(char **strp, const char *fmt, ...);
-extern int vasprintf(char **strp, const char *fmt, va_list ap);
-
 int startsWith(const char *str, const char *pre){
     char *found = strstr(str, pre);
     return (found && (found - str) == 0);
