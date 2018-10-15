@@ -27,8 +27,19 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
 
 int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
     branch_depth_t *b_depth = (branch_depth_t *)args;
-    // b_depth->depth+=2;
     printf("%*s[%s/%s]\n", b_depth->depth+2, " ", parent_path, d_entry->d_name);
+    return 1;
+}
+
+int pre_op(void *arg){
+    branch_depth_t *b_depth = (branch_depth_t *)arg;
+    b_depth->depth+=2;
+    return 1;
+}
+
+int post_op(void *arg){
+    branch_depth_t *b_depth = (branch_depth_t *)arg;
+    b_depth->depth-=2;
     return 1;
 }
 
@@ -46,5 +57,5 @@ int main(int argc, char *argv[]) {
     branch_depth_t *d_depth = (branch_depth_t *)calloc(1, sizeof(branch_depth_t));
     d_depth->depth = 1;
 
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, d_depth);
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, d_depth, );
 }

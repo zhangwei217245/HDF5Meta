@@ -116,7 +116,7 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
 }
 
 int parse_files_in_dir(char *path, const int topk) {
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, NULL);
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, NULL, NULL, NULL);
     return 0;
 }
 

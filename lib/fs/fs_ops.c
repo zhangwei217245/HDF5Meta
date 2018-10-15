@@ -21,7 +21,9 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
     sorting_direction_t sd, const int topk,
     int (*on_file)(struct dirent *f_entry, const char *parent_path, void *args), 
     int (*on_dir)(struct dirent *d_entry, const char *parent_path, void *args), 
-    void *coll_args){
+    void *coll_args,
+    int (*pre_op)(void *coll_args),
+    int (*post_op)(void *coll_args)){
 
     if (dir_path == NULL) { // if the given start_dir is not a valid struct.
         return;
@@ -37,6 +39,7 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
         int (*cmp_nl)(int, int);
         int (*v_act)(int);
         int count = 0;
+        int pre_op_rst = 0, post_op_rst = 0;
         if (sd == DESC) {
             v = n - 1;
             end = 0;
@@ -54,17 +57,18 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
             char *name = (char *)calloc(1024, sizeof(char));
             snprintf(name,1023, "%s", entry->d_name);
             snprintf(path, 1023, "%s/%s", dir_path, entry->d_name);
+            pre_op_rst = pre_op(coll_args);
             if (entry->d_type == DT_DIR) {
-
-                collect_dir(path, filter, cmp, sd, topk, on_file, on_dir, coll_args);
                 if (on_dir) {
                     on_dir(entry, dir_path, coll_args);
                 }
+                collect_dir(path, filter, cmp, sd, topk, on_file, on_dir, coll_args, pre_op, post_op);
             } else {
                 if (on_file) {
                     on_file(entry, dir_path, coll_args);
                 }
             }
+            post_op_rst = post_op(coll_args);
             free(path);
             free(name);
             free(namelist[v]);
@@ -73,11 +77,4 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
         }
         free(namelist);
     }
-}
-
-
-int is_regular_file(const char *path){
-    struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISREG(path_stat.st_mode);
 }

@@ -62,7 +62,7 @@ int parse_single_file(char *filepath, void *arg) {
 }
 
 int parse_files_in_dir(char *path, const int topk) {
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, root_art);
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, root_art, NULL, NULL);
     return 0;
 }
 
