@@ -48,7 +48,7 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
             cmp_nl = asc_cmp;
             v_act = incr;
         }
-        while (cmp_nl(v, end) && (count > 0 ? count < topk : 1)) {
+        while (cmp_nl(v, end) && (topk > 0 ? count < topk : 1)) {
             struct dirent *entry = namelist[v];
             char *path = (char *)calloc(1024, sizeof(char));
             char *name = (char *)calloc(1024, sizeof(char));
