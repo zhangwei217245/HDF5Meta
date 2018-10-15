@@ -55,10 +55,11 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
             snprintf(name,1023, "%s", entry->d_name);
             snprintf(path, 1023, "%s/%s", dir_path, entry->d_name);
             if (entry->d_type == DT_DIR) {
+
+                collect_dir(path, filter, cmp, sd, topk, on_file, on_dir, coll_args);
                 if (on_dir) {
                     on_dir(entry, dir_path, coll_args);
                 }
-                collect_dir(path, filter, cmp, sd, topk, on_file, on_dir, coll_args);
             } else {
                 if (on_file) {
                     on_file(entry, dir_path, coll_args);
