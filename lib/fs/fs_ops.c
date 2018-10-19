@@ -57,7 +57,9 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
             char *name = (char *)calloc(1024, sizeof(char));
             snprintf(name,1023, "%s", entry->d_name);
             snprintf(path, 1023, "%s/%s", dir_path, entry->d_name);
-            pre_op_rst = pre_op(coll_args);
+            if (pre_op) {
+                pre_op_rst = pre_op(coll_args);
+            }
             if (entry->d_type == DT_DIR) {
                 if (on_dir) {
                     on_dir(entry, dir_path, coll_args);
@@ -68,7 +70,9 @@ void collect_dir(const char *dir_path, int (*filter) (const struct dirent *),
                     on_file(entry, dir_path, coll_args);
                 }
             }
-            post_op_rst = post_op(coll_args);
+            if (post_op) {
+                post_op_rst = post_op(coll_args);
+            }
             free(path);
             free(name);
             free(namelist[v]);
