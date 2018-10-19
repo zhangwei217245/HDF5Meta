@@ -153,7 +153,8 @@ void parse_hdf5_file(char *filepath, art_tree *artree){
     idx_anchor->us_to_index = 0;
     
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
-    init_metadata_collector(meta_collector, 0, (void *)index_anchor, NULL, on_obj, on_attr);
+    // init_metadata_collector(meta_collector, 0, (void *)index_anchor, NULL, on_obj, on_attr);
+    init_metadata_collector(metadata_collector, 0, (void *)idx_anchor, NULL, on_obj, on_attr);
 
     stopwatch_t time_to_scan;
     timer_start(&time_to_scan);
