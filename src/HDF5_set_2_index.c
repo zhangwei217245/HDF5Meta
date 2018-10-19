@@ -1,7 +1,7 @@
-#include "../lib/hdf52index.h"
-#include "../lib/fs_ops.h"
-#include "../lib/string_utils.h"
-#include "../lib/timer_utils.h"
+#include "../lib/hdf5/hdf52index.h"
+#include "../lib/fs/fs_ops.h"
+#include "../lib/utils/string_utils.h"
+#include "../lib/utils/timer_utils.h"
 
 
 art_tree *root_art;
