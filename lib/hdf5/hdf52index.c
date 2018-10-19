@@ -1,4 +1,5 @@
 #include "hdf52index.h"
+#include <libgen.h>
 
 /**
  * Index structure:
@@ -18,10 +19,11 @@ indexing_int(char *attr_name, int *attr_val, int attribute_value_length, char *f
     if (leaf_cnt->bpt == NULL) {
         leaf_cnt->bpt = bplus_tree_init(attr_name, 4096);
     }
+    int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         int k = attr_val[i];
         path_bpt_leaf_cnt_t *v = (path_bpt_leaf_cnt_t *)bplus_tree_get(leaf_cnt->bpt, k);
-        if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
+        if (v == NULL || (long)v == 0 || (long)v == 0xffffffffffffffff) {
             v = (path_bpt_leaf_cnt_t *)calloc(1, sizeof(path_bpt_leaf_cnt_t));
             v->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
             v->obj_path_art = (art_tree *)calloc(1, sizeof(art_tree));
@@ -43,10 +45,11 @@ indexing_float(char *attr_name, double *attr_val, int attribute_value_length, ch
     if (leaf_cnt->bpt == NULL) {
         leaf_cnt->bpt = bplus_tree_init(attr_name, 4096);
     }
+    int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         double k = attr_val[i];
         path_bpt_leaf_cnt_t *v = (path_bpt_leaf_cnt_t *)bplus_tree_get(leaf_cnt->bpt, k);
-        if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
+        if (v == NULL || (long)v == 0 || (long)v == 0xffffffffffffffff) {
             v = (path_bpt_leaf_cnt_t *)calloc(1, sizeof(path_bpt_leaf_cnt_t));
             v->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
             v->obj_path_art = (art_tree *)calloc(1, sizeof(art_tree));
@@ -69,10 +72,11 @@ indexing_string(char *attr_name, char **attr_val, int attribute_value_length, ch
         leaf_cnt->art = (art_tree *)calloc(1, sizeof(art_tree));
         art_tree_init(leaf_cnt->art);
     }
+    int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         char *k = attr_val[i];
         path_bpt_leaf_cnt_t *v = (path_bpt_leaf_cnt_t *)art_search(leaf_cnt->art, k, strlen(k));
-        if (v == NULL || v == 0 || v == 0xffffffffffffffff) {
+        if (v == NULL || (long)v == 0 || (long)v == 0xffffffffffffffff) {
             v = (path_bpt_leaf_cnt_t *)calloc(1, sizeof(path_bpt_leaf_cnt_t));
             v->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
             v->obj_path_art = (art_tree *)calloc(1, sizeof(art_tree));
@@ -126,7 +130,7 @@ int on_attr(void *opdata, h5attribute_t *attr){
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
             break;
     }
-    timer_stop(&one_attr);
+    timer_pause(&one_attr);
     suseconds_t one_attr_duration = timer_delta_us(&one_attr);
     idx_anchor->us_to_index += one_attr_duration;
     
@@ -148,7 +152,6 @@ void parse_hdf5_file(char *filepath, art_tree *artree){
     idx_anchor->root_art = artree;
     idx_anchor->us_to_index = 0;
     
-
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
     init_metadata_collector(meta_collector, 0, index_anchor, NULL, on_obj, on_attr);
 

@@ -25,4 +25,4 @@ typedef struct {
 } path_bpt_leaf_cnt_t;
 
 
-void parse_hdf5_file(char *filepath, art_tree **tree);
+void parse_hdf5_file(char *filepath, art_tree *tree);
