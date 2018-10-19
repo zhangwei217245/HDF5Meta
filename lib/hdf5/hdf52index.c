@@ -93,10 +93,11 @@ void indexing_string(char *attr_name, char **attr_val, int attribute_value_lengt
 }
 
 
-int on_obj(void *opdata,h5object_t *obj){
+int on_obj(void *opdata, h5object_t *obj){
     index_anchor *idx_anchor = (index_anchor *)opdata;
     idx_anchor->obj_path = (char *)calloc(strlen(obj->obj_name)+1, sizeof(char));
     strncpy(idx_anchor->obj_path, obj->obj_name, strlen(obj->obj_name));
+    return 1;
 }
 
 int on_attr(void *opdata, h5attribute_t *attr){
@@ -163,7 +164,7 @@ void parse_hdf5_file(char *filepath, art_tree *artree){
     suseconds_t scan_and_index_duration = timer_delta_us(&time_to_scan);
     suseconds_t actual_indexing = idx_anchor->us_to_index;
     suseconds_t actual_scanning = scan_and_index_duration - actual_indexing;
-    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for scanning and %ld us for inserting.",
+    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for scanning and %ld us for indexing.",
         scan_and_index_duration, basename(filepath), actual_scanning, actual_indexing);
     
 
