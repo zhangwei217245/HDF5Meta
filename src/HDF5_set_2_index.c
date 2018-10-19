@@ -75,7 +75,7 @@ main(int argc, char const *argv[])
     root_art = (art_tree *)calloc(1, sizeof(art_tree));
 
     if (is_regular_file(path)) {
-        rst = parse_hdf5_file((char *)filepath, (art_tree *)arg);
+        rst = parse_hdf5_file((char *)path, root_art);
     } else {
         rst = parse_files_in_dir((char *)path, topk);
     }
