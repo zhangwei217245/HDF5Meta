@@ -27,7 +27,7 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
     char *filepath = (char *)calloc(512, sizeof(char));
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_single_file(filepath, arg);
+    parse_hdf5_file(filepath, (art_tree *)arg);
     
     return 1;
 }
