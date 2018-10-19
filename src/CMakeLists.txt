@@ -26,6 +26,11 @@ add_executable (hdf5_set_2_mongo HDF5_set_2_mongo.c)
 target_link_libraries(hdf5_set_2_mongo PRIVATE 
     hdf52json ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 
+# build hdf5_set_2_index
+add_executable (hdf5_set_2_index HDF5_set_2_index.c)
+target_link_libraries(hdf5_set_2_index PRIVATE hdf52index)
+
+
 
 #ADD_EXECUTABLE(main main.c dira/printa.c dirb/printb.c)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)

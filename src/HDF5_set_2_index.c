@@ -7,7 +7,7 @@
 art_tree *root_art;
 
 void print_usage() {
-    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir\n");
+    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk\n");
 }
 
 int is_hdf5(const struct dirent *entry){
@@ -102,17 +102,18 @@ main(int argc, char const *argv[])
         rst = parse_files_in_dir(path, topk);
     }
     
-    for (i = 0; i < 1000; i++) {
 
-        stopwatch_t timer_search;
-        timer_start(&timer_search);
+    // for (i = 0; i < 1000; i++) {
 
-        perform_search(i, &opdata);
+    //     stopwatch_t timer_search;
+    //     timer_start(&timer_search);
 
-        timer_pause(&timer_search);
+    //     perform_search(i, &opdata);
 
-        println("Time to %d search is %d microseconds.\n", i, timer_delta_us(&timer_search));
-    }
+    //     timer_pause(&timer_search);
+
+    //     println("Time to %d search is %d microseconds.\n", i, timer_delta_us(&timer_search));
+    // }
 
     return rst;
 }
