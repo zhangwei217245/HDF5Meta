@@ -39,12 +39,6 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
     return 1;
 }
 
-int parse_single_file(char *filepath, void *arg) {
-
-    parse_hdf5_file(filepath, (art_tree *)arg);
-    return 0;
-}
-
 int parse_files_in_dir(char *path, const int topk) {
     collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, root_art, NULL, NULL);
     return 0;
@@ -81,7 +75,7 @@ main(int argc, char const *argv[])
     root_art = (art_tree *)calloc(1, sizeof(art_tree));
 
     if (is_regular_file(path)) {
-        rst = parse_single_file((char *)path, root_art);
+        rst = parse_hdf5_file((char *)filepath, (art_tree *)arg);
     } else {
         rst = parse_files_in_dir((char *)path, topk);
     }
