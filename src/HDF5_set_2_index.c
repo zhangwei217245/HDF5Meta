@@ -27,7 +27,7 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
     char *filepath = (char *)calloc(512, sizeof(char));
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_single_file(filepath, args);
+    parse_single_file(filepath, arg);
     
     return 1;
 }
@@ -41,23 +41,7 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
 
 int parse_single_file(char *filepath, void *arg) {
 
-    stopwatch_t one_file;
-    stopwatch_t parse_file;
-    
-
-    timer_start(&one_file);
-    timer_start(&parse_file);
-    
-    parse_hdf5_file(filepath, (art_tree *)arg));
-
-    timer_pause(&parse_file);
-    timer_pause(&one_file);
-    suseconds_t one_file_duration = timer_delta_us(&one_file);
-    suseconds_t parse_file_duration = timer_delta_us(&parse_file);
-    
-    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for indexing.",
-        one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration);
-    
+    parse_hdf5_file(filepath, (art_tree *)arg);
     return 0;
 }
 
@@ -80,7 +64,7 @@ main(int argc, char const *argv[])
         print_usage();
         return 0;
     }
-    
+    int rst = 0;
     int topk = 0;
     char *path = argv[1];
     if (argc == 3) {
