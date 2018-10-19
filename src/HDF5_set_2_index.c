@@ -81,7 +81,7 @@ main(int argc, char const *argv[])
     root_art = (art_tree *)calloc(1, sizeof(art_tree));
 
     if (is_regular_file(path)) {
-        rst = parse_single_file(path);
+        rst = parse_single_file(path, root_art);
     } else {
         rst = parse_files_in_dir(path, topk);
     }
