@@ -13,7 +13,7 @@
  * not take extra space. With art_iter, we can retrieve all unique 
  * file_paths/obj_paths. 
  */
-indexing_int(char *attr_name, int *attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
+void indexing_int(char *attr_name, int *attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
     leaf_cnt->is_numeric = 1;
     leaf_cnt->is_float = 0;
     if (leaf_cnt->bpt == NULL) {
@@ -39,7 +39,7 @@ indexing_int(char *attr_name, int *attr_val, int attribute_value_length, char *f
     }
 }
 
-indexing_float(char *attr_name, double *attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
+void indexing_float(char *attr_name, double *attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
     leaf_cnt->is_numeric = 1;
     leaf_cnt->is_float = 1;
     if (leaf_cnt->bpt == NULL) {
@@ -65,7 +65,7 @@ indexing_float(char *attr_name, double *attr_val, int attribute_value_length, ch
     }
 }
 
-indexing_string(char *attr_name, char **attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
+void indexing_string(char *attr_name, char **attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
     leaf_cnt->is_numeric = 0;
     leaf_cnt->is_float = 0;
     if (leaf_cnt->art == NULL) {
@@ -153,7 +153,7 @@ void parse_hdf5_file(char *filepath, art_tree *artree){
     idx_anchor->us_to_index = 0;
     
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
-    init_metadata_collector(meta_collector, 0, index_anchor, NULL, on_obj, on_attr);
+    init_metadata_collector(meta_collector, 0, (void *)index_anchor, NULL, on_obj, on_attr);
 
     stopwatch_t time_to_scan;
     timer_start(&time_to_scan);
