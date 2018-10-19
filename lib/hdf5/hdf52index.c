@@ -95,7 +95,7 @@ int on_obj(void *opdata,h5object_t *obj){
     strncpy(idx_anchor->obj_path, obj->obj_name, strlen(obj->obj_name));
 }
 
-int on_attr(void *opdata,h5attribute_t *attr){
+int on_attr(void *opdata, h5attribute_t *attr){
     
     index_anchor *idx_anchor = (index_anchor *)opdata;
     char *file_path = idx_anchor->file_path;
@@ -103,6 +103,9 @@ int on_attr(void *opdata,h5attribute_t *attr){
     char *name = attr->attr_name;
     art_tree *global_art = idx_anchor->root_art;
 
+
+    stopwatch_t one_attr;   
+    timer_start(&one_attr);
     art_leaf_content_t *leaf_cnt = (art_leaf_content_t *)art_search(global_art, name, strlen(name));
     if (leaf_cnt == NULL){
         leaf_cnt = (art_leaf_content_t *)calloc(1, sizeof(art_leaf_content_t));
@@ -123,6 +126,10 @@ int on_attr(void *opdata,h5attribute_t *attr){
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
             break;
     }
+    timer_stop(&one_attr);
+    suseconds_t one_attr_duration = timer_delta_us(&one_attr);
+    idx_anchor->us_to_index += one_attr_duration;
+    
     //TODO: currently ignore any error.
     return 1;
 }
@@ -139,11 +146,21 @@ void parse_hdf5_file(char *filepath, art_tree *artree){
     index_anchor *idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
     idx_anchor->file_path = file_path;
     idx_anchor->root_art = artree;
+    idx_anchor->us_to_index = 0;
     
 
     metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
     init_metadata_collector(meta_collector, 0, index_anchor, NULL, on_obj, on_attr);
 
+    stopwatch_t time_to_scan;
+    timer_start(&time_to_scan);
     scan_hdf5(filepath, meta_collector, 0);
+    timer_pause(&time_to_scan);
+    suseconds_t scan_and_index_duration = timer_delta_us(&time_to_scan);
+    suseconds_t actual_indexing = idx_anchor->us_to_index;
+    suseconds_t actual_scanning = scan_and_index_duration - actual_indexing;
+    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for scanning and %ld us for inserting.",
+        scan_and_index_duration, basename(filepath), actual_scanning, actual_indexing);
+    
 
 }

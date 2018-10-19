@@ -55,7 +55,7 @@ int parse_single_file(char *filepath, void *arg) {
     suseconds_t one_file_duration = timer_delta_us(&one_file);
     suseconds_t parse_file_duration = timer_delta_us(&parse_file);
     
-    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.",
+    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for indexing.",
         one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration);
     
     return 0;
@@ -68,7 +68,8 @@ int parse_files_in_dir(char *path, const int topk) {
 
 
 void perform_search(int seed, void *opdata_p){
-    
+    // TODO: DIFFERENT TYPE OF QUERIES : ATTRIBUTE/PREFIX  VALUE EXACT RANGE
+    // TODO: DIFFERENT SELECTIVITY 
     return;
 }
 
@@ -88,6 +89,9 @@ main(int argc, char const *argv[])
 
     char *indexed_attr[]={"COLLA", "DARKTIME", "BADPIXEL", "FILENAME", "EXPOSURE", "COLLB", NULL};
     char *search_values[]={"27089", "0", "badpixels-56149-b1.fits.gz", "sdR-b2-00154990.fit", "155701", "26660", NULL};
+
+
+    
     int search_types[] = {1,1,0,0,1,1,0};
     
     root_art = (art_tree *)calloc(1, sizeof(art_tree));

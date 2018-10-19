@@ -8,6 +8,7 @@ typedef struct {
     char *file_path;
     char *obj_path;
     art_tree *root_art;
+    suseconds_t us_to_index;
 } index_anchor;
 
 

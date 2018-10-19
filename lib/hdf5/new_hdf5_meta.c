@@ -85,6 +85,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 
     H5O_info_t *obj_info = (H5O_info_t *)calloc(1, sizeof(H5O_info_t));
     H5Oget_info(object->obj_id, obj_info);
+    // TODO: try H5Oget_info2
     object->obj_info = obj_info;
     object->num_attrs = H5Aget_num_attrs(object->obj_id);
     // println("obj : %s", object->obj_name);
