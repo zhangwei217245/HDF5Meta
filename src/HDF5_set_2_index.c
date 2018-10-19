@@ -66,7 +66,7 @@ main(int argc, char const *argv[])
     }
     int rst = 0;
     int topk = 0;
-    char *path = argv[1];
+    const char *path = argv[1];
     if (argc == 3) {
         topk = atoi(argv[2]);
     }
@@ -81,9 +81,9 @@ main(int argc, char const *argv[])
     root_art = (art_tree *)calloc(1, sizeof(art_tree));
 
     if (is_regular_file(path)) {
-        rst = parse_single_file(path, root_art);
+        rst = parse_single_file((char *)path, root_art);
     } else {
-        rst = parse_files_in_dir(path, topk);
+        rst = parse_files_in_dir((char *)path, topk);
     }
     
 
