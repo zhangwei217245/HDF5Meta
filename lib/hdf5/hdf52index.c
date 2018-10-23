@@ -1,6 +1,6 @@
 #include "hdf52index.h"
 #include <libgen.h>
-#include "../ds/string_utils.h"
+#include "../utils/string_utils.h"
 
 
 index_anchor *idx_anchor;
