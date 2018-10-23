@@ -31,7 +31,7 @@ typedef struct {
 
 typedef struct {
     void *k;
-    map_t path_hash_map;
+    // map_t path_hash_map;
     art_tree *file_path_art;
 } value_tree_leaf_content_t;
 
