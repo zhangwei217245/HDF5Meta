@@ -1,7 +1,7 @@
 #include "new_hdf5_meta.h"
 #include "../ds/art.h"
 #include "../ds/bplustree.h"
-#include "../ds/hashmap.h"
+#include "../ds/hashset.h"
 #include <search.h>
 
 // For index creation,

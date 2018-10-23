@@ -111,7 +111,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
             int k = ((int *)attr_val)[i];
             entry->k = (int *)calloc(1,sizeof(int));
             *((int *)(entry->k)) = k;
-        } else if (compare_func == double_value_compare_func)){
+        } else if (compare_func == float_value_compare_func){
             double k = ((double *)attr_val)[i];
             entry->k = (double *)calloc(1,sizeof(double));
             *((double *)(entry->k)) = k;
