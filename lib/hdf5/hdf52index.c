@@ -336,7 +336,7 @@ int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, 
     } else {
         power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
         prst->num_files=0;
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t *)calloc(art_size(file_path_art), sizeof(search_result_t));
         art_iter(file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
