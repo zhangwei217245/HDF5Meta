@@ -148,7 +148,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
 }
 
 void indexing_string(char *attr_name, char **attr_val, int attribute_value_length, 
-char *file_path, hid_t *obj_id, attr_tree_leaf_content_t *leaf_cnt){
+char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
     leaf_cnt->is_numeric = 0;
     leaf_cnt->is_float = 0;
 
