@@ -270,6 +270,10 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
 
+    if (leaf_cnt == NULL || leaf_cnt->bpt = NULL) {
+        return 0;
+    }
+
     value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
     entry->k = (int *)calloc(1,sizeof(int));
     *((int *)(entry->k)) = value;
@@ -280,6 +284,9 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     } else {
         power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
         prst->num_files=0;
+        if (retval->file_path_art == NULL) {
+            return 0;
+        }
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
         art_iter(retval->file_path_art, collect_result, prst);
         numrst = prst->num_files;
@@ -302,6 +309,10 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
 
+    if (leaf_cnt == NULL || leaf_cnt->bpt = NULL) {
+        return 0;
+    }
+
     value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
     entry->k = (double *)calloc(1,sizeof(double));
     *((double *)(entry->k)) = value;
@@ -312,6 +323,9 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     } else {
         power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
         prst->num_files=0;
+        if (retval->file_path_art == NULL) {
+            return 0;
+        }
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
         art_iter(retval->file_path_art, collect_result, prst);
         numrst = prst->num_files;
@@ -333,6 +347,10 @@ int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, 
     attr_tree_leaf_content_t *leaf_cnt =
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
+
+    if (leaf_cnt == NULL || leaf_cnt->art == NULL) {
+        return 0;
+    }
 
     art_tree *file_path_art = (art_tree *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
 
