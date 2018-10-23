@@ -116,7 +116,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
             entry->k = (double *)calloc(1,sizeof(double));
             *((double *)(entry->k)) = k;
         }
-        retval = tsearch(entry, leaf_cnt->bpt, compare_func);
+        retval = tsearch(entry, (leaf_cnt->bpt)[0], compare_func);
         if (retval == 0) {
             println("Fail ENOMEM");
         } else {
@@ -201,8 +201,10 @@ int on_attr(void *opdata, h5attribute_t *attr){
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, name, strlen(name));
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)calloc(1, sizeof(attr_tree_leaf_content_t));
-        void *bptr = NULL;
-        leaf_cnt->bpt = &bptr;
+        // void *bptr = NULL;
+        leaf_cnt->bpt = (void ***)calloc(1, sizeof(void **));
+        (leaf_cnt->bpt)[0] = (void **)calloc(1, sizeof(void *));
+        (leaf_cnt->bpt)[0][0] = NULL;
         leaf_cnt->art = (art_tree *)calloc(1, sizeof(art_tree));
         art_insert(global_art, name, strlen(name), leaf_cnt);
     }
@@ -272,7 +274,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     entry->k = (int *)calloc(1,sizeof(int));
     *((int *)(entry->k)) = value;
     
-    value_tree_leaf_content_t *retval = tfind(entry, leaf_cnt->bpt, int_value_compare_func);
+    value_tree_leaf_content_t *retval = tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
     if (retval == NULL) {
         return numrst;
     } else {
@@ -304,7 +306,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     entry->k = (double *)calloc(1,sizeof(double));
     *((double *)(entry->k)) = value;
     
-    value_tree_leaf_content_t *retval = tfind(entry, leaf_cnt->bpt, int_value_compare_func);
+    value_tree_leaf_content_t *retval = tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
     if (retval == NULL) {
         return numrst;
     } else {
