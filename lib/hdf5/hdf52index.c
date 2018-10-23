@@ -103,7 +103,7 @@ int (*compare_func)(const void *a, const void *b),
 char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
     void *retval = 0;
     leaf_cnt->is_numeric = 1;
-    leaf_cnt->is_float = 0;
+    leaf_cnt->is_float = (compare_func==float_value_compare_func);
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
@@ -201,6 +201,8 @@ int on_attr(void *opdata, h5attribute_t *attr){
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, name, strlen(name));
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)calloc(1, sizeof(attr_tree_leaf_content_t));
+        leaf_cnt->bpt = NULL;
+        leaf_cnt->art = NULL;
         art_insert(global_art, name, strlen(name), leaf_cnt);
     }
 
