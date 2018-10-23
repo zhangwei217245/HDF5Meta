@@ -203,7 +203,7 @@ int on_attr(void *opdata, h5attribute_t *attr){
         leaf_cnt = (attr_tree_leaf_content_t *)calloc(1, sizeof(attr_tree_leaf_content_t));
         void *bptr = NULL;
         leaf_cnt->bpt = &bptr;
-        leaf_cnt->art = (art_tree *)calloc(1, size);
+        leaf_cnt->art = (art_tree *)calloc(1, sizeof(art_tree));
         art_insert(global_art, name, strlen(name), leaf_cnt);
     }
 
