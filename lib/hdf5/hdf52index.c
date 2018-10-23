@@ -270,7 +270,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
 
-    if (leaf_cnt == NULL || leaf_cnt->bpt = NULL) {
+    if (leaf_cnt == NULL || leaf_cnt->bpt == NULL) {
         return 0;
     }
 
@@ -309,7 +309,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
 
-    if (leaf_cnt == NULL || leaf_cnt->bpt = NULL) {
+    if (leaf_cnt == NULL || leaf_cnt->bpt == NULL) {
         return 0;
     }
 
