@@ -131,7 +131,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
                 test_ent->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
                 art_tree_init(test_ent->file_path_art);
             }
-            hashset_t obj_id_set = (hashset_t)art_search(file_path_art, 
+            hashset_t obj_id_set = (hashset_t)art_search(test_ent->file_path_art, 
             (const unsigned char *)file_path, strlen(file_path));
             if (obj_id_set == NULL) {
                 obj_id_set = hashset_create();
@@ -231,7 +231,7 @@ int on_attr(void *opdata, h5attribute_t *attr){
 
 int collect_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
     power_search_rst_t *prst = (power_search_rst_t *)data;
-    search_result_t rst = prst->rst_arr[prst->num_files];
+    search_result_t *rst = &(prst->rst_arr[prst->num_files]);
     rst->file_path = strdup(key);
     //TODO: get object_ids;
 
