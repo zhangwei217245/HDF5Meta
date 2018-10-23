@@ -277,7 +277,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
         prst->num_files=0;
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
         art_iter(retval->file_path_art, collect_result, prst);
-         = prst->num_files;
+        numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
         *rst = _rst;
         free(prst);
@@ -309,7 +309,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
         prst->num_files=0;
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
         art_iter(retval->file_path_art, collect_result, prst);
-         = prst->num_files;
+        numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
         *rst = _rst;
         free(prst);
@@ -338,13 +338,11 @@ int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, 
         prst->num_files=0;
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
         art_iter(file_path_art, collect_result, prst);
-         = prst->num_files;
+        numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
         *rst = _rst;
         free(prst);
     }
-    free(entry->k);
-    free(entry);
     return numrst;
 }
 

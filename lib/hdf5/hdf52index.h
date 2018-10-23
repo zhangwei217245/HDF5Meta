@@ -56,7 +56,7 @@ typedef struct {
  * The value of each key should be a set of object IDs.
  */
 
-void parse_hdf5_file(char *filepath);
+void parse_hdf5_file(char *filepath, index_anchor *idx_anchor);
 
 
 int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, search_result_t **rst);
