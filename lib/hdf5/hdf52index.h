@@ -25,7 +25,7 @@ typedef struct {
 typedef struct {
     int is_numeric;
     int is_float;
-    void *bpt;
+    void **bpt;
     art_tree *art;
 }attr_tree_leaf_content_t;
 
