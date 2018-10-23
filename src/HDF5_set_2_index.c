@@ -1,10 +1,10 @@
+#include "../lib/include/base_stdlib.h"
 #include "../lib/hdf5/hdf52index.h"
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
 
-
-art_tree *root_art;
+index_anchor *idx_anchor;
 
 void print_usage() {
     printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk\n");
@@ -27,7 +27,7 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
     char *filepath = (char *)calloc(512, sizeof(char));
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_hdf5_file(filepath, (art_tree *)arg);
+    parse_hdf5_file(filepath, (index_anchor *)arg);
     
     return 1;
 }
@@ -39,16 +39,9 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
     return 1;
 }
 
-int parse_files_in_dir(char *path, const int topk) {
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, root_art, NULL, NULL);
+int parse_files_in_dir(char *path, const int topk, index_anchor *idx_anchor) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, idx_anchor, NULL, NULL);
     return 0;
-}
-
-
-void perform_search(int seed, void *opdata_p){
-    // TODO: DIFFERENT TYPE OF QUERIES : ATTRIBUTE/PREFIX  VALUE EXACT RANGE
-    // TODO: DIFFERENT SELECTIVITY 
-    return;
 }
 
 int 
@@ -68,31 +61,38 @@ main(int argc, char const *argv[])
     char *indexed_attr[]={"COLLA", "DARKTIME", "BADPIXEL", "FILENAME", "EXPOSURE", "COLLB", NULL};
     char *search_values[]={"27089", "0", "badpixels-56149-b1.fits.gz", "sdR-b2-00154990.fit", "155701", "26660", NULL};
 
-
+    int search_types[] = {1,1,0,0,1,1};
     
-    int search_types[] = {1,1,0,0,1,1,0};
-    
-    root_art = (art_tree *)calloc(1, sizeof(art_tree));
+    idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
 
     if (is_regular_file(path)) {
-        parse_hdf5_file((char *)path, root_art);
+        parse_hdf5_file((char *)path, idx_anchor);
         rst = 0;
     } else {
-        rst = parse_files_in_dir((char *)path, topk);
+        rst = parse_files_in_dir((char *)path, topk, idx_anchor);
     }
     
+    int i = 0;
+    for (i = 0; i < 1000; i++) {
+        int numrst = -1;
+        stopwatch_t timer_search;
+        timer_start(&timer_search);
 
-    // for (i = 0; i < 1000; i++) {
+        int c = i%6;
+        if (search_types[c]) {
+            int value = atoi(search_values[c]);
+            search_result_t *rst = NULL;
+            numrst += int_value_search(idx_anchor, indexed_attr[c], value, &rst);
+        } else {
+            char *value = search_values[c];
+            search_result_t *rst = NULL;
+            numrst += string_value_search(idx_anchor, indexed_attr[c], value, &rst);
+        }
 
-    //     stopwatch_t timer_search;
-    //     timer_start(&timer_search);
+        timer_pause(&timer_search);
 
-    //     perform_search(i, &opdata);
-
-    //     timer_pause(&timer_search);
-
-    //     println("Time to %d search is %d microseconds.\n", i, timer_delta_us(&timer_search));
-    // }
+        println("Time for 1000 queries get %d results and spent %d microseconds.\n", numrst, timer_delta_us(&timer_search));
+    }
 
     return rst;
 }

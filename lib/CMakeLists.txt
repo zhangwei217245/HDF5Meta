@@ -13,7 +13,7 @@ ADD_LIBRARY(timer_utils SHARED utils/timer_utils.c utils/timer_utils.h)
 
 ADD_LIBRARY(thpool SHARED thread/thpool.c thread/thpool.h)
 
-ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
+ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
 
