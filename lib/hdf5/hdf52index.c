@@ -267,7 +267,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
 
     value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
     entry->k = (int *)calloc(1,sizeof(int));
-    *((int *)(entry->k)) = k;
+    *((int *)(entry->k)) = value;
     
     value_tree_leaf_content_t *retval = tfind(entry, &(leaf_cnt->bpt), int_value_compare_func);
     if (retval == NULL) {
@@ -299,7 +299,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
 
     value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
     entry->k = (double *)calloc(1,sizeof(double));
-    *((double *)(entry->k)) = k;
+    *((double *)(entry->k)) = value;
     
     value_tree_leaf_content_t *retval = tfind(entry, &(leaf_cnt->bpt), int_value_compare_func);
     if (retval == NULL) {
