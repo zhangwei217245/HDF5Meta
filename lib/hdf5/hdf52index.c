@@ -261,7 +261,7 @@ int collect_result(void *data, const unsigned char *key, uint32_t key_len, void 
  */ 
 int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, search_result_t **rst) {
     
-    int numrst = -1;
+    int numrst = 0;
     if (rst == NULL) {
         return numrst;
     }
@@ -300,7 +300,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
 }
 
 int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, search_result_t **rst) {
-    int numrst = -1;
+    int numrst = 0;
     if (rst == NULL) {
         return numrst;
     }
@@ -339,7 +339,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
 }
 
 int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, search_result_t **rst) {
-    int numrst = -1;
+    int numrst = 0;
     if (rst == NULL) {
         return numrst;
     }
