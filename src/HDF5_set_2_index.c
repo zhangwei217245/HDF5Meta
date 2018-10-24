@@ -71,12 +71,13 @@ main(int argc, char const *argv[])
     } else {
         rst = parse_files_in_dir((char *)path, topk, idx_anchor);
     }
-    
+
+    stopwatch_t timer_search;
+    timer_start(&timer_search);
     int i = 0;
     for (i = 0; i < 1000; i++) {
-        int numrst = -1;
-        stopwatch_t timer_search;
-        timer_start(&timer_search);
+        int numrst = 0;
+        
 
         int c = i%6;
         if (search_types[c]) {
@@ -88,11 +89,10 @@ main(int argc, char const *argv[])
             search_result_t *rst = NULL;
             numrst += string_value_search(idx_anchor, indexed_attr[c], value, &rst);
         }
-
-        timer_pause(&timer_search);
-
-        println("Time for 1000 queries get %d results and spent %d microseconds.\n", numrst, timer_delta_us(&timer_search));
     }
+
+    timer_pause(&timer_search);
+    println("Time for 1000 queries get %d results and spent %d microseconds.", numrst, timer_delta_us(&timer_search));
 
     return rst;
 }
