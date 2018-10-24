@@ -74,11 +74,9 @@ main(int argc, char const *argv[])
 
     stopwatch_t timer_search;
     timer_start(&timer_search);
+    int numrst = 0;
     int i = 0;
     for (i = 0; i < 1000; i++) {
-        int numrst = 0;
-        
-
         int c = i%6;
         if (search_types[c]) {
             int value = atoi(search_values[c]);
