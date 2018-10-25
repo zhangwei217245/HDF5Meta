@@ -68,7 +68,7 @@ main(int argc, char const *argv[])
         "EXPOSURE", 
         "COLLB", 
         "M1PISTON",
-        "LAMPLIST"
+        "LAMPLIST",
         NULL};
     char *search_values[]={
         "Scott Burles & David Schlegel",
@@ -100,11 +100,15 @@ main(int argc, char const *argv[])
     int numrst = 0;
     int i = 0;
     for (i = 0; i < 1000; i++) {
-        int c = i%6;
-        if (search_types[c]) {
+        int c = i%10;
+        if (search_types[c]==1) {
             int value = atoi(search_values[c]);
             search_result_t *rst = NULL;
             numrst += int_value_search(idx_anchor, indexed_attr[c], value, &rst);
+        }else if (search_types[c]==2) {
+            double value = atof(search_values[c]);
+            search_result_t *rst = NULL;
+            numrst += float_value_search(idx_anchor, indexed_attr[c], value, &rst); 
         } else {
             char *value = search_values[c];
             search_result_t *rst = NULL;
