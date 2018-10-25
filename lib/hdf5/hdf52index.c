@@ -137,7 +137,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
                 obj_id_set = hashset_create();
                 art_insert(test_ent->file_path_art, file_path, strlen(file_path), (void *)obj_id_set);
             }
-            hashset_add(obj_id_set, (void *)obj_id);
+            hashset_add(obj_id_set, (void *)&obj_id);
         }
         // TODO: we store value as attr_name currently, 
         // but we can utilize this value to store some statistic info, 
@@ -171,7 +171,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
             obj_id_set = hashset_create();
             art_insert(file_path_art, file_path, strlen(file_path), (void *)obj_id_set);
         }
-        hashset_add(obj_id_set, (void *)obj_id);
+        hashset_add(obj_id_set, (void *)&obj_id);
         // TODO: we store value as attr_name currently, 
         // but we can utilize this value to store some statistic info, 
         // for caching policy maybe.
@@ -247,8 +247,8 @@ int collect_result(void *data, const unsigned char *key, uint32_t key_len, void 
     hs_itr->index = 0;//FIXME: confirm.
     int i = 0;
     while (hashset_iterator_has_next(hs_itr)) {
-        hid_t obj_id = (hid_t)hashset_iterator_value(hs_itr);
-        rst->obj_ids[i] = obj_id;
+        hid_t *obj_id_ptr = (hid_t *)hashset_iterator_value(hs_itr);
+        rst->obj_ids[i] = *obj_id_ptr;
         hashset_iterator_next(hs_itr);
         i++;
     }
