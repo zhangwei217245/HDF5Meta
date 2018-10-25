@@ -80,7 +80,7 @@ main(int argc, char const *argv[])
         "155701", 
         "26660", 
         "661.53",
-        "lamphgcdne.dat"
+        "lamphgcdne.dat",
         NULL};
 
     //  string value = 0, int value = 1, float value = 2
