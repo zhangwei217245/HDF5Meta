@@ -58,10 +58,33 @@ main(int argc, char const *argv[])
         topk = atoi(argv[2]);
     }
 
-    char *indexed_attr[]={"COLLA", "DARKTIME", "BADPIXEL", "FILENAME", "EXPOSURE", "COLLB", NULL};
-    char *search_values[]={"27089", "0", "badpixels-56149-b1.fits.gz", "sdR-b2-00154990.fit", "155701", "26660", NULL};
+    char *indexed_attr[]={
+        "AUTHOR", 
+        "BESTEXP", 
+        "FBADPIX2", 
+        "DARKTIME", 
+        "BADPIXEL", 
+        "FILENAME", 
+        "EXPOSURE", 
+        "COLLB", 
+        "M1PISTON",
+        "LAMPLIST"
+        NULL};
+    char *search_values[]={
+        "Scott Burles & David Schlegel",
+        "103179", 
+        "0.231077", 
+        "0", 
+        "badpixels-56149-b1.fits.gz", 
+        "sdR-b2-00154990.fit", 
+        "155701", 
+        "26660", 
+        "661.53",
+        "lamphgcdne.dat"
+        NULL};
 
-    int search_types[] = {1,1,0,0,1,1};
+    //  string value = 0, int value = 1, float value = 2
+    int search_types[] = {0,1,2,1,0,0,1,1,2,0};
     
     idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
 
