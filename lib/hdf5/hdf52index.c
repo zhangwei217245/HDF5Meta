@@ -300,10 +300,10 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     } else {
         power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
         prst->num_files=0;
-        if (retval->file_path_art == NULL) {
+        if (retval[0]->file_path_art == NULL) {
             return 0;
         }
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t *)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t));
         art_iter(retval[0]->file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
@@ -339,10 +339,10 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     } else {
         power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
         prst->num_files=0;
-        if (retval->file_path_art == NULL) {
+        if (retval[0]->file_path_art == NULL) {
             return 0;
         }
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t *)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t));
         art_iter(retval[0]->file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
