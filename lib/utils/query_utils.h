@@ -7,7 +7,12 @@
 #define TAG_DELIMITER ","
 #include "string_utils.h"
 
-
+// This is a 
+typedef struct {
+    char *attr_names;
+    char *attr_values;
+    int *data_types;
+} query_collection_t;
 
 /**
  * Test tag generation in a for loop

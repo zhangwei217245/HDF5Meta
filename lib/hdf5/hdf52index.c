@@ -98,6 +98,15 @@ int float_value_compare_func(const void *l, const void *r){
     return 0;
 }
 
+/**
+ * This is a function for indexing numeric fields in the HDF5 metadata. 
+ * We deal with two different data types, one is integer, the other one is double. 
+ * 1. Go through attribute_name art_tree, and we get the pointer for value B-tree
+ * 2. After transforming the value to int/double value, we go through value B-tree(tsearch)
+ * 3. At the leaf nodes of B-tree, we go through the ART tree again to collect all file paths
+ *    which contains the result. 
+ * 4. 
+ */ 
 void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length,
 int (*compare_func)(const void *a, const void *b), 
 char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
@@ -317,7 +326,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     entry->k = (double *)calloc(1,sizeof(double));
     *((double *)(entry->k)) = value;
     
-    value_tree_leaf_content_t *retval = tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
+    value_tree_leaf_content_t *retval = tfind(entry, (leaf_cnt->bpt)[0], float_value_compare_func);
     if (retval == NULL) {
         return numrst;
     } else {

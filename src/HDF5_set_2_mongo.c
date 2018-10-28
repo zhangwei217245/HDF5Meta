@@ -120,20 +120,61 @@ int parse_files_in_dir(char *path, const int topk) {
     return 0;
 }
 
+char *gen_query(int idx, char *attr_arr, char *value_arr, int *type_arr) {
+    char *string_query_template = "{\"attributes.%s\":\"%s\"}";
+    char *numeric_query_template = "{\"attributes.%s\":%s}";
+    char *query = (char *)calloc(1024, sizeof(char));
+    if (type_arr[idx]==0) { // String
+        sprintf(query, string_query_template, attr_arr[idx], value_arr[idx]);
+    } else if (type_arr[idx]==1) { // Int
+        sprintf(query, numeric_query_template, attr_arr[idx], value_arr[idx]);
+    } else if (type_arr[idx]==2) { // float
+        sprintf(query, numeric_query_template, attr_arr[idx], value_arr[idx]);
+    }
+    return query;
+}
+
 int
 main(int argc, char **argv)
 {
     char* path;
     int rst = 0;
     int topk = 0;
+    int num_q = 5;
+
+    char *indexed_attr[]={
+        "AUTHOR", 
+        "BESTEXP", 
+        "FBADPIX2", 
+        "DARKTIME", 
+        "BADPIXEL", 
+        "FILENAME", 
+        "EXPOSURE", 
+        "COLLB", 
+        "M1PISTON",
+        "LAMPLIST",
+        NULL};
+    char *search_values[]={
+        "Scott Burles & David Schlegel",
+        "103179", 
+        "0.231077", 
+        "0", 
+        "badpixels-56149-b1.fits.gz", 
+        "sdR-b2-00154990.fit", 
+        "155701", 
+        "26660", 
+        "661.53",
+        "lamphgcdne.dat",
+        NULL};
+
+    //  string value = 0, int value = 1, float value = 2
+    int search_types[] = {0,1,2,1,0,0,1,1,2,0};
 
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);
 
-    // while (doc_count != 0) {
     clear_everything();
-    // doc_count = get_all_doc_count();
-    // }
+    
     println("db cleaned!");
 
     if (argc < 2)
@@ -143,11 +184,18 @@ main(int argc, char **argv)
         if (argc == 3) {
             topk = atoi(argv[2]);
         }
+        if (argc == 4) {
+            num_q = atoi(argv[3]);
+        }
         if (is_regular_file(path)) {
             rst = parse_single_file(path);
         } else {
             rst = parse_files_in_dir(path, topk);
         }
+
+        //generate query:
+
+
     }
     return rst;
 }
