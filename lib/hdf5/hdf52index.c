@@ -115,36 +115,41 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
     leaf_cnt->is_float = (compare_func==float_value_compare_func);
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
+        // A node with k as the value to compare and search.
         value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
         if (compare_func == int_value_compare_func) {
-            int k = ((int *)attr_val)[i];
-            entry->k = (int *)calloc(1,sizeof(int));
-            *((int *)(entry->k)) = k;
+            int *_attr_value = (int *)attr_val;
+            int k = _attr_value[i];
+            int *bpt_k = (int *)calloc(1,sizeof(int));
+            bpt_k[0] = k;
+            entry->k = (void *)bpt_k;
         } else if (compare_func == float_value_compare_func){
-            double k = ((double *)attr_val)[i];
-            entry->k = (double *)calloc(1,sizeof(double));
-            *((double *)(entry->k)) = k;
+            double *_attr_value = (double *)attr_val;
+            double k = _attr_value[i];
+            double *bpt_k = (double *)calloc(1,sizeof(double));
+            bpt_k[0] = k;
+            entry->k = (void *)bpt_k;
         }
         retval = tsearch(entry, (leaf_cnt->bpt)[0], compare_func);
         if (retval == 0) {
             println("Fail ENOMEM");
         } else {
-            value_tree_leaf_content_t *test_ent = 0;
-            test_ent = *(value_tree_leaf_content_t **)retval;
-            if (test_ent != entry) {
-                // value found, please append data here.
-                free(entry->k);
-                free(entry);
-            } else {
-                //value added.
+            value_tree_leaf_content_t **test_ent_ptr = (value_tree_leaf_content_t **)retval;
+            value_tree_leaf_content_t *test_ent = *test_ent_ptr;
+            if (test_ent == entry) {
+                // new value added, so entry is the test_ent
                 test_ent->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
                 art_tree_init(test_ent->file_path_art);
+            } else {
+                // Value found, but test_ent is the old content.
+                free(entry->k);
+                free(entry);
             }
             hashset_t obj_id_set = (hashset_t)art_search(test_ent->file_path_art, 
             (const unsigned char *)file_path, strlen(file_path));
             if (obj_id_set == NULL) {
                 obj_id_set = hashset_create();
-                art_insert(test_ent->file_path_art, file_path, strlen(file_path), (void *)obj_id_set);
+                art_insert(test_ent->file_path_art, (const unsigned char *)file_path, strlen(file_path), (void *)obj_id_set);
             }
             hashset_add(obj_id_set, (void *)&obj_id);
         }
@@ -284,10 +289,12 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     }
 
     value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
-    entry->k = (int *)calloc(1,sizeof(int));
-    *((int *)(entry->k)) = value;
     
-    value_tree_leaf_content_t *retval = tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
+    int *bpt_k=(int *)calloc(1,sizeof(int));
+    bpt_k[0] = value;
+    entry->k = (void *)bpt_k;
+    
+    value_tree_leaf_content_t **retval = (value_tree_leaf_content_t **)tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
     if (retval == NULL) {
         return numrst;
     } else {
@@ -297,7 +304,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
             return 0;
         }
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
-        art_iter(retval->file_path_art, collect_result, prst);
+        art_iter(retval[0]->file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
         *rst = _rst;
@@ -326,7 +333,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     entry->k = (double *)calloc(1,sizeof(double));
     *((double *)(entry->k)) = value;
     
-    value_tree_leaf_content_t *retval = tfind(entry, (leaf_cnt->bpt)[0], float_value_compare_func);
+    value_tree_leaf_content_t **retval = tfind(entry, (leaf_cnt->bpt)[0], float_value_compare_func);
     if (retval == NULL) {
         return numrst;
     } else {
@@ -336,7 +343,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
             return 0;
         }
         prst->rst_arr = (search_result_t *)calloc(art_size(retval->file_path_art), sizeof(search_result_t));
-        art_iter(retval->file_path_art, collect_result, prst);
+        art_iter(retval[0]->file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
         *rst = _rst;
