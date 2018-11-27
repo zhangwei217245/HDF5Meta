@@ -140,7 +140,8 @@ char *gen_query(int idx, char **attr_arr, char **value_arr, int *type_arr) {
 }
 
 char *gen_index_str(int idx, char **attr_arr) {
-    char *index_str_template = "{\"attributes.%s\":1}";
+    // char *index_str_template = "{\"attributes.%s\":1}";
+    char *index_str_template = "attributes.%s";
     char *index_str = (char *)calloc(1024, sizeof(char));
     sprintf(index_str, index_str_template, attr_arr[idx]);
     return index_str;
