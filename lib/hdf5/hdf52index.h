@@ -11,6 +11,8 @@ typedef struct {
     char *obj_path;
     hid_t object_id;
     art_tree *root_art;
+    char **indexed_attr;
+    int num_indexed_field;
     suseconds_t us_to_index;
 } index_anchor;
 

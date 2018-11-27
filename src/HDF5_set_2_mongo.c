@@ -13,6 +13,7 @@ extern void create_dataset_name_index();
 extern void create_root_obj_path_index();
 extern void create_lv2_obj_path_index();
 extern void create_lv3_obj_path_index();
+extern int64_t create_any_index(const char *index_str);
 extern int64_t query_count(const char *query_condition);
 extern int64_t query_result_count(const char *query_condition);
 extern void query_result_and_print(const char *query_condition);
@@ -52,8 +53,8 @@ int parse_single_file(char *filepath) {
     json_object *rootObj;
     parse_hdf5_file(filepath, &rootObj);
 
-    const char *root_json_str = json_object_to_json_string(rootObj);
-    printf("%s\n", root_json_str);
+    // const char *root_json_str = json_object_to_json_string(rootObj);
+    // printf("%s\n", root_json_str);
 
     timer_pause(&parse_file);
     json_object *root_array = NULL;
@@ -124,7 +125,7 @@ int parse_files_in_dir(char *path, const int topk) {
     return 0;
 }
 
-char *gen_query(int idx, char *attr_arr, char *value_arr, int *type_arr) {
+char *gen_query(int idx, char **attr_arr, char **value_arr, int *type_arr) {
     char *string_query_template = "{\"attributes.%s\":\"%s\"}";
     char *numeric_query_template = "{\"attributes.%s\":%s}";
     char *query = (char *)calloc(1024, sizeof(char));
@@ -138,53 +139,70 @@ char *gen_query(int idx, char *attr_arr, char *value_arr, int *type_arr) {
     return query;
 }
 
+char *gen_index_str(int idx, char **attr_arr) {
+    char *index_str_template = "{\"attributes.%s\":1}";
+    char *index_str = (char *)calloc(1024, sizeof(char));
+    sprintf(index_str, index_str_template, attr_arr[idx]);
+    return index_str;
+}
+
 int
 main(int argc, char **argv)
 {
-    char* path;
+    if (argc < 2) {
+        print_usage();
+        return 0;
+    }
     int rst = 0;
     int topk = 0;
-    int num_q = 5;
+    int num_indexed_field = 0;
+    const char *path = argv[1];
+    if (argc == 3) {
+        topk = atoi(argv[2]);
+    }
+    if (argc == 4) {
+        num_indexed_field = atoi(argv[3]);
+    }
 
     char *indexed_attr[]={
-        "sub_objects.sub_objects.sub_objects.sub_objects.sub_objects.AUTHOR", 
-        "FILENAME", 
-        "EXPOSURE", 
-        "LAMPLIST",
-        "COMMENT",
-        "DAQVER",
+        "AUTHOR", 
         "BESTEXP", 
+        "HELIO_RV",
+        "FILENAME", 
         "DARKTIME", 
+        "IOFFSTD",
+        "EXPOSURE", 
         "BADPIXEL", 
+        "CRVAL1",
+        "LAMPLIST",
         "COLLB", 
+        "M1PISTON",
+        "COMMENT",
         "HIGHREJ",
         "FBADPIX2", 
-        "M1PISTON",
-        "CRVAL1",
-        "IOFFSTD",
-        "HELIO_RV",
+        "DAQVER",
         NULL};
     char *search_values[]={
         "Scott Burles & David Schlegel",
-        "badpixels-56149-b1.fits.gz", 
-        "sdR-b2-00154990.fit", 
-        "lamphgcdne.dat",
-        "sp2blue cards follow",
-        "1.2.7",
         "103179", 
+        "26.6203",
+        "badpixels-56149-b1.fits.gz", 
         "0", 
+        "0.0133138",
+        "sdR-b2-00154990.fit", 
         "155701", 
+        "3.5528",
+        "lamphgcdne.dat",
         "26660", 
+        "661.53",
+        "sp2blue cards follow",
         "8",
         "0.231077", 
-        "661.53",
-        "3.5528",
-        "0.0133138",
-        "26.6203",
+        "1.2.7",
         NULL};
 
     //  string value = 0, int value = 1, float value = 2
-    int search_types[] = {0,0,0,0,0,0,1,1,1,1,1,2,2,2,2,2};
+    int search_types[] = {0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0};
 
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);
@@ -193,25 +211,43 @@ main(int argc, char **argv)
     
     println("db cleaned!");
 
-    if (argc < 2)
-        print_usage();
-    else {
-        path = argv[1];
-        if (argc == 3) {
-            topk = atoi(argv[2]);
-        }
-        if (argc == 4) {
-            num_q = atoi(argv[3]);
-        }
-        if (is_regular_file(path)) {
-            rst = parse_single_file(path);
-        } else {
-            rst = parse_files_in_dir(path, topk);
-        }
+    int query_num = 16;
 
-        //generate query:
-
-
+    if (num_indexed_field > 0) {
+        int f = 0;
+        for (f = 0; f < num_indexed_field; f++) {
+            char *index_str = gen_index_str(f, indexed_attr);
+            create_any_index(index_str);
+        }
+        query_num = num_indexed_field;
     }
+    
+    if (is_regular_file(path)) {
+        rst = parse_single_file(path);
+    } else {
+        rst = parse_files_in_dir(path, topk);
+    }
+
+    //generate query:
+    int i = 0;
+    char **queries = (char **)calloc(query_num, sizeof(char *));
+    for (i = 0; i < query_num; i++) {
+        queries[i] = gen_query(i, indexed_attr, search_values, search_types);
+    }
+
+
+    stopwatch_t timer_search;
+    timer_start(&timer_search);
+
+    // issue queries
+    int qcount = 0;
+    for (i = 0; i < 1024; i++) {
+        int c = i % query_num;
+        qcount += query_count(queries[c]);
+    }
+
+    timer_pause(&timer_search);
+    println("[META_SEARCH] Time for 1024 queries get %d results and spent %d microseconds.", qcount, timer_delta_us(&timer_search));
+
     return rst;
 }

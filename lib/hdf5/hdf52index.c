@@ -202,10 +202,32 @@ int on_obj(void *opdata, h5object_t *obj){
 int on_attr(void *opdata, h5attribute_t *attr){
     
     index_anchor *idx_anchor = (index_anchor *)opdata;
+    char **indexed_attr = idx_anchor->indexed_attr;
+    int num_indexed_field = idx_anchor->num_indexed_field;
+
+    
+
     char *file_path = idx_anchor->file_path;
     char *obj_path = idx_anchor -> obj_path;
     hid_t obj_id = idx_anchor->object_id;
     char *name = attr->attr_name;
+
+
+    if (num_indexed_field > 0) {
+        int f = 0;
+        int has_specified_field = 0;
+        for (f = 0; f < num_indexed_field; f++) {
+            if (strcmp(name, indexed_attr[f]) == 0) {
+                has_specified_field = 1;
+                break;
+            }
+        } 
+        if (has_specified_field == 0) {
+            return 1;
+        }
+    }
+    
+
     art_tree *global_art = idx_anchor->root_art;
 
     stopwatch_t one_attr;   

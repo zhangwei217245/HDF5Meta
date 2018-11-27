@@ -96,52 +96,58 @@ main(int argc, char const *argv[])
     }
     int rst = 0;
     int topk = 0;
+    int num_indexed_field = 0;
     const char *path = argv[1];
     if (argc == 3) {
         topk = atoi(argv[2]);
     }
+    if (argc == 4) {
+        num_indexed_field = atoi(argv[3]);
+    }
 
     char *indexed_attr[]={
         "AUTHOR", 
-        "FILENAME", 
-        "EXPOSURE", 
-        "LAMPLIST",
-        "COMMENT",
-        "DAQVER",
         "BESTEXP", 
+        "HELIO_RV",
+        "FILENAME", 
         "DARKTIME", 
+        "IOFFSTD",
+        "EXPOSURE", 
         "BADPIXEL", 
+        "CRVAL1",
+        "LAMPLIST",
         "COLLB", 
+        "M1PISTON",
+        "COMMENT",
         "HIGHREJ",
         "FBADPIX2", 
-        "M1PISTON",
-        "CRVAL1",
-        "IOFFSTD",
-        "HELIO_RV",
+        "DAQVER",
         NULL};
     char *search_values[]={
         "Scott Burles & David Schlegel",
-        "badpixels-56149-b1.fits.gz", 
-        "sdR-b2-00154990.fit", 
-        "lamphgcdne.dat",
-        "sp2blue cards follow",
-        "1.2.7",
         "103179", 
+        "26.6203",
+        "badpixels-56149-b1.fits.gz", 
         "0", 
+        "0.0133138",
+        "sdR-b2-00154990.fit", 
         "155701", 
+        "3.5528",
+        "lamphgcdne.dat",
         "26660", 
+        "661.53",
+        "sp2blue cards follow",
         "8",
         "0.231077", 
-        "661.53",
-        "3.5528",
-        "0.0133138",
-        "26.6203",
+        "1.2.7",
         NULL};
 
     //  string value = 0, int value = 1, float value = 2
-    int search_types[] = {0,0,0,0,0,0,1,1,1,1,1,2,2,2,2,2};
+    int search_types[] = {0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0};
     
     idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
+    idx_anchor->indexed_attr = indexed_attr;
+    idx_anchor->num_indexed_field = num_indexed_field;
 
     if (is_regular_file(path)) {
         parse_hdf5_file((char *)path, idx_anchor);
@@ -154,8 +160,8 @@ main(int argc, char const *argv[])
     timer_start(&timer_search);
     int numrst = 0;
     int i = 0;
-    for (i = 0; i < 1000; i++) {
-        int c = i%10;
+    for (i = 0; i < 1024; i++) {
+        int c = i%num_indexed_field;
         if (search_types[c]==1) {
             int value = atoi(search_values[c]);
             search_result_t *rst = NULL;
@@ -172,7 +178,7 @@ main(int argc, char const *argv[])
     }
 
     timer_pause(&timer_search);
-    println("[META_SEARCH] Time for 1000 queries get %d results and spent %d microseconds.", numrst, timer_delta_us(&timer_search));
+    println("[META_SEARCH] Time for 1024 queries get %d results and spent %d microseconds.", numrst, timer_delta_us(&timer_search));
 
     print_mem_usage();
 
