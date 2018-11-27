@@ -7,7 +7,7 @@
 index_anchor *idx_anchor;
 
 void print_usage() {
-    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk\n");
+    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields\n");
 }
 
 int is_hdf5(const struct dirent *entry){
@@ -95,8 +95,8 @@ main(int argc, char const *argv[])
         return 0;
     }
     int rst = 0;
-    int topk = 0;
-    int num_indexed_field = 0;
+    int topk = 0; // number of files to be scanned.
+    int num_indexed_field = 0; //number of attributes to be indexed.
     const char *path = argv[1];
     if (argc == 3) {
         topk = atoi(argv[2]);

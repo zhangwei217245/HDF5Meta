@@ -24,7 +24,7 @@ extern int64_t importing_fake_json_docs_to_db(const char *json_str, int count);
 extern void random_test();
 
 void print_usage() {
-    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file <number_of_file_to_be_scanned>\n");
+    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file topk num_indexed_fields\n");
 }
 
 
@@ -155,8 +155,8 @@ main(int argc, char **argv)
         return 0;
     }
     int rst = 0;
-    int topk = 0;
-    int num_indexed_field = 0;
+    int topk = 0; // number of files to be scanned.
+    int num_indexed_field = 0; //number of attributes to be indexed.
     const char *path = argv[1];
     if (argc == 3) {
         topk = atoi(argv[2]);
