@@ -98,10 +98,10 @@ main(int argc, char const *argv[])
     int topk = 0; // number of files to be scanned.
     int num_indexed_field = 0; //number of attributes to be indexed.
     const char *path = argv[1];
-    if (argc == 3) {
+    if (argc >= 3) {
         topk = atoi(argv[2]);
     }
-    if (argc == 4) {
+    if (argc >= 4) {
         num_indexed_field = atoi(argv[3]);
     }
 
