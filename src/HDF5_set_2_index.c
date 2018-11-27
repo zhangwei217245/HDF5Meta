@@ -183,7 +183,7 @@ main(int argc, char const *argv[])
     }
 
     timer_pause(&timer_search);
-    println("[META_SEARCH] Time for 1024 queries get %d results and spent %d microseconds.", numrst, timer_delta_us(&timer_search));
+    println("[META_SEARCH] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
 
     print_mem_usage();
 
