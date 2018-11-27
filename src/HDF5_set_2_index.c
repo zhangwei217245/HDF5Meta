@@ -156,12 +156,17 @@ main(int argc, char const *argv[])
         rst = parse_files_in_dir((char *)path, topk, idx_anchor);
     }
 
+    int num_queries = 16;
+    if (num_indexed_field > 0) {
+        num_queries = num_indexed_field;
+    }
+
     stopwatch_t timer_search;
     timer_start(&timer_search);
     int numrst = 0;
     int i = 0;
     for (i = 0; i < 1024; i++) {
-        int c = i%num_indexed_field;
+        int c = i%num_queries;
         if (search_types[c]==1) {
             int value = atoi(search_values[c]);
             search_result_t *rst = NULL;
