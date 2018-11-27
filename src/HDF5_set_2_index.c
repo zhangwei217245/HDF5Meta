@@ -44,6 +44,49 @@ int parse_files_in_dir(char *path, const int topk, index_anchor *idx_anchor) {
     return 0;
 }
 
+
+/*
+ * Measures the current (and peak) resident and virtual memories
+ * usage of your linux C process, in kB
+ */
+void getMemory(
+    int* currRealMem, int* peakRealMem,
+    int* currVirtMem, int* peakVirtMem) {
+
+    // stores each word in status file
+    char buffer[1024] = "";
+
+    // linux file contains this-process info
+    FILE* file = fopen("/proc/self/status", "r");
+
+    // read the entire file
+    while (fscanf(file, " %1023s", buffer) == 1) {
+
+        if (strcmp(buffer, "VmRSS:") == 0) {
+            fscanf(file, " %d", currRealMem);
+        }
+        if (strcmp(buffer, "VmHWM:") == 0) {
+            fscanf(file, " %d", peakRealMem);
+        }
+        if (strcmp(buffer, "VmSize:") == 0) {
+            fscanf(file, " %d", currVirtMem);
+        }
+        if (strcmp(buffer, "VmPeak:") == 0) {
+            fscanf(file, " %d", peakVirtMem);
+        }
+    }
+    fclose(file);
+}
+
+void print_mem_usage(){
+    int VmRSS;
+    int VmHWM;
+    int VmSize;
+    int VmPeak;
+    getMemory(&VmRSS, &VmHWM, &VmSize, &VmPeak);
+    printf("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d\n", VmRSS, VmHWM, VmSize, VmPeak);
+}
+
 int 
 main(int argc, char const *argv[])
 {
@@ -60,31 +103,43 @@ main(int argc, char const *argv[])
 
     char *indexed_attr[]={
         "AUTHOR", 
-        "BESTEXP", 
-        "FBADPIX2", 
-        "DARKTIME", 
-        "BADPIXEL", 
         "FILENAME", 
         "EXPOSURE", 
-        "COLLB", 
-        "M1PISTON",
         "LAMPLIST",
+        "COMMENT",
+        "DAQVER",
+        "BESTEXP", 
+        "DARKTIME", 
+        "BADPIXEL", 
+        "COLLB", 
+        "HIGHREJ",
+        "FBADPIX2", 
+        "M1PISTON",
+        "CRVAL1",
+        "IOFFSTD",
+        "HELIO_RV",
         NULL};
     char *search_values[]={
         "Scott Burles & David Schlegel",
-        "103179", 
-        "0.231077", 
-        "0", 
         "badpixels-56149-b1.fits.gz", 
         "sdR-b2-00154990.fit", 
+        "lamphgcdne.dat",
+        "sp2blue cards follow",
+        "1.2.7",
+        "103179", 
+        "0", 
         "155701", 
         "26660", 
+        "8",
+        "0.231077", 
         "661.53",
-        "lamphgcdne.dat",
+        "3.5528",
+        "0.0133138",
+        "26.6203",
         NULL};
 
     //  string value = 0, int value = 1, float value = 2
-    int search_types[] = {0,1,2,1,0,0,1,1,2,0};
+    int search_types[] = {0,0,0,0,0,0,1,1,1,1,1,2,2,2,2,2};
     
     idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
 
@@ -118,6 +173,8 @@ main(int argc, char const *argv[])
 
     timer_pause(&timer_search);
     println("[META_SEARCH] Time for 1000 queries get %d results and spent %d microseconds.", numrst, timer_delta_us(&timer_search));
+
+    print_mem_usage();
 
     return rst;
 }

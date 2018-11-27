@@ -51,6 +51,10 @@ int parse_single_file(char *filepath) {
     timer_start(&parse_file);
     json_object *rootObj;
     parse_hdf5_file(filepath, &rootObj);
+
+    const char *root_json_str = json_object_to_json_string(rootObj);
+    printf("%s\n", root_json_str);
+
     timer_pause(&parse_file);
     json_object *root_array = NULL;
     json_object_object_get_ex(rootObj, "sub_objects", &root_array);
@@ -143,32 +147,44 @@ main(int argc, char **argv)
     int num_q = 5;
 
     char *indexed_attr[]={
-        "AUTHOR", 
-        "BESTEXP", 
-        "FBADPIX2", 
-        "DARKTIME", 
-        "BADPIXEL", 
+        "sub_objects.sub_objects.sub_objects.sub_objects.sub_objects.AUTHOR", 
         "FILENAME", 
         "EXPOSURE", 
-        "COLLB", 
-        "M1PISTON",
         "LAMPLIST",
+        "COMMENT",
+        "DAQVER",
+        "BESTEXP", 
+        "DARKTIME", 
+        "BADPIXEL", 
+        "COLLB", 
+        "HIGHREJ",
+        "FBADPIX2", 
+        "M1PISTON",
+        "CRVAL1",
+        "IOFFSTD",
+        "HELIO_RV",
         NULL};
     char *search_values[]={
         "Scott Burles & David Schlegel",
-        "103179", 
-        "0.231077", 
-        "0", 
         "badpixels-56149-b1.fits.gz", 
         "sdR-b2-00154990.fit", 
+        "lamphgcdne.dat",
+        "sp2blue cards follow",
+        "1.2.7",
+        "103179", 
+        "0", 
         "155701", 
         "26660", 
+        "8",
+        "0.231077", 
         "661.53",
-        "lamphgcdne.dat",
+        "3.5528",
+        "0.0133138",
+        "26.6203",
         NULL};
 
     //  string value = 0, int value = 1, float value = 2
-    int search_types[] = {0,1,2,1,0,0,1,1,2,0};
+    int search_types[] = {0,0,0,0,0,0,1,1,1,1,1,2,2,2,2,2};
 
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);

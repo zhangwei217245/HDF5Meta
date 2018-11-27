@@ -69,7 +69,6 @@ index_anchor *idx_anchor;
 // }
 
 
-
 int int_value_compare_func(const void *l, const void *r){
     const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
     const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
@@ -110,7 +109,7 @@ int float_value_compare_func(const void *l, const void *r){
 void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length,
 int (*compare_func)(const void *a, const void *b), 
 char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
-    void *retval = 0;
+    value_tree_leaf_content_t **retval = 0;
     leaf_cnt->is_numeric = 1;
     leaf_cnt->is_float = (compare_func==float_value_compare_func);
     int i = 0;
@@ -130,12 +129,11 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
             bpt_k[0] = k;
             entry->k = (void *)bpt_k;
         }
-        retval = tsearch(entry, (leaf_cnt->bpt)[0], compare_func);
+        retval = (value_tree_leaf_content_t **)tsearch(entry, (leaf_cnt->bpt)[0], compare_func);
         if (retval == 0) {
             println("Fail ENOMEM");
         } else {
-            value_tree_leaf_content_t **test_ent_ptr = (value_tree_leaf_content_t **)retval;
-            value_tree_leaf_content_t *test_ent = *test_ent_ptr;
+            value_tree_leaf_content_t *test_ent = *retval;
             if (test_ent == entry) {
                 // new value added, so entry is the test_ent
                 test_ent->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
@@ -293,7 +291,7 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     int *bpt_k=(int *)calloc(1,sizeof(int));
     bpt_k[0] = value;
     entry->k = (void *)bpt_k;
-    
+    // tfind returns a pointer to pointer.
     value_tree_leaf_content_t **retval = (value_tree_leaf_content_t **)tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
     if (retval == NULL) {
         return numrst;
@@ -332,7 +330,7 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
     value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
     entry->k = (double *)calloc(1,sizeof(double));
     *((double *)(entry->k)) = value;
-    
+    // tfind returns a pointer to pointer.
     value_tree_leaf_content_t **retval = tfind(entry, (leaf_cnt->bpt)[0], float_value_compare_func);
     if (retval == NULL) {
         return numrst;
