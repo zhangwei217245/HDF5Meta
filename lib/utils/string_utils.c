@@ -5,15 +5,15 @@
 #include "string_utils.h"
 
 
-void *ctr_malloc(size_t size, size_t *register){
-    *register = (*register) + size;
+void *ctr_malloc(size_t size, size_t *reg){
+    *reg = (*reg) + size;
     return malloc(size);
 }
 
 
-void *ctr_calloc(size_t nitems, size_t size, size_t *register){
+void *ctr_calloc(size_t nitems, size_t size, size_t *reg){
     size_t t = nitems * size;
-    *register = (*register) + t;
+    *reg = (*reg) + t;
     return calloc(nitems, size);
 }
 
