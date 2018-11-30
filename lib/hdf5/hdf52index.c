@@ -69,6 +69,8 @@ index_anchor *idx_anchor;
 // }
 
 
+size_t index_mem_size;
+
 int int_value_compare_func(const void *l, const void *r){
     const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
     const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
@@ -115,17 +117,17 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         // A node with k as the value to compare and search.
-        value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
+        value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
         if (compare_func == int_value_compare_func) {
             int *_attr_value = (int *)attr_val;
             int k = _attr_value[i];
-            int *bpt_k = (int *)calloc(1,sizeof(int));
+            int *bpt_k = (int *)ctr_calloc(1,sizeof(int), &index_mem_size);
             bpt_k[0] = k;
             entry->k = (void *)bpt_k;
         } else if (compare_func == float_value_compare_func){
             double *_attr_value = (double *)attr_val;
             double k = _attr_value[i];
-            double *bpt_k = (double *)calloc(1,sizeof(double));
+            double *bpt_k = (double *)ctr_calloc(1,sizeof(double), &index_mem_size);
             bpt_k[0] = k;
             entry->k = (void *)bpt_k;
         }
@@ -136,7 +138,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
             value_tree_leaf_content_t *test_ent = *retval;
             if (test_ent == entry) {
                 // new value added, so entry is the test_ent
-                test_ent->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
+                test_ent->file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
                 art_tree_init(test_ent->file_path_art);
             } else {
                 // Value found, but test_ent is the old content.
@@ -165,7 +167,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
     leaf_cnt->is_float = 0;
 
     if (leaf_cnt->art == NULL) {
-        leaf_cnt->art = (art_tree *)calloc(1, sizeof(art_tree));
+        leaf_cnt->art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
         art_tree_init(leaf_cnt->art);
     }
     int i = 0;
@@ -173,7 +175,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
         char *k = attr_val[i];
         art_tree *file_path_art = (art_tree *)art_search(leaf_cnt->art, k, strlen(k));
         if (file_path_art == NULL) {
-            file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
+            file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
             art_tree_init(file_path_art);
             art_insert(leaf_cnt->art, (unsigned char *)k, strlen(k), (void *)file_path_art);
         }
@@ -193,7 +195,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
 
 int on_obj(void *opdata, h5object_t *obj){
     index_anchor *idx_anchor = (index_anchor *)opdata;
-    idx_anchor->obj_path = (char *)calloc(strlen(obj->obj_name)+1, sizeof(char));
+    idx_anchor->obj_path = (char *)ctr_calloc(strlen(obj->obj_name)+1, sizeof(char), &index_mem_size);
     strncpy(idx_anchor->obj_path, obj->obj_name, strlen(obj->obj_name));
     idx_anchor->object_id = obj->obj_id;
     return 1;
@@ -234,12 +236,12 @@ int on_attr(void *opdata, h5attribute_t *attr){
     timer_start(&one_attr);
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, name, strlen(name));
     if (leaf_cnt == NULL){
-        leaf_cnt = (attr_tree_leaf_content_t *)calloc(1, sizeof(attr_tree_leaf_content_t));
+        leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), &index_mem_size);
         // void *bptr = NULL;
-        leaf_cnt->bpt = (void ***)calloc(1, sizeof(void **));
-        (leaf_cnt->bpt)[0] = (void **)calloc(1, sizeof(void *));
+        leaf_cnt->bpt = (void ***)ctr_calloc(1, sizeof(void **), &index_mem_size);
+        (leaf_cnt->bpt)[0] = (void **)ctr_calloc(1, sizeof(void *), &index_mem_size);
         (leaf_cnt->bpt)[0][0] = NULL;
-        leaf_cnt->art = (art_tree *)calloc(1, sizeof(art_tree));
+        leaf_cnt->art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
         art_insert(global_art, name, strlen(name), leaf_cnt);
     }
 
@@ -276,7 +278,7 @@ int collect_result(void *data, const unsigned char *key, uint32_t key_len, void 
 
     hashset_t obj_id_set = (hashset_t)value;
     rst->num_objs = (int)hashset_num_items(obj_id_set);
-    rst->obj_ids = (hid_t *)calloc(rst->num_objs, sizeof(hid_t));
+    rst->obj_ids = (hid_t *)ctr_calloc(rst->num_objs, sizeof(hid_t), &index_mem_size);
     hashset_itr_t hs_itr = hashset_iterator(obj_id_set);
     hs_itr->index = 0;//FIXME: confirm.
     int i = 0;
@@ -308,9 +310,9 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
         return 0;
     }
 
-    value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
+    value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
     
-    int *bpt_k=(int *)calloc(1,sizeof(int));
+    int *bpt_k=(int *)ctr_calloc(1,sizeof(int), &index_mem_size);
     bpt_k[0] = value;
     entry->k = (void *)bpt_k;
     // tfind returns a pointer to pointer.
@@ -318,12 +320,12 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
     if (retval == NULL) {
         return numrst;
     } else {
-        power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
+        power_search_rst_t *prst = (power_search_rst_t *)ctr_calloc(1, sizeof(power_search_rst_t), &index_mem_size);
         prst->num_files=0;
         if (retval[0]->file_path_art == NULL) {
             return 0;
         }
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t *)ctr_calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t), &index_mem_size);
         art_iter(retval[0]->file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
@@ -349,20 +351,20 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
         return 0;
     }
 
-    value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
-    entry->k = (double *)calloc(1,sizeof(double));
+    value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
+    entry->k = (double *)ctr_calloc(1,sizeof(double), &index_mem_size);
     *((double *)(entry->k)) = value;
     // tfind returns a pointer to pointer.
     value_tree_leaf_content_t **retval = tfind(entry, (leaf_cnt->bpt)[0], float_value_compare_func);
     if (retval == NULL) {
         return numrst;
     } else {
-        power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
+        power_search_rst_t *prst = (power_search_rst_t *)ctr_calloc(1, sizeof(power_search_rst_t), &index_mem_size);
         prst->num_files=0;
         if (retval[0]->file_path_art == NULL) {
             return 0;
         }
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t *)ctr_calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t), &index_mem_size);
         art_iter(retval[0]->file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
@@ -393,9 +395,9 @@ int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, 
     if (file_path_art == NULL) {
         return numrst;
     } else {
-        power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
+        power_search_rst_t *prst = (power_search_rst_t *)ctr_calloc(1, sizeof(power_search_rst_t), &index_mem_size);
         prst->num_files=0;
-        prst->rst_arr = (search_result_t *)calloc(art_size(file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t *)ctr_calloc(art_size(file_path_art), sizeof(search_result_t), &index_mem_size);
         art_iter(file_path_art, collect_result, prst);
         numrst = prst->num_files;
         search_result_t *_rst = prst->rst_arr;
@@ -411,17 +413,17 @@ void parse_hdf5_file(char *filepath, index_anchor *idx_anchor){
         return;
     }
 
-    char *file_path = (char *)calloc(strlen(filepath)+1, sizeof(char));
+    char *file_path = (char *)ctr_calloc(strlen(filepath)+1, sizeof(char), &index_mem_size);
     strncpy(file_path, filepath, strlen(filepath));
 
     if (idx_anchor->root_art == NULL) {
-        idx_anchor->root_art = (art_tree *)calloc(1, sizeof(art_tree));
+        idx_anchor->root_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
     }
     
     idx_anchor->file_path = file_path;
     idx_anchor->us_to_index = 0;
     
-    metadata_collector_t *meta_collector = (metadata_collector_t *)calloc(1, sizeof(metadata_collector_t));
+    metadata_collector_t *meta_collector = (metadata_collector_t *)ctr_calloc(1, sizeof(metadata_collector_t), &index_mem_size);
     // init_metadata_collector(meta_collector, 0, (void *)index_anchor, NULL, on_obj, on_attr);
     init_metadata_collector(meta_collector, 0, (void *)idx_anchor, NULL, on_obj, on_attr);
 
@@ -434,4 +436,8 @@ void parse_hdf5_file(char *filepath, index_anchor *idx_anchor){
     suseconds_t actual_scanning = scan_and_index_duration - actual_indexing;
     println("[IMPORT_META] Finished in %ld us for %s, with %ld us for scanning and %ld us for indexing.",
         scan_and_index_duration, basename(filepath), actual_scanning, actual_indexing);
+}
+
+size_t get_index_size(){
+    return index_mem_size;
 }

@@ -1,5 +1,8 @@
 #include "new_hdf5_meta.h"
 
+
+size_t hdf5_meta_size;
+
 /**
  * Operator function to be called by H5Ovisit.
  */
@@ -76,14 +79,14 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
 {
     metadata_collector_t *meta_coll = (metadata_collector_t *)operator;
 
-    h5object_t *object = (h5object_t *)calloc(1,sizeof(h5object_t));
+    h5object_t *object = (h5object_t *)ctr_calloc(1,sizeof(h5object_t), &hdf5_meta_size);
 
     object->obj_id = H5Oopen(loc_id, name, H5P_DEFAULT);
 
-    object->obj_name = (char *)calloc(strlen(name)+1, sizeof(char));
+    object->obj_name = (char *)ctr_calloc(strlen(name)+1, sizeof(char), &hdf5_meta_size);
     sprintf(object->obj_name, "%s", name);
 
-    H5O_info_t *obj_info = (H5O_info_t *)calloc(1, sizeof(H5O_info_t));
+    H5O_info_t *obj_info = (H5O_info_t *)ctr_calloc(1, sizeof(H5O_info_t), &hdf5_meta_size);
     H5Oget_info(object->obj_id, obj_info);
     // TODO: try H5Oget_info2
     object->obj_info = obj_info;
@@ -164,7 +167,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
     H5S_class_t  class;
     size_t npoints;            
     
-    h5attribute_t *curr_attr = (h5attribute_t *)calloc(1,sizeof(h5attribute_t));
+    h5attribute_t *curr_attr = (h5attribute_t *)ctr_calloc(1,sizeof(h5attribute_t), &hdf5_meta_size);
 
     /*  Open the attribute using its name.  */    
     attr = H5Aopen_name(loc_id, name);
@@ -174,7 +177,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
 
     H5T_class_t attr_type = H5Tget_class(atype);
 
-    curr_attr->attr_name = (char *)calloc(strlen(name)+1, sizeof(char));
+    curr_attr->attr_name = (char *)ctr_calloc(strlen(name)+1, sizeof(char), &hdf5_meta_size);
     curr_attr->next = NULL;
     sprintf(curr_attr->attr_name, "%s", name);
 
@@ -234,7 +237,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
 }
 
 static herr_t read_int_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr) {
-    int *out = (int *)calloc(npoints, sizeof(int));
+    int *out = (int *)ctr_calloc(npoints, sizeof(int), &hdf5_meta_size);
     herr_t ret = H5Aread(attr, atype, out);
     curr_attr->attribute_value = out;
     curr_attr->attribute_value_length = npoints;
@@ -242,7 +245,7 @@ static herr_t read_int_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t 
 }
 
 static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, h5attribute_t *curr_attr) {
-    double *out = (double *)calloc(npoints, sizeof(double)); 
+    double *out = (double *)ctr_calloc(npoints, sizeof(double), &hdf5_meta_size); 
     herr_t ret = H5Aread(attr, atype, out);
     curr_attr->attribute_value = out;
     curr_attr->attribute_value_length = npoints;
@@ -264,7 +267,7 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
         str_type = H5Tget_native_type(atype, H5T_DIR_ASCEND);
         char *tempout[100];
         ret = H5Aread(attr, str_type, &tempout);
-        string_out = (char **)calloc(npoints, sizeof(char *));//string_out;
+        string_out = (char **)ctr_calloc(npoints, sizeof(char *), &hdf5_meta_size);//string_out;
         int i  = 0;
         for (i = 0; i < npoints; i++) {
             string_out[i] = tempout[i];
@@ -272,9 +275,9 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
         curr_attr->attribute_value = string_out;
         curr_attr->attribute_value_length = npoints;
     } else {
-        char *tempout = (char *)calloc(totsize+1, sizeof(char));
+        char *tempout = (char *)ctr_calloc(totsize+1, sizeof(char), &hdf5_meta_size);
         ret = H5Aread(attr, str_type, tempout);
-        char_out = (char **)calloc(1, sizeof(char *));
+        char_out = (char **)ctr_calloc(1, sizeof(char *), &hdf5_meta_size);
         char_out[0] = tempout;
         curr_attr->attribute_value = char_out;
         curr_attr->attribute_value_length=1;
@@ -283,7 +286,7 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, h5attribute
 }
 
 void get_obj_type_str(H5O_type_t obj_type, char **out){
-    *out = (char *)calloc(20, sizeof(char));
+    *out = (char *)ctr_calloc(20, sizeof(char), &hdf5_meta_size);
     switch (obj_type) {
         case H5O_TYPE_GROUP:
             sprintf (*out, "GROUP");
@@ -354,5 +357,9 @@ void init_h5object(h5object_t *h5object,
 
 void pretty_print_metadata(metadata_collector_t *meta_coll){
     printf("Unsupported implementation!\n");
+}
+
+size_t get_hdf5_meta_size(){
+    return hdf5_meta_size;
 }
 

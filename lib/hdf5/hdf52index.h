@@ -52,6 +52,11 @@ typedef struct {
     int num_files;
     search_result_t *rst_arr;
 }power_search_rst_t;
+
+
+
+extern size_t get_btree_mem_size();
+
 /**
  * The content of value tree leaf node should be a hashmap. 
  * The keys of this hashmap are the file paths 
@@ -66,3 +71,5 @@ int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, searc
 int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, search_result_t **rst);
 
 int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, search_result_t **rst);
+
+size_t get_index_size();

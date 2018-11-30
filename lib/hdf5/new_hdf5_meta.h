@@ -3,6 +3,7 @@
 #include "../include/c99_stdlib.h"
 #include "../utils/query_utils.h"
 #include "../utils/timer_utils.h"
+#include "../utils/string_utils.h"
 #include "../ds/vector.h"
 #include "hdf5.h"
 
@@ -77,3 +78,5 @@ void init_h5object(h5object_t *h5object,
     int (*on_sub_obj)(void *opdata, h5object_t *obj));
 
 void pretty_print_metadata(metadata_collector_t *meta_coll);
+
+size_t get_hdf5_meta_size();

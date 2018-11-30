@@ -243,7 +243,7 @@ main(int argc, char **argv)
     // issue queries
     int qcount = 0;
     for (i = 0; i < 1024; i++) {
-        int c = i % query_num;
+        int c = i % 16;
         qcount += query_count(queries[c]);
     }
 

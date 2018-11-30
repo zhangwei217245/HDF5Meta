@@ -20,6 +20,8 @@
 #define SET_LEAF(x) ((void*)((uintptr_t)x | 1))
 #define LEAF_RAW(x) ((art_leaf*)((void*)((uintptr_t)x & ~1)))
 
+size_t art_mem_size;
+
 /**
  * Allocates a node of the given type,
  * initializes to zero and sets the type.
@@ -28,16 +30,16 @@ static art_node* alloc_node(uint8_t type) {
     art_node* n;
     switch (type) {
         case NODE4:
-            n = (art_node*)calloc(1, sizeof(art_node4));
+            n = (art_node*)ctr_calloc(1, sizeof(art_node4), &art_mem_size);
             break;
         case NODE16:
-            n = (art_node*)calloc(1, sizeof(art_node16));
+            n = (art_node*)ctr_calloc(1, sizeof(art_node16), &art_mem_size);
             break;
         case NODE48:
-            n = (art_node*)calloc(1, sizeof(art_node48));
+            n = (art_node*)ctr_calloc(1, sizeof(art_node48), &art_mem_size);
             break;
         case NODE256:
-            n = (art_node*)calloc(1, sizeof(art_node256));
+            n = (art_node*)ctr_calloc(1, sizeof(art_node256), &art_mem_size);
             break;
         default:
             abort();
@@ -357,7 +359,7 @@ art_leaf* art_maximum(art_tree *t) {
 }
 
 static art_leaf* make_leaf(const unsigned char *key, int key_len, void *value) {
-    art_leaf *l = (art_leaf*)calloc(1, sizeof(art_leaf)+key_len);
+    art_leaf *l = (art_leaf*)ctr_calloc(1, sizeof(art_leaf)+key_len,  &art_mem_size);
     l->value = value;
     l->key_len = key_len;
     memcpy(l->key, key, key_len);
@@ -956,4 +958,8 @@ int art_iter_prefix(art_tree *t, const unsigned char *key, int key_len, art_call
         depth++;
     }
     return 0;
+}
+
+size_t get_art_mem_size(){
+    return art_mem_size;
 }

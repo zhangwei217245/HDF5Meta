@@ -83,6 +83,7 @@
    In this case, A has been rotated left.  This preserves the ordering of the
    binary tree.  */
 
+#include "../utils/string_utils.h"
 #include <assert.h>
 #include <stdalign.h>
 #include <stddef.h>
@@ -122,6 +123,10 @@ typedef struct node_t
 #define DEREFNODEPTR(NP) (*(NP))
 
 #else /* USE_MALLOC_LOW_BIT */
+
+
+size_t btree_mem_size;
+
 
 typedef struct node_t
 {
@@ -335,7 +340,7 @@ __tsearch (const void *key, void **vrootp, __compar_fn_t compar)
       p_r = r;
     }
 
-  q = (struct node_t *) malloc (sizeof (struct node_t));
+  q = (struct node_t *) ctr_malloc (sizeof (struct node_t), &btree_mem_size);
   if (q != NULL)
     {
       /* Make sure the malloc implementation returns naturally aligned
@@ -747,3 +752,7 @@ __tdestroy (void *vroot, __free_fn_t freefct)
 }
 libc_hidden_def (__tdestroy)
 weak_alias (__tdestroy, tdestroy)
+
+size_t get_btree_mem_size(){
+  return btree_mem_size;
+}

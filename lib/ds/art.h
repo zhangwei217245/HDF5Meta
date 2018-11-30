@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include "../utils/string_utils.h"
+
 #ifndef ART_H
 #define ART_H
 
@@ -196,6 +198,8 @@ int art_iter(art_tree *t, art_callback cb, void *data);
  * @return 0 on success, or the return of the callback.
  */
 int art_iter_prefix(art_tree *t, const unsigned char *prefix, int prefix_len, art_callback cb, void *data);
+
+size_t get_art_mem_size();
 
 #ifdef __cplusplus
 }
