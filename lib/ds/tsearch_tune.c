@@ -89,6 +89,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <search.h>
 
 /* Assume malloc returns naturally aligned (alignof (max_align_t))
