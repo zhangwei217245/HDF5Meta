@@ -87,7 +87,8 @@ void print_mem_usage(){
     printf("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d\n", VmRSS, VmHWM, VmSize, VmPeak);
 
     size_t art_size = get_art_mem_size();
-    size_t btree_size = get_btree_mem_size();
+    // size_t btree_size = get_btree_mem_size();
+    size_t btree_size = 0;
     size_t overall_index_size = get_index_size() + btree_size + art_size;
     size_t metadata_size = get_hdf5_meta_size() + overall_index_size;
     println("dataSize = %d, indexSize = %d", metadata_size, overall_index_size);
