@@ -137,7 +137,7 @@ char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt){
         } else {
             value_tree_leaf_content_t *test_ent = *retval;
             if (test_ent == entry) {
-                index_mem_size+=sizeof(struct node_t);
+                index_mem_size+=8;
                 // new value added, so entry is the test_ent
                 test_ent->file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
                 art_tree_init(test_ent->file_path_art);
