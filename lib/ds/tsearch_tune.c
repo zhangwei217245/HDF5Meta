@@ -84,7 +84,7 @@
    binary tree.  */
 
 #include "../utils/string_utils.h"
-#include <libc-symbols.h>
+#include "libc_macros.h"
 #include <assert.h>
 #include <stdalign.h>
 #include <stddef.h>
