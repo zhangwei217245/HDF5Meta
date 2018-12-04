@@ -28,7 +28,7 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
     parse_hdf5_file(filepath, (index_anchor *)arg);
-    
+    print_mem_usage();
     return 1;
 }
 
