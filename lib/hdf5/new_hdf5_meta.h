@@ -42,6 +42,7 @@ typedef struct h5object{
 typedef struct metadata_collector {
     h5object_t *object_linked_list;
     int num_objs;
+    int total_num_attrs;
     void *opdata;
     int (*on_obj)(void *opdata, h5object_t *obj);
     int (*on_attr)(void *opdata, h5attribute_t *attr);

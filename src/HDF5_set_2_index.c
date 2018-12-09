@@ -6,6 +6,10 @@
 
 index_anchor *idx_anchor;
 
+size_t index_num;
+size_t file_num;
+
+
 void print_usage() {
     printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields\n");
 }
@@ -25,10 +29,13 @@ int is_hdf5(const struct dirent *entry){
 
 int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
     char *filepath = (char *)calloc(512, sizeof(char));
+    index_anchor *idx_anchor = (index_anchor *)arg;
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_hdf5_file(filepath, (index_anchor *)arg);
-    print_mem_usage();
+    parse_hdf5_file(filepath, idx_anchor);
+
+    idx_anchor->total_num_files+=1;
+    // print_mem_usage();
     return 1;
 }
 
@@ -45,54 +52,7 @@ int parse_files_in_dir(char *path, const int topk, index_anchor *idx_anchor) {
 }
 
 
-/*
- * Measures the current (and peak) resident and virtual memories
- * usage of your linux C process, in kB
- */
-void getMemory(
-    int* currRealMem, int* peakRealMem,
-    int* currVirtMem, int* peakVirtMem) {
 
-    // stores each word in status file
-    char buffer[1024] = "";
-
-    // linux file contains this-process info
-    FILE* file = fopen("/proc/self/status", "r");
-
-    // read the entire file
-    while (fscanf(file, " %1023s", buffer) == 1) {
-
-        if (strcmp(buffer, "VmRSS:") == 0) {
-            fscanf(file, " %d", currRealMem);
-        }
-        if (strcmp(buffer, "VmHWM:") == 0) {
-            fscanf(file, " %d", peakRealMem);
-        }
-        if (strcmp(buffer, "VmSize:") == 0) {
-            fscanf(file, " %d", currVirtMem);
-        }
-        if (strcmp(buffer, "VmPeak:") == 0) {
-            fscanf(file, " %d", peakVirtMem);
-        }
-    }
-    fclose(file);
-}
-
-void print_mem_usage(){
-    int VmRSS;
-    int VmHWM;
-    int VmSize;
-    int VmPeak;
-    getMemory(&VmRSS, &VmHWM, &VmSize, &VmPeak);
-    printf("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d\n", VmRSS, VmHWM, VmSize, VmPeak);
-
-    size_t art_size = get_art_mem_size();
-    // size_t btree_size = get_btree_mem_size();
-    size_t btree_size = 0;
-    size_t overall_index_size = get_index_size() + btree_size + art_size;
-    size_t metadata_size = get_hdf5_meta_size() + overall_index_size;
-    println("dataSize = %d, indexSize = %d", metadata_size, overall_index_size);
-}
 
 int 
 main(int argc, char const *argv[])

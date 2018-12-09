@@ -99,6 +99,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
     }
 
     if (object->num_attrs > 0) {
+        meta_coll->total_num_attrs=meta_coll->total_num_attrs+object->num_attrs;
         H5Aiterate(object->obj_id, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, NULL, attr_info, object);
     }
 

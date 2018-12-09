@@ -19,6 +19,8 @@ ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashma
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
 
+ADD_LIBRARY(bin_file_ops SHARED dao/bin_file_ops.c dao/bin_file_ops.h)
+
 TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
 
 ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
@@ -37,5 +39,5 @@ ADD_LIBRARY(hdf52json hdf5/hdf52json.c hdf5/hdf52json.h)
 target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIRS}")
 target_link_libraries(hdf52json PRIVATE "${JSON-C_LIBRARIES}" new_hdf5_meta)
 
-ADD_LIBRARY(hdf52index hdf5/hdf52index.c hdf5/hdf52index.h)
-target_link_libraries(hdf52index PRIVATE new_hdf5_meta indexds)
+ADD_LIBRARY(hdf52index index/in_mem_index.c index/in_mem_index.h index/on_disk_index.c index/on_disk_index.h index/hdf52index.c index/hdf52index.h)
+target_link_libraries(hdf52index PRIVATE new_hdf5_meta indexds bin_file_ops)

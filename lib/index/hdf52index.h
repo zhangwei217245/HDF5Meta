@@ -1,3 +1,6 @@
+#ifndef MIQS_HDF5_INDEX
+#define MIQS_HDF5_INDEX
+
 #include "new_hdf5_meta.h"
 #include "../ds/art.h"
 #include "../ds/bplustree.h"
@@ -11,8 +14,15 @@ typedef struct {
     char *obj_path;
     hid_t object_id;
     art_tree *root_art;
+
+    // info for query and profiling
     char **indexed_attr;
     int num_indexed_field;
+
+    //info solely for profiling.
+    size_t total_num_files;
+    size_t total_num_objects;
+    size_t total_num_attrs;
     suseconds_t us_to_index;
 } index_anchor;
 
@@ -73,3 +83,6 @@ int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, 
 int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, search_result_t **rst);
 
 size_t get_index_size();
+
+
+#endif /* !MIQS_HDF5_INDEX */
