@@ -22,6 +22,8 @@ int is_specified_field(char *name, index_anchor *idx_anchor) {
 
 void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr){
     art_tree *global_art = idx_anchor->root_art;
+    char *file_path = idx_anchor->file_path;
+    char *obj_path = idx_anchor->obj_path;
     stopwatch_t one_attr;   
     timer_start(&one_attr);
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, attr->attr_name, strlen(attr->attr_name));
@@ -38,15 +40,15 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
     switch(attr->attr_type) {
         case H5T_INTEGER:
             indexing_numeric(attr->attr_name,(int *)attr->attribute_value, attr->attribute_value_length, 
-            int_value_compare_func, file_path, obj_id, leaf_cnt);
+            int_value_compare_func, file_path, obj_path, leaf_cnt);
             break;
         case H5T_FLOAT:
             indexing_numeric(attr->attr_name, (double *)attr->attribute_value, attr->attribute_value_length,
-            float_value_compare_func, file_path, obj_id, leaf_cnt);
+            float_value_compare_func, file_path, obj_path, leaf_cnt);
             break;
         case H5T_STRING:
             indexing_string(attr->attr_name, (char **)attr->attribute_value, attr->attribute_value_length, 
-            file_path, obj_id, leaf_cnt);
+            file_path, obj_path, leaf_cnt);
             break;
         default:
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
@@ -75,8 +77,8 @@ void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attri
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
             break;
     }
-    attr.value = ir->data;
-    attr.attribute_value_length = 1;
+    attr->value = ir->data;
+    attr->attribute_value_length = 1;
     idx_anchor->file_path=ir->file_path;
     idx_anchor->obj_path=ir->object_path;
 }
