@@ -77,7 +77,7 @@ void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attri
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
             break;
     }
-    attr->value = ir->data;
+    attr->attribute_value = ir->data;
     attr->attribute_value_length = 1;
     idx_anchor->file_path=ir->file_path;
     idx_anchor->obj_path=ir->object_path;
