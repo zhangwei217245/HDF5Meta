@@ -217,38 +217,38 @@ main(int argc, char const *argv[])
     num_indexed_field, timer_delta_us(&timer_search), numrst);
 
     // search on disk
-    timer_start(&timer_search);
-    numrst = 0;
-    i = 0;
-    // open file
-    FILE *idx_to_search = fopen(on_disk_index_path, "r");
-    for (i = 0; i < 1024; i++) {
+    // timer_start(&timer_search);
+    // numrst = 0;
+    // i = 0;
+    // // open file
+    // FILE *idx_to_search = fopen(on_disk_index_path, "r");
+    // for (i = 0; i < 1024; i++) {
         
-        int c = i % 16;
-        if (search_types[c]==1) {
-            int value = atoi(search_values[c]);
-            int out_len = 0;
-            index_record_t **query_rst = 
-            find_index_record(indexed_attr[c], int_equals, &value, idx_to_search, &out_len);
-            numrst += out_len;
-        }else if (search_types[c]==2) {
-            double value = atof(search_values[c]);
-            int out_len = 0;
-            index_record_t **query_rst = 
-            find_index_record(indexed_attr[c], double_equals, &value, idx_to_search, &out_len);
-            numrst += out_len;
-        } else {
-            char *value = search_values[c];
-            int out_len = 0;
-            index_record_t **query_rst = 
-            find_index_record(indexed_attr[c], string_equals, &value, idx_to_search, &out_len);
-            numrst += out_len;
-        }
-    }
-    fclose(idx_to_search);
-    timer_pause(&timer_search);
-    println("[META_SEARCH_DISK] Time for 1024 queries on %d indexes and spent %d microseconds.  %d", 
-    num_indexed_field, timer_delta_us(&timer_search), numrst);
+    //     int c = i % 16;
+    //     if (search_types[c]==1) {
+    //         int value = atoi(search_values[c]);
+    //         int out_len = 0;
+    //         index_record_t **query_rst = 
+    //         find_index_record(indexed_attr[c], int_equals, &value, idx_to_search, &out_len);
+    //         numrst += out_len;
+    //     }else if (search_types[c]==2) {
+    //         double value = atof(search_values[c]);
+    //         int out_len = 0;
+    //         index_record_t **query_rst = 
+    //         find_index_record(indexed_attr[c], double_equals, &value, idx_to_search, &out_len);
+    //         numrst += out_len;
+    //     } else {
+    //         char *value = search_values[c];
+    //         int out_len = 0;
+    //         index_record_t **query_rst = 
+    //         find_index_record(indexed_attr[c], string_equals, &value, idx_to_search, &out_len);
+    //         numrst += out_len;
+    //     }
+    // }
+    // fclose(idx_to_search);
+    // timer_pause(&timer_search);
+    // println("[META_SEARCH_DISK] Time for 1024 queries on %d indexes and spent %d microseconds.  %d", 
+    // num_indexed_field, timer_delta_us(&timer_search), numrst);
 
     return rst;
 }
