@@ -1,9 +1,8 @@
 #ifndef MIQS_HDF5_INDEX
 #define MIQS_HDF5_INDEX
 
-#include "new_hdf5_meta.h"
 #include "in_mem_index.h"
-
+#include "../hdf5/new_hdf5_meta.h"
 
 
 /**
