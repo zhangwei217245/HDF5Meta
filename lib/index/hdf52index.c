@@ -76,7 +76,8 @@ void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attri
             break;
         case 3:
             attr->attr_type = H5T_STRING;
-            attr->attribute_value = (void *)(&((char *)ir->data));
+            char *str_val = (char *)ir->data;
+            attr->attribute_value = (void *)&str_val;
             attr->attribute_value_length = 1;
             break;
         default:
