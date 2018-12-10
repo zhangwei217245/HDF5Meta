@@ -164,14 +164,14 @@ main(int argc, char const *argv[])
         }  
         fclose(idx_anchor->on_disk_file_stream);
         timer_pause(&hdf5_indexing_time);
-        println("[LOAD_INDEX_FROM_HDF5_FILE] Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld s, %ld s on in-memory, %ld s on on-disk.", 
+        println("[LOAD_INDEX_FROM_HDF5_FILE] Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk.", 
         idx_anchor->total_num_files,
         idx_anchor->total_num_objects,
         idx_anchor->total_num_attrs,
         idx_anchor->total_num_kv_pairs,
-        timer_delta_s(&hdf5_indexing_time),
-        idx_anchor->us_to_index/1000000,
-        idx_anchor->us_to_disk_index/1000000
+        timer_delta_us(&hdf5_indexing_time),
+        idx_anchor->us_to_index,
+        idx_anchor->us_to_disk_index
         );
     }
 
