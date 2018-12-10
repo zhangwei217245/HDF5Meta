@@ -117,11 +117,10 @@ int on_attr(void *opdata, h5attribute_t *attr){
 
     // Create on-disk index, if the index file is not read only, 
     // no matter if the field has been specified or not. 
-    if (idx_anchor->is_readonly_index_file==1) {
+    if (idx_anchor->is_readonly_index_file==0) {
         stopwatch_t one_disk_attr;   
         timer_start(&one_disk_attr);
 
-        
         if (attr->attr_type == H5T_INTEGER) {
             int i = 0;
             for (i = 0; i < attr->attribute_value_length; i++) {
