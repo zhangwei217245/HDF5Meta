@@ -1,5 +1,5 @@
 #include "../lib/include/base_stdlib.h"
-#include "../lib/hdf5/hdf52index.h"
+#include "../lib/index/hdf52index.h"
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
