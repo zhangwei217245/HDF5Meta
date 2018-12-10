@@ -105,15 +105,6 @@ int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, 
 
 
 
-/*
- * Measures the current (and peak) resident and virtual memories
- * usage of your linux C process, in kB
- */
-void getMemory(
-    int* currRealMem, int* peakRealMem,
-    int* currVirtMem, int* peakVirtMem);
-
-void print_mem_usage();
 
 
 #endif /* !MIQS_IN_MEM_INDEX */

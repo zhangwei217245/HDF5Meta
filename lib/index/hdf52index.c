@@ -110,3 +110,52 @@ void parse_hdf5_file(char *filepath, index_anchor *idx_anchor){
         scan_and_index_duration, basename(filepath), actual_scanning, actual_indexing);
 }
 
+/*
+ * Measures the current (and peak) resident and virtual memories
+ * usage of your linux C process, in kB
+ */
+void getMemory(
+    int* currRealMem, int* peakRealMem,
+    int* currVirtMem, int* peakVirtMem) {
+
+    // stores each word in status file
+    char buffer[1024] = "";
+
+    // linux file contains this-process info
+    FILE* file = fopen("/proc/self/status", "r");
+
+    // read the entire file
+    while (fscanf(file, " %1023s", buffer) == 1) {
+
+        if (strcmp(buffer, "VmRSS:") == 0) {
+            fscanf(file, " %d", currRealMem);
+        }
+        if (strcmp(buffer, "VmHWM:") == 0) {
+            fscanf(file, " %d", peakRealMem);
+        }
+        if (strcmp(buffer, "VmSize:") == 0) {
+            fscanf(file, " %d", currVirtMem);
+        }
+        if (strcmp(buffer, "VmPeak:") == 0) {
+            fscanf(file, " %d", peakVirtMem);
+        }
+    }
+    fclose(file);
+}
+
+
+void print_mem_usage(){
+    int VmRSS;
+    int VmHWM;
+    int VmSize;
+    int VmPeak;
+    getMemory(&VmRSS, &VmHWM, &VmSize, &VmPeak);
+    // printf("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d\n", VmRSS, VmHWM, VmSize, VmPeak);
+
+    size_t art_size = get_art_mem_size();
+    // size_t btree_size = get_btree_mem_size();
+    size_t btree_size = 0;
+    size_t overall_index_size = get_index_size() + btree_size + art_size;
+    size_t metadata_size = get_hdf5_meta_size() + overall_index_size;
+    println("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d, dataSize = %d, indexSize = %d", VmRSS, VmHWM, VmSize, VmPeak, metadata_size, overall_index_size);
+}
