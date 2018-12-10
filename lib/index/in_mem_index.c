@@ -87,20 +87,6 @@ int init_in_mem_index(){
     return 1;
 }
 
-int indexing_record(index_record_t *ir){
-    int rst = 0;
-    if (ir == NULL) {
-        return rst;
-    }
-    if (ir->type == 1) {
-
-    }
-
-    rst = 1;
-    return rst;
-}
-
-
 /**
  * This is a function for indexing numeric fields in the HDF5 metadata. 
  * We deal with two different data types, one is integer, the other one is double. 

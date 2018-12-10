@@ -231,11 +231,11 @@ void getMemory(
 
 
 void print_mem_usage(char *prefix){
-    int VmRSS;
-    int VmHWM;
-    int VmSize;
-    int VmPeak;
-    getMemory(&VmRSS, &VmHWM, &VmSize, &VmPeak);
+    // int VmRSS;
+    // int VmHWM;
+    // int VmSize;
+    // int VmPeak;
+    // getMemory(&VmRSS, &VmHWM, &VmSize, &VmPeak);
     // printf("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d\n", VmRSS, VmHWM, VmSize, VmPeak);
 
     size_t art_size = get_art_mem_size();
@@ -246,5 +246,5 @@ void print_mem_usage(char *prefix){
 
     
     printf("[MEM_CONSUMPTION_%s] ", prefix);
-    println("dataSize = %d, indexSize = %d, VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d", VmRSS, VmHWM, VmSize, VmPeak, metadata_size, overall_index_size);
+    println("dataSize = %d, indexSize = %d", metadata_size, overall_index_size);
 }
