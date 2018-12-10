@@ -5,10 +5,10 @@
 
 int is_specified_field(char *name, index_anchor *idx_anchor) {
     int has_specified_field = 0;
-    if (num_indexed_field > 0) {
+    if (idx_anchor->num_indexed_field > 0) {
         int f = 0;
-        for (f = 0; f < num_indexed_field; f++) {
-            if (strcmp(name, indexed_attr[f]) == 0) {
+        for (f = 0; f < idx_anchor->num_indexed_field; f++) {
+            if (strcmp(name, idx_anchor->indexed_attr[f]) == 0) {
                 has_specified_field = 1;
                 break;
             }
