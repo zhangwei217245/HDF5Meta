@@ -112,7 +112,7 @@ char *miqs_read_string(FILE *file){
 }
 // type: 1, int, 2, float, 3. string
 void miqs_append_type(int type, FILE *stream){
-    append_int(type, stream);
+    miqs_append_int(type, stream);
 }
 
 
