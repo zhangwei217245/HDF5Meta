@@ -149,9 +149,9 @@ main(int argc, char const *argv[])
 
     } else {
         // build index from HDF5 files
-        idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w+");
+        idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w");
         idx_anchor->is_readonly_index_file=0;
-        fseek(idx_anchor->on_disk_file_stream, 0, SEEK_END);
+        // fseek(idx_anchor->on_disk_file_stream, 0, SEEK_END);
         stopwatch_t hdf5_indexing_time;
         timer_start(&hdf5_indexing_time);
         int count = 0;
