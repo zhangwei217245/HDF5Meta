@@ -26,7 +26,7 @@ void append_string(char *data, FILE *stream){
     fwrite(data, sizeof(char), length, stream);
 }
 
-void read(int *t, size_t *len, void **data, FILE *stream){
+void read_general(int *t, size_t *len, void **data, FILE *stream){
     int type = -1;
     size_t length = 0;
     fread(&type, sizeof(int), 1, stream);
@@ -80,7 +80,7 @@ int *read_int(FILE *file){
     int type = 1;
     size_t len = 1;
     void **data = (void **)calloc(1,sizeof(void *));
-    read(&type, &len, data, file);
+    read_general(&type, &len, data, file);
     if (type == 1 && len == 1) {
         return (int *)*data;
     }
@@ -92,7 +92,7 @@ double *read_double(FILE *file){
     int type = 2;
     size_t len = 1;
     void **data = (void **)calloc(1,sizeof(void *));
-    read(&type, &len, data, file);
+    read_general(&type, &len, data, file);
     if (type == 2 && len == 1) {
         return (double *)*data;
     }
@@ -104,7 +104,7 @@ char *read_string(FILE *file){
     int type = 3;
     size_t len = 1;
     void **data = (void **)calloc(1,sizeof(void *));
-    read(&type, &len, data, file);
+    read_general(&type, &len, data, file);
     if (type == 3 ) {
         return (char *)*data;
     }
