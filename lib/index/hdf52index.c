@@ -66,19 +66,23 @@ void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attri
     switch(ir->type) {
         case 1:
             attr->attr_type = H5T_INTEGER;
+            attr->attribute_value = ir->data;
+            attr->attribute_value_length = 1;
             break;
         case 2:
             attr->attr_type = H5T_FLOAT;
+            attr->attribute_value = ir->data;
+            attr->attribute_value_length = 1;
             break;
         case 3:
             attr->attr_type = H5T_STRING;
+            attr->attribute_value = (void *)(&((char *)ir->data));
+            attr->attribute_value_length = 1;
             break;
         default:
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
             break;
     }
-    attr->attribute_value = ir->data;
-    attr->attribute_value_length = 1;
     idx_anchor->file_path=ir->file_path;
     idx_anchor->obj_path=ir->object_path;
 }
