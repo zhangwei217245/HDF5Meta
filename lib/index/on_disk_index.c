@@ -183,11 +183,23 @@ index_record_t **find_index_record(char *name,
 
 /******* Functions below are test functions *****/
 
-int string_equals(void *data, void *criterion){
-    char *d = (char *)data;
-    char *s = (char *)criterion;
+int int_equals(const void *data, const void *criterion){
+    int *_data = (int *)data;
+    int *_criterion = (int *)criterion;
+    return _data[0] == _criterion[0];
+}
 
-    return (strcmp(data, criterion)==0);
+int double_equals(const void *data, const void *criterion){
+    double *_data = (double *)data;
+    double *_criterion = (double *)criterion;
+    return _data[0] == _criterion[0];
+}
+
+
+int string_equals(const void *data, const void *criterion){
+    char *_data = (char *)data;
+    char *_criterion = (char *)criterion;
+    return strcmp(_data, _criterion)==0;
 }
 
 int test(int argc, char **argv){

@@ -43,4 +43,9 @@ index_record_t **find_index_record(char *name,
 index_record_t *read_index_record(FILE *stream);
 
 
+
+int int_equals(const void *data, const void *criterion);
+int double_equals(const void *data, const void *criterion);
+int string_equals(const void *data, const void *criterion);
+
 #endif /* !MIQS_ON_DISK_INDEX */
