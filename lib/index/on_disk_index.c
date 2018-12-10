@@ -190,7 +190,7 @@ int string_equals(void *data, void *criterion){
     return (strcmp(data, criterion)==0);
 }
 
-int main(int argc, char **argv){
+int test(int argc, char **argv){
 
     if (argc < 2) {
         printf("please give a filename");

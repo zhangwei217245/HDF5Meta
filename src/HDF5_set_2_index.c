@@ -66,7 +66,7 @@ main(int argc, char const *argv[])
     }
 
     if (argc >= 5) {
-        on_disk_index_path = argv[4];
+        on_disk_index_path = (char *)argv[4];
     }
 
     char *indexed_attr[]={
