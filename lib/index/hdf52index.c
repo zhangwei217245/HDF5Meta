@@ -94,8 +94,8 @@ int on_obj(void *opdata, h5object_t *obj){
 int on_attr(void *opdata, h5attribute_t *attr){
     
     index_anchor *idx_anchor = (index_anchor *)opdata;
-    char **indexed_attr = idx_anchor->indexed_attr;
-    int num_indexed_field = idx_anchor->num_indexed_field;
+    // char **indexed_attr = idx_anchor->indexed_attr;
+    // int num_indexed_field = idx_anchor->num_indexed_field;
 
     char *file_path = idx_anchor->file_path;
     char *obj_path = idx_anchor->obj_path;
