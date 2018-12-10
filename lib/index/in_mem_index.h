@@ -111,11 +111,11 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt);
 
 
 
-int int_value_search(char *attr_name, int value, search_result_t **rst);
+int int_value_search(char *attr_name, int value, search_result_t ***rst);
 
-int float_value_search(char *attr_name, double value, search_result_t **rst);
+int float_value_search(char *attr_name, double value, search_result_t ***rst);
 
-int string_value_search(char *attr_name, char *value, search_result_t **rst);
+int string_value_search(char *attr_name, char *value, search_result_t ***rst);
 
 
 

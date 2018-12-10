@@ -189,15 +189,15 @@ main(int argc, char const *argv[])
         int c = i % 16;
         if (search_types[c]==1) {
             int value = atoi(search_values[c]);
-            search_result_t *rst = NULL;
+            search_result_t **rst = NULL;
             numrst += int_value_search(indexed_attr[c], value, &rst);
         }else if (search_types[c]==2) {
             double value = atof(search_values[c]);
-            search_result_t *rst = NULL;
+            search_result_t **rst = NULL;
             numrst += float_value_search(indexed_attr[c], value, &rst); 
         } else {
             char *value = search_values[c];
-            search_result_t *rst = NULL;
+            search_result_t **rst = NULL;
             numrst += string_value_search(indexed_attr[c], value, &rst);
         }
     }

@@ -54,9 +54,10 @@ int collect_object_result(void *data, const unsigned char *key, uint32_t key_len
 
 int collect_file_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
     power_search_rst_t *prst = (power_search_rst_t *)data;
-    prst->rst_arr[prst->num_files] = (search_result_t *)calloc(1, sizeof(search_result_t));
-    search_result_t *rst = prst->rst_arr[prst->num_files];
+    search_result_t *rst = (search_result_t *)calloc(1, sizeof(search_result_t));
+    rst->num_objs = 0;
     rst->file_path = strdup(key);
+    prst->rst_arr[prst->num_files] = rst;
     //TODO: get object_paths;
 
     art_tree *obj_path_art = (art_tree *)value;
@@ -190,7 +191,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
  * This is key-value exact search
  * 
  */ 
-int int_value_search(char *attr_name, int value, search_result_t **rst) {
+int int_value_search(char *attr_name, int value, search_result_t ***rst) {
     
     int numrst = 0;
     if (rst == NULL) {
@@ -226,10 +227,10 @@ int int_value_search(char *attr_name, int value, search_result_t **rst) {
         if (retval[0]->file_path_art == NULL) {
             return 0;
         }
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t **)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t *));
         art_iter(retval[0]->file_path_art, collect_file_result, prst);
         numrst = prst->num_files;
-        search_result_t *_rst = prst->rst_arr;
+        search_result_t **_rst = prst->rst_arr;
         *rst = _rst;
         // free(prst);
     }
@@ -238,7 +239,7 @@ int int_value_search(char *attr_name, int value, search_result_t **rst) {
     return numrst;
 }
 
-int float_value_search(char *attr_name, double value, search_result_t **rst) {
+int float_value_search(char *attr_name, double value, search_result_t ***rst) {
     int numrst = 0;
     if (rst == NULL) {
         return numrst;
@@ -270,10 +271,10 @@ int float_value_search(char *attr_name, double value, search_result_t **rst) {
         if (retval[0]->file_path_art == NULL) {
             return 0;
         }
-        prst->rst_arr = (search_result_t *)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t **)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t *));
         art_iter(retval[0]->file_path_art, collect_file_result, prst);
         numrst = prst->num_files;
-        search_result_t *_rst = prst->rst_arr;
+        search_result_t **_rst = prst->rst_arr;
         *rst = _rst;
         // free(prst);
     }
@@ -282,7 +283,7 @@ int float_value_search(char *attr_name, double value, search_result_t **rst) {
     return numrst;
 }
 
-int string_value_search(char *attr_name, char *value, search_result_t **rst) {
+int string_value_search(char *attr_name, char *value, search_result_t ***rst) {
     int numrst = 0;
     if (rst == NULL) {
         return numrst;
@@ -307,10 +308,10 @@ int string_value_search(char *attr_name, char *value, search_result_t **rst) {
     } else {
         power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
         prst->num_files=0;
-        prst->rst_arr = (search_result_t *)calloc(art_size(file_path_art), sizeof(search_result_t));
+        prst->rst_arr = (search_result_t **)calloc(art_size(file_path_art), sizeof(search_result_t *));
         art_iter(file_path_art, collect_file_result, prst);
         numrst = prst->num_files;
-        search_result_t *_rst = prst->rst_arr;
+        search_result_t **_rst = prst->rst_arr;
         *rst = _rst;
         // free(prst);
     }
