@@ -6,6 +6,8 @@
 #include "../ds/bplustree.h"
 #include "../ds/hashset.h"
 #include <search.h>
+#include "on_disk_index.h"
+
 
 
 // For index creation,
@@ -20,11 +22,18 @@ typedef struct {
     char **indexed_attr;
     int num_indexed_field;
 
+    // for on-disk index file name
+    FILE *on_disk_file_stream;
+    int is_readonly_index_file;
+
     //info solely for profiling.
     size_t total_num_files;
     size_t total_num_objects;
     size_t total_num_attrs;
+    size_t total_num_indexed_kv_pairs;
+    size_t total_num_kv_pairs;
     suseconds_t us_to_index;
+    suseconds_t us_to_disk_index;
 } index_anchor;
 
 
@@ -56,12 +65,12 @@ typedef struct {
 typedef struct {
     char *file_path;
     int num_objs;
-    hid_t *obj_ids;
+    char **obj_paths;
 } search_result_t;
 
 typedef struct {
     int num_files;
-    search_result_t *rst_arr;
+    search_result_t **rst_arr;
 }power_search_rst_t;
 
 
@@ -77,6 +86,11 @@ int int_value_compare_func(const void *l, const void *r);
 
 int float_value_compare_func(const void *l, const void *r);
 
+int init_in_mem_index();
+/**
+ * Create index based on given index_record_t.
+ */
+int indexing_record(index_record_t *ir);
 
 /**
  * This is a function for indexing numeric fields in the HDF5 metadata. 
@@ -89,19 +103,19 @@ int float_value_compare_func(const void *l, const void *r);
  */ 
 void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length,
 int (*compare_func)(const void *a, const void *b), 
-char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt);
+char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt);
 
 
 void indexing_string(char *attr_name, char **attr_val, int attribute_value_length, 
-char *file_path, hid_t obj_id, attr_tree_leaf_content_t *leaf_cnt);
+char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt);
 
 
 
-int int_value_search(index_anchor *idx_anchor, char *attr_name, int value, search_result_t **rst);
+int int_value_search(char *attr_name, int value, search_result_t **rst);
 
-int float_value_search(index_anchor *idx_anchor, char *attr_name, double value, search_result_t **rst);
+int float_value_search(char *attr_name, double value, search_result_t **rst);
 
-int string_value_search(index_anchor *idx_anchor, char *attr_name, char *value, search_result_t **rst);
+int string_value_search(char *attr_name, char *value, search_result_t **rst);
 
 
 

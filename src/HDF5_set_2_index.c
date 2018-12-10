@@ -3,15 +3,12 @@
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
-
-index_anchor *idx_anchor;
-
-size_t index_num;
-size_t file_num;
+#include <sys/stat.h>
+#include <unistd.h>
 
 
 void print_usage() {
-    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields\n");
+    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields on_disk_file\n");
 }
 
 int is_hdf5(const struct dirent *entry){
@@ -29,13 +26,11 @@ int is_hdf5(const struct dirent *entry){
 
 int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
     char *filepath = (char *)calloc(512, sizeof(char));
-    index_anchor *idx_anchor = (index_anchor *)arg;
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_hdf5_file(filepath, idx_anchor);
+    parse_hdf5_file(filepath);
 
-    idx_anchor->total_num_files+=1;
-    // print_mem_usage();
+    print_mem_usage(filepath);
     return 1;
 }
 
@@ -46,13 +41,10 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
     return 1;
 }
 
-int parse_files_in_dir(char *path, const int topk, index_anchor *idx_anchor) {
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, idx_anchor, NULL, NULL);
+int parse_files_in_dir(char *path, const int topk) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, NULL, NULL, NULL);
     return 0;
 }
-
-
-
 
 int 
 main(int argc, char const *argv[])
@@ -64,12 +56,17 @@ main(int argc, char const *argv[])
     int rst = 0;
     int topk = 0; // number of files to be scanned.
     int num_indexed_field = 0; //number of attributes to be indexed.
+    char *on_disk_index_path = "./index_miqs.idx";
     const char *path = argv[1];
     if (argc >= 3) {
         topk = atoi(argv[2]);
     }
     if (argc >= 4) {
         num_indexed_field = atoi(argv[3]);
+    }
+
+    if (argc >= 5) {
+        on_disk_index_path = argv[4];
     }
 
     char *indexed_attr[]={
@@ -112,16 +109,72 @@ main(int argc, char const *argv[])
     //  string value = 0, int value = 1, float value = 2
     int search_types[] = {0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0};
     
-    idx_anchor = (index_anchor *)calloc(1, sizeof(index_anchor));
+    if (init_in_mem_index()==0) {
+        return 0;
+    }
+    index_anchor *idx_anchor = root_idx_anchor();
     idx_anchor->indexed_attr = indexed_attr;
     idx_anchor->num_indexed_field = num_indexed_field;
 
-    if (is_regular_file(path)) {
-        parse_hdf5_file((char *)path, idx_anchor);
-        rst = 0;
+    // check if index file exists
+    
+    if (access(on_disk_index_path, F_OK)==0 && 
+        access(on_disk_index_path, R_OK)==0 
+        ){
+        // file exists, readable. try to load index 
+        idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "r");
+        idx_anchor->is_readonly_index_file=1;
+        fseek(idx_anchor->on_disk_file_stream, 0, SEEK_SET);
+        stopwatch_t disk_indexing_time;
+        timer_start(&disk_indexing_time);
+        size_t count = 0;
+        while (1) {
+            index_record_t *ir = read_index_record(idx_anchor->on_disk_file_stream);
+            if (ir == NULL) {
+                break;
+            }
+            // convert to required parameters from IR.
+            h5attribute_t attr;
+            convert_index_record_to_in_mem_parameters(idx_anchor, &attr, ir);
+            //insert into in-mem index.
+            on_attr((void *)idx_anchor, &attr);
+            count++;
+        }
+        fclose(idx_anchor->on_disk_file_stream);
+
+        timer_pause(&disk_indexing_time);
+        println("[LOAD_INDEX_FROM_MIQS_FILE] Time for loading %ld index records and get %ld kv-pairs was %ld s, %ld s on in-memory.", 
+        count, idx_anchor->total_num_kv_pairs, timer_delta_s(&disk_indexing_time),
+        idx_anchor->us_to_index);
+
     } else {
-        rst = parse_files_in_dir((char *)path, topk, idx_anchor);
+        // build index from HDF5 files
+        idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w+");
+        idx_anchor->is_readonly_index_file=0;
+        fseek(idx_anchor->on_disk_file_stream, 0, SEEK_END);
+        stopwatch_t hdf5_indexing_time;
+        timer_start(&hdf5_indexing_time);
+        int count = 0;
+        if (is_regular_file(path)) {
+            parse_hdf5_file((char *)path);
+            rst = 0;
+        } else {
+            rst = parse_files_in_dir((char *)path, topk);
+        }  
+        fclose(idx_anchor->on_disk_file_stream);
+        timer_pause(&hdf5_indexing_time);
+        println("[LOAD_INDEX_FROM_HDF5_FILE] Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld s, %ld s on in-memory, %ld s on on-disk.", 
+        idx_anchor->total_num_files,
+        idx_anchor->total_num_objects,
+        idx_anchor->total_num_attrs,
+        idx_anchor->total_num_kv_pairs,
+        timer_delta_s(&hdf5_indexing_time),
+        idx_anchor->us_to_index/1000000,
+        idx_anchor->us_to_disk_index/1000000
+        );
     }
+
+    print_mem_usage("MEMALL");
 
     int num_queries = 16;
     if (num_indexed_field > 0) {
@@ -133,26 +186,23 @@ main(int argc, char const *argv[])
     int numrst = 0;
     int i = 0;
     for (i = 0; i < 1024; i++) {
-        int c = i%num_queries;
+        int c = i % 16;
         if (search_types[c]==1) {
             int value = atoi(search_values[c]);
             search_result_t *rst = NULL;
-            numrst += int_value_search(idx_anchor, indexed_attr[c], value, &rst);
+            numrst += int_value_search(indexed_attr[c], value, &rst);
         }else if (search_types[c]==2) {
             double value = atof(search_values[c]);
             search_result_t *rst = NULL;
-            numrst += float_value_search(idx_anchor, indexed_attr[c], value, &rst); 
+            numrst += float_value_search(indexed_attr[c], value, &rst); 
         } else {
             char *value = search_values[c];
             search_result_t *rst = NULL;
-            numrst += string_value_search(idx_anchor, indexed_attr[c], value, &rst);
+            numrst += string_value_search(indexed_attr[c], value, &rst);
         }
     }
-
     timer_pause(&timer_search);
-    println("[META_SEARCH] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
-
-    print_mem_usage();
+    println("[META_SEARCH_MEMO] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
 
     return rst;
 }
