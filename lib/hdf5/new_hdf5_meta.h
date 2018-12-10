@@ -1,3 +1,8 @@
+
+/* File foo.  */
+#ifndef MIQS_NEW_HDF5_META_H
+#define MIQS_NEW_HDF5_META_H
+
 #include "../include/base_stdlib.h"
 #include "../include/c95_stdlib.h"
 #include "../include/c99_stdlib.h"
@@ -81,3 +86,6 @@ void init_h5object(h5object_t *h5object,
 void pretty_print_metadata(metadata_collector_t *meta_coll);
 
 size_t get_hdf5_meta_size();
+
+
+#endif /* !MIQS_NEW_HDF5_META_H */

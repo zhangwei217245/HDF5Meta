@@ -1,3 +1,7 @@
+#ifndef MIQS_BASE_STDLIB_H
+#define MIQS_BASE_STDLIB_H
+
+
 #include <assert.h>  //	//Conditionally compiled macro that compares its argument to zero
 #include <time.h>  //	Time/date utilities
 #include <ctype.h>  //	Functions to determine the type contained in character data
@@ -13,6 +17,9 @@
 #include <setjmp.h>  //	Nonlocal jumps
 #include <signal.h>  //	Signal handling
 #include <locale.h>  //	Localization utilities
+
+#endif /* !MIQS_BASE_STDLIB_H */
+
 
 
 

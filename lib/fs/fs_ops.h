@@ -1,3 +1,8 @@
+
+/* File foo.  */
+#ifndef MIQS_FS_OPS
+#define MIQS_FS_OPS
+
 #include "../include/base_stdlib.h"
 #include <unistd.h>
 #include <sys/types.h>
@@ -19,3 +24,6 @@ void collect_dir(const char *dir_path, int (*selector) (const struct dirent *),
 
 
 int is_regular_file(const char *path);
+
+
+#endif /* !MIQS_FS_OPS */
