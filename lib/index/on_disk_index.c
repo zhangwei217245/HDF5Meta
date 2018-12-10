@@ -22,24 +22,24 @@ void append_index_record(index_record_t *ir, FILE *stream){
 
     if (ir == NULL) return;
 
-    append_type(ir->type, stream );
+    miqs_append_type(ir->type, stream );
 
-    append_string(ir->name, stream);
+    miqs_append_string(ir->name, stream);
 
 
     if (ir->type == 1) {
         int *valp = (int *)ir->data;
-        append_int(*valp, stream);
+        miqs_append_int(*valp, stream);
     } else if (ir->type == 2) {
         double *valp = (double *)ir->data;
-        append_double(*valp, stream);
+        miqs_append_double(*valp, stream);
     } else if (ir->type == 3) {
         char *strv = (char *)ir->data;
-        append_string(strv, stream);
+        miqs_append_string(strv, stream);
     }
 
-    append_string(ir->file_path, stream);
-    append_string(ir->object_path, stream);
+    miqs_append_string(ir->file_path, stream);
+    miqs_append_string(ir->object_path, stream);
 
 }
 
@@ -48,22 +48,22 @@ void append_index_record(index_record_t *ir, FILE *stream){
  */
 index_record_t *read_index_record(FILE *stream){
     index_record_t *rst = (index_record_t *)calloc(1, sizeof(index_record_t));
-    int *ptr = read_int(stream);
+    int *ptr = miqs_read_int(stream);
     if (ptr == NULL){
         return NULL;
     }
     rst->type = *ptr;
 
-    rst->name = read_string(stream);
+    rst->name = miqs_read_string(stream);
     if (rst->type == 1){
-        rst->data = (void *)read_int(stream);
+        rst->data = (void *)miqs_read_int(stream);
     } else if (rst->type == 2) {
-        rst->data = (void *)read_double(stream);
+        rst->data = (void *)miqs_read_double(stream);
     } else if (rst->type == 3) {
-        rst->data = (void *)read_string(stream);
+        rst->data = (void *)miqs_read_string(stream);
     }
-    rst->file_path = read_string(stream);
-    rst->object_path = read_string(stream);
+    rst->file_path = miqs_read_string(stream);
+    rst->object_path = miqs_read_string(stream);
     return rst;
 }
 
@@ -120,7 +120,7 @@ index_record_t **find_index_record(char *name,
 
     while (1) {
 
-        int *ptr = read_int(stream);
+        int *ptr = miqs_read_int(stream);
         if (ptr == NULL){
             break;
         }
@@ -130,19 +130,19 @@ index_record_t **find_index_record(char *name,
         int type = *ptr;
         void *data;
 
-        char *name_from_disk = read_string(stream);
+        char *name_from_disk = miqs_read_string(stream);
         if (strcmp(name, name_from_disk)==0) {
             if (type == 1){
-                data = (void *)read_int(stream);
+                data = (void *)miqs_read_int(stream);
             } else if (type == 2) {
-                data = (void *)read_double(stream);
+                data = (void *)miqs_read_double(stream);
             } else if (type == 3) {
-                data = (void *)read_string(stream);
+                data = (void *)miqs_read_string(stream);
             }
 
             if (compare_value(data, criterion)==1) {
-                char *file_path = read_string(stream);
-                char *object_path = read_string(stream);
+                char *file_path = miqs_read_string(stream);
+                char *object_path = miqs_read_string(stream);
                 index_record_t *new_record = create_index_record(type, name, data, file_path, object_path);
 
                 if (curr_pos == capacity) {
@@ -160,14 +160,14 @@ index_record_t **find_index_record(char *name,
                 rst_num++;
             }else {
                 // skip two strings
-                skip_field(stream);
-                skip_field(stream);
+                miqs_skip_field(stream);
+                miqs_skip_field(stream);
             }
         } else {
             //skip value, two paths
-            skip_field(stream);
-            skip_field(stream);
-            skip_field(stream);
+            miqs_skip_field(stream);
+            miqs_skip_field(stream);
+            miqs_skip_field(stream);
         }
     }
     *out_len = capacity;

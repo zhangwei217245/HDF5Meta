@@ -2,7 +2,7 @@
 
 
 
-void append_int(int data, FILE *stream){
+void miqs_append_int(int data, FILE *stream){
     int type = 1;
     size_t length = 1;
     fwrite(&type, sizeof(int), 1, stream);
@@ -10,7 +10,7 @@ void append_int(int data, FILE *stream){
     fwrite(&data, sizeof(int), length, stream);
 }
 
-void append_double(double data, FILE *stream){
+void miqs_append_double(double data, FILE *stream){
     int type = 2;
     size_t length = 1;
     fwrite(&type, sizeof(int), 1, stream);
@@ -18,7 +18,7 @@ void append_double(double data, FILE *stream){
     fwrite(&data, sizeof(double), length, stream);
 }
 
-void append_string(char *data, FILE *stream){
+void miqs_append_string(char *data, FILE *stream){
     int type = 3;
     size_t length = strlen(data);
     fwrite(&type, sizeof(int), 1, stream);
@@ -26,7 +26,7 @@ void append_string(char *data, FILE *stream){
     fwrite(data, sizeof(char), length, stream);
 }
 
-void read_general(int *t, size_t *len, void **data, FILE *stream){
+void miqs_read_general(int *t, size_t *len, void **data, FILE *stream){
     int type = -1;
     size_t length = 0;
     fread(&type, sizeof(int), 1, stream);
@@ -47,7 +47,7 @@ void read_general(int *t, size_t *len, void **data, FILE *stream){
     *len = length;
 }
 
-size_t skip_field(FILE *stream){
+size_t miqs_skip_field(FILE *stream){
     size_t rst = 0;
     int type = -1;
     size_t length = 0;
@@ -76,11 +76,11 @@ size_t skip_field(FILE *stream){
     return rst;
 }
 
-int *read_int(FILE *file){
+int *miqs_read_int(FILE *file){
     int type = 1;
     size_t len = 1;
     void **data = (void **)calloc(1,sizeof(void *));
-    read_general(&type, &len, data, file);
+    miqs_read_general(&type, &len, data, file);
     if (type == 1 && len == 1) {
         return (int *)*data;
     }
@@ -88,11 +88,11 @@ int *read_int(FILE *file){
 }
 
 
-double *read_double(FILE *file){
+double *miqs_read_double(FILE *file){
     int type = 2;
     size_t len = 1;
     void **data = (void **)calloc(1,sizeof(void *));
-    read_general(&type, &len, data, file);
+    miqs_read_general(&type, &len, data, file);
     if (type == 2 && len == 1) {
         return (double *)*data;
     }
@@ -100,18 +100,18 @@ double *read_double(FILE *file){
 }
 
 
-char *read_string(FILE *file){
+char *miqs_read_string(FILE *file){
     int type = 3;
     size_t len = 1;
     void **data = (void **)calloc(1,sizeof(void *));
-    read_general(&type, &len, data, file);
+    miqs_read_general(&type, &len, data, file);
     if (type == 3 ) {
         return (char *)*data;
     }
     return NULL;
 }
 // type: 1, int, 2, float, 3. string
-void append_type(int type, FILE *stream){
+void miqs_append_type(int type, FILE *stream){
     append_int(type, stream);
 }
 
