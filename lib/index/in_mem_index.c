@@ -70,6 +70,20 @@ int collect_file_result(void *data, const unsigned char *key, uint32_t key_len, 
 
 int init_in_mem_index(){
     idx_anchor = (index_anchor *)ctr_calloc(1, sizeof(index_anchor), get_index_size_ptr());
+    idx_anchor->root_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
+    idx_anchor->file_path=NULL;
+    idx_anchor->obj_path=NULL;
+    idx_anchor->indexed_attr=NULL;
+    idx_anchor->num_indexed_attr=0;
+    idx_anchor->on_disk_file_stream=NULL;
+    idx_anchor->is_readonly_index_file=0;
+    idx_anchor->total_num_files=0;
+    idx_anchor->total_num_objects=0;
+    idx_anchor->total_num_attrs=0;
+    idx_anchor->total_num_indexed_kv_pairs=0;
+    idx_anchor->total_num_kv_pairs=0;
+    idx_anchor->us_to_index=0;
+    idx_anchor->us_to_disk_index=0;
     return 1;
 }
 
