@@ -69,7 +69,7 @@ index_anchor *root_idx_anchor();
 
 extern size_t get_btree_mem_size();
 
-size_t get_index_size();
+size_t *get_index_size_ptr();
 
 
 /**
