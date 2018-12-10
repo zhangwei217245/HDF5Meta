@@ -71,6 +71,12 @@ extern size_t get_btree_mem_size();
 
 size_t *get_index_size_ptr();
 
+size_t get_index_size();
+
+int int_value_compare_func(const void *l, const void *r);
+
+int float_value_compare_func(const void *l, const void *r);
+
 
 /**
  * This is a function for indexing numeric fields in the HDF5 metadata. 

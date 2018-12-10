@@ -13,6 +13,40 @@ size_t *get_index_size_ptr(){
     return &index_mem_size;
 }
 
+size_t get_index_size(){
+    return index_mem_size;
+}
+
+
+int int_value_compare_func(const void *l, const void *r){
+    const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
+    const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
+    const int *il = (const int *)el->k;
+    const int *ir = (const int *)er->k;
+    if ((*il) < (*ir)) {
+        return -1;
+    }
+    if ((*il) > (*ir)) {
+        return -1;
+    }
+    return 0;
+}
+
+int float_value_compare_func(const void *l, const void *r){
+    const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
+    const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
+    const double *il = (const double *)el->k;
+    const double *ir = (const double *)er->k;
+    if ((*il) < (*ir)) {
+        return -1;
+    }
+    if ((*il) > (*ir)) {
+        return -1;
+    }
+    return 0;
+}
+
+
 int collect_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
     power_search_rst_t *prst = (power_search_rst_t *)data;
     search_result_t *rst = &(prst->rst_arr[prst->num_files]);

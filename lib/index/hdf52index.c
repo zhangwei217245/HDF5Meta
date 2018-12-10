@@ -3,34 +3,6 @@
 #include "../utils/string_utils.h"
 
 
-int int_value_compare_func(const void *l, const void *r){
-    const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
-    const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
-    const int *il = (const int *)el->k;
-    const int *ir = (const int *)er->k;
-    if ((*il) < (*ir)) {
-        return -1;
-    }
-    if ((*il) > (*ir)) {
-        return -1;
-    }
-    return 0;
-}
-
-int float_value_compare_func(const void *l, const void *r){
-    const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
-    const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
-    const double *il = (const double *)el->k;
-    const double *ir = (const double *)er->k;
-    if ((*il) < (*ir)) {
-        return -1;
-    }
-    if ((*il) > (*ir)) {
-        return -1;
-    }
-    return 0;
-}
-
 int on_obj(void *opdata, h5object_t *obj){
     index_anchor *idx_anchor = (index_anchor *)opdata;
     idx_anchor->obj_path = (char *)ctr_calloc(strlen(obj->obj_name)+1, sizeof(char), get_index_size_ptr());
