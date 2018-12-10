@@ -140,7 +140,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
                 art_tree_init(object_path_art);
                 art_insert(test_ent->file_path_art, (const unsigned char *)file_path, strlen(file_path), (void *)object_path_art);
             }
-            art_insert（object_path_art, obj_path, strlen(obj_path), obj_path);
+            art_insert(object_path_art, obj_path, strlen(obj_path), obj_path);
         }
         // TODO: we store value as attr_name currently, 
         // but we can utilize this value to store some statistic info, 
