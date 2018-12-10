@@ -74,7 +74,7 @@ int init_in_mem_index(){
     idx_anchor->file_path=NULL;
     idx_anchor->obj_path=NULL;
     idx_anchor->indexed_attr=NULL;
-    idx_anchor->num_indexed_attr=0;
+    idx_anchor->num_indexed_field=0;
     idx_anchor->on_disk_file_stream=NULL;
     idx_anchor->is_readonly_index_file=0;
     idx_anchor->total_num_files=0;
