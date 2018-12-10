@@ -88,3 +88,11 @@ int is_regular_file(const char *path){
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
 }
+
+size_t get_file_size(const char *filename) {
+    struct stat st;
+    if(stat(filename, &st) != 0) {
+        return 0;
+    }
+    return st.st_size;   
+}

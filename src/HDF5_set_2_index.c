@@ -116,39 +116,47 @@ main(int argc, char const *argv[])
     idx_anchor->indexed_attr = indexed_attr;
     idx_anchor->num_indexed_field = num_indexed_field;
 
+    int need_to_build_from_scratch = 1;
     // check if index file exists
     
     if (access(on_disk_index_path, F_OK)==0 && 
         access(on_disk_index_path, R_OK)==0 
         ){
-        // file exists, readable. try to load index 
-        idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "r");
-        idx_anchor->is_readonly_index_file=1;
-        fseek(idx_anchor->on_disk_file_stream, 0, SEEK_SET);
-        stopwatch_t disk_indexing_time;
-        timer_start(&disk_indexing_time);
-        size_t count = 0;
-        while (1) {
-            index_record_t *ir = read_index_record(idx_anchor->on_disk_file_stream);
-            if (ir == NULL) {
-                break;
+        size_t fsize = get_file_size(on_disk_index_path);
+        if (fsize > 0) {
+            // file exists, readable. try to load index 
+            idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "r");
+            idx_anchor->is_readonly_index_file=1;
+            fseek(idx_anchor->on_disk_file_stream, 0, SEEK_SET);
+            stopwatch_t disk_indexing_time;
+            timer_start(&disk_indexing_time);
+            size_t count = 0;
+            while (1) {
+                index_record_t *ir = read_index_record(idx_anchor->on_disk_file_stream);
+                if (ir == NULL) {
+                    break;
+                }
+                // convert to required parameters from IR.
+                h5attribute_t attr;
+                convert_index_record_to_in_mem_parameters(idx_anchor, &attr, ir);
+                //insert into in-mem index.
+                on_attr((void *)idx_anchor, &attr);
+                count++;
             }
-            // convert to required parameters from IR.
-            h5attribute_t attr;
-            convert_index_record_to_in_mem_parameters(idx_anchor, &attr, ir);
-            //insert into in-mem index.
-            on_attr((void *)idx_anchor, &attr);
-            count++;
+            fclose(idx_anchor->on_disk_file_stream);
+
+            timer_pause(&disk_indexing_time);
+            println("[LOAD_INDEX_FROM_MIQS_FILE] Time for loading %ld index records and get %ld kv-pairs was %ld us, %ld us on in-memory.", 
+            count, idx_anchor->total_num_kv_pairs, 
+            timer_delta_us(&disk_indexing_time),
+            idx_anchor->us_to_index);
+            need_to_build_from_scratch = 0;
+        } else {
+            need_to_build_from_scratch = 1;
         }
-        fclose(idx_anchor->on_disk_file_stream);
-
-        timer_pause(&disk_indexing_time);
-        println("[LOAD_INDEX_FROM_MIQS_FILE] Time for loading %ld index records and get %ld kv-pairs was %ld us, %ld us on in-memory.", 
-        count, idx_anchor->total_num_kv_pairs, 
-        timer_delta_us(&disk_indexing_time),
-        idx_anchor->us_to_index);
-
-    } else {
+    } 
+    
+    if (need_to_build_from_scratch==1) {
         // build index from HDF5 files
         idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w");
         idx_anchor->is_readonly_index_file=0;
@@ -203,7 +211,8 @@ main(int argc, char const *argv[])
         }
     }
     timer_pause(&timer_search);
-    println("[META_SEARCH_MEMO] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
+    println("[META_SEARCH_MEMO] Time for 1024 queries on %d indexes and spent %d microseconds.  %d", 
+    num_indexed_field, timer_delta_us(&timer_search), numrst);
 
     return rst;
 }

@@ -25,5 +25,6 @@ void collect_dir(const char *dir_path, int (*selector) (const struct dirent *),
 
 int is_regular_file(const char *path);
 
+size_t get_file_size(const char *filename);
 
 #endif /* !MIQS_FS_OPS */
