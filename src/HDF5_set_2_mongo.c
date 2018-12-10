@@ -2,6 +2,7 @@
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
+#include <unistd.h>
 
 extern int64_t init_db();
 extern int64_t clear_all_docs();
@@ -110,6 +111,9 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
     parse_single_file(filepath);
     
+    println("[PARSEFILE]");
+    sleep(10);
+
     return 1;
 }
 
