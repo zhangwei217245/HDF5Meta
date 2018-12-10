@@ -13,6 +13,28 @@ size_t get_index_size(){
     return index_mem_size;
 }
 
+int collect_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
+    power_search_rst_t *prst = (power_search_rst_t *)data;
+    search_result_t *rst = &(prst->rst_arr[prst->num_files]);
+    rst->file_path = strdup(key);
+    //TODO: get object_ids;
+
+    hashset_t obj_id_set = (hashset_t)value;
+    rst->num_objs = (int)hashset_num_items(obj_id_set);
+    rst->obj_ids = (hid_t *)ctr_calloc(rst->num_objs, sizeof(hid_t), &index_mem_size);
+    hashset_itr_t hs_itr = hashset_iterator(obj_id_set);
+    hs_itr->index = 0;//FIXME: confirm.
+    int i = 0;
+    while (hashset_iterator_has_next(hs_itr)) {
+        hid_t *obj_id_ptr = (hid_t *)hashset_iterator_value(hs_itr);
+        rst->obj_ids[i] = *obj_id_ptr;
+        hashset_iterator_next(hs_itr);
+        i++;
+    }
+    prst->num_files+=1;
+}
+
+
 int int_value_compare_func(const void *l, const void *r){
     const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
     const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
