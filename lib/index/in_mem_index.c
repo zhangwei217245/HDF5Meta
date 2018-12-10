@@ -48,7 +48,7 @@ int float_value_compare_func(const void *l, const void *r){
 
 int collect_object_result(void *data, const unsigned char *key, uint32_t key_len, void *value){
     search_result_t *rst = (search_result_t *)data;
-    rst->obj_paths[rst->num_objs] = key;
+    rst->obj_paths[rst->num_objs]=(char *)key;
     rst->num_objs+=1;
 }
 
@@ -136,7 +136,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             (const unsigned char *)file_path, strlen(file_path));
 
             if (object_path_art == NULL) {
-                object_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size)；
+                object_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
                 art_tree_init(object_path_art);
                 art_insert(test_ent->file_path_art, (const unsigned char *)file_path, strlen(file_path), (void *)object_path_art);
             }
@@ -173,11 +173,11 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             (const unsigned char *)file_path, strlen(file_path));
 
         if (object_path_art == NULL) {
-            object_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size)；
+            object_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
             art_tree_init(object_path_art);
             art_insert(file_path_art, (const unsigned char *)file_path, strlen(file_path), (void *)object_path_art);
         }
-        art_insert（object_path_art, obj_path, strlen(obj_path), obj_path);
+        art_insert(object_path_art, obj_path, strlen(obj_path), obj_path);
         // TODO: we store value as attr_name currently, 
         // but we can utilize this value to store some statistic info, 
         // for caching policy maybe.
