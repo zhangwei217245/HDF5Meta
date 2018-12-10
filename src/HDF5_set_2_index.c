@@ -221,7 +221,7 @@ main(int argc, char const *argv[])
     numrst = 0;
     i = 0;
     // open file
-    FILE *idx_to_search = on_disk_file_stream = fopen(on_disk_index_path, "r");
+    FILE *idx_to_search = fopen(on_disk_index_path, "r");
     for (i = 0; i < 1024; i++) {
         
         int c = i % 16;
