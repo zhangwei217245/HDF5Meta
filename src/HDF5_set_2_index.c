@@ -143,8 +143,9 @@ main(int argc, char const *argv[])
         fclose(idx_anchor->on_disk_file_stream);
 
         timer_pause(&disk_indexing_time);
-        println("[LOAD_INDEX_FROM_MIQS_FILE] Time for loading %ld index records and get %ld kv-pairs was %ld s, %ld s on in-memory.", 
-        count, idx_anchor->total_num_kv_pairs, timer_delta_s(&disk_indexing_time),
+        println("[LOAD_INDEX_FROM_MIQS_FILE] Time for loading %ld index records and get %ld kv-pairs was %ld us, %ld us on in-memory.", 
+        count, idx_anchor->total_num_kv_pairs, 
+        timer_delta_us(&disk_indexing_time),
         idx_anchor->us_to_index);
 
     } else {

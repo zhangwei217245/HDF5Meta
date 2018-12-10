@@ -151,12 +151,10 @@ int on_attr(void *opdata, h5attribute_t *attr){
                 append_index_record(ir, idx_anchor->on_disk_file_stream);
             }
         }
-
-        idx_anchor->total_num_kv_pairs+=attr->attribute_value_length;
-
         suseconds_t one_disk_attr_duration = timer_delta_us(&one_disk_attr);
         idx_anchor->us_to_disk_index += one_disk_attr_duration;
     }
+    idx_anchor->total_num_kv_pairs+=attr->attribute_value_length;
     
     //TODO: currently ignore any error.
     return 1;
