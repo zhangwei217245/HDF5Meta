@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# nohup ./bin/hdf5_set_2_mongo /global/cscratch1/sd/houhun/h5boss_v1 100 16 > mongotest_100_16.txt &
-nohup ./sim_mongo.sh > mongotest_100_16.txt &
+nohup ./bin/hdf5_set_2_mongo /global/cscratch1/sd/houhun/h5boss_v1 100 16 > mongotest_100_16.txt &
+#nohup ./sim_mongo.sh > mongotest_100_16.txt &
 
 fakeidx=1
 old_num_file=0
