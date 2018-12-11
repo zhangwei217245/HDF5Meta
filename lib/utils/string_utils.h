@@ -5,6 +5,10 @@
 #ifndef PDC_STRING_UTILS_H
 #define PDC_STRING_UTILS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
 #include "../include/base_stdlib.h"
 
 // #define PATTERN_EXACT  0
