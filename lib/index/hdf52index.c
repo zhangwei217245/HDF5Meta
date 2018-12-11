@@ -198,7 +198,7 @@ void parse_hdf5_file(char *filepath){
     mem_cost_t *mem_cost = get_mem_cost();
     
     println("[IMPORT_META] Finished in %ld us for %s, with %ld us for scanning and %ld us for indexing, %ld for on-disk indexing. [MEM] dataSize: %ld , indexSize: %ld . num_obj: %ld , num_attrs: %ld , totalkv: %ld",
-        scan_and_index_duration, basename(filepath), actual_scanning, actual_indexing, actual_persist_index
+        scan_and_index_duration, basename(filepath), actual_scanning, actual_indexing, actual_persist_index,
         mem_cost->metadata_size, mem_cost->overall_index_size,
         idx_anchor->total_num_objects, idx_anchor->total_num_attrs, idx_anchor->total_num_kv_pairs);
 }
