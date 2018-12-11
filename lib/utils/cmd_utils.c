@@ -6,6 +6,7 @@
 char *execute_cmd(char *cmd) {
     char *rst = NULL;
     
+
     char buf[BUFSIZE];
     FILE *fp;
 
@@ -13,9 +14,11 @@ char *execute_cmd(char *cmd) {
         printf("Error opening pipe!\n");
         return rst;
     }
-    rst = (char *)calloc(BUFSIZE, sizeof(char));
+
+    rst = (char *)calloc(BUFSIZE*3, sizeof(char));
+    char **rst_ptr = &rst;
     while (fgets(buf, BUFSIZE, fp) != NULL) {
-        rst = concat(rst, buf);
+        str_append(rst_ptr, "%s", buf);
         // printf("OUTPUT: %s", buf);
     }
 
@@ -24,5 +27,5 @@ char *execute_cmd(char *cmd) {
         return NULL;
     }
 
-    return rst;
+    return *rst_ptr;
 }
