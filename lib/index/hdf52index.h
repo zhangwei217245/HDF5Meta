@@ -5,8 +5,8 @@
 #include "../hdf5/new_hdf5_meta.h"
 
 typedef struct{
-    size_t metadata_size
-    size_t overall_index_size
+    size_t metadata_size;
+    size_t overall_index_size;
 } mem_cost_t;
 
 
