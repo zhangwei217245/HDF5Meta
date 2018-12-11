@@ -3,6 +3,7 @@
 #include "../utils/string_utils.h"
 
 
+
 int is_specified_field(char *name, index_anchor *idx_anchor) {
     int has_specified_field = 0;
     if (idx_anchor->num_indexed_field > 0) {
@@ -231,6 +232,18 @@ void getMemory(
     fclose(file);
 }
 
+
+mem_cost_t *get_mem_cost(){
+    mem_cost_t *rst = (mem_cost_t *)calloc(1, sizeof(mem_cost_t));
+    size_t art_size = get_art_mem_size();
+    // size_t btree_size = get_btree_mem_size();
+    size_t btree_size = 0;
+    size_t overall_index_size = get_index_size() + btree_size + art_size;
+    size_t metadata_size = get_hdf5_meta_size() + overall_index_size;
+    rst->metadata_size = metadata_size;
+    rst->overall_index_size = overall_index_size;
+    return rst;
+}
 
 void print_mem_usage(char *prefix){
     // int VmRSS;

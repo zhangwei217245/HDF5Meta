@@ -4,6 +4,12 @@
 #include "in_mem_index.h"
 #include "../hdf5/new_hdf5_meta.h"
 
+typedef struct{
+    size_t metadata_size
+    size_t overall_index_size
+} mem_cost_t;
+
+
 void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attribute_t *attr, index_record_t *ir);
 
 
@@ -20,6 +26,8 @@ void parse_hdf5_file(char *filepath);
 //     int* currVirtMem, int* peakVirtMem);
 
 void print_mem_usage();
+
+mem_cost_t *get_mem_cost();
 
 
 
