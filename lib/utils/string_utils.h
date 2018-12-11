@@ -5,10 +5,7 @@
 #ifndef PDC_STRING_UTILS_H
 #define PDC_STRING_UTILS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
+#include "../include/base_stdlib.h"
 
 // #define PATTERN_EXACT  0
 // #define PATTERN_SUFFIX 1
@@ -183,5 +180,11 @@ char *reverse_str(char *str);
  * But the string starting at result_ptr[0][0] is still the same. 
  */
 int str_append(char **result_ptr, const char *format, ...);
+
+/**
+ * Concat one or more strings with str.
+ */
+char *
+concat (const char *str, ...);
 
 #endif //PDC_STRING_UTILS_H

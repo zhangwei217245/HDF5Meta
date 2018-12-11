@@ -2,6 +2,7 @@
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
+#include "../lib/utils/cmd_utils.h"
 #include <unistd.h>
 
 extern int64_t init_db();
@@ -28,6 +29,7 @@ void print_usage() {
     printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file topk num_indexed_fields\n");
 }
 
+char *chk_mongo_size_cmd = "mongo mongodb03.nersc.gov/HDF5MetadataTest -u HDF5MetadataTest_admin -p ekekek19294jdwss2k --eval 'db.runCommand({dbStats:1, scale:1024})' | egrep \"(indexSize|dataSize)\" | xargs echo";
 
 void clear_everything(){
     drop_current_coll();
@@ -77,8 +79,11 @@ int parse_single_file(char *filepath) {
     suseconds_t one_file_duration = timer_delta_us(&one_file);
     suseconds_t parse_file_duration = timer_delta_us(&parse_file);
     suseconds_t import_one_doc_duration = timer_delta_us(&import_one_doc);
-    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting.",
-        one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration);
+
+    char *size_output=execute_cmd(chk_mongo_size_cmd);
+
+    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting. [MEM] : %s",
+        one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration, size_output);
     
     json_object_put(rootObj);
     // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
@@ -111,7 +116,7 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
     parse_single_file(filepath);
     
-    println("[PARSEFILE]");
+    // println("[PARSEFILE]");
     sleep(10);
 
     return 1;
