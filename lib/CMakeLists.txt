@@ -6,6 +6,9 @@ ADD_LIBRARY(c_base_utils SHARED include/c_base_stdlib.c include/base_stdlib.h in
 ADD_LIBRARY(string_utils SHARED utils/string_utils.c utils/string_utils.h)
 TARGET_LINK_LIBRARIES(string_utils c_base_utils)
 
+ADD_LIBRARY(cmd_utils SHARED utils/cmd_utils.c utils/cmd_utils.h)
+TARGET_LINK_LIBRARIES(cmd_utils string_utils)
+
 ADD_LIBRARY(query_utils SHARED utils/query_utils.c utils/query_utils.h)
 TARGET_LINK_LIBRARIES(query_utils string_utils)
 
@@ -33,7 +36,7 @@ target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils tim
 
 
 ADD_LIBRARY(new_hdf5_meta SHARED hdf5/new_hdf5_meta.c hdf5/new_hdf5_meta.h)
-target_link_libraries(new_hdf5_meta  m  query_utils timer_utils thpool indexds fs_utils c_base_utils)
+target_link_libraries(new_hdf5_meta  m  query_utils timer_utils thpool indexds fs_utils cmd_utils c_base_utils)
 
 ADD_LIBRARY(hdf52json hdf5/hdf52json.c hdf5/hdf52json.h)
 target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIRS}")
