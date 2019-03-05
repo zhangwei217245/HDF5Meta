@@ -17,8 +17,8 @@ ADD_LIBRARY(timer_utils SHARED utils/timer_utils.c utils/timer_utils.h)
 ADD_LIBRARY(thpool SHARED thread/thpool.c thread/thpool.h)
 
 file(GLOB_RECURSE profile_src RELATIVE
-    profile/*.c
-    profile/*.h
+    "profile/*.c"
+    "profile/*.h"
 )
 ADD_LIBRARY(profile SHARED ${profile_src})
 TARGET_LINK_LIBRARIES(profile timer_utils)
