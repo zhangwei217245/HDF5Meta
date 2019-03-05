@@ -19,12 +19,7 @@ ADD_LIBRARY(thpool SHARED thread/thpool.c thread/thpool.h)
 ADD_LIBRARY(profile SHARED profile/*.h profile/*.c)
 TARGET_LINK_LIBRARIES(profile timer_utils)
 
-file(GLOB libhl_src
-    "libhl/*.h"
-    "libhl/*.c"
-)
-
-ADD_LIBRARY(libhl SHARED ${libhl_src})
+ADD_LIBRARY(libhl SHARED libhl/*.c libhl/*.h)
 TARGET_LINK_LIBRARIES(libhl profile)
 
 #ADD_LIBRARY(indexds SHARED ds/tsearch_tune.c ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
@@ -32,12 +27,9 @@ TARGET_LINK_LIBRARIES(libhl profile)
 ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
 TARGET_LINK_LIBRARIES(indexds libhl)
 
-file(GLOB index_spi_src
-    "index_spi/*.h"
-    "index_spi/*.c"
-)
 
-ADD_LIBRARY(index_spi SHARED ${index_spi_src})
+
+ADD_LIBRARY(index_spi SHARED index_spi/*.h index_spi/*.c)
 TARGET_LINK_LIBRARIES(index_spi indexds)
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
