@@ -30,7 +30,8 @@ target_link_libraries(hdf5_set_2_mongo PRIVATE
 add_executable (hdf5_set_2_index HDF5_set_2_index.c)
 target_link_libraries(hdf5_set_2_index PRIVATE hdf52index)
 
-
+add_executable(hdf5_meta_index_test hdf5_meta_index_test.c)
+target_link_libraries(hdf5_meta_index_test PRIVATE index_spi)
 
 #ADD_EXECUTABLE(main main.c dira/printa.c dirb/printb.c)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)
