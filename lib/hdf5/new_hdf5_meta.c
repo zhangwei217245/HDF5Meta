@@ -166,7 +166,7 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *h5obj)
     hid_t attr, atype, aspace, str_type;  /* Attribute, datatype, dataspace, string_datatype identifiers */
     herr_t ret;
     H5S_class_t  class;
-    size_t npoints;            
+    size_t npoints;
     
     h5attribute_t *curr_attr = (h5attribute_t *)ctr_calloc(1,sizeof(h5attribute_t), &hdf5_meta_size);
 

@@ -178,7 +178,6 @@ index_record_t **find_index_record(char *name,
     }
 
     return rst;
-
 }
 
 /******* Functions below are test functions *****/
@@ -264,3 +263,7 @@ int test(int argc, char **argv){
 
     fclose(filei);
 }
+
+
+
+

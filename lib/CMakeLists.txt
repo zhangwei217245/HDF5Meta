@@ -16,9 +16,29 @@ ADD_LIBRARY(timer_utils SHARED utils/timer_utils.c utils/timer_utils.h)
 
 ADD_LIBRARY(thpool SHARED thread/thpool.c thread/thpool.h)
 
+ADD_LIBRARY(profile SHARED profile/*.h profile/*.c)
+TARGET_LINK_LIBRARIES(profile timer_utils)
+
+file(GLOB libhl_src
+    "libhl/*.h"
+    "libhl/*.c"
+)
+
+ADD_LIBRARY(libhl SHARED ${libhl_src})
+TARGET_LINK_LIBRARIES(libhl profile)
+
 #ADD_LIBRARY(indexds SHARED ds/tsearch_tune.c ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
 
 ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
+TARGET_LINK_LIBRARIES(indexds libhl)
+
+file(GLOB index_spi_src
+    "index_spi/*.h"
+    "index_spi/*.c"
+)
+
+ADD_LIBRARY(index_spi SHARED ${index_spi_src})
+TARGET_LINK_LIBRARIES(index_spi indexds)
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
 
@@ -43,4 +63,4 @@ target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIRS}")
 target_link_libraries(hdf52json PRIVATE "${JSON-C_LIBRARIES}" new_hdf5_meta)
 
 ADD_LIBRARY(hdf52index index/in_mem_index.c index/in_mem_index.h index/on_disk_index.c index/on_disk_index.h index/hdf52index.c index/hdf52index.h)
-target_link_libraries(hdf52index PRIVATE new_hdf5_meta indexds bin_file_ops)
+target_link_libraries(hdf52index PRIVATE new_hdf5_meta indexds bin_file_ops index_spi)
