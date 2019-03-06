@@ -16,19 +16,45 @@ ADD_LIBRARY(timer_utils SHARED utils/timer_utils.c utils/timer_utils.h)
 
 ADD_LIBRARY(thpool SHARED thread/thpool.c thread/thpool.h)
 
-file(GLOB_RECURSE profile_src RELATIVE
-    "profile/*.c"
-    "profile/*.h"
+ADD_LIBRARY(profile SHARED 
+    profile/mem_perf.h
+    profile/mem_perf.c
 )
-ADD_LIBRARY(profile SHARED ${profile_src})
 TARGET_LINK_LIBRARIES(profile timer_utils)
 
-file(GLOB_RECURSE libhl_src RELATIVE
-    libhl/*.h
-    libhl/*.c
+ADD_LIBRARY(libhl SHARED 
+    libhl/atomic_defs.h
+    libhl/avltree.c
+    libhl/avltree.h
+    libhl/binheap.c
+    libhl/binheap.h
+    libhl/bsd_queue.h
+    libhl/comparators.h
+    libhl/fbuf.c
+    libhl/fbuf.h
+    libhl/graph.c
+    libhl/graph.h
+    libhl/hashtable.c
+    libhl/hashtable.h
+    libhl/linklist.c
+    libhl/linklist.h
+    libhl/pqueue.c
+    libhl/pqueue.h
+    libhl/queue.c
+    libhl/queue.h
+    libhl/rbtree.c
+    libhl/rbtree.h
+    libhl/rbuf.c
+    libhl/rbuf.h
+    libhl/refcnt.c
+    libhl/refcnt.h
+    libhl/rqueue.c
+    libhl/rqueue.h
+    libhl/skiplist.c
+    libhl/skiplist.h
+    libhl/trie.c
+    libhl/trie.h
 )
-
-ADD_LIBRARY(libhl SHARED ${libhl_src})
 TARGET_LINK_LIBRARIES(libhl profile)
 
 #ADD_LIBRARY(indexds SHARED ds/tsearch_tune.c ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
@@ -36,12 +62,19 @@ TARGET_LINK_LIBRARIES(libhl profile)
 ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
 TARGET_LINK_LIBRARIES(indexds libhl)
 
-file(GLOB_RECURSE index_spi_src RELATIVE
-    index_spi/*.h
-    index_spi/*.c
-)
 
-ADD_LIBRARY(index_spi SHARED ${index_spi_src})
+ADD_LIBRARY(index_spi SHARED 
+    index_spi/art_string_index.c
+    index_spi/art_string_index.h
+    index_spi/hash_table_string_index.h
+    index_spi/hast_table_string_index.c
+    index_spi/rbtree_string_index.c
+    index_spi/rbtree_string_index.h
+    index_spi/spi.c
+    index_spi/spi.h
+    index_spi/trie_string_index.c
+    index_spi/trie_string_index.h    
+)
 TARGET_LINK_LIBRARIES(index_spi indexds)
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
