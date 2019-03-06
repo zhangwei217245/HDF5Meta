@@ -43,14 +43,14 @@ int insert_string(void *index_root, char *key, void *data){
     timer_start(&time_to_insert);
 
     if (strcmp(s, "HASHTABLE")==0) {
-        rst = insert_string_to_hashtable(void *index_root, char *key, void *data);
+        rst = insert_string_to_hashtable(index_root, key, data);
     } else if (strcmp(s, "SBST")==0) {
-        rst = insert_string_to_rbtree(void *index_root, char *key, void *data);
+        rst = insert_string_to_rbtree(index_root, key, data);
     } else if (strcmp(s, "TRIE")==0) {
-        rst = insert_string_to_trie(void *index_root, char *key, void *data);
+        rst = insert_string_to_trie(index_root, key, data);
     } else {
         perror("[INSERT]Data Structure not specified, fallback to ART");
-        rst = insert_string_to_art(void *index_root, char *key, void *data);
+        rst = insert_string_to_art(index_root, key, data);
     }
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
