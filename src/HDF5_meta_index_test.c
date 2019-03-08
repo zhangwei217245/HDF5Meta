@@ -1,5 +1,6 @@
 #include "../lib/index_spi/spi.h"
 #include "../lib/utils/timer_utils.h"
+#include "../lib/utils/string_utils.h"
 
 
 char *gen_random(const int len) {
