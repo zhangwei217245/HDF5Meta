@@ -83,7 +83,7 @@ ADD_LIBRARY(index_spi SHARED
     index_spi/tsearch_number_index.c
     index_spi/tsearch_number_index.h    
 )
-TARGET_LINK_LIBRARIES(index_spi indexds)
+TARGET_LINK_LIBRARIES(index_spi indexds query_utils)
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
 
