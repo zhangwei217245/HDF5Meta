@@ -167,9 +167,9 @@ int create_number_index(void **idx_ptr){
         if (strcmp(s, "SPARSEARRAY")==0) {
             rst = create_sparse_array(idx_ptr);
         } else if (strcmp(s, "SBST")==0) {
-            rst = create_rbtree_number(idx_ptr);
+            rst = create_rbtree_number_index(idx_ptr);
         } else if (strcmp(s, "SKIPLIST")==0) {
-            rst = create_skiplist(idx_ptr);
+            rst = create_skiplist_index(idx_ptr);
         } else {
             perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
             rst = create_tsearch_idx(idx_ptr);

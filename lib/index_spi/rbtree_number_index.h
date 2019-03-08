@@ -2,7 +2,7 @@
 #define MIQS_RBTREE_NUMBER_INDEX_H
 
 
-int create_rbtree_index(void **idx_ptr);
+int create_rbtree_number_index(void **idx_ptr);
 
 int insert_number_to_rbtree(void *index_root, void *key, void *data);
 

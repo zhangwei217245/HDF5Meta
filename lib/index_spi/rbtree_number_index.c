@@ -1,6 +1,6 @@
 #include "rbtree_number_index.h"
 
-int create_rbtree_index(void **idx_ptr){
+int create_rbtree_number_index(void **idx_ptr){
     return 0;
 }
 
