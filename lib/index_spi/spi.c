@@ -64,7 +64,7 @@ int insert_string(void *index_root, char *key, void *data){
     
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    printf("[%s]Time to insert is %ld us.\n", s, index_insertion_duration);
+    println("[%s]Time to insert is %ld us.", s, index_insertion_duration);
     return rst; 
 }
 
@@ -135,7 +135,7 @@ int search_string(void *index_root, char *key, int len, void **out){
     
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    printf("[%s]Time to search is %ld us.\n", s, index_search_duration);
+    println("[%s]Time to search is %ld us.", s, index_search_duration);
 
     return rst; 
 }

@@ -39,7 +39,7 @@ int main(int argc, const char *argv[]){
     }
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    printf("Total time to insert %d keys with %d values on each key is %ld us.\n", k, k, index_insertion_duration);
+    println("Total time to insert %d keys with %d values on each key is %ld us.", k, k, index_insertion_duration);
 
 
     stopwatch_t time_to_search;
@@ -50,5 +50,5 @@ int main(int argc, const char *argv[]){
     }
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    printf("Total time to search %d keys is %ld us.\n", k, k, index_search_duration);
+    println("Total time to search %d keys is %ld us.", k, k, index_search_duration);
 }
