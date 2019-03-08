@@ -54,17 +54,17 @@ int insert_string(void *index_root, char *key, void *data){
         } else if (strcmp(s, "TRIE")==0) {
             rst = insert_string_to_trie(index_root, key, data);
         } else {
-            perror("[INSERT]Data Structure not specified, fallback to ART\n");
+            // perror("[INSERT]Data Structure not specified, fallback to ART\n");
             rst = insert_string_to_art(index_root, key, data);
         }
     } else {
-        perror("[INSERT]Data Structure not specified, fallback to ART\n");
+        // perror("[INSERT]Data Structure not specified, fallback to ART\n");
         rst = insert_string_to_art(index_root, key, data);
     }
     
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    println("[%s]Time to insert is %ld us.", s, index_insertion_duration);
+    // println("[%s]Time to insert is %ld us.", s, index_insertion_duration);
     return rst; 
 }
 
@@ -125,17 +125,17 @@ int search_string(void *index_root, char *key, int len, void **out){
         } else if (strcmp(s, "TRIE")==0) {
             search_string_in_trie(index_root, key, len, out);
         } else {
-            perror("[SEARCH]Data Structure not specified, fallback to ART\n");
+            // perror("[SEARCH]Data Structure not specified, fallback to ART\n");
             search_string_in_art(index_root, key, len, out);
         }
     } else {
-        perror("[SEARCH]Data Structure not specified, fallback to ART\n");
+        // perror("[SEARCH]Data Structure not specified, fallback to ART\n");
         search_string_in_art(index_root, key, len, out);
     }
     
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    println("[%s]Time to search is %ld us.", s, index_search_duration);
+    // println("[%s]Time to search is %ld us.", s, index_search_duration);
 
     return rst; 
 }
