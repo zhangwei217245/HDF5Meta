@@ -1,4 +1,5 @@
 #include "../lib/index_spi/spi.h"
+#include "../lib/utils/timer_utils.h"
 
 
 char *gen_random(const int len) {
@@ -25,23 +26,29 @@ int main(int argc, const char *argv[]){
         k = t * k;
     }
     create_string_index(&index_root);
+    char **keys = (char **)calloc(k, sizeof(char *));
+    stopwatch_t time_to_insert;
+    timer_start(&time_to_insert);
     for (i = 0; i < k; i++) {
+        char *rand_str_k = gen_random(10);
+        keys[i] =  rand_str_k;
         for (j = 0; j < k; j++) {
-            char *rand_str_k = gen_random(10);
             char *rand_str_v = gen_random(10);
-            char k[20];
-            char v[20];
-            sprintf(k, "%d", i);
-            sprintf(v, "%s_%d", rand_str_v, j);
-            insert_string(index_root, k, v);
+            insert_string(index_root, rand_str_k, rand_str_v);
         }
     }
+    timer_pause(&time_to_insert);
+    suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
+    printf("Total time to insert %d keys with %d values on each key is %ld us.\n", k, k, index_insertion_duration);
 
+
+    stopwatch_t time_to_search;
+    timer_start(&time_to_search);
     for (i = 0; i < k; i++) {
-        char k[20];
-        sprintf(k, "%d", i);
         void *out;
-        search_string(index_root, k, strlen(k), &out);
+        search_string(index_root, keys[i], strlen(keys[i]), &out);
     }
-
+    timer_pause(&time_to_search);
+    suseconds_t index_search_duration = timer_delta_us(&time_to_search);
+    printf("Total time to search %d keys is %ld us.\n", k, k, index_search_duration);
 }
