@@ -11,3 +11,8 @@ void *ctr_calloc(size_t nitems, size_t size, size_t *reg){
     *reg = (*reg) + t;
     return calloc(nitems, size);
 }
+
+void *ctr_realloc(void *ptr, size_t new_size, size_t *reg){
+    *reg = (*reg) + new_size;
+    return realloc(ptr, new_size);
+}

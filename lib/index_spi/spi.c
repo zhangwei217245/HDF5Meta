@@ -5,10 +5,10 @@
 #include "art_string_index.h"
 #include "../utils/timer_utils.h"
 
-// #include "libhl/sparse_array_number_index.h"
-// #include "libhl/rbtree_number_index.h"
-// #include "libhl/skip_list_number_index.h"
-// #include "libhl/b_plus_tree_number_index.h"
+#include "sparse_array_number_index.h"
+#include "rbtree_number_index.h"
+#include "skiplist_number_index.h"
+#include "tsearch_number_index.h"
 
 
 
@@ -18,14 +18,19 @@
 int create_string_index(void **idx_ptr){
     int rst = -1;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
-    if (strcmp(s, "HASHTABLE")==0) {
-        rst = create_hashtable(idx_ptr);
-    } else if (strcmp(s, "SBST")==0) {
-        rst = create_rbtree(idx_ptr);
-    } else if (strcmp(s, "TRIE")==0) {
-        rst = create_trie(idx_ptr);
+    if (s != NULL) {
+        if (strcmp(s, "HASHTABLE")==0) {
+            rst = create_hashtable(idx_ptr);
+        } else if (strcmp(s, "SBST")==0) {
+            rst = create_rbtree(idx_ptr);
+        } else if (strcmp(s, "TRIE")==0) {
+            rst = create_trie(idx_ptr);
+        } else {
+            perror("[CREATE]Data Structure not specified, fallback to ART\n");
+            rst = create_art(idx_ptr);
+        }
     } else {
-        perror("[CREATE]Data Structure not specified, fallback to ART");
+        perror("[CREATE]Data Structure not specified, fallback to ART\n");
         rst = create_art(idx_ptr);
     }
     return rst;
@@ -41,17 +46,22 @@ int insert_string(void *index_root, char *key, void *data){
 
     stopwatch_t time_to_insert;
     timer_start(&time_to_insert);
-
-    if (strcmp(s, "HASHTABLE")==0) {
-        rst = insert_string_to_hashtable(index_root, key, data);
-    } else if (strcmp(s, "SBST")==0) {
-        rst = insert_string_to_rbtree(index_root, key, data);
-    } else if (strcmp(s, "TRIE")==0) {
-        rst = insert_string_to_trie(index_root, key, data);
+    if (s != NULL) {
+        if (strcmp(s, "HASHTABLE")==0) {
+            rst = insert_string_to_hashtable(index_root, key, data);
+        } else if (strcmp(s, "SBST")==0) {
+            rst = insert_string_to_rbtree(index_root, key, data);
+        } else if (strcmp(s, "TRIE")==0) {
+            rst = insert_string_to_trie(index_root, key, data);
+        } else {
+            perror("[INSERT]Data Structure not specified, fallback to ART\n");
+            rst = insert_string_to_art(index_root, key, data);
+        }
     } else {
-        perror("[INSERT]Data Structure not specified, fallback to ART");
+        perror("[INSERT]Data Structure not specified, fallback to ART\n");
         rst = insert_string_to_art(index_root, key, data);
     }
+    
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
     printf("[%s]Time to insert is %ld us.\n", s, index_insertion_duration);
@@ -107,27 +117,28 @@ int search_string(void *index_root, char *key, int len, void **out){
     stopwatch_t time_to_search;
     timer_start(&time_to_search);
 
-    if (strcmp(s, "HASHTABLE")==0) {
-        search_string_in_hashtable(index_root, key, len, out);
-    } else if (strcmp(s, "SBST")==0) {
-        search_string_in_rbtree(index_root, key, len, out);
-    } else if (strcmp(s, "TRIE")==0) {
-        search_string_in_trie(index_root, key, len, out);
+    if (s != NULL) {
+        if (strcmp(s, "HASHTABLE")==0) {
+            search_string_in_hashtable(index_root, key, len, out);
+        } else if (strcmp(s, "SBST")==0) {
+            search_string_in_rbtree(index_root, key, len, out);
+        } else if (strcmp(s, "TRIE")==0) {
+            search_string_in_trie(index_root, key, len, out);
+        } else {
+            perror("[SEARCH]Data Structure not specified, fallback to ART\n");
+            search_string_in_art(index_root, key, len, out);
+        }
     } else {
-        perror("[SEARCH]Data Structure not specified, fallback to ART");
+        perror("[SEARCH]Data Structure not specified, fallback to ART\n");
         search_string_in_art(index_root, key, len, out);
     }
-
+    
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
     printf("[%s]Time to search is %ld us.\n", s, index_search_duration);
 
     return rst; 
 }
-
-
-
-
 
 /**
  * 
@@ -148,21 +159,49 @@ int destroy_string_index(void **index_ptr){
     return rst;
 }
 
+
+int create_number_index(void **idx_ptr){
+    int rst = -1;
+    const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    if (s != NULL) {
+        if (strcmp(s, "SPARSEARRAY")==0) {
+            rst = create_sparse_array(idx_ptr);
+        } else if (strcmp(s, "SBST")==0) {
+            rst = create_rbtree_number(idx_ptr);
+        } else if (strcmp(s, "SKIPLIST")==0) {
+            rst = create_skiplist(idx_ptr);
+        } else {
+            perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
+            rst = create_tsearch_idx(idx_ptr);
+        }
+    } else {
+        perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
+        rst = create_tsearch_idx(idx_ptr);
+    }
+    return rst;
+}
+
 /**
  * insert a number into an index with given data
  */
 int insert_number(void *index_root, void *key, void *data){
     int rst = -1;
-    // const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
-    // if (strcmp(s, "SPARSEARRAY")==0) {
-
-    // } else if (strcmp(s, "SBST")==0) {
-
-    // } else if (strcmp(s, "SKIPLIST")==0) {
-
-    // } else {
-    //     perror("Data Structure not specified, fallback to B+Tree");
-    // }
+    const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    if (s != NULL) {
+        if (strcmp(s, "SPARSEARRAY")==0) {
+            rst = insert_number_to_sparse_array(index_root, key, data);
+        } else if (strcmp(s, "SBST")==0) {
+            rst = insert_number_to_rbtree(index_root, key, data);
+        } else if (strcmp(s, "SKIPLIST")==0) {
+            rst = insert_number_to_skiplist(index_root, key, data);
+        } else {
+            perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
+            rst = insert_number_to_tsearch_idx(index_root, key, data);
+        }
+    } else {
+        perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
+        rst = insert_number_to_tsearch_idx(index_root, key, data);
+    }
     return rst; 
 }
 
@@ -207,15 +246,43 @@ int update_number(void *index_root, void *key, void *newdata){
  */
 int search_number(void *index_root, void *key, void **out){
     int rst = -1;
-    // const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
-    // if (strcmp(s, "SPARSEARRAY")==0) {
-
-    // } else if (strcmp(s, "SBST")==0) {
-
-    // } else if (strcmp(s, "SKIPLIST")==0) {
-
-    // } else {
-    //     perror("Data Structure not specified, fallback to B+Tree");
-    // }
+    const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    if (s != NULL) {
+        if (strcmp(s, "SPARSEARRAY")==0) {
+            rst = search_number_from_sparse_array(index_root, key, out);
+        } else if (strcmp(s, "SBST")==0) {
+            rst = search_number_from_rbtree(index_root, key, out);
+        } else if (strcmp(s, "SKIPLIST")==0) {
+            rst = search_number_from_skiplist(index_root, key, out);
+        } else {
+            perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
+            rst = search_number_from_tsearch_idx(index_root, key, out);
+        }
+    } else {
+        perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
+        rst = search_number_from_tsearch_idx(index_root, key, out);
+    }
     return rst; 
+}
+
+
+int destroy_number_index(void **idx_ptr){
+    int rst = -1;
+    // const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    // if (s != NULL) {
+    //     if (strcmp(s, "SPARSEARRAY")==0) {
+    //         rst = destroy_sparse_array(idx_ptr);
+    //     } else if (strcmp(s, "SBST")==0) {
+    //         rst = destroy_rbtree(idx_ptr);
+    //     } else if (strcmp(s, "SKIPLIST")==0) {
+    //         rst = destroy_skiplist(idx_ptr);
+    //     } else {
+    //         perror("[DESTROY]Data Structure not specified, fallback to tsearch\n");
+    //         rst = destroy_tsearch_idx(idx_ptr);
+    //     }
+    // } else {
+    //     perror("[DESTROY]Data Structure not specified, fallback to tsearch\n");
+    //     rst = destroy_tsearch_idx(idx_ptr);
+    // }
+    return rst;
 }

@@ -16,7 +16,9 @@ void *ctr_malloc(size_t size, size_t *reg);
  */
 void *ctr_calloc(size_t nitems, size_t size, size_t *reg);
 
-
-void *ctr_memcpy();
+/**
+ * Calling realloc and record it size. 
+ */
+void *ctr_realloc(void *ptr, size_t new_size, size_t *reg);
 
 #endif // END MIQS_MEM_PERF_H
