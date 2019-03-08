@@ -68,12 +68,20 @@ ADD_LIBRARY(index_spi SHARED
     index_spi/art_string_index.h
     index_spi/hash_table_string_index.h
     index_spi/hast_table_string_index.c
+    index_spi/rbtree_number_index.c
+    index_spi/rbtree_number_index.h
     index_spi/rbtree_string_index.c
     index_spi/rbtree_string_index.h
+    index_spi/skiplist_number_index.c
+    index_spi/skiplist_number_index.h
+    index_spi/sparse_array_number_index.c
+    index_spi/sparse_array_number_index.h
     index_spi/spi.c
     index_spi/spi.h
     index_spi/trie_string_index.c
-    index_spi/trie_string_index.h    
+    index_spi/trie_string_index.h
+    index_spi/tsearch_number_index.c
+    index_spi/tsearch_number_index.h    
 )
 TARGET_LINK_LIBRARIES(index_spi indexds)
 
