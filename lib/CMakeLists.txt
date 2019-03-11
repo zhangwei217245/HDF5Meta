@@ -4,7 +4,7 @@ find_package(JSON-C REQUIRED)
 
 ADD_LIBRARY(c_base_utils SHARED include/c_base_stdlib.c include/base_stdlib.h include/c95_stdlib.h include/c99_stdlib.h include/c11_stdlib.h)
 ADD_LIBRARY(string_utils SHARED utils/string_utils.c utils/string_utils.h)
-TARGET_LINK_LIBRARIES(string_utils c_base_utils m)
+TARGET_LINK_LIBRARIES(string_utils c_base_utils m uuid)
 
 ADD_LIBRARY(cmd_utils SHARED utils/cmd_utils.c utils/cmd_utils.h)
 TARGET_LINK_LIBRARIES(cmd_utils string_utils)
