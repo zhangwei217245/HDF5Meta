@@ -10,6 +10,7 @@
 #include "../utils/timer_utils.h"
 #include "../utils/string_utils.h"
 #include "../ds/vector.h"
+#include "../profile/mem_perf.h"
 #include "hdf5.h"
 
 

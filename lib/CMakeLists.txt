@@ -101,7 +101,7 @@ target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils tim
 
 
 ADD_LIBRARY(new_hdf5_meta SHARED hdf5/new_hdf5_meta.c hdf5/new_hdf5_meta.h)
-target_link_libraries(new_hdf5_meta  m  query_utils timer_utils thpool indexds fs_utils cmd_utils c_base_utils)
+target_link_libraries(new_hdf5_meta  profile m  query_utils timer_utils thpool indexds fs_utils cmd_utils c_base_utils)
 
 ADD_LIBRARY(hdf52json hdf5/hdf52json.c hdf5/hdf52json.h)
 target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIRS}")
