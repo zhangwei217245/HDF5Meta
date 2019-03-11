@@ -32,6 +32,11 @@ int main(int argc, const char *argv[]){
         setenv(MIQS_STRING_IDX_VAR_NAME, "ART", 1);
     }
 
+    char *alpha = "Hello ";
+    char *beta = "World!";
+    char *gamma = " This is a program!";
+    println("%s", concat(alpha, beta, gamma));
+
     int count = 1000;
     char *dataset_name = "RANDOM";
     if (argc >= 2) {
