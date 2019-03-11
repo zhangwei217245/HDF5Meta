@@ -147,7 +147,7 @@ concat (const char *str, ...)
               result = newp;
             }
 
-          wp = mempcpy(wp, s, len);
+          wp = memcpy(wp, s, len)+len;
         }
 
       /* Terminate the result string.  */
