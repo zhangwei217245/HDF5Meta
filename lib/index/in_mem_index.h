@@ -5,6 +5,7 @@
 #include "../ds/art.h"
 #include "../ds/bplustree.h"
 #include "../ds/hashset.h"
+#include "../utils/string_utils.h"
 #include <search.h>
 #include "on_disk_index.h"
 

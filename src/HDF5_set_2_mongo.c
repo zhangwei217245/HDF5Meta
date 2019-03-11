@@ -233,9 +233,9 @@ main(int argc, char **argv)
     }
     
     if (is_regular_file(path)) {
-        rst = parse_single_file(path);
+        rst = parse_single_file((char *)path);
     } else {
-        rst = parse_files_in_dir(path, topk);
+        rst = parse_files_in_dir((char *)path, topk);
     }
 
     //generate query:

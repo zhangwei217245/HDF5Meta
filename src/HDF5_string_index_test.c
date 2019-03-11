@@ -38,7 +38,7 @@ int main(int argc, const char *argv[]){
         count = atoi(argv[1]);
     }
     if (argc >= 3) {
-        dataset_name = argv[2];
+        dataset_name = (char *)argv[2];
     }
 
     int pwr = rank / 4;
