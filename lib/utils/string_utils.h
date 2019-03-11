@@ -5,6 +5,8 @@
 #ifndef PDC_STRING_UTILS_H
 #define PDC_STRING_UTILS_H
 
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
