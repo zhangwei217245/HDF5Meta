@@ -1,10 +1,8 @@
 //
 // Created by Wei Zhang on 7/12/17.
 //
-
+#include <uuid/uuid.h>
 #include "string_utils.h"
-
-
 
 
 int startsWith(const char *str, const char *pre){
@@ -227,4 +225,89 @@ char *reverse_str(char *str){
         rst[len-1 -i] = str[i];
     }
     return rst;
+}
+
+
+char **gen_uuids_strings(int count){
+    uuid_t out;
+    int c = 0;
+    char **result = (char **)calloc(count, sizeof(char*));
+    for (c = 0; c < count ; c++) {
+        uuid_generate_random(out);
+        result[c] = (char *)calloc(37, sizeof(char));
+        uuid_unparse_lower(out, result[c]);
+    }
+    return result;
+}
+
+char **gen_random_strings(int count, int maxlen, int alphabet_size){
+    
+    int c = 0;
+    int i = 0;
+    char **result = (char **)calloc(count, sizeof(char*));
+    for (c = 0; c < count ; c++) {
+        //int len = maxlen;//rand()%maxlen;
+        int len = rand()%maxlen;
+        char *str = (char *)calloc(len, sizeof(len));
+        for (i = 0; i < len-1; i++) {
+            int randnum = rand();
+            if (randnum < 0) randnum *= -1;
+            char c = (char)((randnum%alphabet_size)+65);
+            str[i] = c;
+        }
+        str[len-1] = '\0';
+        //printf("generated %s\n", str);
+        result[c] = str;
+    }
+    return result;
+}
+
+char **read_words_from_text(const char *fileName, int *word_count){
+    
+    FILE* file = fopen(fileName, "r"); /* should check the result */
+    if (file == NULL){
+        println("File not available\n");
+        exit(4);
+    }
+    int lines_allocated =128;
+    int max_line_len = 512;
+    char **words = (char **)malloc(sizeof(char*)*lines_allocated);
+    if (words == NULL) {
+        fprintf(stderr, "Out of memory\n");
+        exit(1);
+    }
+    int i;
+    int line_count = 0;
+    for (i = 0; 1; i++) {
+        int j;
+        if (i >= lines_allocated) {
+            int new_size;
+            new_size = lines_allocated * 2;
+            char **new_wordlist_ptr = (char **)realloc(words, sizeof(char*)*new_size);
+            if (new_wordlist_ptr == NULL) {
+                fprintf(stderr, "Out of memory\n");
+                exit(3);
+            }
+            words = new_wordlist_ptr;
+            lines_allocated = new_size;
+        }
+        words[line_count] = (char *)malloc(sizeof(char)*max_line_len);
+        if (words[line_count]==NULL) {
+            fprintf(stderr, "out of memory\n");
+            exit(4);
+        }
+        if (fgets(words[line_count], max_line_len-1, file)==NULL) {
+            break;
+        }
+        /* Get rid of CR or LF at end of line */
+        for (j=strlen(words[line_count])-1;j>=0 && (words[line_count][j]=='\n' || words[line_count][j]=='\r');j--)
+            ;
+        words[line_count][j+1]='\0';
+        line_count++;
+
+    }
+    *word_count = line_count;
+
+    fclose(file);
+    return words;
 }

@@ -63,8 +63,8 @@ int insert_string(void *index_root, char *key, void *data){
     }
     
     timer_pause(&time_to_insert);
-    suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    // println("[%s]Time to insert is %ld us.", s, index_insertion_duration);
+    stw_nanosec_t index_insertion_duration = timer_delta_ns(&time_to_insert);
+    println("[%s]Time to insert is %ld ns.", s, index_insertion_duration);
     return rst; 
 }
 
@@ -134,8 +134,8 @@ int search_string(void *index_root, char *key, int len, void **out){
     }
     
     timer_pause(&time_to_search);
-    suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    // println("[%s]Time to search is %ld us.", s, index_search_duration);
+    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    println("[%s]Time to search is %ld ns.", s, index_search_duration);
 
     return rst; 
 }

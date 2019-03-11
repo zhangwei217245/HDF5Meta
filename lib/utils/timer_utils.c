@@ -1,16 +1,20 @@
 #include "timer_utils.h"
 
 #define MICROSSECONDS_IN_SECONDS 1000000
+#define NANOSECONDS_IN_SECONDS 1000000000
 
 /** Local function that returns the ticks
  *	(number of microsseconds) since the Epoch.
  */
 static suseconds_t get_ticks()
 {
-	struct timeval tmp;
-	gettimeofday(&(tmp), NULL);
+	// struct timeval tmp;
+	// gettimeofday(&(tmp), NULL);
 
-	return (tmp.tv_usec) + (tmp.tv_sec * MICROSSECONDS_IN_SECONDS);
+	struct timespec tmp;
+	clock_gettime(CLOCK_REALTIME, &tmp);
+
+	return (tmp.tv_nsec) + (tmp.tv_sec * NANOSECONDS_IN_SECONDS);
 }
 
 void timer_start(stopwatch_t* t)
@@ -39,8 +43,7 @@ void timer_unpause(stopwatch_t* t)
 	t->paused	  = false;
 }
 
-suseconds_t timer_delta_us (stopwatch_t* t)
-{
+stw_nanosec_t timer_delta_ns(stopwatch_t *t){
 	if (t->running)
 		return get_ticks() - (t->start_mark);
 
@@ -51,15 +54,20 @@ suseconds_t timer_delta_us (stopwatch_t* t)
 	return (t->pause_mark) - (t->start_mark);
 }
 
+suseconds_t timer_delta_us (stopwatch_t* t)
+{
+	return (suseconds_t)(timer_delta_ns(t) / 1000); 
+}
+
 
 long timer_delta_ms(stopwatch_t* t)
 {
-	return (timer_delta_us(t) / 1000);
+	return (timer_delta_ns(t) / 1000000);
 }
 
 long timer_delta_s(stopwatch_t* t)
 {
-	return (timer_delta_us(t) / 1000000);
+	return (timer_delta_ns(t) / 1000000000);
 }
 
 long timer_delta_m(stopwatch_t* t)

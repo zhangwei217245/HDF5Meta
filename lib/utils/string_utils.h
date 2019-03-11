@@ -192,4 +192,19 @@ int str_append(char **result_ptr, const char *format, ...);
 char *
 concat (const char *str, ...);
 
+/**
+ * Generating a series of UUIDs using libuuid
+ */
+char **gen_uuids_strings(int count);
+
+/**
+ * Generating a series of random strings
+ */ 
+char **gen_random_strings(int count, int maxlen, int alphabet_size);
+
+/**
+ * Read text file and store each line of the text file as a string
+ */
+char **read_words_from_text(const char *fileName, int *word_count);
+
 #endif //PDC_STRING_UTILS_H

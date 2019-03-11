@@ -16,13 +16,16 @@
 #define TIMER_UTILS_H_DEFINED
 
 #include <stdio.h>
+#include <time.h>				/* clock_gettime() */
 #include <sys/time.h>			/* gettimeofday() */
 #include <stdbool.h>			/* bool */
 
+typedef long	 stw_nanosec_t;
+
 typedef struct stopwatch_t
 {
-	suseconds_t start_mark; 	/* Timer start point */
-	suseconds_t pause_mark; 	/* In case we pause the timer */
+	stw_nanosec_t start_mark; 	/* Timer start point */
+	stw_nanosec_t pause_mark; 	/* In case we pause the timer */
 	bool running;				/* Is it running? */
 	bool paused;				/* Is it paused? */
 
@@ -46,6 +49,14 @@ void timer_pause(stopwatch_t* t);
  *        multiple times, it does nothing.
  */
 void timer_unpause(stopwatch_t* t);
+
+
+/** Returns the time difference in nanoseconds
+ *
+ * @note (1/1000000000 seconds)
+ */
+stw_nanosec_t timer_delta_ns(stopwatch_t *t);
+
 
 /** Returns the time difference in microseconds
  *
