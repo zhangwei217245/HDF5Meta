@@ -60,6 +60,8 @@ int main(int argc, const char *argv[]){
         keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/mini_wiki_no_count.txt", &count);
     } else if (strcmp(dataset_name, "DICT") == 0) {
         keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/words_lower.txt", &count);
+    } else {
+        keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/boss_string_attr_names.txt", &count);
     }
 
     void *index_root;
