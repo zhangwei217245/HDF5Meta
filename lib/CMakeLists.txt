@@ -22,7 +22,7 @@ ADD_LIBRARY(profile SHARED
 )
 TARGET_LINK_LIBRARIES(profile timer_utils)
 
-ADD_LIBRARY(libhl SHARED 
+ADD_LIBRARY(libhl SHARED
     libhl/atomic_defs.h
     libhl/avltree.c
     libhl/avltree.h

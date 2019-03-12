@@ -35,6 +35,10 @@ int update_string(void *index_root, char *key, void *newdata);
  */
 int search_string(void *index_root, char *key, int len, void **out);
 
+/**
+ * Get string data structure memory consumption
+ */
+size_t get_string_ds_mem();
 
 int destroy_string_index(void **index_ptr);
 

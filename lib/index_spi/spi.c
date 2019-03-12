@@ -140,6 +140,29 @@ int search_string(void *index_root, char *key, int len, void **out){
     return rst; 
 }
 
+size_t get_string_ds_mem(){
+    size_t rst = 0;
+    const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
+
+    if (s != NULL) {
+        if (strcmp(s, "HASHTABLE")==0) {
+            rst = get_mem_in_hashtable();
+        } else if (strcmp(s, "SBST")==0) {
+            rst = get_mem_in_rbtree();
+        } else if (strcmp(s, "TRIE")==0) {
+            rst = get_mem_in_trie();
+        } else {
+            // perror("[MEM]Data Structure not specified, fallback to ART\n");
+            rst = get_mem_in_art();
+        }
+    } else {
+        // perror("[MEM]Data Structure not specified, fallback to ART\n");
+        rst = get_mem_in_art();
+    }
+
+    return rst; 
+}
+
 /**
  * 
  */

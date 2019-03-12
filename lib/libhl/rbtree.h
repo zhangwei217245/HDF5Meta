@@ -139,6 +139,8 @@ int rbt_walk(rbt_t *rbt, rbt_walk_callback cb, void *priv);
  */
 int rbt_walk_sorted(rbt_t *rbt, rbt_walk_callback cb, void *priv);
 
+size_t get_mem_usage_by_all_rbtrees();
+
 #ifdef DEBUG_RBTREE
 /**
  * @brief Print out the whole tree on stdout (for debugging purposes only)

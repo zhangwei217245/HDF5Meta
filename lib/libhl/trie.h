@@ -143,6 +143,8 @@ void *trie_find(trie_t *trie, char *key, size_t *vsize);
  */
 int trie_remove(trie_t *trie, char *key, void **value, size_t *vsize);
 
+size_t get_mem_usage_by_all_tries();
+
 #ifdef __cplusplus
 }
 #endif

@@ -963,3 +963,7 @@ int art_iter_prefix(art_tree *t, const unsigned char *key, int key_len, art_call
 size_t get_art_mem_size(){
     return art_mem_size;
 }
+
+size_t get_mem_usage_by_all_arts(){
+    return get_art_mem_size();
+}

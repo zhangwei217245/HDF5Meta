@@ -401,6 +401,8 @@ size_t list_get_tagged_values(linked_list_t *list, char *tag, linked_list_t *val
 void list_sort(linked_list_t *list, list_comparator_callback_t comparator);
 
 
+size_t get_mem_usage_by_all_linkedlist();
+
 /********************************************************************
  * Slice API 
  ********************************************************************/

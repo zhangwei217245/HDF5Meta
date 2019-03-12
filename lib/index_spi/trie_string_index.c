@@ -33,3 +33,7 @@ int search_string_in_trie(void *index_root, char *key, size_t len, void **out){
     rst = 0;
     return rst;
 }
+
+size_t get_mem_in_trie(){
+    return get_mem_usage_by_all_tries();
+}

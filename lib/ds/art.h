@@ -201,6 +201,8 @@ int art_iter_prefix(art_tree *t, const unsigned char *prefix, int prefix_len, ar
 
 size_t get_art_mem_size();
 
+size_t get_mem_usage_by_all_arts();
+
 #ifdef __cplusplus
 }
 #endif

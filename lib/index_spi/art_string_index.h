@@ -10,4 +10,6 @@ int insert_string_to_art(void *index_root, char *key, void *data);
 
 int search_string_in_art(void *index_root, char *key, size_t len, void **out);
 
+size_t get_mem_in_art();
+
 #endif // ENDIF MIQS_TRIE_STRING_INDEX_H

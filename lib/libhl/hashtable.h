@@ -399,6 +399,12 @@ typedef ht_iterator_status_t (*ht_pair_iterator_callback_t)(hashtable_t *table, 
  */
 void ht_foreach_pair(hashtable_t *table, ht_pair_iterator_callback_t cb, void *user);
 
+/**
+ * Get memory usage by hashtable. 
+ * 
+ */
+size_t get_mem_usage_by_all_hashtable();
+
 #ifdef __cplusplus
 }
 #endif

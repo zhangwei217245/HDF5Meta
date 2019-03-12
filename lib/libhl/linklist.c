@@ -8,6 +8,9 @@
 
 #include "linklist.h"
 #include "atomic_defs.h"
+#include "../profile/mem_perf.h"
+
+size_t mem_usage_by_all_linkedlist;
 
 typedef struct _list_entry_s {
     struct _linked_list_s *list;
@@ -68,7 +71,7 @@ static inline int swap_entries(linked_list_t *list, size_t pos1, size_t pos2);
 linked_list_t *
 list_create()
 {
-    linked_list_t *list = (linked_list_t *)calloc(1, sizeof(linked_list_t));
+    linked_list_t *list = (linked_list_t *)ctr_calloc(1, sizeof(linked_list_t), &mem_usage_by_all_linkedlist);
     if(list) {
         if (list_init(list) != 0) {
             free(list);
@@ -197,7 +200,7 @@ list_unlock(linked_list_t *list __attribute__ ((unused)))
 static inline
 list_entry_t *create_entry()
 {
-    list_entry_t *new_entry = (list_entry_t *)calloc(1, sizeof(list_entry_t));
+    list_entry_t *new_entry = (list_entry_t *)ctr_calloc(1, sizeof(list_entry_t), &mem_usage_by_all_linkedlist);
     /*
     if (!new_entry) {
         fprintf(stderr, "Can't create new entry: %s", strerror(errno));
@@ -762,7 +765,7 @@ list_foreach_value(linked_list_t *list, int (*item_handler)(void *item, size_t i
 tagged_value_t *
 list_create_tagged_value_nocopy(char *tag, void *val)
 {
-    tagged_value_t *newval = (tagged_value_t *)calloc(1, sizeof(tagged_value_t));
+    tagged_value_t *newval = (tagged_value_t *)ctr_calloc(1, sizeof(tagged_value_t), &mem_usage_by_all_linkedlist);
     if(!newval) {
         //fprintf(stderr, "Can't create new tagged value: %s", strerror(errno));
         return NULL;
@@ -786,7 +789,7 @@ list_create_tagged_value_nocopy(char *tag, void *val)
 tagged_value_t *
 list_create_tagged_value(char *tag, void *val, size_t vlen)
 {
-    tagged_value_t *newval = (tagged_value_t *)calloc(1, sizeof(tagged_value_t));
+    tagged_value_t *newval = (tagged_value_t *)ctr_calloc(1, sizeof(tagged_value_t), &mem_usage_by_all_linkedlist);
     if(!newval) {
         //fprintf(stderr, "Can't create new tagged value: %s", strerror(errno));
         return NULL;
@@ -798,7 +801,7 @@ list_create_tagged_value(char *tag, void *val, size_t vlen)
     {
         if(vlen)
         {
-            newval->value = malloc(vlen+1);
+            newval->value = ctr_malloc(vlen+1, &mem_usage_by_all_linkedlist);
             if(newval->value)
             {
                 memcpy(newval->value, val, vlen);
@@ -831,7 +834,7 @@ list_create_tagged_value(char *tag, void *val, size_t vlen)
 tagged_value_t *
 list_create_tagged_sublist(char *tag, linked_list_t *sublist)
 {
-    tagged_value_t *newval = (tagged_value_t *)calloc(1, sizeof(tagged_value_t));
+    tagged_value_t *newval = (tagged_value_t *)ctr_calloc(1, sizeof(tagged_value_t), &mem_usage_by_all_linkedlist);
     if(!newval) {
         //fprintf(stderr, "Can't create new tagged value: %s", strerror(errno));
         return NULL;
@@ -1173,10 +1176,14 @@ list_sort(linked_list_t *list, list_comparator_callback_t comparator)
     MUTEX_UNLOCK(list->lock);
 }
 
+size_t get_mem_usage_by_all_linkedlist(){
+    return mem_usage_by_all_linkedlist;
+}
+
 slice_t *
 slice_create(linked_list_t *list, size_t offset, size_t length)
 {
-    slice_t *slice = calloc(1, sizeof(slice_t));
+    slice_t *slice = ctr_calloc(1, sizeof(slice_t), &mem_usage_by_all_linkedlist);
     slice->list = list;
     slice->offset = offset;
     slice->length = length;

@@ -5,12 +5,15 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include "rbtree.h"
+#include "../profile/mem_perf.h"
 
 #define IS_BLACK(_n) (!(_n) || (_n)->color == RBTREE_COLOR_BLACK)
 #define IS_RED(_n) ((_n) && (_n)->color == RBTREE_COLOR_RED)
 
 #define PAINT_BLACK(_n) { if (_n) (_n)->color = RBTREE_COLOR_BLACK; }
 #define PAINT_RED(_n) { if (_n) (_n)->color = RBTREE_COLOR_RED; }
+
+size_t mem_usage_by_all_rbtrees;
 
 typedef enum {
     RBTREE_COLOR_RED = 0,
@@ -37,7 +40,7 @@ rbt_t *
 rbt_create(libhl_cmp_callback_t cmp_keys_cb,
               rbt_free_value_callback_t free_value_cb)
 {
-    rbt_t *rbt = calloc(1, sizeof(rbt_t));
+    rbt_t *rbt = ctr_calloc(1, sizeof(rbt_t), &mem_usage_by_all_rbtrees);
     if (!rbt)
         return NULL;
     rbt->free_value_cb = free_value_cb;
@@ -297,11 +300,11 @@ int
 rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
 {
     int rc = 0;
-    rbt_node_t *node = calloc(1, sizeof(rbt_node_t));
+    rbt_node_t *node = ctr_calloc(1, sizeof(rbt_node_t), &mem_usage_by_all_rbtrees);
     if (!node)
         return -1;
 
-    node->key = malloc(klen);
+    node->key = ctr_malloc(klen, &mem_usage_by_all_rbtrees);
     if (!node->key) {
         free(node);
         return -1;
@@ -538,7 +541,7 @@ rbt_remove(rbt_t *rbt, void *k, size_t klen, void **v)
                 n = rbt_find_prev(node);
             else
                 n = rbt_find_next(node);
-            void *new_key = realloc(node->key, n->klen);
+            void *new_key = ctr_realloc(node->key, n->klen, &mem_usage_by_all_rbtrees);
             if (!new_key)
                 return -1;
             node->key = new_key;
@@ -698,6 +701,11 @@ void rbt_print(rbt_t *rbt)
         printf("%s\n", s[i]);
 }
 #endif
+
+
+size_t get_mem_usage_by_all_rbtrees(){
+    return mem_usage_by_all_rbtrees;
+}
 
 // vim: tabstop=4 shiftwidth=4 expandtab:
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */

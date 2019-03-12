@@ -29,3 +29,7 @@ int search_string_in_hashtable(void *index_root, char *key, size_t len, void **o
     out[0] = data;
     return dlen;
 }
+
+size_t get_mem_in_hashtable(){
+    return get_mem_usage_by_all_hashtable();
+}

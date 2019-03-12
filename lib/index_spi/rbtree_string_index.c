@@ -29,3 +29,7 @@ int search_string_in_rbtree(void *index_root, char *key, size_t len, void **out)
     rst = rbt_find((rbt_t *)index_root, key, strlen(key), out);
     return rst;
 }
+
+size_t get_mem_in_rbtree(){
+    return get_mem_usage_by_all_rbtrees();
+}

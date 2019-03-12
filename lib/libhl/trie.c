@@ -2,6 +2,9 @@
 #include <string.h>
 
 #include "trie.h"
+#include "../profile/mem_perf.h"
+
+size_t mem_usage_by_all_tries;
 
 typedef struct _trie_node_s {
     void *value;
@@ -23,8 +26,8 @@ struct _trie_s {
 trie_t *
 trie_create(trie_free_value_callback_t free_value_cb)
 {
-    trie_t *trie = calloc(1, sizeof(trie_t));
-    trie->root = calloc(1, sizeof(trie_node_t));
+    trie_t *trie = ctr_calloc(1, sizeof(trie_t), &mem_usage_by_all_tries);
+    trie->root = ctr_calloc(1, sizeof(trie_node_t), &mem_usage_by_all_tries);
     trie->free_value_cb = free_value_cb;
     return trie;
 }
@@ -90,7 +93,7 @@ trie_node_set_value(trie_t *trie, trie_node_t *node, void *value, size_t vsize, 
     }
 
     if (copy) {
-        node->value = malloc(vsize);
+        node->value = ctr_malloc(vsize, &mem_usage_by_all_tries);
         memcpy(node->value, value, vsize);
         node->vsize = vsize;
         node->is_copy = 1;
@@ -114,7 +117,7 @@ trie_insert(trie_t *trie, char *key, void *value, size_t vsize, int copy)
     while (*key) {
         new_nodes++;
         node->num_children++;
-        tmp = node->child[(int)*key] = calloc(1, sizeof(trie_node_t));
+        tmp = node->child[(int)*key] = ctr_calloc(1, sizeof(trie_node_t), &mem_usage_by_all_tries);
         tmp->parent = node;
         tmp->pidx = *key;
         node = tmp;
@@ -210,4 +213,6 @@ trie_find_and_insert(trie_t *trie, char *key, void *value, size_t vsize, void **
     return trie_insert(trie, key, value, vsize, copy);
 }
 
-
+size_t get_mem_usage_by_all_tries(){
+    return mem_usage_by_all_tries;
+}
