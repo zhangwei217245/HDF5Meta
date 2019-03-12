@@ -46,6 +46,10 @@ int main(int argc, const char *argv[]){
         count = atoi(argv[2]);
     }
 
+    if (argc >= 4) {
+        rank = atoi(argv[3]);
+    }
+
     // int pwr = rank / 4;
 
     // count = count * (long)pow(10.0, (double)pwr);
