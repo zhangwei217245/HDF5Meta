@@ -81,8 +81,7 @@ int main(int argc, const char *argv[]){
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
     println("Total time to insert %d keys into %s is %ld us.", count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration);
 
-    size_t ds_mem = get_string_ds_mem();
-    println("Total memory consumed by %s is %ld", getenv(MIQS_STRING_IDX_VAR_NAME), ds_mem);
+    
 
     stopwatch_t time_to_search;
     timer_start(&time_to_search);
@@ -94,6 +93,8 @@ int main(int argc, const char *argv[]){
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
     println("Total time to search %d keys in %s is %ld us.", count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration);
 
+    size_t ds_mem = get_string_ds_mem();
+    println("Total memory consumed by %s is %ld", getenv(MIQS_STRING_IDX_VAR_NAME), ds_mem);
 
 #ifdef ENABLE_MPI
     MPI_Finalize();
