@@ -38,7 +38,7 @@ int main(int argc, const char *argv[]){
     // println("%s", concat(alpha, beta, gamma));
 
     int count = 1000;
-    char *dataset_name = "RANDOM";
+    char *dataset_name = "";
     if (argc >= 2) {
         dataset_name = (char *)argv[1];
     }
