@@ -24,4 +24,4 @@ PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 1 --mem=10240 --gres=craynetwo
 
 PROC=/global/homes/w/wzhang5/software/HDF5Meta/build/bin/hdf5_string_index_test
 
-srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT &
+srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT 
