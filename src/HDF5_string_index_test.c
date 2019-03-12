@@ -16,6 +16,25 @@ int main(int argc, const char *argv[]){
     int i, j; 
     int rank = 0, size = 1;
 
+    int count = 1000;
+    char *dataset_name = "";
+    if (argc >= 2) {
+        dataset_name = (char *)argv[1];
+    }
+    if (argc >= 3) {
+        count = atoi(argv[2]);
+    }
+
+    if (argc >= 4) {
+        rank = atoi(argv[3]);
+    }
+
+    // int pwr = rank / 4;
+
+    // count = count * (long)pow(10.0, (double)pwr);
+
+    char **keys;
+
 #ifdef ENABLE_MPI
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -37,24 +56,7 @@ int main(int argc, const char *argv[]){
     // char *gamma = " This is a program!";
     // println("%s", concat(alpha, beta, gamma));
 
-    int count = 1000;
-    char *dataset_name = "";
-    if (argc >= 2) {
-        dataset_name = (char *)argv[1];
-    }
-    if (argc >= 3) {
-        count = atoi(argv[2]);
-    }
-
-    if (argc >= 4) {
-        rank = atoi(argv[3]);
-    }
-
-    // int pwr = rank / 4;
-
-    // count = count * (long)pow(10.0, (double)pwr);
-
-    char **keys;
+    
 
     if (strcmp(dataset_name, "UUID")==0) {
         keys = gen_uuids_strings(count);
