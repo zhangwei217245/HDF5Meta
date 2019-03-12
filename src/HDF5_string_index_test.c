@@ -40,15 +40,15 @@ int main(int argc, const char *argv[]){
     int count = 1000;
     char *dataset_name = "RANDOM";
     if (argc >= 2) {
-        count = atoi(argv[1]);
+        dataset_name = (char *)argv[1];
     }
     if (argc >= 3) {
-        dataset_name = (char *)argv[2];
+        count = atoi(argv[2]);
     }
 
-    int pwr = rank / 4;
+    // int pwr = rank / 4;
 
-    count = count * (long)pow(10.0, (double)pwr);
+    // count = count * (long)pow(10.0, (double)pwr);
 
     char **keys;
 
