@@ -1,7 +1,6 @@
 #ifndef MIQS_RBTREE_NUMBER_INDEX_H
 #define MIQS_RBTREE_NUMBER_INDEX_H
 
-#in
 
 int create_rbtree_number_index(void **idx_ptr);
 
