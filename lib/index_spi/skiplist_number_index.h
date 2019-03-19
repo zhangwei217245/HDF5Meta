@@ -2,7 +2,7 @@
 #define MIQS_SKIPLIST_NUMBER_INDEX_H
 
 #include "../libhl/skiplist.h"
-// #include <stdlib.h>
+#include <stdlib.h>
 
 int create_skiplist_index(void **idx_ptr);
 
