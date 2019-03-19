@@ -6,7 +6,7 @@ int create_skiplist_index(void **idx_ptr){
     if (idx_ptr == NULL) {
         return rst;
     }
-    skiplist_t *skiplist = skiplist_create(5, 50, NULL, NULL);
+    skiplist_t *skiplist = skiplist_create(5, 50, libhl_cmp_keys_long, NULL);
     idx_ptr[0] = skiplist;
     rst = 0;
     return rst;

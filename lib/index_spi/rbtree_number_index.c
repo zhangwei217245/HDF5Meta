@@ -5,7 +5,7 @@ int create_rbtree_number_index(void **idx_ptr){
     if (idx_ptr == NULL) {
         return rst;
     }
-    rbt_t *rbt = rbt_create(NULL, NULL);
+    rbt_t *rbt = rbt_create(libhl_cmp_keys_long, NULL);
     idx_ptr[0] = rbt;
     rst = 0;
     return rst;
