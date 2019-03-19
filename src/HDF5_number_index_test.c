@@ -1,4 +1,4 @@
-#define ENABLE_MPI
+// #define ENABLE_MPI
 
 #include <math.h>
 #include "../lib/index_spi/spi.h"
