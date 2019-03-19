@@ -59,7 +59,7 @@ int main(int argc, const char *argv[]){
     } else if (rank % 4 == 2) {
         setenv(MIQS_NUMBER_IDX_VAR_NAME, "SKIPLIST", 1);
     } else if (rank %4 == 3) {
-        setenv(MIQS_NUMBER_IDX_VAR_NAME, "TSEARCH", 1);
+        setenv(MIQS_NUMBER_IDX_VAR_NAME, "SBST", 1);
     }
 
     // char *alpha = "Hello ";
