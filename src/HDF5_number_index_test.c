@@ -98,7 +98,7 @@ int main(int argc, const char *argv[]){
     println("Total time to search %d keys in %s is %ld us.", count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration);
 
     size_t ds_mem = get_number_ds_mem();
-    println("Total memory consumed by %s is %ld", getenv(MIQS_STRING_IDX_VAR_NAME), ds_mem);
+    println("Total memory consumed by %s is %ld", getenv(MIQS_NUMBER_IDX_VAR_NAME), ds_mem);
 
 #ifdef ENABLE_MPI
     MPI_Finalize();
