@@ -183,23 +183,25 @@ int destroy_string_index(void **index_ptr){
 }
 
 
+
+
 int create_number_index(void **idx_ptr){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            rst = create_sparse_array(idx_ptr);
+            rst = create_sparse_array_index(idx_ptr);
         } else if (strcmp(s, "SBST")==0) {
             rst = create_rbtree_number_index(idx_ptr);
         } else if (strcmp(s, "SKIPLIST")==0) {
             rst = create_skiplist_index(idx_ptr);
         } else {
             perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
-            rst = create_tsearch_idx(idx_ptr);
+            rst = create_tsearch_index(idx_ptr);
         }
     } else {
         perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
-        rst = create_tsearch_idx(idx_ptr);
+        rst = create_tsearch_index(idx_ptr);
     }
     return rst;
 }
@@ -207,31 +209,38 @@ int create_number_index(void **idx_ptr){
 /**
  * insert a number into an index with given data
  */
-int insert_number(void *index_root, void *key, void *data){
+int insert_number(void *index_root, void *key, size_t ksize, void *data){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+
+    stopwatch_t time_to_insert;
+    timer_start(&time_to_insert);
+
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            rst = insert_number_to_sparse_array(index_root, key, data);
+            rst = insert_number_to_sparse_array(index_root, key, ksize, data);
         } else if (strcmp(s, "SBST")==0) {
-            rst = insert_number_to_rbtree(index_root, key, data);
+            rst = insert_number_to_rbtree(index_root, key, ksize, data);
         } else if (strcmp(s, "SKIPLIST")==0) {
-            rst = insert_number_to_skiplist(index_root, key, data);
+            rst = insert_number_to_skiplist(index_root, key, ksize, data);
         } else {
             perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
-            rst = insert_number_to_tsearch_idx(index_root, key, data);
+            rst = insert_number_to_tsearch_index(index_root, key, data);
         }
     } else {
         perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
-        rst = insert_number_to_tsearch_idx(index_root, key, data);
+        rst = insert_number_to_tsearch_index(index_root, key, data);
     }
+    timer_pause(&time_to_insert);
+    stw_nanosec_t index_insertion_duration = timer_delta_ns(&time_to_insert);
+    println("[%s]Time to insert is %ld ns.", s, index_insertion_duration);
     return rst; 
 }
 
 /**
  * delete a number from an index
  */
-int delete_number(void *index_root, void *key){
+int delete_number(void *index_root, void *key, size_t ksize){
     int rst = -1;
     // const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     // if (strcmp(s, "SPARSEARRAY")==0) {
@@ -249,7 +258,7 @@ int delete_number(void *index_root, void *key){
 /**
  * update a number on the index with given data
  */
-int update_number(void *index_root, void *key, void *newdata){
+int update_number(void *index_root, void *key, size_t ksize, void *newdata){
     int rst = -1;
     // const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     // if (strcmp(s, "SPARSEARRAY")==0) {
@@ -267,27 +276,31 @@ int update_number(void *index_root, void *key, void *newdata){
 /**
  * search a number on the index for related data. 
  */
-int search_number(void *index_root, void *key, void **out){
+int search_number(void *index_root, void *key, size_t ksize, void **out){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    stopwatch_t time_to_search;
+    timer_start(&time_to_search);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            rst = search_number_from_sparse_array(index_root, key, out);
+            rst = search_number_from_sparse_array(index_root, key, ksize,  out);
         } else if (strcmp(s, "SBST")==0) {
-            rst = search_number_from_rbtree(index_root, key, out);
+            rst = search_number_from_rbtree(index_root, key,  ksize, out);
         } else if (strcmp(s, "SKIPLIST")==0) {
-            rst = search_number_from_skiplist(index_root, key, out);
+            rst = search_number_from_skiplist(index_root, key,  ksize, out);
         } else {
             perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
-            rst = search_number_from_tsearch_idx(index_root, key, out);
+            rst = search_number_from_tsearch_index(index_root, key, out);
         }
     } else {
         perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
-        rst = search_number_from_tsearch_idx(index_root, key, out);
+        rst = search_number_from_tsearch_index(index_root, key, out);
     }
+    timer_pause(&time_to_search);
+    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    println("[%s]Time to search is %ld ns.", s, index_search_duration);
     return rst; 
 }
-
 
 int destroy_number_index(void **idx_ptr){
     int rst = -1;
@@ -308,4 +321,28 @@ int destroy_number_index(void **idx_ptr){
     //     rst = destroy_tsearch_idx(idx_ptr);
     // }
     return rst;
+}
+
+
+size_t get_number_ds_mem(){
+    size_t rst = 0;
+    const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+
+    if (s != NULL) {
+        if (strcmp(s, "SPARSEARRAY")==0) {
+            rst = get_mem_in_sparse_array();
+        } else if (strcmp(s, "SBST")==0) {
+            rst = get_mem_in_number_rbtree();
+        } else if (strcmp(s, "SKIPLIST")==0) {
+            rst = get_mem_in_skiplist();
+        } else {
+            // perror("[MEM]Data Structure not specified, fallback to ART\n");
+            rst = get_mem_in_tsearch();
+        }
+    } else {
+        // perror("[MEM]Data Structure not specified, fallback to ART\n");
+        rst = get_mem_in_tsearch();
+    }
+
+    return rst; 
 }

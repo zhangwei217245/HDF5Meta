@@ -33,6 +33,9 @@ target_link_libraries(hdf5_set_2_index PRIVATE hdf52index)
 add_executable(hdf5_string_index_test HDF5_string_index_test.c)
 target_link_libraries(hdf5_string_index_test PRIVATE index_spi)
 
+add_executable(hdf5_number_index_test HDF5_number_index_test.c)
+target_link_libraries(hdf5_number_index_test PRIVATE index_spi)
+
 #ADD_EXECUTABLE(main main.c dira/printa.c dirb/printb.c)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)
 #LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/lib)

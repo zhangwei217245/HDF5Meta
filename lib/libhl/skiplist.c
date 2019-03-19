@@ -2,6 +2,9 @@
 #include <string.h>
 #include "skiplist.h"
 #include "bsd_queue.h"
+#include "../profile/mem_perf.h"
+
+size_t mem_usage_by_all_skiplists;
 
 typedef struct _skl_item_wrapper_s skl_item_wrapper_t;
 
@@ -34,11 +37,11 @@ skiplist_create(int num_layers,
                 libhl_cmp_callback_t cmp_keys_cb,
                 skiplist_free_value_callback_t free_value_cb)
 {
-    skiplist_t *skl = calloc(1, sizeof(skiplist_t));
+    skiplist_t *skl = ctr_calloc(1, sizeof(skiplist_t), &mem_usage_by_all_skiplists);
     if (!skl)
         return NULL;
 
-    skl->layers = calloc(num_layers, sizeof(struct layer_list));
+    skl->layers = ctr_calloc(num_layers, sizeof(struct layer_list), &mem_usage_by_all_skiplists);
     if (!skl->layers) {
         free(skl);
         return NULL;
@@ -90,7 +93,7 @@ skiplist_search(skiplist_t *skl, void *key, size_t klen)
 int
 skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
 {
-    skl_item_wrapper_t **path = calloc(skl->num_layers, sizeof(skl_item_wrapper_t *));
+    skl_item_wrapper_t **path = ctr_calloc(skl->num_layers, sizeof(skl_item_wrapper_t *), &mem_usage_by_all_skiplists);
     if (!path)
         return -1;
 
@@ -105,12 +108,12 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
     }
 
     // create a new item
-    skl_item_t *new_item = calloc(1, sizeof(skl_item_t));
+    skl_item_t *new_item = ctr_calloc(1, sizeof(skl_item_t), &mem_usage_by_all_skiplists);
     if (!new_item) {
         free(path);
         return -1;
     }
-    new_item->key = calloc(1, klen);
+    new_item->key = ctr_calloc(1, klen, &mem_usage_by_all_skiplists);
     if (!new_item->key) {
         free(new_item);
         free(path);
@@ -121,7 +124,7 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
     new_item->klen = klen;
     new_item->value = value;
 
-    new_item->layer_check = calloc(skl->num_layers, sizeof(char));
+    new_item->layer_check = ctr_calloc(skl->num_layers, sizeof(char), &mem_usage_by_all_skiplists);
     if (!new_item->layer_check) {
         free(new_item->key);
         free(new_item);
@@ -129,7 +132,7 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
         return -1;
     }
 
-    new_item->wrappers = calloc(skl->num_layers, sizeof(skl_item_wrapper_t));
+    new_item->wrappers = ctr_calloc(skl->num_layers, sizeof(skl_item_wrapper_t), &mem_usage_by_all_skiplists);
     if (!new_item->wrappers) {
         free(new_item->layer_check);
         free(new_item->key);
@@ -218,6 +221,10 @@ size_t
 skiplist_count(skiplist_t *skl)
 {
     return skl->count;
+}
+
+size_t get_mem_usage_by_all_skiplists(){
+    return mem_usage_by_all_skiplists;
 }
 
 // vim: tabstop=4 shiftwidth=4 expandtab:

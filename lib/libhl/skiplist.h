@@ -87,6 +87,11 @@ void skiplist_destroy(skiplist_t *skl);
  */
 size_t skiplist_count(skiplist_t *skl);
 
+/**
+ * Get all memory used by all skiplists
+ */
+size_t get_mem_usage_by_all_skiplists();
+
 
 #ifdef __cplusplus
 }

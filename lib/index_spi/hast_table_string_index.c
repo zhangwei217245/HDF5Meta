@@ -1,12 +1,14 @@
 #include "hash_table_string_index.h"
 
 int create_hashtable(void **idx_ptr){
+    int rst = -1;
     if (idx_ptr == NULL) {
-        return 0;
+        return rst;
     }
     hashtable_t *table = ht_create(256, 0, NULL);
     idx_ptr[0] = table;
-    return 1;
+    rst = 0;
+    return rst;
 }
 
 int insert_string_to_hashtable(void *index_root, char *key, void *data){

@@ -9,7 +9,18 @@
 #include "mpi.h"
 #endif
 
+long *generating_skew_numbers(int count){
+    return generating_even_numbers(count);
+}
 
+long *generating_even_numbers(int count){
+    long *rst = calloc(count, sizeof(long));
+    int i = 0;
+    for (i =0; i < count; i++) {
+        rst[0] = (long)(1000 + i);
+    }
+    return rst;
+}
 
 int main(int argc, const char *argv[]){
 
@@ -33,7 +44,7 @@ int main(int argc, const char *argv[]){
 
     // count = count * (long)pow(10.0, (double)pwr);
 
-    char **keys;
+    long *keys;
 
 #ifdef ENABLE_MPI
     MPI_Init(&argc, &argv);
@@ -42,13 +53,13 @@ int main(int argc, const char *argv[]){
 #endif
 
     if (rank % 4 == 0) {
-        setenv(MIQS_STRING_IDX_VAR_NAME, "HASHTABLE", 1);
+        setenv(MIQS_NUMBER_IDX_VAR_NAME, "SPARSEARRAY", 1);
     } else if (rank % 4 == 1 ) {
-        setenv(MIQS_STRING_IDX_VAR_NAME, "SBST", 1);
+        setenv(MIQS_NUMBER_IDX_VAR_NAME, "SBST", 1);
     } else if (rank % 4 == 2) {
-        setenv(MIQS_STRING_IDX_VAR_NAME, "TRIE", 1);
+        setenv(MIQS_NUMBER_IDX_VAR_NAME, "SKIPLIST", 1);
     } else if (rank %4 == 3) {
-        setenv(MIQS_STRING_IDX_VAR_NAME, "ART", 1);
+        setenv(MIQS_NUMBER_IDX_VAR_NAME, "TSEARCH", 1);
     }
 
     // char *alpha = "Hello ";
@@ -58,41 +69,35 @@ int main(int argc, const char *argv[]){
 
     
 
-    if (strcmp(dataset_name, "UUID")==0) {
-        keys = gen_uuids_strings(count);
-    } else if (strcmp(dataset_name, "RANDOM") == 0) {
-        keys = gen_random_strings(count, 10, 128);
-    } else if (strcmp(dataset_name, "WIKI") == 0) {
-        keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/mini_wiki_no_count.txt", &count);
-    } else if (strcmp(dataset_name, "DICT") == 0) {
-        keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/words_lower.txt", &count);
+    if (strcmp(dataset_name, "SKEW")==0) {
+        keys = generating_skew_numbers(count);
     } else {
-        keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/boss_string_attr_names.txt", &count);
-    }
+        keys = generating_even_numbers(count);
+    } 
 
     void *index_root;
-    create_string_index(&index_root);
+    create_number_index(&index_root);
     stopwatch_t time_to_insert;
     timer_start(&time_to_insert);
     for (i = 0; i < count; i++) {
-        insert_string(index_root, keys[i], keys[i]);
+        insert_number(index_root, &keys[i], sizeof(long), &keys[i]);
     }
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    println("Total time to insert %d keys into %s is %ld us.", count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration);
+    println("Total time to insert %d keys into %s is %ld us.", count,  getenv(MIQS_NUMBER_IDX_VAR_NAME), index_insertion_duration);
 
 
     stopwatch_t time_to_search;
     timer_start(&time_to_search);
     for (i = 0; i < count; i++) {
         void *out;
-        search_string(index_root, keys[i], strlen(keys[i]), &out);
+        search_number(index_root, &keys[i], sizeof(long), &out);
     }
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    println("Total time to search %d keys in %s is %ld us.", count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration);
+    println("Total time to search %d keys in %s is %ld us.", count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration);
 
-    size_t ds_mem = get_string_ds_mem();
+    size_t ds_mem = get_number_ds_mem();
     println("Total memory consumed by %s is %ld", getenv(MIQS_STRING_IDX_VAR_NAME), ds_mem);
 
 #ifdef ENABLE_MPI

@@ -52,6 +52,8 @@ ADD_LIBRARY(libhl SHARED
     libhl/rqueue.h
     libhl/skiplist.c
     libhl/skiplist.h
+    libhl/sparse_array.c
+    libhl/sparse_array.h
     libhl/trie.c
     libhl/trie.h
 )

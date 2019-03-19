@@ -3,6 +3,7 @@
 
 #include "../include/base_stdlib.h"
 #include "../utils/string_utils.h"
+#include "../libhl/comparators.h"
 
 
 #define MIQS_STRING_IDX_VAR_NAME "MIQS_STR_IDX_IMPL"
@@ -48,24 +49,26 @@ int create_number_index(void **idx_ptr);
 /**
  * insert a number into an index with given data
  */
-int insert_number(void *index_root, void *key, void *data);
+int insert_number(void *index_root, void *key, size_t ksize, void *data);
 
 /**
  * delete a number from an index
  */
-int delete_number(void *index_root, void *key);
+int delete_number(void *index_root, void *key, size_t ksize);
 
 /**
  * update a number on the index with given data
  */
-int update_number(void *index_root, void *key, void *newdata);
+int update_number(void *index_root, void *key, size_t ksize, void *newdata);
 
 /**
  * search a number on the index for related data. 
  */
-int search_number(void *index_root, void *key, void **out);
+int search_number(void *index_root, void *key, size_t ksize, void **out);
 
 
 int destroy_number_index(void **idx_ptr);
+
+size_t get_number_ds_mem();
 
 #endif // endif  MIQS_DS_SPI_H

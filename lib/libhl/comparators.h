@@ -52,6 +52,25 @@ libhl_cmp_keys_string(void *k1, size_t k1size, void *k2, size_t k2size){
 }
 
 /**
+ * @brief int signed integers comparator
+ */
+static int
+libhl_cmp_keys_int(void *k1, size_t k1size, void *k2, size_t k2size)
+{
+    LIBHL_CMP_KEYS_TYPE(int, k1, k1size, k2, k2size);
+}
+
+
+/**
+ * @brief long signed integers comparator
+ */
+static int
+libhl_cmp_keys_long(void *k1, size_t k1size, void *k2, size_t k2size)
+{
+    LIBHL_CMP_KEYS_TYPE(long, k1, k1size, k2, k2size);
+}
+
+/**
  * @brief 16bit signed integers comparator
  */
 static int
