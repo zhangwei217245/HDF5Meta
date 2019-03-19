@@ -9,10 +9,6 @@
 #include "mpi.h"
 #endif
 
-long *generating_skew_numbers(int count){
-    return generating_even_numbers(count);
-}
-
 long *generating_even_numbers(int count){
     long *rst = calloc(count, sizeof(long));
     int i = 0;
@@ -20,6 +16,10 @@ long *generating_even_numbers(int count){
         rst[0] = (long)(1000 + i);
     }
     return rst;
+}
+
+long *generating_skew_numbers(int count){
+    return generating_even_numbers(count);
 }
 
 int main(int argc, const char *argv[]){
