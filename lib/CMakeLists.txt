@@ -61,7 +61,18 @@ TARGET_LINK_LIBRARIES(libhl profile)
 
 #ADD_LIBRARY(indexds SHARED ds/tsearch_tune.c ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
 
-ADD_LIBRARY(indexds SHARED ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
+ADD_LIBRARY(indexds SHARED 
+    ds/art.c 
+    ds/art.h 
+    ds/hashset.c 
+    ds/hashset.h 
+    ds/hashmap.c 
+    ds/hashmap.h 
+    ds/vector.c 
+    ds/vector.h 
+    # ds/bplustree.c 
+    # ds/bplustree.h
+    )
 TARGET_LINK_LIBRARIES(indexds libhl)
 
 
