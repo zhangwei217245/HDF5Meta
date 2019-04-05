@@ -278,9 +278,9 @@ main(int argc, char **argv)
 
 
     if (is_regular_file(path)) {
-        rst = parse_single_file((char *)path, );
+        rst = parse_single_file((char *)path, pargs);
     } else {
-        rst = parse_files_in_dir((char *)path, topk);
+        rst = parse_files_in_dir((char *)path, topk, pargs);
     }
 
 #ifdef ENABLE_MPI
