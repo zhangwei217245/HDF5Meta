@@ -73,26 +73,26 @@ int collect_result_from_list(void *item, size_t idx, void *user){
 }
 
 
-int collect_object_result(void *data, const unsigned char *key, uint32_t key_len, void *value){
-    search_result_t *rst = (search_result_t *)data;
-    rst->obj_paths[rst->num_objs]=(char *)key;
-    rst->num_objs+=1;
-}
+// int collect_object_result(void *data, const unsigned char *key, uint32_t key_len, void *value){
+//     search_result_t *rst = (search_result_t *)data;
+//     rst->obj_paths[rst->num_objs]=(char *)key;
+//     rst->num_objs+=1;
+// }
 
-int collect_file_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
-    power_search_rst_t *prst = (power_search_rst_t *)data;
-    search_result_t *rst = (search_result_t *)calloc(1, sizeof(search_result_t));
-    rst->num_objs = 0;
-    rst->file_path = strdup(key);
-    prst->rst_arr[prst->num_files] = rst;
-    //TODO: get object_paths;
+// int collect_file_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
+//     power_search_rst_t *prst = (power_search_rst_t *)data;
+//     search_result_t *rst = (search_result_t *)calloc(1, sizeof(search_result_t));
+//     rst->num_objs = 0;
+//     rst->file_path = strdup(key);
+//     prst->rst_arr[prst->num_files] = rst;
+//     //TODO: get object_paths;
 
-    art_tree *obj_path_art = (art_tree *)value;
-    rst->obj_paths = (char **)calloc(art_size(obj_path_art), sizeof(char *));
-    art_iter(obj_path_art, collect_object_result, rst);
+//     art_tree *obj_path_art = (art_tree *)value;
+//     rst->obj_paths = (char **)calloc(art_size(obj_path_art), sizeof(char *));
+//     art_iter(obj_path_art, collect_object_result, rst);
 
-    prst->num_files+=1;
-}
+//     prst->num_files+=1;
+// }
 
 
 int init_in_mem_index(){
