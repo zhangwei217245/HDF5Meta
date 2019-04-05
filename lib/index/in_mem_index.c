@@ -290,7 +290,7 @@ power_search_rst_t *int_value_search(char *attr_name, int value) {
         if (retval[0]->file_obj_pair_list == NULL) {
             return prst;
         }
-        prst->rst_arr = (search_rst_entry_t **)calloc(list_count(retval[0]->file_obj_pair_list), sizeof(search_rst_entry_t *));
+        prst->rst_arr = list_create();
         list_foreach_value(retval[0]->file_obj_pair_list, collect_result_from_list, prst);
         
         /*** old impl ***/
@@ -341,7 +341,7 @@ power_search_rst_t *float_value_search(char *attr_name, double value) {
         if (retval[0]->file_obj_pair_list == NULL) {
             return prst;
         }
-        prst->rst_arr = (search_rst_entry_t **)calloc(list_count(retval[0]->file_obj_pair_list), sizeof(search_rst_entry_t *));
+        prst->rst_arr = list_create();
         list_foreach_value(retval[0]->file_obj_pair_list, collect_result_from_list, prst);
 
         /*** old impl ***/
@@ -379,16 +379,16 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         return prst;
     }
 
-    art_tree *file_path_art = (art_tree *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
+    value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
 
     if (file_path_art == NULL) {
-        return numrst;
+        return prst;
     } else {
-        if (retval[0]->file_obj_pair_list == NULL) {
+        if (test_cnt->file_obj_pair_list == NULL) {
             return prst;
         }
-        prst->rst_arr = (search_rst_entry_t **)calloc(list_count(retval[0]->file_obj_pair_list), sizeof(search_rst_entry_t *));
-        list_foreach_value(retval[0]->file_obj_pair_list, collect_result_from_list, prst);
+        prst->rst_arr = list_create();
+        list_foreach_value(test_cnt->file_obj_pair_list, collect_result_from_list, prst);
 
         /*** old impl ***/
         // power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
