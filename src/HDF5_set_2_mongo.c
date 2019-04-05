@@ -201,12 +201,17 @@ main(int argc, char **argv)
     int rst = 0;
     int topk = 0; // number of files to be scanned.
     int num_indexed_field = 0; //number of attributes to be indexed.
+    int task_id = 0; // 0, insert, 1, query
     const char *path = argv[1];
     if (argc >= 3) {
         topk = atoi(argv[2]);
     }
     if (argc >= 4) {
         num_indexed_field = atoi(argv[3]);
+    }
+
+    if (argc >=5) {
+        task_id=atoi(argv[4]);
     }
 
     char *indexed_attr[]={
@@ -252,64 +257,71 @@ main(int argc, char **argv)
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);
 
+    if (task_id == 0) {
 
-    if (rank == 0) { //only rank 0 need to clean DB. By default, there is only rank 0 if no MPI
-        clear_everything();
-        println("db cleaned!");
-    }
-    
-
-    int query_num = 16;
-
-    if (num_indexed_field > 0) {
-        int f = 0;
-        for (f = 0; f < num_indexed_field; f++) {
-            char *index_str = gen_index_str(f, indexed_attr);
-            create_any_index(index_str);
+        if (rank == 0) { //only rank 0 need to clean DB. By default, there is only rank 0 if no MPI
+            clear_everything();
+            println("db cleaned!");
         }
-        query_num = num_indexed_field;
-    }
+        
 
-    parallel_args_t *pargs = (parallel_args_t *)calloc(1, sizeof(parallel_args_t));
-    pargs->size = size;
-    pargs->rank = rank;
-    pargs->current_file_count = 0;
-    
+        int query_num = 16;
+
+        if (num_indexed_field > 0) {
+            int f = 0;
+            for (f = 0; f < num_indexed_field; f++) {
+                char *index_str = gen_index_str(f, indexed_attr);
+                create_any_index(index_str);
+            }
+            query_num = num_indexed_field;
+        }
+
+        parallel_args_t *pargs = (parallel_args_t *)calloc(1, sizeof(parallel_args_t));
+        pargs->size = size;
+        pargs->rank = rank;
+        pargs->current_file_count = 0;
+        
 #ifdef ENABLE_MPI
-    MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
 #endif
 
 
-    if (is_regular_file(path)) {
-        rst = parse_single_file((char *)path, pargs);
-    } else {
-        rst = parse_files_in_dir((char *)path, topk, pargs);
-    }
+        if (is_regular_file(path)) {
+            rst = parse_single_file((char *)path, pargs);
+        } else {
+            rst = parse_files_in_dir((char *)path, topk, pargs);
+        }
+
+    } else if (task_id == 1) {
 
 #ifdef ENABLE_MPI
-    MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
 #endif
 
-    //generate query:
-    int i = 0;
-    char **queries = (char **)calloc(query_num, sizeof(char *));
-    for (i = 0; i < query_num; i++) {
-        queries[i] = gen_query(i, indexed_attr, search_values, search_types);
+        //generate query:
+        int i = 0;
+        char **queries = (char **)calloc(query_num, sizeof(char *));
+        for (i = 0; i < query_num; i++) {
+            queries[i] = gen_query(i, indexed_attr, search_values, search_types);
+        }
+
+
+        stopwatch_t timer_search;
+        timer_start(&timer_search);
+
+        // issue queries
+        int qcount = 0;
+        for (i = 0; i < 1024; i++) {
+            int c = i % query_num;
+            qcount += query_count(queries[c]);
+        }
+
+        timer_pause(&timer_search);
+        println("[META_SEARCH_MONGO] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
+
     }
 
 
-    stopwatch_t timer_search;
-    timer_start(&timer_search);
-
-    // issue queries
-    int qcount = 0;
-    for (i = 0; i < 1024; i++) {
-        int c = i % query_num;
-        qcount += query_count(queries[c]);
-    }
-
-    timer_pause(&timer_search);
-    println("[META_SEARCH_MONGO] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
 
 #ifdef ENABLE_MPI
     rst = MPI_Finalize();

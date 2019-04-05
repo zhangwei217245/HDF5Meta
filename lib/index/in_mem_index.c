@@ -73,6 +73,8 @@ int init_in_mem_index(){
     idx_anchor->root_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
     idx_anchor->file_path=NULL;
     idx_anchor->obj_path=NULL;
+    idx_anchor->file_paths_list=list_create();
+    idx_anchor->object_paths_list=list_create();
     idx_anchor->indexed_attr=NULL;
     idx_anchor->num_indexed_field=0;
     idx_anchor->on_disk_file_stream=NULL;
@@ -126,8 +128,20 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             if (test_ent == entry) {
                 index_mem_size+=8;
                 // new value added, so entry is the test_ent
-                test_ent->file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
-                art_tree_init(test_ent->file_path_art);
+                /**old art path impl***/
+                // test_ent->file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
+                // art_tree_init(test_ent->file_path_art);
+                /**old art path impl**/
+
+                /**new linked list impl ***/
+                idx_anchor *_idx_anch = root_idx_anchor();
+                size_t pos = list_count(_idx_anch->file_paths_list);
+                tagged_value_t *file_path_value = list_create_tagged_value(file_path, &pos, sizeof(size_t));
+                list_insert_tagged_value(_idx_anch->file_paths_list, file_path_value,
+                    pos);
+
+                /**new linked list impl ***/
+                
             } else {
                 // Value found, but test_ent is the old content.
                 free(entry->k);

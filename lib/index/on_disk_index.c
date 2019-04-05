@@ -1,6 +1,18 @@
 #include "on_disk_index.h"
 
 /**
+ * New index file format.
+ * 
+ * Attrname|Attrvalue1|FilePath+ObjPath1|FilePath+ObjPath2|
+ * 
+ */
+
+/**
+ * Old Index format
+ * 
+ */
+
+/**
  * Create index record in memory.
  * 
  */
@@ -13,6 +25,8 @@ index_record_t *create_index_record(int type, char *name, void *data, char *file
     rst->object_path = object_path;
     return rst;
 }
+
+
 
 /**
  *  append index_record to the current position of the stream

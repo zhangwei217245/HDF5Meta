@@ -6,6 +6,7 @@
 #include "../ds/bplustree.h"
 #include "../ds/hashset.h"
 #include "../utils/string_utils.h"
+#include "../libhl/linklist.h"
 #include <search.h>
 #include "on_disk_index.h"
 
@@ -18,6 +19,12 @@ typedef struct {
     char *obj_path;
     hid_t object_id;
     art_tree *root_art;
+
+    //Collections of file_paths and object_paths
+    //We use tagged entry along with its position
+    //So, in leaf node of value tree, we only maintain the position number of the file_path/object_path
+    linked_list_t *file_paths_list;
+    linked_list_t *object_paths_list;
 
     // info for query and profiling
     char **indexed_attr;
@@ -38,12 +45,12 @@ typedef struct {
 } index_anchor;
 
 
-typedef struct {
-    int is_numeric;
-    int is_float;
-    struct bplus_tree *bpt;
-    art_tree *art;
-}art_leaf_content_t;
+// typedef struct {
+//     int is_numeric;
+//     int is_float;
+//     struct bplus_tree *bpt;
+//     art_tree *art;
+// }art_leaf_content_t;
 
 typedef struct {
     int is_numeric;
@@ -52,16 +59,25 @@ typedef struct {
     art_tree *art;
 }attr_tree_leaf_content_t;
 
+
 typedef struct {
     void *k;
     // map_t path_hash_map;
     art_tree *file_path_art;
-} value_tree_leaf_content_t;
+} value_tree_leaf_content_old_t;
 
 typedef struct {
-    art_tree *file_path_art;
-    art_tree *obj_path_art;
-} path_bpt_leaf_cnt_t;
+    void *k;
+    // map_t path_hash_map;
+    // art_tree *file_path_art;
+    size_t file_path_pos;
+    size_t obj_path_pos;
+} value_tree_leaf_content_t;
+
+// typedef struct {
+//     art_tree *file_path_art;
+//     art_tree *obj_path_art;
+// } path_bpt_leaf_cnt_t;
 
 typedef struct {
     char *file_path;

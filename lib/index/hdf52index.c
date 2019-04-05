@@ -91,6 +91,7 @@ void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attri
 
 
 int on_obj(void *opdata, h5object_t *obj){
+    
     index_anchor *idx_anchor = (index_anchor *)opdata;
     idx_anchor->obj_path = (char *)ctr_calloc(strlen(obj->obj_name)+1, sizeof(char), get_index_size_ptr());
     strncpy(idx_anchor->obj_path, obj->obj_name, strlen(obj->obj_name));
