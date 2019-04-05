@@ -179,7 +179,8 @@ main(int argc, char const *argv[])
             rst = 0;
         } else {
             rst = parse_files_in_dir((char *)path, topk);
-        }  
+        } 
+        //TODO: dump index to disk with new format
         fclose(idx_anchor->on_disk_file_stream);
         timer_pause(&hdf5_indexing_time);
         println("[LOAD_INDEX_FROM_HDF5_FILE] Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk.", 
@@ -208,16 +209,16 @@ main(int argc, char const *argv[])
         int c = i % 16;
         if (search_types[c]==1) {
             int value = atoi(search_values[c]);
-            search_result_t **rst = NULL;
-            numrst += int_value_search(indexed_attr[c], value, &rst);
+            power_search_rst_t *rst = int_value_search(indexed_attr[c], value);
+            numrst += (rst->num_files);
         }else if (search_types[c]==2) {
             double value = atof(search_values[c]);
-            search_result_t **rst = NULL;
-            numrst += float_value_search(indexed_attr[c], value, &rst); 
+            power_search_rst_t *rst = float_value_search(indexed_attr[c], value);
+            numrst += (rst->num_files); 
         } else {
             char *value = search_values[c];
-            search_result_t **rst = NULL;
-            numrst += string_value_search(indexed_attr[c], value, &rst);
+            power_search_rst_t *rst = string_value_search(indexed_attr[c], value);
+            numrst += (rst->num_files); 
         }
     }
     timer_pause(&timer_search);

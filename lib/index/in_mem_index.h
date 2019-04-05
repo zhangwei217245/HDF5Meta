@@ -57,6 +57,9 @@ typedef struct {
     int is_float;
     void ***bpt;
     art_tree *art;
+
+    size_t file_path_pos;
+    size_t obj_path_pos;
 }attr_tree_leaf_content_t;
 
 
@@ -70,14 +73,13 @@ typedef struct {
     void *k;
     // map_t path_hash_map;
     // art_tree *file_path_art;
-    size_t file_path_pos;
-    size_t obj_path_pos;
+    linked_list_t *file_obj_pair_list;
 } value_tree_leaf_content_t;
 
-// typedef struct {
-//     art_tree *file_path_art;
-//     art_tree *obj_path_art;
-// } path_bpt_leaf_cnt_t;
+typedef struct {
+    size_t file_list_pos;
+    size_t obj_list_pos;
+} file_obj_pair_t;
 
 typedef struct {
     char *file_path;
@@ -86,8 +88,14 @@ typedef struct {
 } search_result_t;
 
 typedef struct {
+    char *file_path;
+    char *obj_path;
+} search_rst_entry_t;
+
+typedef struct {
     int num_files;
-    search_result_t **rst_arr;
+    // search_result_t **rst_arr;
+    linked_list_t *rst_arr;
 }power_search_rst_t;
 
 
@@ -128,11 +136,11 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt);
 
 
 
-int int_value_search(char *attr_name, int value, search_result_t ***rst);
+power_search_rst_t *int_value_search(char *attr_name, int value);
 
-int float_value_search(char *attr_name, double value, search_result_t ***rst);
+power_search_rst_t *float_value_search(char *attr_name, double value);
 
-int string_value_search(char *attr_name, char *value, search_result_t ***rst);
+power_search_rst_t *string_value_search(char *attr_name, char *value);
 
 
 
