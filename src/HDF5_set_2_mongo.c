@@ -256,6 +256,7 @@ main(int argc, char **argv)
 
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);
+    int query_num = (num_indexed_field > 0)? num_indexed_field :16;
 
     if (task_id == 0) {
 
@@ -263,17 +264,13 @@ main(int argc, char **argv)
             clear_everything();
             println("db cleaned!");
         }
-        
 
-        int query_num = 16;
-
-        if (num_indexed_field > 0) {
+        if (query_num > 0) {
             int f = 0;
-            for (f = 0; f < num_indexed_field; f++) {
+            for (f = 0; f < query_num; f++) {
                 char *index_str = gen_index_str(f, indexed_attr);
                 create_any_index(index_str);
             }
-            query_num = num_indexed_field;
         }
 
         parallel_args_t *pargs = (parallel_args_t *)calloc(1, sizeof(parallel_args_t));
