@@ -1,9 +1,24 @@
+#define ENABLE_MPI
+
+#ifdef ENABLE_MPI
+#include "mpi.h"
+#endif
+
 #include "../lib/hdf5/hdf52json.h"
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
 #include "../lib/utils/cmd_utils.h"
 #include <unistd.h>
+
+
+typedef struct parallel_args{
+    int size;
+    int rank;
+    int current_file_count;
+} parallel_args_t;
+
+
 
 extern int64_t init_db();
 extern int64_t clear_all_docs();
@@ -35,7 +50,15 @@ void clear_everything(){
     drop_current_coll();
 }
 
-int parse_single_file(char *filepath) {
+int parse_single_file(char *filepath, parallel_args_t *pargs) {
+
+    // Each time this function is called, we consider one file is there. 
+
+    pargs->current_file_count = pargs->current_file_count+1;
+    if (pargs->current_file_count % pargs->size != pargs->rank) {
+        return 0;
+    }
+
     // ****** MongoDB has 16MB size limit on each document. ******
     // TODO: To confirm that you need to comment off line #32 in hdf52json.c
     // char *json_str = NULL;
@@ -43,7 +66,8 @@ int parse_single_file(char *filepath) {
     // printf("%s\n", json_str);
     // printf("============= Importing %s to MongoDB =============\n", filepath);
     // importing_json_doc_to_db(json_str);
-
+    
+    
 
     // ****** Let's split the entire JSON into multiple sub objects ******
     // TODO: To confirm that you need to uncomment line #32 in hdf52json.c
@@ -82,8 +106,8 @@ int parse_single_file(char *filepath) {
 
     char *size_output=execute_cmd(chk_mongo_size_cmd);
 
-    println("[IMPORT_META] Finished in %ld us for %s, with %ld us for parsing and %ld us for inserting. [MEM] : %s",
-        one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration, size_output);
+    println("[IMPORT_META] Rank %d finished in %ld us for %s, with %ld us for parsing and %ld us for inserting. [MEM] : %s",
+        pargs->rank, one_file_duration, basename(filepath), parse_file_duration, import_one_doc_duration, size_output);
     
     json_object_put(rootObj);
     // ******** There is another way which is to pass entire JSON object into insert_many function in Rust *****
@@ -111,10 +135,12 @@ int is_hdf5(const struct dirent *entry){
 }
 
 int on_file(struct dirent *f_entry, const char *parent_path, void *args) {
+
+
     char *filepath = (char *)calloc(512, sizeof(char));
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_single_file(filepath);
+    parse_single_file(filepath, (parallel_args_t *)args);
     
     // println("[PARSEFILE]");
     sleep(10);
@@ -129,8 +155,8 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *args) {
     return 1;
 }
 
-int parse_files_in_dir(char *path, const int topk) {
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, NULL, NULL, NULL);
+int parse_files_in_dir(char *path, const int topk, void *args) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, args, NULL, NULL);
     return 0;
 }
 
@@ -159,6 +185,15 @@ char *gen_index_str(int idx, char **attr_arr) {
 int
 main(int argc, char **argv)
 {
+
+    int rank = 0, size = 1;
+
+    #ifdef ENABLE_MPI
+        MPI_Init(&argc, &argv);
+        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+        MPI_Comm_size(MPI_COMM_WORLD, &size);
+    #endif
+
     if (argc < 2) {
         print_usage();
         return 0;
@@ -231,12 +266,26 @@ main(int argc, char **argv)
         }
         query_num = num_indexed_field;
     }
+
+    parallel_args_t *pargs = (parallel_args_t *)calloc(1, sizeof(parallel_args_t));
+    pargs->size = size;
+    pargs->rank = rank;
+    pargs->current_file_count = 0;
     
+#ifdef ENABLE_MPI
+    MPI_Barrier(MPI_COMM_WORLD);
+#endif
+
+
     if (is_regular_file(path)) {
-        rst = parse_single_file((char *)path);
+        rst = parse_single_file((char *)path, );
     } else {
         rst = parse_files_in_dir((char *)path, topk);
     }
+
+#ifdef ENABLE_MPI
+    MPI_Barrier(MPI_COMM_WORLD);
+#endif
 
     //generate query:
     int i = 0;
@@ -258,6 +307,10 @@ main(int argc, char **argv)
 
     timer_pause(&timer_search);
     println("[META_SEARCH_MONGO] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
+
+#ifdef ENABLE_MPI
+    rst = MPI_Finalize();
+#endif
 
     return rst;
 }

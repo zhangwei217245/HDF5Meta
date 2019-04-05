@@ -1,3 +1,9 @@
+// #define ENABLE_MPI
+
+#ifdef ENABLE_MPI
+#include "mpi.h"
+#endif
+
 #include "../lib/include/base_stdlib.h"
 #include "../lib/index/hdf52index.h"
 #include "../lib/fs/fs_ops.h"
@@ -120,6 +126,8 @@ main(int argc, char const *argv[])
 
     int need_to_build_from_scratch = 1;
     // check if index file exists
+
+    // TODO: check if the index dir exists. If true, load index files, otherwise, build index files.
     
     if (access(on_disk_index_path, F_OK)==0 && 
         access(on_disk_index_path, R_OK)==0 
