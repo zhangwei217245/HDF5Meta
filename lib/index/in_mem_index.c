@@ -182,14 +182,13 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             // art_insert(object_path_art, obj_path, strlen(obj_path), obj_path);
             /*** old art path impl ***/
 
-            idx_anchor *ria = root_idx_anchor();
-            size_t file_pos = insert_tagged_value(ria->file_paths_list, file_path);
-            size_t obj_pos = insert_tagged_value(ria->object_paths_list, obj_path);
+            size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+            size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
             file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
             file_obj_pair->file_list_pos = file_pos;
             file_obj_pair->obj_list_pos = obj_pos;
 
-            list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
+            list_push_value(test_ent->file_obj_pair_list, (void *)file_obj_pair);
 
         }
         // TODO: we store value as attr_name currently, 
@@ -219,9 +218,9 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             test_cnt->file_obj_pair_list = list_create();
         }
         /*** new linkedlist impl ***/
-        idx_anchor *ria = root_idx_anchor();
-        size_t file_pos = insert_tagged_value(ria->file_paths_list, file_path);
-        size_t obj_pos = insert_tagged_value(ria->object_paths_list, obj_path);
+        // idx_anchor *ria = root_idx_anchor();
+        size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+        size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
         
         file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
         file_obj_pair->file_list_pos = file_pos;
