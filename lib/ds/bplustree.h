@@ -31,7 +31,7 @@ struct list_head {
         struct list_head *prev, *next;
 };
 
-static inline void list_init(struct list_head *link)
+static inline void bptlist_init(struct list_head *link)
 {
         link->prev = link;
         link->next = link;
@@ -65,7 +65,7 @@ static inline void list_add_tail(struct list_head *link, struct list_head *head)
 static inline void list_del(struct list_head *link)
 {
         __list_del(link->prev, link->next);
-        list_init(link);
+        bptlist_init(link);
 }
 
 static inline int list_empty(const struct list_head *head)

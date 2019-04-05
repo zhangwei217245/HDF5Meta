@@ -1096,7 +1096,7 @@ struct bplus_tree *bplus_tree_init(char *filename, int block_size)
 
         struct bplus_tree *tree = calloc(1, sizeof(*tree));
         assert(tree != NULL);
-        list_init(&tree->free_blocks);
+        bptlist_init(&tree->free_blocks);
         strcpy(tree->filename, filename);
 
         /* load index boot file */

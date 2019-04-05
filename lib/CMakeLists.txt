@@ -69,9 +69,7 @@ ADD_LIBRARY(indexds SHARED
     ds/hashmap.c 
     ds/hashmap.h 
     ds/vector.c 
-    ds/vector.h 
-    # ds/bplustree.c 
-    # ds/bplustree.h
+    ds/vector.h
     )
 TARGET_LINK_LIBRARIES(indexds libhl)
 
