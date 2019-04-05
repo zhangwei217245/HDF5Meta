@@ -381,7 +381,7 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
 
     value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
 
-    if (file_path_art == NULL) {
+    if (test_cnt == NULL) {
         return prst;
     } else {
         if (test_cnt->file_obj_pair_list == NULL) {
