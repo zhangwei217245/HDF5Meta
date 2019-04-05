@@ -252,9 +252,12 @@ main(int argc, char **argv)
     int64_t doc_count = init_db();
     println("successfully init db, %d documents in mongodb.", doc_count);
 
-    clear_everything();
+
+    if (rank == 0) { //only rank 0 need to clean DB. By default, there is only rank 0 if no MPI
+        clear_everything();
+        println("db cleaned!");
+    }
     
-    println("db cleaned!");
 
     int query_num = 16;
 
