@@ -134,6 +134,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
                 /**old art path impl**/
 
                 /**new linked list impl ***/
+                
                 idx_anchor *_idx_anch = root_idx_anchor();
                 size_t pos = list_count(_idx_anch->file_paths_list);
                 tagged_value_t *file_path_value = list_create_tagged_value(file_path, &pos, sizeof(size_t));

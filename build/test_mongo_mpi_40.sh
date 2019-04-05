@@ -1,29 +1,29 @@
 #!/bin/bash -l
 
 
-#SBATCH -p debug
-#SBATCH -N 4
-#SBATCH -t 0:30:00
-#SBATCH --gres=craynetwork:2
+#SBATCH -q regular
+#SBATCH -N 40
+#SBATCH --time-min=02:0:00 
+#SBATCH --time=48:0:00
 #SBATCH -L SCRATCH
 #SBATCH -C haswell
-#SBATCH -J TEST_MONGO_4
+#SBATCH -J INSERT_MONGO_40
 #SBATCH -A m2621
-#SBATCH -o o%j.mongo_4
-#SBATCH -e o%j.mongo_4
+#SBATCH --mem=40GB
+#SBATCH -o /global/cscratch1/sd/wzhang5/data/miqs/o%j.insert_mongo_40
+#SBATCH -e /global/cscratch1/sd/wzhang5/data/miqs/o%j.insert_mongo_40
 # #DW jobdw capacity=2000GB access_mode=striped type=scratch pool=sm_pool
 
 
-N_NODE=4
+N_NODE=40
 
 DATASET_NAME="/global/cscratch1/sd/houhun/h5boss_v1"
-COUNT=12
+COUNT=$N_NODE
 ATTRNUM=16
+TASK=0;
 
-PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 1 --mem=10240 --gres=craynetwork:1"
-
-# ./bin/hdf5_set_2_mongo /global/cscratch1/sd/houhun/h5boss_v1 100 16
+PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 64 --mem=40960 --gres=craynetwork:1"
 
 PROC=/global/homes/w/wzhang5/software/HDF5Meta/build/bin/hdf5_set_2_mongo
 
-srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT $ATTRNUM
+srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT $ATTRNUM $TASK
