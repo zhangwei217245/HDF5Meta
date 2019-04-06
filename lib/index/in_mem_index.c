@@ -134,7 +134,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
         file_obj_pair->file_list_pos = file_pos;
         file_obj_pair->obj_list_pos = obj_pos;
 
-        list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair)
+        list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
     }
 }
 
@@ -225,7 +225,7 @@ int write_attr_idx_to_disk(void *data, const unsigned char *key, uint32_t keylen
     }
     miqs_append_string((char *)key, disk_idx_stream);
     if (leaf_cnt->is_numeric) {
-        
+
     }
 
 }
@@ -237,7 +237,7 @@ int dump_index_to_disk(char *filename){
     linked_list_t *file_list = root_idx_anchor()->file_paths_list;
 
     //2. Append all object_paths
-    linked_list_t *file_list = root_idx_anchor()->file_paths_list;
+    linked_list_t *object_list = root_idx_anchor()->object_paths_list;
 
     art_tree *name_art = root_idx_anchor()->root_art;
     // append number of attributes

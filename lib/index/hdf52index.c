@@ -36,10 +36,10 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
         // (leaf_cnt->bpt)[0][0] = NULL;
         switch(attr->attr_type) {
             case H5T_INTEGER:
-                leaf_cnt->rbt = create_rbtree(libhl_cmp_keys_int, free);
+                leaf_cnt->rbt = rbt_create(libhl_cmp_keys_int, free);
                 break;
             case H5T_FLOAT:
-                leaf_cnt->rbt = create_rbtree(libhl_cmp_keys_double, free);
+                leaf_cnt->rbt = rbt_create(libhl_cmp_keys_double, free);
                 break;
             default:
                 break;
