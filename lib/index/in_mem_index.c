@@ -76,7 +76,7 @@ int init_in_mem_index(){
 void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length, 
 char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
     leaf_cnt->is_numeric = 1;
-    leaf_cnt->is_float = (leaf_cnt->rbt->cmp_keys_cb==libhl_cmp_keys_double);
+    leaf_cnt->is_float = (((rbt_t)leaf_cnt->rbt)->cmp_keys_cb==libhl_cmp_keys_double);
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         // A node with k as the value to compare and search.
