@@ -37,19 +37,26 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
         switch(attr->attr_type) {
             case H5T_INTEGER:
                 leaf_cnt->rbt = rbt_create(libhl_cmp_keys_int, free);
+                leaf_cnt->is_float=0;
+                leaf_cnt->is_numeric = 1;
                 break;
             case H5T_FLOAT:
+                leaf_cnt->is_float=1;
+                leaf_cnt->is_numeric = 1;
                 leaf_cnt->rbt = rbt_create(libhl_cmp_keys_double, free);
                 break;
+            case H5T_STRING:
+                leaf_cnt->is_float=0;
+                leaf_cnt->is_numeric = 0;
+                leaf_cnt->art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
             default:
                 break;
         }
-        leaf_cnt->art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
         art_insert(global_art, attr->attr_name, strlen(attr->attr_name), leaf_cnt);
     }
 
     switch(attr->attr_type) {
-        case H5T_INTEGER: 
+        case H5T_INTEGER:
             indexing_numeric(attr->attr_name,(int *)attr->attribute_value, 
             attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
