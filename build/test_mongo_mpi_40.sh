@@ -1,11 +1,11 @@
 #!/bin/bash -l
 
 
-#SBATCH -q regular
+#SBATCH -q premium
 #SBATCH -N 40
 #SBATCH --gres=craynetwork:2
 #SBATCH --time-min=00:10:00 
-#SBATCH --time=2:0:00
+#SBATCH --time=6:0:00
 #SBATCH -L SCRATCH
 #SBATCH -C haswell
 #SBATCH -J INSERT_MONGO_40
@@ -19,7 +19,7 @@
 N_NODE=40
 
 DATASET_NAME="/global/cscratch1/sd/houhun/h5boss_v1"
-COUNT=10
+COUNT=$N_NODE
 ATTRNUM=16
 TASK=0;
 
