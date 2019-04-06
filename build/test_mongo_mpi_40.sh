@@ -2,10 +2,10 @@
 
 
 #SBATCH -q regular
-#SBATCH -N 5
+#SBATCH -N 40
 #SBATCH --gres=craynetwork:2
-#SBATCH --time-min=02:0:00 
-#SBATCH --time=48:0:00
+#SBATCH --time-min=00:10:00 
+#SBATCH --time=2:0:00
 #SBATCH -L SCRATCH
 #SBATCH -C haswell
 #SBATCH -J INSERT_MONGO_40
@@ -19,11 +19,11 @@
 N_NODE=40
 
 DATASET_NAME="/global/cscratch1/sd/houhun/h5boss_v1"
-COUNT=$N_NODE
+COUNT=10
 ATTRNUM=16
 TASK=0;
 
-PROC_CMD="--cpu_bind=cores -c 8 --mem=40960 --gres=craynetwork:1"
+PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 1 --mem=40960 --gres=craynetwork:1"
 
 PROC=/global/homes/w/wzhang5/software/HDF5Meta/build/bin/hdf5_set_2_mongo
 
