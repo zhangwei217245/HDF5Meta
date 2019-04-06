@@ -7,6 +7,7 @@
 #include "../ds/hashset.h"
 #include "../utils/string_utils.h"
 #include "../libhl/linklist.h"
+#include "../libhl/rbtree.h"    
 #include <search.h>
 #include "on_disk_index.h"
 
@@ -44,42 +45,28 @@ typedef struct {
     suseconds_t us_to_disk_index;
 } index_anchor;
 
-
-// typedef struct {
-//     int is_numeric;
-//     int is_float;
-//     struct bplus_tree *bpt;
-//     art_tree *art;
-// }art_leaf_content_t;
-
 typedef struct {
     int is_numeric;
     int is_float;
     void ***bpt;
+    rbt_t *rbt;
     art_tree *art;
 
     size_t file_path_pos;
     size_t obj_path_pos;
-}attr_tree_leaf_content_t;
-
-
-typedef struct {
-    void *k;
-    // map_t path_hash_map;
-    art_tree *file_path_art;
-} value_tree_leaf_content_old_t;
-
-typedef struct {
-    void *k;
-    // map_t path_hash_map;
-    // art_tree *file_path_art;
-    linked_list_t *file_obj_pair_list;
-} value_tree_leaf_content_t;
+} attr_tree_leaf_content_t;
 
 typedef struct {
     size_t file_list_pos;
     size_t obj_list_pos;
 } file_obj_pair_t;
+
+typedef struct {
+    // void *k;
+    // map_t path_hash_map;
+    // art_tree *file_path_art;
+    linked_list_t *file_obj_pair_list;
+} value_tree_leaf_content_t;
 
 typedef struct {
     char *file_path;
@@ -93,7 +80,7 @@ typedef struct {
 } search_rst_entry_t;
 
 typedef struct {
-    int num_files;
+    size_t num_files;
     // search_result_t **rst_arr;
     linked_list_t *rst_arr;
 }power_search_rst_t;
@@ -106,10 +93,6 @@ extern size_t get_btree_mem_size();
 size_t *get_index_size_ptr();
 
 size_t get_index_size();
-
-int int_value_compare_func(const void *l, const void *r);
-
-int float_value_compare_func(const void *l, const void *r);
 
 int init_in_mem_index();
 /**
@@ -126,8 +109,7 @@ int indexing_record(index_record_t *ir);
  *    which contains the result. 
  * 4. 
  */ 
-void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length,
-int (*compare_func)(const void *a, const void *b), 
+void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length, 
 char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt);
 
 

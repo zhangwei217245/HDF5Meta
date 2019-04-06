@@ -31,35 +31,6 @@ size_t insert_tagged_value(linked_list_t *list, char *tag){
     }
 }
 
-
-int int_value_compare_func(const void *l, const void *r){
-    const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
-    const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
-    const int *il = (const int *)el->k;
-    const int *ir = (const int *)er->k;
-    if ((*il) < (*ir)) {
-        return -1;
-    }
-    if ((*il) > (*ir)) {
-        return -1;
-    }
-    return 0;
-}
-
-int float_value_compare_func(const void *l, const void *r){
-    const value_tree_leaf_content_t *el = (const value_tree_leaf_content_t *)l;
-    const value_tree_leaf_content_t *er = (const value_tree_leaf_content_t *)r;
-    const double *il = (const double *)el->k;
-    const double *ir = (const double *)er->k;
-    if ((*il) < (*ir)) {
-        return -1;
-    }
-    if ((*il) > (*ir)) {
-        return -1;
-    }
-    return 0;
-}
-
 /** new impl with linklist **/
 int collect_result_from_list(void *item, size_t idx, void *user){
     power_search_rst_t *rst = (power_search_rst_t *)user;
@@ -71,28 +42,6 @@ int collect_result_from_list(void *item, size_t idx, void *user){
     entry->obj_path = obj_path;
     list_push_value(rst->rst_arr, (void *)entry);
 }
-
-
-// int collect_object_result(void *data, const unsigned char *key, uint32_t key_len, void *value){
-//     search_result_t *rst = (search_result_t *)data;
-//     rst->obj_paths[rst->num_objs]=(char *)key;
-//     rst->num_objs+=1;
-// }
-
-// int collect_file_result(void *data, const unsigned char *key, uint32_t key_len, void *value) {
-//     power_search_rst_t *prst = (power_search_rst_t *)data;
-//     search_result_t *rst = (search_result_t *)calloc(1, sizeof(search_result_t));
-//     rst->num_objs = 0;
-//     rst->file_path = strdup(key);
-//     prst->rst_arr[prst->num_files] = rst;
-//     //TODO: get object_paths;
-
-//     art_tree *obj_path_art = (art_tree *)value;
-//     rst->obj_paths = (char **)calloc(art_size(obj_path_art), sizeof(char *));
-//     art_iter(obj_path_art, collect_object_result, rst);
-
-//     prst->num_files+=1;
-// }
 
 
 int init_in_mem_index(){
@@ -124,78 +73,39 @@ int init_in_mem_index(){
  * 3. At the leaf nodes of B-tree, we go through the ART tree again to collect all file paths
  *    which contains the result. 
  */ 
-void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length,
-int (*compare_func)(const void *a, const void *b), 
+void indexing_numeric(char *attr_name, void *attr_val, int attribute_value_length, 
 char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
-    value_tree_leaf_content_t **retval = 0;
     leaf_cnt->is_numeric = 1;
-    leaf_cnt->is_float = (compare_func==float_value_compare_func);
+    leaf_cnt->is_float = (leaf_cnt->rbt->cmp_keys_cb==libhl_cmp_keys_double);
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         // A node with k as the value to compare and search.
-        value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
-        if (compare_func == int_value_compare_func) {
+        void *entry;
+        size_t k_size;
+        void *key;
+        if (leaf_cnt->is_float!=1) {
+            k_size = sizeof(int);
             int *_attr_value = (int *)attr_val;
-            int k = _attr_value[i];
-            int *bpt_k = (int *)ctr_calloc(1,sizeof(int), &index_mem_size);
-            bpt_k[0] = k;
-            entry->k = (void *)bpt_k;
-        } else if (compare_func == float_value_compare_func){
-            double *_attr_value = (double *)attr_val;
-            double k = _attr_value[i];
-            double *bpt_k = (double *)ctr_calloc(1,sizeof(double), &index_mem_size);
-            bpt_k[0] = k;
-            entry->k = (void *)bpt_k;
-        }
-        retval = (value_tree_leaf_content_t **)tsearch(entry, (leaf_cnt->bpt)[0], compare_func);
-        if (retval == 0) {
-            println("Fail ENOMEM");
+            key = &(_attr_value[i]);
         } else {
-            value_tree_leaf_content_t *test_ent = *retval;
-            if (test_ent == entry) {
-                index_mem_size+=8;
-                // new value added, so entry is the test_ent
-                /**old art path impl***/
-                // test_ent->file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
-                // art_tree_init(test_ent->file_path_art);
-                /**old art path impl**/
-
-                /**new linked list impl ***/
-                test_ent->file_obj_pair_list = list_create();
-                /**new linked list impl ***/
-                
-            } else {
-                // Value found, but test_ent is the old content.
-                free(entry->k);
-                free(entry);
-            }
-
-            /*** old art path impl ***/
-            // art_tree *object_path_art = (art_tree *)art_search(test_ent->file_path_art, 
-            // (const unsigned char *)file_path, strlen(file_path));
-
-            // if (object_path_art == NULL) {
-            //     object_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
-            //     art_tree_init(object_path_art);
-            //     art_insert(test_ent->file_path_art, (const unsigned char *)file_path, strlen(file_path), (void *)object_path_art);
-            // }
-            // art_insert(object_path_art, obj_path, strlen(obj_path), obj_path);
-            /*** old art path impl ***/
-
-            size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
-            size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
-            file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
-            file_obj_pair->file_list_pos = file_pos;
-            file_obj_pair->obj_list_pos = obj_pos;
-
-            list_push_value(test_ent->file_obj_pair_list, (void *)file_obj_pair);
-
+            k_size = sizeof(double);
+            double *_attr_value = (double *)attr_val;
+            key = &(_attr_value[i]);
         }
-        // TODO: we store value as attr_name currently, 
-        // but we can utilize this value to store some statistic info, 
-        // for caching policy maybe.
-        // art_insert(v->file_path_art, file_path, strlen(file_path), attr_name);
-        // art_insert(v->obj_path_art, obj_path, strlen(obj_path), attr_name);
+        int rbt_found = rbt_find(leaf_cnt->rbt, key, k_size, &entry);
+        if (rbt_found != 0) {// not found
+            entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
+            ((value_tree_leaf_content_t *)entry)->file_obj_pair_list = list_create();
+            rbt_add(leaf_cnt->rbt, key, k_size, entry);
+        }
+        size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+        size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
+        
+        file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
+        file_obj_pair->file_list_pos = file_pos;
+        file_obj_pair->obj_list_pos = obj_pos;
+
+        list_push_value(((value_tree_leaf_content_t *)entry)->file_obj_pair_list, (void *)file_obj_pair);
     }
 }
 
@@ -217,8 +127,6 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             art_insert(leaf_cnt->art, (unsigned char *)k, strlen(k), (void *)test_cnt);
             test_cnt->file_obj_pair_list = list_create();
         }
-        /*** new linkedlist impl ***/
-        // idx_anchor *ria = root_idx_anchor();
         size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
         size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
         
@@ -226,139 +134,52 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
         file_obj_pair->file_list_pos = file_pos;
         file_obj_pair->obj_list_pos = obj_pos;
 
-        list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
-        /*** new linkedlist impl ***/
-        
-        /*** old art impl ***/
-        // art_tree *file_path_art = (art_tree *)art_search(leaf_cnt->art, k, strlen(k));
-        // if (file_path_art == NULL) {
-        //     file_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
-        //     art_tree_init(file_path_art);
-        //     art_insert(leaf_cnt->art, (unsigned char *)k, strlen(k), (void *)file_path_art);
-        // }
-
-        // art_tree *object_path_art = (art_tree *)art_search(file_path_art, 
-        //     (const unsigned char *)file_path, strlen(file_path));
-
-        // if (object_path_art == NULL) {
-        //     object_path_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), &index_mem_size);
-        //     art_tree_init(object_path_art);
-        //     art_insert(file_path_art, (const unsigned char *)file_path, strlen(file_path), (void *)object_path_art);
-        // }
-        // art_insert(object_path_art, obj_path, strlen(obj_path), obj_path);
-        /*** old art impl ***/
-        // TODO: we store value as attr_name currently, 
-        // but we can utilize this value to store some statistic info, 
-        // for caching policy maybe.
+        list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair)
     }
 }
 
 
+power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t value_size){
+    power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
+    prst->num_files=0;
+
+    index_anchor *idx_anchor = root_idx_anchor();
+
+    if (idx_anchor== NULL) {
+        return prst;
+    }
+    
+    attr_tree_leaf_content_t *leaf_cnt =
+    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
+    (const unsigned char *)attr_name, strlen(attr_name));
+
+    if (leaf_cnt == NULL || leaf_cnt->rbt == NULL) {
+        return prst;
+    }
+
+    void *entry;
+    int rbt_found = rbt_find(leaf_cnt->rbt, value_p, value_size, &entry);
+    if (rbt_found!=0){//Not found
+        return prst;
+    } else {
+        value_tree_leaf_content_t *node = (value_tree_leaf_content_t *)entry;
+        prst->rst_arr = list_create();
+        list_foreach_value(node->file_obj_pair_list, collect_result_from_list, prst);
+        prst->num_files = list_count(prst->rst_arr);
+    }
+    return prst;
+}
 
 /**
  * This is key-value exact search
  * 
  */ 
 power_search_rst_t *int_value_search(char *attr_name, int value) {
-    power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
-    prst->num_files=0;
-
-    index_anchor *idx_anchor = root_idx_anchor();
-
-    if (idx_anchor== NULL) {
-        return prst;
-    }
-    
-    attr_tree_leaf_content_t *leaf_cnt =
-    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
-    (const unsigned char *)attr_name, strlen(attr_name));
-
-    if (leaf_cnt == NULL || leaf_cnt->bpt == NULL) {
-        return prst;
-    }
-
-    value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
-    
-    int *bpt_k=(int *)calloc(1,sizeof(int));
-    bpt_k[0] = value;
-    entry->k = (void *)bpt_k;
-    // tfind returns a pointer to pointer.
-    value_tree_leaf_content_t **retval = (value_tree_leaf_content_t **)tfind(entry, (leaf_cnt->bpt)[0], int_value_compare_func);
-    if (retval == NULL) {
-        return prst;
-    } else {
-        if (retval[0]->file_obj_pair_list == NULL) {
-            return prst;
-        }
-        prst->rst_arr = list_create();
-        list_foreach_value(retval[0]->file_obj_pair_list, collect_result_from_list, prst);
-        
-        /*** old impl ***/
-        // power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
-        // prst->num_files=0;
-        // if (retval[0]->file_path_art == NULL) {
-        //     return 0;
-        // }
-        // prst->rst_arr = (search_result_t **)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t *));
-        // art_iter(retval[0]->file_path_art, collect_file_result, prst);
-        // numrst = prst->num_files;
-        // search_result_t **_rst = prst->rst_arr;
-        // *rst = _rst;
-        // // free(prst);
-        /*** old impl ***/
-    }
-    free(entry->k);
-    free(entry);
-    return prst;
+    return numeric_value_search(attr_name, &value, sizeof(int));
 }
 
 power_search_rst_t *float_value_search(char *attr_name, double value) {
-    power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
-    prst->num_files=0;
-    
-    index_anchor *idx_anchor = root_idx_anchor();
-
-    if (idx_anchor== NULL) {
-        return prst;
-    }
-    
-    attr_tree_leaf_content_t *leaf_cnt =
-    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
-    (const unsigned char *)attr_name, strlen(attr_name));
-
-    if (leaf_cnt == NULL || leaf_cnt->bpt == NULL) {
-        return prst;
-    }
-
-    value_tree_leaf_content_t *entry = (value_tree_leaf_content_t *)calloc(1, sizeof(value_tree_leaf_content_t));
-    entry->k = (double *)calloc(1,sizeof(double));
-    *((double *)(entry->k)) = value;
-    // tfind returns a pointer to pointer.
-    value_tree_leaf_content_t **retval = tfind(entry, (leaf_cnt->bpt)[0], float_value_compare_func);
-    if (retval == NULL) {
-        return prst;
-    } else {
-        if (retval[0]->file_obj_pair_list == NULL) {
-            return prst;
-        }
-        prst->rst_arr = list_create();
-        list_foreach_value(retval[0]->file_obj_pair_list, collect_result_from_list, prst);
-
-        /*** old impl ***/
-        // if (retval[0]->file_path_art == NULL) {
-        //     return 0;
-        // }
-        // prst->rst_arr = (search_result_t **)calloc(art_size(retval[0]->file_path_art), sizeof(search_result_t *));
-        // art_iter(retval[0]->file_path_art, collect_file_result, prst);
-        // numrst = prst->num_files;
-        // search_result_t **_rst = prst->rst_arr;
-        // *rst = _rst;
-        // // free(prst);
-        /*** old impl ***/
-    }
-    free(entry->k);
-    free(entry);
-    return prst;
+    return numeric_value_search(attr_name, &value, sizeof(double));
 }
 
 power_search_rst_t *string_value_search(char *attr_name, char *value) {
@@ -389,17 +210,6 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         }
         prst->rst_arr = list_create();
         list_foreach_value(test_cnt->file_obj_pair_list, collect_result_from_list, prst);
-
-        /*** old impl ***/
-        // power_search_rst_t *prst = (power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
-        // prst->num_files=0;
-        // prst->rst_arr = (search_result_t **)calloc(art_size(file_path_art), sizeof(search_result_t *));
-        // art_iter(file_path_art, collect_file_result, prst);
-        // numrst = prst->num_files;
-        // search_result_t **_rst = prst->rst_arr;
-        // *rst = _rst;
-        // // free(prst);
-        /*** old impl ***/
     }
     return prst;
 }
@@ -415,7 +225,7 @@ int write_attr_idx_to_disk(void *data, const unsigned char *key, uint32_t keylen
     }
     miqs_append_string((char *)key, disk_idx_stream);
     if (leaf_cnt->is_numeric) {
-
+        
     }
 
 }
@@ -426,6 +236,8 @@ int dump_index_to_disk(char *filename){
     //1. Append all file_paths 
     linked_list_t *file_list = root_idx_anchor()->file_paths_list;
 
+    //2. Append all object_paths
+    linked_list_t *file_list = root_idx_anchor()->file_paths_list;
 
     art_tree *name_art = root_idx_anchor()->root_art;
     // append number of attributes

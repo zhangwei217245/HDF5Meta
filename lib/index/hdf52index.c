@@ -31,25 +31,35 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), get_index_size_ptr());
         // void *bptr = NULL;
-        leaf_cnt->bpt = (void ***)ctr_calloc(1, sizeof(void **), get_index_size_ptr());
-        (leaf_cnt->bpt)[0] = (void **)ctr_calloc(1, sizeof(void *), get_index_size_ptr());
-        (leaf_cnt->bpt)[0][0] = NULL;
+        // leaf_cnt->bpt = (void ***)ctr_calloc(1, sizeof(void **), get_index_size_ptr());
+        // (leaf_cnt->bpt)[0] = (void **)ctr_calloc(1, sizeof(void *), get_index_size_ptr());
+        // (leaf_cnt->bpt)[0][0] = NULL;
+        switch(attr->attr_type) {
+            case H5T_INTEGER:
+                leaf_cnt->rbt = create_rbtree(libhl_cmp_keys_int, free);
+                break;
+            case H5T_FLOAT:
+                leaf_cnt->rbt = create_rbtree(libhl_cmp_keys_double, free);
+                break;
+            default:
+                break;
+        }
         leaf_cnt->art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
         art_insert(global_art, attr->attr_name, strlen(attr->attr_name), leaf_cnt);
     }
 
     switch(attr->attr_type) {
-        case H5T_INTEGER:
-            indexing_numeric(attr->attr_name,(int *)attr->attribute_value, attr->attribute_value_length, 
-            int_value_compare_func, file_path, obj_path, leaf_cnt);
+        case H5T_INTEGER: 
+            indexing_numeric(attr->attr_name,(int *)attr->attribute_value, 
+            attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         case H5T_FLOAT:
-            indexing_numeric(attr->attr_name, (double *)attr->attribute_value, attr->attribute_value_length,
-            float_value_compare_func, file_path, obj_path, leaf_cnt);
+            indexing_numeric(attr->attr_name, (double *)attr->attribute_value, 
+            attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         case H5T_STRING:
-            indexing_string(attr->attr_name, (char **)attr->attribute_value, attr->attribute_value_length, 
-            file_path, obj_path, leaf_cnt);
+            indexing_string(attr->attr_name, (char **)attr->attribute_value, 
+            attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         default:
             // printf("Ignore unsupported attr_type for attribute %s\n", name);

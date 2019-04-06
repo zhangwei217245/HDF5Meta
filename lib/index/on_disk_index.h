@@ -1,6 +1,8 @@
 #ifndef MIQS_ON_DISK_INDEX
 #define MIQS_ON_DISK_INDEX
 #include "../dao/bin_file_ops.h"
+#include "../libhl/linklist.h"
+#include "../ds/art.h"
 
 
 typedef struct{
@@ -47,5 +49,11 @@ index_record_t *read_index_record(FILE *stream);
 int int_equals(const void *data, const void *criterion);
 int double_equals(const void *data, const void *criterion);
 int string_equals(const void *data, const void *criterion);
+
+
+int append_int_value_tree(const void **rootp, FILE *stream);
+int append_float_value_tree(const void **rootp, FILE *stream);
+int append_string_art(art_tree *art, FILE *stream);
+int append_string_linked_list(linked_list_t *list, FILE *stream);
 
 #endif /* !MIQS_ON_DISK_INDEX */

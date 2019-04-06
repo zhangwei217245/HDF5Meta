@@ -215,6 +215,15 @@ int string_equals(const void *data, const void *criterion){
     return strcmp(_data, _criterion)==0;
 }
 
+/**
+ * datatype : 1. int, 2 float.
+ */
+int append_numeric_value_tree(const void **rootp, int numeric_data_type, FILE *stream){
+}
+int append_float_value_tree(const void **rootp, FILE *stream);
+int append_string_art(art_tree *art, FILE *stream);
+int append_string_linked_list(linked_list_t *list, FILE *stream);
+
 int test(int argc, char **argv){
 
     if (argc < 2) {
