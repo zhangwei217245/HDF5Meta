@@ -263,13 +263,13 @@ main(int argc, char **argv)
         if (rank == 0) { //only rank 0 need to clean DB. By default, there is only rank 0 if no MPI
             clear_everything();
             println("db cleaned!");
-        }
 
-        if (query_num > 0) {
-            int f = 0;
-            for (f = 0; f < query_num; f++) {
-                char *index_str = gen_index_str(f, indexed_attr);
-                create_any_index(index_str);
+            if (query_num > 0) {
+                int f = 0;
+                for (f = 0; f < query_num; f++) {
+                    char *index_str = gen_index_str(f, indexed_attr);
+                    create_any_index(index_str);
+                }
             }
         }
 
