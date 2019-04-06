@@ -258,7 +258,7 @@ main(int argc, char **argv)
     println("successfully init db, %d documents in mongodb.", doc_count);
     int query_num = (num_indexed_field > 0)? num_indexed_field :16;
 
-    if (task_id == 0) {
+    // if (task_id == 0) {
 
         if (rank == 0) { //only rank 0 need to clean DB. By default, there is only rank 0 if no MPI
             clear_everything();
@@ -289,7 +289,7 @@ main(int argc, char **argv)
             rst = parse_files_in_dir((char *)path, topk, pargs);
         }
 
-    } else if (task_id == 1) {
+    // } else if (task_id == 1) {
 
 #ifdef ENABLE_MPI
         MPI_Barrier(MPI_COMM_WORLD);
@@ -316,7 +316,7 @@ main(int argc, char **argv)
         timer_pause(&timer_search);
         println("[META_SEARCH_MONGO] Time for 1024 queries on %d indexes and spent %d microseconds.", num_indexed_field, timer_delta_us(&timer_search));
 
-    }
+    // }
 
 
 
