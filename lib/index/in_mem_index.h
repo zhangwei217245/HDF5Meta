@@ -143,7 +143,7 @@ power_search_rst_t *float_value_search(char *attr_name, double value);
 power_search_rst_t *string_value_search(char *attr_name, char *value);
 
 
-
+int dump_index_to_disk(char *filename);
 
 
 #endif /* !MIQS_IN_MEM_INDEX */
