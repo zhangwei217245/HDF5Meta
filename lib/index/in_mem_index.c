@@ -404,7 +404,7 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     return prst;
 }
 
-int dump
+
 
 int write_attr_idx_to_disk(void *data, const unsigned char *key, uint32_t keylen, void *value){
     FILE *disk_idx_stream = (FILE *)data;
@@ -423,7 +423,7 @@ int dump_index_to_disk(char *filename){
 
     //1. Append all file_paths 
     linked_list_t *file_list = root_idx_anchor()->file_paths_list;
-    
+
 
     art_tree *name_art = root_idx_anchor()->root_art;
     // append number of attributes
