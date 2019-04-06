@@ -4,8 +4,7 @@
 #SBATCH -q premium
 #SBATCH -N 100
 #SBATCH --gres=craynetwork:2
-#SBATCH --time-min=00:10:00 
-#SBATCH --time=15:0:00
+#SBATCH -t 15:00:00
 #SBATCH -L SCRATCH
 #SBATCH -C haswell
 #SBATCH -J INSERT_MONGO_100
