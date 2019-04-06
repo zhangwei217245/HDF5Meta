@@ -421,7 +421,7 @@ int write_attr_idx_to_disk(void *data, const unsigned char *key, uint32_t keylen
 }
 
 int dump_index_to_disk(char *filename){
-    FILE *disk_idx_stream = fopen(on_disk_index_path, "w");
+    FILE *disk_idx_stream = fopen(filename, "w");
 
     //1. Append all file_paths 
     linked_list_t *file_list = root_idx_anchor()->file_paths_list;
