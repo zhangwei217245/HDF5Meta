@@ -414,7 +414,9 @@ int write_attr_idx_to_disk(void *data, const unsigned char *key, uint32_t keylen
         return 0;// skip this key
     }
     miqs_append_string((char *)key, disk_idx_stream);
-    if (leaf_cnt->is_numeric)
+    if (leaf_cnt->is_numeric) {
+
+    }
 
 }
 
@@ -427,7 +429,7 @@ int dump_index_to_disk(char *filename){
 
     art_tree *name_art = root_idx_anchor()->root_art;
     // append number of attributes
-    miqs_append_uint64(art_size(name_art));
+    miqs_append_uint64(art_size(name_art), disk_idx_stream);
     art_iter(name_art, write_attr_idx_to_disk, (void *)disk_idx_stream);
 }
 
