@@ -9,8 +9,7 @@
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"
-#include <sys/stat.h>
-#include <unistd.h>
+
 
 
 #define INDEX_DIR_PATH "/global/cscratch1/sd/wzhang5/data/miqs/idx";
