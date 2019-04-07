@@ -228,10 +228,12 @@ int dump_mdb_index_to_disk(char *filename){
     //3. append attribute region
     art_tree *name_art = root_idx_anchor()->root_art;
     append_attr_root_tree(name_art, disk_idx_stream);
+    fclose(disk_idx_stream);
     return 1;
 }
 
 int load_mdb_file_to_index(char *filename){
+    int rst = 0;
     if (access(filename, F_OK)==0 && 
         access(filename, R_OK)==0 
         ){
@@ -255,9 +257,11 @@ int load_mdb_file_to_index(char *filename){
 
             root_idx_anchor()->root_art = (art_tree *)calloc(1, sizeof(art_tree));
             art_tree_init(root_idx_anchor()->root_art);
-            return read_into_attr_root_tree(root_idx_anchor()->root_art, disk_idx_stream);
+            rst = read_into_attr_root_tree(root_idx_anchor()->root_art, disk_idx_stream);
+            fclose(disk_idx_stream);
         }
     }
+    return rst;
 }
 
 
