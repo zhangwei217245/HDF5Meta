@@ -4,6 +4,7 @@
 #include "../libhl/linklist.h"
 #include "../libhl/rbtree.h"
 #include "../ds/art.h"
+#include "../fs/fs_ops.h"
 #include <sys/stat.h>
 #include <unistd.h>
 // #include "in_mem_index.h"

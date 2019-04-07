@@ -268,7 +268,7 @@ mem_cost_t *get_mem_cost(){
     return rst;
 }
 
-mem_cost_t * print_mem_usage(char *prefix){
+void print_mem_usage(char *prefix){
     // int VmRSS;
     // int VmHWM;
     // int VmSize;
@@ -276,7 +276,6 @@ mem_cost_t * print_mem_usage(char *prefix){
     // getMemory(&VmRSS, &VmHWM, &VmSize, &VmPeak);
     // printf("VmRSS=%d, VmHWM=%d, VmSize=%d, VmPeak=%d\n", VmRSS, VmHWM, VmSize, VmPeak);
     mem_cost_t *rst = get_mem_cost();
-    
     printf("[MEM_CONSUMPTION_%s] ", prefix);
     println("dataSize = %d, indexSize = %d", rst->metadata_size, rst->overall_index_size);
 }
@@ -286,8 +285,7 @@ int load_mdb(char *filepath, index_file_loading_param_t *param) {
 }
 
 int load_aof(char *filepath, index_file_loading_param_t *param){
-    index_file_loading_param_t *param = (index_file_loading_param_t *)args;
-    
+    size_t count = 0;
     index_anchor *idx_anchor = (index_anchor *)param->idx_anchor;
     if (access(filepath, F_OK)==0 && 
         access(filepath, R_OK)==0 
@@ -297,9 +295,7 @@ int load_aof(char *filepath, index_file_loading_param_t *param){
             // file exists, readable. try to load index 
             idx_anchor->on_disk_file_stream = fopen(filepath, "r");
             idx_anchor->is_readonly_index_file=1;
-            fseek(idx_anchor->on_disk_file_stream, 0, SEEK_SET);
-            
-            size_t count = 0;
+            fseek(idx_anchor->on_disk_file_stream, 0, SEEK_SET);    
             while (1) {
                 index_record_t *ir = read_index_record(idx_anchor->on_disk_file_stream);
                 if (ir == NULL) {
