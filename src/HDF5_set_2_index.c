@@ -143,7 +143,7 @@ main(int argc, char const *argv[])
     }
 
     if (argc >= 6) {
-        index_dir_path = argv[5];
+        index_dir_path = (char *)argv[5];
     }
 
 
@@ -266,7 +266,7 @@ main(int argc, char const *argv[])
         if (persistence_type == 1) {//mdb
             // 2. dump to mdb file
             stopwatch_t mdb_indexing_time;
-            timer_start(&mdb_indexing_time;);
+            timer_start(&mdb_indexing_time);
 
             dump_mdb_index_to_disk(full_file_name);
 
