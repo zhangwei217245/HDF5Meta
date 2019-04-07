@@ -20,7 +20,7 @@
 
 
 void print_usage() {
-    printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields on_disk_file\n");
+    printf("Usage: ./hdf5_set_2_index /path/to/hdf5/dir topk num_indexed_fields persistence_type, /path/to/idx/dir\n");
 }
 
 int is_hdf5(const struct dirent *entry){

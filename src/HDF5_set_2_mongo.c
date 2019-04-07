@@ -41,7 +41,7 @@ extern int64_t importing_fake_json_docs_to_db(const char *json_str, int count);
 extern void random_test();
 
 void print_usage() {
-    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file topk num_indexed_fields\n");
+    printf("Usage: ./hdf5_set_2_mongo /path/to/hdf5/file topk num_indexed_fields task_id\n");
 }
 
 char *chk_mongo_size_cmd = "/usr/bin/mongo mongodb03.nersc.gov/HDF5MetadataTest -u HDF5MetadataTest_admin -p ekekek19294jdwss2k --eval 'db.runCommand({dbStats:1, scale:1024})' | egrep \"(indexSize|dataSize)\" | xargs echo";
