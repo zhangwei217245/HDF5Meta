@@ -555,5 +555,29 @@ int test(int argc, char **argv){
 }
 
 
+int is_mdb(const struct dirent *entry){
+    if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
+        return 0;
+    }
+    if (entry->d_type == DT_DIR){
+        return 1;
+    }
+    if(endsWith(entry->d_name, ".mdb")) {
+        return 1;
+    }
+    return 0;
+}
 
+int is_aof(const struct dirent *entry){
+    if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
+        return 0;
+    }
+    if (entry->d_type == DT_DIR){
+        return 1;
+    }
+    if(endsWith(entry->d_name, ".aof")) {
+        return 1;
+    }
+    return 0;
+}
 

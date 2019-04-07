@@ -5,6 +5,7 @@
 #include "../libhl/rbtree.h"
 #include "../ds/art.h"
 #include "../fs/fs_ops.h"
+#include "../utils/string_utils.h"
 #include <sys/stat.h>
 #include <unistd.h>
 // #include "in_mem_index.h"
@@ -81,5 +82,11 @@ int append_path_list(linked_list_t *list, FILE *stream);
 
 int read_into_path_list(linked_list_t *list, FILE *stream);
 int read_into_attr_root_tree(art_tree *art, FILE *stream);
+
+
+
+int is_aof(const struct dirent *entry);
+
+int is_mdb(const struct dirent *entry);
 
 #endif /* !MIQS_ON_DISK_INDEX */

@@ -12,10 +12,10 @@
 
 
 
-#define INDEX_DIR_PATH "/global/cscratch1/sd/wzhang5/data/miqs/idx";
-#define PATH_DELIMITER "/";
-#define MDB_NAME_TEMPLATE "index_miqs_%d.mdb";
-#define AOF_NAME_TEMPLATE "index_miqs_%d.aof";
+#define INDEX_DIR_PATH "/global/cscratch1/sd/wzhang5/data/miqs/idx"
+#define PATH_DELIMITER "/"
+#define MDB_NAME_TEMPLATE "index_miqs_%d.mdb"
+#define AOF_NAME_TEMPLATE "index_miqs_%d.aof"
 
 
 
@@ -59,7 +59,7 @@ int parse_files_in_dir(char *path, const int topk) {
 }
 
 int on_mdb(struct dirent *f_entry, const char *parent_path, void *args){
-    index_file_loading_param_t *param = args(index_file_loading_param_t *)args;
+    index_file_loading_param_t *param = (index_file_loading_param_t *)args;
     char *filepath = (char *)calloc(strlen(parent_path)+11, sizeof(char));
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
 
@@ -74,7 +74,7 @@ int on_mdb(struct dirent *f_entry, const char *parent_path, void *args){
 }
 
 int on_aof(struct dirent *f_entry, const char *parent_path, void *args){
-    index_file_loading_param_t *param = args(index_file_loading_param_t *)args;
+    index_file_loading_param_t *param = (index_file_loading_param_t *)args;
     char *filepath = (char *)calloc(strlen(parent_path)+11, sizeof(char));
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
 

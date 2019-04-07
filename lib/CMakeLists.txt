@@ -97,10 +97,10 @@ ADD_LIBRARY(index_spi SHARED
 TARGET_LINK_LIBRARIES(index_spi indexds query_utils)
 
 ADD_LIBRARY(fs_utils SHARED fs/fs_ops.c fs/fs_ops.h)
+TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
+
 
 ADD_LIBRARY(bin_file_ops SHARED dao/bin_file_ops.c dao/bin_file_ops.h)
-
-TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
 
 ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
 
