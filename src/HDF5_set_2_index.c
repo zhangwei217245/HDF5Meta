@@ -18,6 +18,8 @@
 #define MDB_NAME_TEMPLATE "index_miqs_%d.mdb";
 #define AOF_NAME_TEMPLATE "index_miqs_%d.aof";
 
+
+
 void print_usage() {
     printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields on_disk_file\n");
 }
@@ -57,15 +59,53 @@ int parse_files_in_dir(char *path, const int topk) {
     return 0;
 }
 
-/**
- * @param on_disk_index_path mdb file path
- * 
- */
-int load_mdb_files(int rank, index_anchor *idx_anchor, int is_building){
-    char *file_name = (char *)calloc(strlen(mdb_name_template)+10, sizeof(char));
+int on_mdb(struct dirent *f_entry, const char *parent_path, void *args){
+    index_file_loading_param_t *param = args(index_file_loading_param_t *)args;
+    char *filepath = (char *)calloc(strlen(parent_path)+11, sizeof(char));
+    sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
 
+    if (param->is_building) {
+        char *owning_idx_file_name = (char *)calloc(strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
+        sprintf(owning_idx_file_name, MDB_NAME_TEMPLATE, param->rank);
+        if (endsWith(filepath, owning_idx_file_name)){
+            return 0;
+        }
+    }
+    return load_mdb(filepath, param);
 }
 
+int on_aof(struct dirent *f_entry, const char *parent_path, void *args){
+    index_file_loading_param_t *param = args(index_file_loading_param_t *)args;
+    char *filepath = (char *)calloc(strlen(parent_path)+11, sizeof(char));
+    sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
+
+    if (param->is_building) {
+        char *owning_idx_file_name = (char *)calloc(strlen(AOF_NAME_TEMPLATE)+11, sizeof(char));
+        sprintf(owning_idx_file_name, AOF_NAME_TEMPLATE, param->rank);
+        if (endsWith(filepath, owning_idx_file_name)){
+            return 0;
+        }
+    }
+    return load_aof(filepath, param);
+}
+
+/**
+ * load index from mdb files
+ */
+int load_mdb_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
+    index_file_loading_param_t *param = 
+        (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
+    collect_dir(index_dir, is_mdb, alphasort, ASC, 0, on_mdb, NULL, param, NULL, NULL);
+}
+
+/**
+ * load index from aof files
+ */
+int load_aof_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
+    index_file_loading_param_t *param = 
+        (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
+    collect_dir(index_dir, is_aof, alphasort, ASC, 0, on_aof, NULL, param, NULL, NULL);
+}
 
 int 
 main(int argc, char const *argv[])
@@ -88,9 +128,10 @@ main(int argc, char const *argv[])
     int num_indexed_field = 0; //number of attributes to be indexed.
     int persistence_type = 0; // none = 0; 1 = mdb, aof = 2
 
-
-
     const char *path = argv[1];
+
+    char *index_dir_path = INDEX_DIR_PATH;
+
     if (argc >= 3) {
         topk = atoi(argv[2]);
     }
@@ -100,6 +141,10 @@ main(int argc, char const *argv[])
 
     if (argc >= 5){
         persistence_type = atoi(argv[4]);
+    }
+
+    if (argc >= 6) {
+        index_dir_path = argv[5];
     }
 
 
@@ -154,26 +199,55 @@ main(int argc, char const *argv[])
 
     int need_to_build_from_scratch = 1;
 
-    if (persistence_type > 0) { 
+    if (persistence_type > 0) {
+        stopwatch_t disk_loading_time;
+        timer_start(&disk_loading_time);
+        char *persistence_type_name = "";
         // 1. try to load different index files, if return 1, means index files does not exists. 
         if (persistence_type == 1) {// mdb
-            need_to_build_from_scratch = load_mdb_files(rank, idx_anchor, 0);
+            need_to_build_from_scratch = load_mdb_files(index_dir_path, rank, size, idx_anchor, 0);
+            persistence_type_name="MDB";
         } else if (persistence_type == 2){ // aof
-            need_to_build_from_scratch = load_aof_files(rank, idx_anchor, 0);
+            need_to_build_from_scratch = load_aof_files(index_dir_path, rank, size, idx_anchor, 0);
+            persistence_type_name="AOF";
         }
+
+        timer_pause(&disk_loading_time);
+        println("[LOAD_INDEX_FROM_%s_FILE] Rank %d : Time for loading %ld kv-pairs was %ld us, %ld us on in-memory.", 
+            persistence_type_name,
+            rank,
+            idx_anchor->total_num_kv_pairs, 
+            timer_delta_us(&disk_loading_time));
     } 
 
-    if (need_to_build_from_scratch==1) {
-        // build index from HDF5 files
-        if (persistence_type == 2) {
-            idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w");
+    if (need_to_build_from_scratch == 0) {
+
+    } else if (need_to_build_from_scratch==1) {
+        // 1. resolve name
+        char *full_file_name = (char *)calloc(strlen(index_dir_path)+strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
+        strcpy(full_file_name, index_dir_path);
+        if (!endsWith(full_file_name, "/")){
+            strcat(full_file_name, PATH_DELIMITER);
+        }
+        char *file_name = (char *)calloc(strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
+        if (persistence_type == 1) {
+            sprintf(file_name, MDB_NAME_TEMPLATE, rank);
+        } else if (persistence_type == 2) {
+            sprintf(file_name, AOF_NAME_TEMPLATE, rank);
+        }
+        strcat(full_file_name, file_name);
+
+        
+        if (persistence_type == 2) {// AOF
+            idx_anchor->on_disk_file_stream = fopen(full_file_name, "w");
             idx_anchor->is_readonly_index_file=0;
         }
-        
         suseconds_t mem_indexing_time = 0;
         suseconds_t disk_indexing_time = 0;
-        stopwatch_t hdf5_indexing_time;
-        timer_start(&hdf5_indexing_time);
+        suseconds_t loading_other_index_time = 0;
+        // build index from HDF5 files
+        stopwatch_t hdf5_indexing_timer;
+        timer_start(&hdf5_indexing_timer);
         int count = 0;
         if (is_regular_file(path)) {
             parse_hdf5_file((char *)path);
@@ -187,13 +261,6 @@ main(int argc, char const *argv[])
         }
         
         if (persistence_type == 1) {//mdb
-            // 1. resolve name
-            char *full_file_name = (char *)calloc(strlen(INDEX_DIR_PATH)+strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
-            strcpy(full_file_name, INDEX_DIR_PATH);
-            strcat(full_file_name, PATH_DELIMITER);
-            char *file_name = (char *)calloc(strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
-            sprintf(file_name, MDB_NAME_TEMPLATE, rank);
-            strcat(full_file_name, file_name);
             // 2. dump to mdb file
             stopwatch_t mdb_indexing_time;
             timer_start(&mdb_indexing_time;);
@@ -202,70 +269,38 @@ main(int argc, char const *argv[])
 
             timer_pause(&mdb_indexing_time);
             disk_indexing_time += timer_delta_us(&mdb_indexing_time);
-
-#ifdef ENABLE_MPI
-            // 3. load mdb by other processes
-
-#endif
         }
 
-        timer_pause(&hdf5_indexing_time);
-        println("[LOAD_INDEX_FROM_HDF5_FILE] Rank %d : Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk.", 
+        // 3. load index files by other processes
+#ifdef ENABLE_MPI
+        stopwatch_t loading_other_disk_index_time;
+        timer_start(&loading_other_disk_index_time);
+        if (persistence_type == 1) { // mdb
+            need_to_build_from_scratch = load_mdb_files(rank, size, idx_anchor, 1);
+        } else if (persistence_type ==2) { // aof
+            need_to_build_from_scratch = load_aof_files(rank, size, idx_anchor, 1);
+        }
+        timer_pause(&loading_other_disk_index_time);
+        loading_other_index_time = timer_delta_us(&loading_other_disk_index_time);
+#endif
+        timer_pause(&hdf5_indexing_timer);
+
+        mem_cost_t *mem_usage = get_mem_cost();
+
+        println("[LOAD_INDEX_FROM_HDF5_FILE] Rank %d : Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk, %ld us for loading other index files. dataSize: %ld , indexSize : %ld", 
         rank,
         idx_anchor->total_num_files,
         idx_anchor->total_num_objects,
         idx_anchor->total_num_attrs,
         idx_anchor->total_num_kv_pairs,
-        timer_delta_us(&hdf5_indexing_time),
+        timer_delta_us(&hdf5_indexing_timer),
         idx_anchor->us_to_index,
-        disk_indexing_time
+        disk_indexing_time,
+        loading_other_index_time,
+        mem_usage->metadata_size,
+        mem_usage->overall_index_size,
         );
     }
-
-    // check if index file exists
-
-    // TODO: check if the index dir exists. If true, load index files, otherwise, build index files.
-    
-    if (access(on_disk_index_path, F_OK)==0 && 
-        access(on_disk_index_path, R_OK)==0 
-        ){
-        size_t fsize = get_file_size(on_disk_index_path);
-        if (fsize > 0) {
-            // file exists, readable. try to load index 
-            idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "r");
-            idx_anchor->is_readonly_index_file=1;
-            fseek(idx_anchor->on_disk_file_stream, 0, SEEK_SET);
-            stopwatch_t disk_indexing_time;
-            timer_start(&disk_indexing_time);
-            size_t count = 0;
-            while (1) {
-                index_record_t *ir = read_index_record(idx_anchor->on_disk_file_stream);
-                if (ir == NULL) {
-                    break;
-                }
-                // convert to required parameters from IR.
-                h5attribute_t attr;
-                convert_index_record_to_in_mem_parameters(idx_anchor, &attr, ir);
-                //insert into in-mem index.
-                on_attr((void *)idx_anchor, &attr);
-                count++;
-            }
-            fclose(idx_anchor->on_disk_file_stream);
-
-            timer_pause(&disk_indexing_time);
-            println("[LOAD_INDEX_FROM_MIQS_FILE] Time for loading %ld index records and get %ld kv-pairs was %ld us, %ld us on in-memory.", 
-            count, idx_anchor->total_num_kv_pairs, 
-            timer_delta_us(&disk_indexing_time),
-            idx_anchor->us_to_index);
-            need_to_build_from_scratch = 0;
-        } else {
-            need_to_build_from_scratch = 1;
-        }
-    } 
-    
-    
-
-    print_mem_usage("MEMALL");
 
     int num_queries = 16;
     if (num_indexed_field > 0) {

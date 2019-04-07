@@ -9,6 +9,12 @@ typedef struct{
     size_t overall_index_size;
 } mem_cost_t;
 
+typedef struct{
+    index_anchor *idx_anchor;
+    int rank;
+    int size;
+    int is_building;
+}index_file_loading_param_t;
 
 void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attribute_t *attr, index_record_t *ir);
 
@@ -29,6 +35,8 @@ void print_mem_usage();
 
 mem_cost_t *get_mem_cost();
 
+int load_mdb(char *filepath, index_file_loading_param_t *param);
+int load_aof(char *filepath, index_file_loading_param_t *param);
 
 
 #endif /* !MIQS_HDF5_INDEX */

@@ -63,6 +63,8 @@ typedef struct {
 }power_search_rst_t;
 
 
+
+
 index_anchor *root_idx_anchor();
 
 extern size_t get_btree_mem_size();

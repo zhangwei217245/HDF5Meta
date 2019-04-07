@@ -232,23 +232,33 @@ int dump_mdb_index_to_disk(char *filename){
 }
 
 int load_mdb_file_to_index(char *filename){
-    FILE *disk_idx_stream = fopen(filename, "r");
-    rewind(disk_idx_stream);
-    root_idx_anchor()->file_paths_list = list_create();
-    int rst = read_into_path_list(root_idx_anchor()->file_paths_list, stream);
+    if (access(filename, F_OK)==0 && 
+        access(filename, R_OK)==0 
+        ){
+        size_t fsize = get_file_size(filename);
+        if (fsize > 0) {
+            FILE *disk_idx_stream = fopen(filename, "r");
+            rewind(disk_idx_stream);
+            root_idx_anchor()->file_paths_list = list_create();
+            int rst = read_into_path_list(root_idx_anchor()->file_paths_list, stream);
 
-    if (rst != 1){
-        return 0;
+            if (rst != 1){
+                return 0;
+            }
+
+            root_idx_anchor()->object_paths_list = list_create();
+            rst = read_into_path_list(root_idx_anchor()->object_paths_list, stream);
+
+            if (rst != 1){
+                return 0;
+            }
+
+            root_idx_anchor()->root_art = (art_tree *)calloc(1, sizeof(art_tree));
+            art_tree_init(root_idx_anchor()->root_art);
+            return read_into_attr_root_tree(root_idx_anchor()->root_art, stream);
+        }
     }
-
-    root_idx_anchor()->object_paths_list = list_create();
-    rst = read_into_path_list(root_idx_anchor()->object_paths_list, stream);
-
-    if (rst != 1){
-        return 0;
-    }
-
-    root_idx_anchor()->root_art = (art_tree *)calloc(1, sizeof(art_tree));
-    art_tree_init(root_idx_anchor()->root_art);
-    return read_into_attr_root_tree(root_idx_anchor()->root_art, stream);
 }
+
+
+
