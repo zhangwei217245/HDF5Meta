@@ -304,7 +304,7 @@ main(int argc, char const *argv[])
         disk_indexing_time,
         loading_other_index_time,
         mem_usage->metadata_size,
-        mem_usage->overall_index_size,
+        mem_usage->overall_index_size
         );
     }
 
