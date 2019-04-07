@@ -90,20 +90,32 @@ int on_aof(struct dirent *f_entry, const char *parent_path, void *args){
 
 /**
  * load index from mdb files
+ * return 1 for loaded if directory exists, otherwise, return 0;
  */
 int load_mdb_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
     index_file_loading_param_t *param = 
         (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
-    collect_dir(index_dir, is_mdb, alphasort, ASC, 0, on_mdb, NULL, param, NULL, NULL);
+    if (dir_exists(index_dir)) {
+        collect_dir(index_dir, is_mdb, alphasort, ASC, 0, on_mdb, NULL, param, NULL, NULL);
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 /**
  * load index from aof files
+ * return 1 for loaded if directory exists, otherwise, return 0;
  */
 int load_aof_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
     index_file_loading_param_t *param = 
         (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
-    collect_dir(index_dir, is_aof, alphasort, ASC, 0, on_aof, NULL, param, NULL, NULL);
+    if (dir_exists(index_dir)) {
+        collect_dir(index_dir, is_aof, alphasort, ASC, 0, on_aof, NULL, param, NULL, NULL);
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 int 
@@ -206,10 +218,10 @@ main(int argc, char const *argv[])
         char *persistence_type_name = "";
         // 1. try to load different index files, if return 1, means index files does not exists. 
         if (persistence_type == 1) {// mdb
-            need_to_build_from_scratch = load_mdb_files(index_dir_path, rank, size, idx_anchor, 0);
+            need_to_build_from_scratch = (load_mdb_files(index_dir_path, rank, size, idx_anchor, 0)==0);
             persistence_type_name="MDB";
         } else if (persistence_type == 2){ // aof
-            need_to_build_from_scratch = load_aof_files(index_dir_path, rank, size, idx_anchor, 0);
+            need_to_build_from_scratch = (load_aof_files(index_dir_path, rank, size, idx_anchor, 0)==0);
             persistence_type_name="AOF";
         }
 

@@ -96,3 +96,24 @@ size_t get_file_size(const char *filename) {
     }
     return st.st_size;   
 }
+
+
+int dir_exists(char *dirname){
+    DIR* dir = opendir(dirname);
+    if (dir)
+    {
+        /* Directory exists. */
+        closedir(dir);
+        return 1;
+    }
+    else if (ENOENT == errno)
+    {
+        /* Directory does not exist. */
+        return 0;
+    }
+    else
+    {
+        /* opendir() failed for some other reason. */
+        return 0;
+    }
+}

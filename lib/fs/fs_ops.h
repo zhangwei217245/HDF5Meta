@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <errno.h>
 
 typedef enum {
     ASC, DESC
@@ -26,5 +27,7 @@ void collect_dir(const char *dir_path, int (*selector) (const struct dirent *),
 int is_regular_file(const char *path);
 
 size_t get_file_size(const char *filename);
+
+int dir_exists(char *dirname);
 
 #endif /* !MIQS_FS_OPS */
