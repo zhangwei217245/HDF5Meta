@@ -252,7 +252,11 @@ main(int argc, char const *argv[])
         }
         strcat(full_file_name, file_name);
 
-        
+        // before persistence, make sure the directory is there. 
+        if (!dir_exists(index_dir_path)) {
+            mkpath(index_dir_path, (S_IRWXU|S_IRWXG));
+        }
+
         if (persistence_type == 2) {// AOF
             idx_anchor->on_disk_file_stream = fopen(full_file_name, "w");
             idx_anchor->is_readonly_index_file=0;
@@ -270,6 +274,7 @@ main(int argc, char const *argv[])
         } else {
             rst = parse_files_in_dir((char *)path, topk);
         }
+
         if (persistence_type == 2) {
             fclose(idx_anchor->on_disk_file_stream);
             disk_indexing_time += idx_anchor->us_to_disk_index;

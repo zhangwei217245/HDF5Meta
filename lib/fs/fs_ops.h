@@ -30,4 +30,9 @@ size_t get_file_size(const char *filename);
 
 int dir_exists(char *dirname);
 
+
+/* Function with behaviour like `mkdir -p'  */
+int
+mkpath(const char *s, mode_t mode);
+
 #endif /* !MIQS_FS_OPS */
