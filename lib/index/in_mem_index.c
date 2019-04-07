@@ -54,7 +54,7 @@ int init_in_mem_index(){
     idx_anchor->indexed_attr=NULL;
     idx_anchor->num_indexed_field=0;
     idx_anchor->on_disk_file_stream=NULL;
-    idx_anchor->is_readonly_index_file=0;
+    idx_anchor->is_readonly_index_file=1;
     idx_anchor->total_num_files=0;
     idx_anchor->total_num_objects=0;
     idx_anchor->total_num_attrs=0;
@@ -212,103 +212,43 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     return prst;
 }
 
-
-
-int write_attr_idx_to_disk(void *data, const unsigned char *key, uint32_t keylen, void *value){
-    FILE *disk_idx_stream = (FILE *)data;
-    
-    attr_tree_leaf_content_t *leaf_cnt=(attr_tree_leaf_content_t *)value;
-    if (leaf_cnt==NULL){
-        return 0;// skip this key
-    }
-    miqs_append_string((char *)key, disk_idx_stream);
-    if (leaf_cnt->is_numeric) {
-
-    }
-
-}
-
-int dump_index_to_disk(char *filename){
+/**
+ * Dump in-memory index to disk
+ * |file_list_region|object_list_region|attribute region|
+ * return 1 on success;
+ */
+int dump_mdb_index_to_disk(char *filename){
     FILE *disk_idx_stream = fopen(filename, "w");
-
     //1. Append all file_paths 
     linked_list_t *file_list = root_idx_anchor()->file_paths_list;
-    
+    append_path_list(file_list, disk_idx_stream);
     //2. Append all object_paths
     linked_list_t *object_list = root_idx_anchor()->object_paths_list;
-
+    append_path_list(object_list, disk_idx_stream);
+    //3. append attribute region
     art_tree *name_art = root_idx_anchor()->root_art;
-    // append number of attributes
-    miqs_append_uint64(art_size(name_art), disk_idx_stream);
-    art_iter(name_art, write_attr_idx_to_disk, (void *)disk_idx_stream);
+    append_attr_root_tree(name_art, disk_idx_stream);
+    return 1;
 }
 
+int load_mdb_file_to_index(char *filename){
+    FILE *disk_idx_stream = fopen(filename, "r");
+    rewind(disk_idx_stream);
+    root_idx_anchor()->file_paths_list = list_create();
+    int rst = read_into_path_list(root_idx_anchor()->file_paths_list, stream);
 
+    if (rst != 1){
+        return 0;
+    }
 
+    root_idx_anchor()->object_paths_list = list_create();
+    rst = read_into_path_list(root_idx_anchor()->object_paths_list, stream);
 
+    if (rst != 1){
+        return 0;
+    }
 
-/************************* UNUSED CODE ***************************/
-
-/**
- * Index structure:
- * 1. ART for attr_name
- * 2. BPT for int value
- * 3. path_bpt_leaf_cnt for 
- *  a. file_path_art
- *  b. obj_path_art
- * Using file_path_art/obj_path_art can save a lot more space if multiple 
- * k-v pairs can be mapped to one file/one object. Duplicated values will 
- * not take extra space. With art_iter, we can retrieve all unique 
- * file_paths/obj_paths. 
- */
-// void indexing_int(char *attr_name, int *attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
-//     leaf_cnt->is_numeric = 1;
-//     leaf_cnt->is_float = 0;
-//     if (leaf_cnt->bpt == NULL) {
-//         leaf_cnt->bpt = bplus_tree_init(attr_name, 4096);
-//     }
-//     int i = 0;
-//     for (i = 0; i < attribute_value_length; i++) {
-//         int k = attr_val[i];
-//         path_bpt_leaf_cnt_t *v = (path_bpt_leaf_cnt_t *)bplus_tree_get(leaf_cnt->bpt, k);
-//         if (v == NULL || (long)v == 0 || (long)v == 0xffffffffffffffff) {
-//             v = (path_bpt_leaf_cnt_t *)calloc(1, sizeof(path_bpt_leaf_cnt_t));
-//             v->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
-//             v->obj_path_art = (art_tree *)calloc(1, sizeof(art_tree));
-//             art_tree_init(v->file_path_art);
-//             art_tree_init(v->obj_path_art);
-//             bplus_tree_put(leaf_cnt->bpt, k, (long)v);
-//         }
-//         // TODO: we store value as attr_name currently, 
-//         // but we can utilize this value to store some statistic info, 
-//         // for caching policy maybe.
-//         art_insert(v->file_path_art, file_path, strlen(file_path), attr_name);
-//         art_insert(v->obj_path_art, obj_path, strlen(obj_path), attr_name);
-//     }
-// }
-
-// void indexing_float(char *attr_name, double *attr_val, int attribute_value_length, char *file_path, char *obj_path, art_leaf_content_t *leaf_cnt){
-//     leaf_cnt->is_numeric = 1;
-//     leaf_cnt->is_float = 1;
-//     if (leaf_cnt->bpt == NULL) {
-//         leaf_cnt->bpt = bplus_tree_init(attr_name, 4096);
-//     }
-//     int i = 0;
-//     for (i = 0; i < attribute_value_length; i++) {
-//         double k = attr_val[i];
-//         path_bpt_leaf_cnt_t *v = (path_bpt_leaf_cnt_t *)bplus_tree_get(leaf_cnt->bpt, k);
-//         if (v == NULL || (long)v == 0 || (long)v == 0xffffffffffffffff) {
-//             v = (path_bpt_leaf_cnt_t *)calloc(1, sizeof(path_bpt_leaf_cnt_t));
-//             v->file_path_art = (art_tree *)calloc(1, sizeof(art_tree));
-//             v->obj_path_art = (art_tree *)calloc(1, sizeof(art_tree));
-//             art_tree_init(v->file_path_art);
-//             art_tree_init(v->obj_path_art);
-//             bplus_tree_put(leaf_cnt->bpt, (int)k, (long)v);
-//         }
-//         // TODO: we store value as attr_name currently, 
-//         // but we can utilize this value to store some statistic info, 
-//         // for caching policy maybe.
-//         art_insert(v->file_path_art, file_path, strlen(file_path), attr_name);
-//         art_insert(v->obj_path_art, obj_path, strlen(obj_path), attr_name);
-//     }
-// }
+    root_idx_anchor()->root_art = (art_tree *)calloc(1, sizeof(art_tree));
+    art_tree_init(root_idx_anchor()->root_art);
+    return read_into_attr_root_tree(root_idx_anchor()->root_art, stream);
+}

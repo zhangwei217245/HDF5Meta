@@ -13,6 +13,11 @@
 #include <unistd.h>
 
 
+#define INDEX_DIR_PATH "/global/cscratch1/sd/wzhang5/data/miqs/idx";
+#define PATH_DELIMITER "/";
+#define MDB_NAME_TEMPLATE "index_miqs_%d.mdb";
+#define AOF_NAME_TEMPLATE "index_miqs_%d.aof";
+
 void print_usage() {
     printf("Usage: ./test_bpt_hdf5 /path/to/hdf5/dir topk num_indexed_fields on_disk_file\n");
 }
@@ -52,11 +57,28 @@ int parse_files_in_dir(char *path, const int topk) {
     return 0;
 }
 
+/**
+ * @param on_disk_index_path mdb file path
+ * 
+ */
+int load_mdb_files(int rank, index_anchor *idx_anchor, int is_building){
+    char *file_name = (char *)calloc(strlen(mdb_name_template)+10, sizeof(char));
+
+}
 
 
 int 
 main(int argc, char const *argv[])
 {
+    int rank = 0, size = 1;
+
+    #ifdef ENABLE_MPI
+        MPI_Init(&argc, &argv);
+        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+        MPI_Comm_size(MPI_COMM_WORLD, &size);
+    #endif
+
+
     if (argc < 2) {
         print_usage();
         return 0;
@@ -64,7 +86,10 @@ main(int argc, char const *argv[])
     int rst = 0;
     int topk = 0; // number of files to be scanned.
     int num_indexed_field = 0; //number of attributes to be indexed.
-    char *on_disk_index_path = "./index_miqs.idx";
+    int persistence_type = 0; // none = 0; 1 = mdb, aof = 2
+
+
+
     const char *path = argv[1];
     if (argc >= 3) {
         topk = atoi(argv[2]);
@@ -73,9 +98,10 @@ main(int argc, char const *argv[])
         num_indexed_field = atoi(argv[3]);
     }
 
-    if (argc >= 5) {
-        on_disk_index_path = (char *)argv[4];
+    if (argc >= 5){
+        persistence_type = atoi(argv[4]);
     }
+
 
     char *indexed_attr[]={
         "AUTHOR", 
@@ -124,7 +150,78 @@ main(int argc, char const *argv[])
     idx_anchor->indexed_attr = indexed_attr;
     idx_anchor->num_indexed_field = num_indexed_field;
 
+    char *on_disk_index_path = (char *)calloc(strlen(on_disk_index_dir_path_template)+50, sizeof(char));
+
     int need_to_build_from_scratch = 1;
+
+    if (persistence_type > 0) { 
+        // 1. try to load different index files, if return 1, means index files does not exists. 
+        if (persistence_type == 1) {// mdb
+            need_to_build_from_scratch = load_mdb_files(rank, idx_anchor, 0);
+        } else if (persistence_type == 2){ // aof
+            need_to_build_from_scratch = load_aof_files(rank, idx_anchor, 0);
+        }
+    } 
+
+    if (need_to_build_from_scratch==1) {
+        // build index from HDF5 files
+        if (persistence_type == 2) {
+            idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w");
+            idx_anchor->is_readonly_index_file=0;
+        }
+        
+        suseconds_t mem_indexing_time = 0;
+        suseconds_t disk_indexing_time = 0;
+        stopwatch_t hdf5_indexing_time;
+        timer_start(&hdf5_indexing_time);
+        int count = 0;
+        if (is_regular_file(path)) {
+            parse_hdf5_file((char *)path);
+            rst = 0;
+        } else {
+            rst = parse_files_in_dir((char *)path, topk);
+        }
+        if (persistence_type == 2) {
+            fclose(idx_anchor->on_disk_file_stream);
+            disk_indexing_time += idx_anchor->us_to_disk_index;
+        }
+        
+        if (persistence_type == 1) {//mdb
+            // 1. resolve name
+            char *full_file_name = (char *)calloc(strlen(INDEX_DIR_PATH)+strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
+            strcpy(full_file_name, INDEX_DIR_PATH);
+            strcat(full_file_name, PATH_DELIMITER);
+            char *file_name = (char *)calloc(strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
+            sprintf(file_name, MDB_NAME_TEMPLATE, rank);
+            strcat(full_file_name, file_name);
+            // 2. dump to mdb file
+            stopwatch_t mdb_indexing_time;
+            timer_start(&mdb_indexing_time;);
+
+            dump_mdb_index_to_disk(full_file_name);
+
+            timer_pause(&mdb_indexing_time);
+            disk_indexing_time += timer_delta_us(&mdb_indexing_time);
+
+#ifdef ENABLE_MPI
+            // 3. load mdb by other processes
+
+#endif
+        }
+
+        timer_pause(&hdf5_indexing_time);
+        println("[LOAD_INDEX_FROM_HDF5_FILE] Rank %d : Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk.", 
+        rank,
+        idx_anchor->total_num_files,
+        idx_anchor->total_num_objects,
+        idx_anchor->total_num_attrs,
+        idx_anchor->total_num_kv_pairs,
+        timer_delta_us(&hdf5_indexing_time),
+        idx_anchor->us_to_index,
+        disk_indexing_time
+        );
+    }
+
     // check if index file exists
 
     // TODO: check if the index dir exists. If true, load index files, otherwise, build index files.
@@ -166,33 +263,7 @@ main(int argc, char const *argv[])
         }
     } 
     
-    if (need_to_build_from_scratch==1) {
-        // build index from HDF5 files
-        idx_anchor->on_disk_file_stream = fopen(on_disk_index_path, "w");
-        idx_anchor->is_readonly_index_file=0;
-        // fseek(idx_anchor->on_disk_file_stream, 0, SEEK_END);
-        stopwatch_t hdf5_indexing_time;
-        timer_start(&hdf5_indexing_time);
-        int count = 0;
-        if (is_regular_file(path)) {
-            parse_hdf5_file((char *)path);
-            rst = 0;
-        } else {
-            rst = parse_files_in_dir((char *)path, topk);
-        } 
-        //TODO: dump index to disk with new format
-        fclose(idx_anchor->on_disk_file_stream);
-        timer_pause(&hdf5_indexing_time);
-        println("[LOAD_INDEX_FROM_HDF5_FILE] Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk.", 
-        idx_anchor->total_num_files,
-        idx_anchor->total_num_objects,
-        idx_anchor->total_num_attrs,
-        idx_anchor->total_num_kv_pairs,
-        timer_delta_us(&hdf5_indexing_time),
-        idx_anchor->us_to_index,
-        idx_anchor->us_to_disk_index
-        );
-    }
+    
 
     print_mem_usage("MEMALL");
 
@@ -258,7 +329,9 @@ main(int argc, char const *argv[])
     // timer_pause(&timer_search);
     // println("[META_SEARCH_DISK] Time for 1024 queries on %d indexes and spent %d microseconds.  %d", 
     // num_indexed_field, timer_delta_us(&timer_search), numrst);
-
+#ifdef ENABLE_MPI
+    rst = MPI_Finalize();
+#endif
     return rst;
 }
 

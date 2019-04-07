@@ -139,9 +139,9 @@ int on_attr(void *opdata, h5attribute_t *attr){
         idx_anchor->total_num_indexed_kv_pairs+=attr->attribute_value_length;
     }
 
-    // Create on-disk index, if the index file is not read only, 
+    // Create on-disk AOF index, if the index file is not read only, 
     // no matter if the field has been specified or not. 
-    if (idx_anchor->is_readonly_index_file==0) {
+    if (idx_anchor->on_disk_file_stream!= NULL && idx_anchor->is_readonly_index_file==0) {
         stopwatch_t one_disk_attr;   
         timer_start(&one_disk_attr);
 

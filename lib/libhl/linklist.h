@@ -230,7 +230,7 @@ int list_foreach_value(linked_list_t *list, item_handler_t item_handler, void *u
  * @brief Tagged Value
  *
  * This structure represent a tagged_value_t and is the main datatype 
- * you will have to handle when workin with the tagged-based api. 
+ * you will have to handle when working with the tagged-based api. 
  * If user extract such structure from the list (removing it from the list)
  * then he MUST release its resources trough a call to destroy_tagged_value
  * when finished using it.

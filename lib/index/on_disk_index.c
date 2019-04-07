@@ -357,15 +357,137 @@ int append_attr_name_node(void *fh, const unsigned char *key,
  * This is the "attribute region"
  * |number of attributes = n|attr_node 1|...|attr_node n|
  */
-int append_attr_name_tree(art_tree *art, FILE *stream){
+int append_attr_root_tree(art_tree *art, FILE *stream){
     uint64_t num_str_value = art_size(art);
     miqs_append_uint64(num_str_value, stream);
     return art_iter(art, append_attr_name_node, stream);
 }
 
+/**
+ * This is to persist a path. namely, a tagged value
+ * |char *tag|size_t pos|
+ */
+int append_path(void *item, size_t idx, void *fh){
+    tagged_value_t *tagv = (tagged_value_t *)item;
+    FILE *stream = (FILE *)fh;
+    miqs_append_string(tagv->tag, stream);
+    size_t *pos_p = (size_t *)tagv->value;
+    miqs_append_size_t(*pos_p, stream);
+    return 1;// return 1 for list iteration to continue;
+}
+
+/**
+ * This is for file/obj lookup table
+ * |num of paths|path 1|...|path n|
+ */
+int append_path_list(linked_list_t *list, FILE *stream){
+    size_t list_len = list_count(list);
+    miqs_append_size_t(list_len, stream);
+    return list_foreach_value(list, append_path, stream);
+}
+
 /*****************************************/
+/**
+ * return 1 on success;
+ * 
+ */
+int read_into_path_list(linked_list_t *list, FILE *stream){
+    size_t *list_len = miqs_read_size_t(stream);
+    size_t i = 0;
+    int rst = 0;
+    for (i = 0; i < *list_len; i++){
+        char *tag = miqs_read_string(stream);
+        size_t *pos = miqs_read_size_t(stream);
+        tagged_value_t *tagv = list_create_tagged_value(tag, pos, sizeof(size_t));
+        rst = rst | list_insert_tagged_value(list, tagv, *pos);
+    }
+    return rst==0;
+}
 
+int read_into_file_obj_list(linked_list_t *list, FILE *stream){
+    file_obj_pair_t *pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
+    size_t *file_pos = miqs_read_size_t(stream);
+    size_t *obj_pos = miqs_read_size_t(stream);
+    pair->file_list_pos = *file_pos;
+    pair->obj_list_pos = *obj_pos;
+    return list_push_value(list, pair);
+}
 
+int read_file_obj_path_pair_list(value_tree_leaf_content_t *vtree_leaf, FILE *stream){
+    int rst = 0;
+    size_t *list_len = miqs_read_size_t(stream);
+    vtree_leaf->file_obj_pair_list=list_create();
+    size_t i = 0;
+    for (i = 0; i < *list_len; i++){
+        rst = rst | read_into_file_obj_list(vtree_leaf->file_obj_pair_list, stream);
+    }
+    return rst;
+}
+
+int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE *stream){
+    value_tree_leaf_content_t *val_leaf = (value_tree_leaf_content_t *)
+                    calloc(1, sizeof(value_tree_leaf_content_t));
+    int rst = 0;
+    if (type == 3){
+        char *val = miqs_read_string(stream);
+        art_insert(attr_val_node->art, (const unsigned char *)val, strlen(val), val_leaf);
+        rst = 0;
+    } else if (type == 2){
+        double *val = miqs_read_double(stream);
+        rst = rbt_add(attr_val_node->rbt, val, sizeof(double), val_leaf);
+    } else if (type == 1) {
+        int *val = miqs_read_int(stream);
+        rst = rbt_add(attr_val_node->rbt, val, sizeof(int), val_leaf);
+    }
+    rst = rst | read_file_obj_path_pair_list(val_leaf, stream);
+    return rst;
+}
+
+int read_attr_values(attr_tree_leaf_content_t *attr_val_node, FILE *stream){
+    int rst = 0;
+    int *type = miqs_read_int(stream);
+    if (*type == 3) { //string
+        attr_val_node->is_numeric=0;
+        attr_val_node->is_float=0;
+        attr_val_node->art = (art_tree *)calloc(1, sizeof(art_tree));
+        art_tree_init(attr_val_node->art);
+    } else {
+        attr_val_node->is_numeric=1;
+        if (*type == 1){ // int
+            attr_val_node->is_float=0;
+            attr_val_node->rbt = rbt_create(libhl_cmp_keys_int, free);
+        } else if (*type == 2){// double
+            attr_val_node->is_float=1;
+            attr_val_node->rbt = rbt_create(libhl_cmp_keys_double, free);
+        }
+    }
+    uint64_t *num_values = miqs_read_uint64(stream);
+    uint64_t i = 0;
+    for (i = 0; i < *num_values; i++){
+        rst = rst | read_attr_value_node(attr_val_node, *type, stream);
+    }
+    return rst;
+}
+
+int read_attr_name_node(art_tree *art, FILE *stream){
+    char *attr_name = miqs_read_string(stream);
+    attr_tree_leaf_content_t *attr_val_node = 
+        (attr_tree_leaf_content_t *)calloc(1, sizeof(attr_tree_leaf_content_t));
+    art_insert(art, (const unsigned char *)attr_name, strlen(attr_name), attr_val_node);
+    return read_attr_values(attr_val_node, stream);
+}
+/**
+ * return 1 on success;
+ */
+int read_into_attr_root_tree(art_tree *art, FILE *stream){
+    uint64_t *num_attrs = miqs_read_uint64(stream);
+    uint64_t i = 0;
+    int rst = 0;
+    for (i = 0; i < *num_attrs; i++){
+        rst = rst | read_attr_name_node(art, stream);
+    }
+    return rst == 0;
+}
 /*****************************************/
 
 int test(int argc, char **argv){
@@ -429,6 +551,7 @@ int test(int argc, char **argv){
     
 
     fclose(filei);
+    return 0;
 }
 
 

@@ -73,8 +73,10 @@ int int_equals(const void *data, const void *criterion);
 int double_equals(const void *data, const void *criterion);
 int string_equals(const void *data, const void *criterion);
 
-int append_string_value_tree(art_tree *art, FILE *stream);
-int append_numeric_value_tree(rbt_t *rbt, int is_float, FILE *stream);
-int append_string_linked_list(linked_list_t *list, FILE *stream);
+int append_attr_root_tree(art_tree *art, FILE *stream);
+int append_path_list(linked_list_t *list, FILE *stream);
+
+int read_into_path_list(linked_list_t *list, FILE *stream);
+int read_into_attr_root_tree(art_tree *art, FILE *stream);
 
 #endif /* !MIQS_ON_DISK_INDEX */
