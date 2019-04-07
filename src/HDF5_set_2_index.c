@@ -194,9 +194,11 @@ main(int argc, char const *argv[])
     idx_anchor->indexed_attr = indexed_attr;
     idx_anchor->num_indexed_field = num_indexed_field;
 
-    char *on_disk_index_path = (char *)calloc(strlen(on_disk_index_dir_path_template)+50, sizeof(char));
-
     int need_to_build_from_scratch = 1;
+
+#ifdef ENABLE_MPI
+        MPI_Barrier(MPI_COMM_WORLD);
+#endif
 
     if (persistence_type > 0) {
         stopwatch_t disk_loading_time;
@@ -219,9 +221,11 @@ main(int argc, char const *argv[])
             timer_delta_us(&disk_loading_time));
     } 
 
-    if (need_to_build_from_scratch == 0) {
+#ifdef ENABLE_MPI
+        MPI_Barrier(MPI_COMM_WORLD);
+#endif
 
-    } else if (need_to_build_from_scratch==1) {
+    if (need_to_build_from_scratch==1) {
         // 1. resolve name
         char *full_file_name = (char *)calloc(strlen(index_dir_path)+strlen(MDB_NAME_TEMPLATE)+11, sizeof(char));
         strcpy(full_file_name, index_dir_path);
@@ -274,6 +278,9 @@ main(int argc, char const *argv[])
 #ifdef ENABLE_MPI
         stopwatch_t loading_other_disk_index_time;
         timer_start(&loading_other_disk_index_time);
+
+        MPI_Barrier(MPI_COMM_WORLD);
+
         if (persistence_type == 1) { // mdb
             need_to_build_from_scratch = load_mdb_files(rank, size, idx_anchor, 1);
         } else if (persistence_type ==2) { // aof
@@ -300,6 +307,11 @@ main(int argc, char const *argv[])
         mem_usage->overall_index_size,
         );
     }
+
+
+#ifdef ENABLE_MPI
+        MPI_Barrier(MPI_COMM_WORLD);
+#endif
 
     int num_queries = 16;
     if (num_indexed_field > 0) {
