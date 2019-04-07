@@ -139,6 +139,13 @@ int rbt_walk(rbt_t *rbt, rbt_walk_callback cb, void *priv);
  */
 int rbt_walk_sorted(rbt_t *rbt, rbt_walk_callback cb, void *priv);
 
+/**
+ * @brief Return the size of the tree, which is the number of nodes in the tree
+ * @param rbt  A valid pointer to an initialized rbt_t structure
+ * @return The number of nodes in the tree. 
+ */
+uint64_t rbt_size(rbt_t *rbt);
+
 size_t get_mem_usage_by_all_rbtrees();
 
 #ifdef DEBUG_RBTREE

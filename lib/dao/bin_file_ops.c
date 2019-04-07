@@ -21,11 +21,15 @@ void miqs_append_double(double data, FILE *stream){
 }
 
 void miqs_append_string(char *data, FILE *stream){
-    int type = 3;
     size_t length = strlen(data);
+    miqs_append_string_with_len(data, length, stream);
+}
+
+void miqs_append_string_with_len(char *data, size_t len, FILE *stream){
+    int type = 3;
     fwrite(&type, sizeof(int), 1, stream);
-    fwrite(&length, sizeof(size_t), 1, stream);
-    fwrite(data, sizeof(char), length, stream);
+    fwrite(&len, sizeof(size_t), 1, stream);
+    fwrite(data, sizeof(char), len, stream);
 }
 
 void miqs_append_uint64(uint64_t data, FILE *stream){
@@ -36,7 +40,7 @@ void miqs_append_uint64(uint64_t data, FILE *stream){
     fwrite(&data, sizeof(uint64_t), length, stream);
 }
 
-void miqs_append_size_t(size_t data, FILE *stream) {
+void miqs_append_size_t(size_t data, FILE *stream){
     int type = 5;
     size_t length = 1;
     fwrite(&type, sizeof(int), 1, stream);

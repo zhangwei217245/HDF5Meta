@@ -46,29 +46,6 @@ typedef struct {
 } index_anchor;
 
 typedef struct {
-    int is_numeric;
-    int is_float;
-    void ***bpt;
-    rbt_t *rbt;
-    art_tree *art;
-
-    size_t file_path_pos;
-    size_t obj_path_pos;
-} attr_tree_leaf_content_t;
-
-typedef struct {
-    size_t file_list_pos;
-    size_t obj_list_pos;
-} file_obj_pair_t;
-
-typedef struct {
-    // void *k;
-    // map_t path_hash_map;
-    // art_tree *file_path_art;
-    linked_list_t *file_obj_pair_list;
-} value_tree_leaf_content_t;
-
-typedef struct {
     char *file_path;
     int num_objs;
     char **obj_paths;

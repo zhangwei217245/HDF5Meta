@@ -233,7 +233,7 @@ int dump_index_to_disk(char *filename){
 
     //1. Append all file_paths 
     linked_list_t *file_list = root_idx_anchor()->file_paths_list;
-
+    
     //2. Append all object_paths
     linked_list_t *object_list = root_idx_anchor()->object_paths_list;
 

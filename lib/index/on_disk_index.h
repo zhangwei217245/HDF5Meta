@@ -2,8 +2,33 @@
 #define MIQS_ON_DISK_INDEX
 #include "../dao/bin_file_ops.h"
 #include "../libhl/linklist.h"
+#include "../libhl/rbtree.h"
 #include "../ds/art.h"
+// #include "in_mem_index.h"
 
+
+typedef struct {
+    int is_numeric;
+    int is_float;
+    // void ***bpt;
+    rbt_t *rbt;
+    art_tree *art;
+
+    // size_t file_path_pos;
+    // size_t obj_path_pos;
+} attr_tree_leaf_content_t;
+
+typedef struct {
+    // void *k;
+    // map_t path_hash_map;
+    // art_tree *file_path_art;
+    linked_list_t *file_obj_pair_list;
+} value_tree_leaf_content_t;
+
+typedef struct {
+    size_t file_list_pos;
+    size_t obj_list_pos;
+} file_obj_pair_t;
 
 typedef struct{
     int type; // type: 1, int, 2, float, 3. string
@@ -44,16 +69,12 @@ index_record_t **find_index_record(char *name,
  */
 index_record_t *read_index_record(FILE *stream);
 
-
-
 int int_equals(const void *data, const void *criterion);
 int double_equals(const void *data, const void *criterion);
 int string_equals(const void *data, const void *criterion);
 
-
-int append_int_value_tree(const void **rootp, FILE *stream);
-int append_float_value_tree(const void **rootp, FILE *stream);
-int append_string_art(art_tree *art, FILE *stream);
+int append_string_value_tree(art_tree *art, FILE *stream);
+int append_numeric_value_tree(rbt_t *rbt, int is_float, FILE *stream);
 int append_string_linked_list(linked_list_t *list, FILE *stream);
 
 #endif /* !MIQS_ON_DISK_INDEX */

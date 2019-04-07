@@ -9,14 +9,17 @@
 #include <string.h>
 #include <stdint.h>
 
-
-void miqs_append_uint64(uint64_t data, FILE *stream);
-
 void miqs_append_int(int data, FILE *stream);
 
 void miqs_append_double(double data, FILE *stream);
 
 void miqs_append_string(char *data, FILE *stream);
+
+void miqs_append_string_with_len(char *data, size_t len, FILE *stream);
+
+void miqs_append_uint64(uint64_t data, FILE *stream);
+
+void miqs_append_size_t(size_t data, FILE *stream);
 
 void miqs_append_type(int type, FILE *stream);
 
@@ -27,6 +30,8 @@ double *miqs_read_double(FILE *file);
 char *miqs_read_string(FILE *file);
 
 uint64_t *miqs_read_uint64(FILE *file);
+
+size_t *miqs_read_size_t(FILE *file);
 
 size_t miqs_skip_field(FILE *stream);
 

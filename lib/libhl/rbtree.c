@@ -32,6 +32,7 @@ typedef struct _rbt_node_s {
 
 struct _rbt_s {
     rbt_node_t *root;
+    uint64_t size;
     libhl_cmp_callback_t cmp_keys_cb;
     rbt_free_value_callback_t free_value_cb;
 };
@@ -373,6 +374,9 @@ rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
             }
         }
     }
+    if (rc == 0) {
+        rbt->size = rbt->size + 1;
+    }
     return rc;
 }
 
@@ -574,6 +578,7 @@ rbt_remove(rbt_t *rbt, void *k, size_t klen, void **v)
                 rbt->free_value_cb(prev_value);
 
             free(n);
+            rbt->size = rbt->size - 1;
             return 0;
         } else {
             // one child case
@@ -600,6 +605,7 @@ rbt_remove(rbt_t *rbt, void *k, size_t klen, void **v)
 
             free(node->key);
             free(node);
+            rbt->size = rbt->size - 1;
             return 0;
         }
     }
@@ -618,7 +624,12 @@ rbt_remove(rbt_t *rbt, void *k, size_t klen, void **v)
 
     free(node->key);
     free(node);
+    rbt->size = rbt->size - 1;
     return 0;
+}
+
+uint64_t rbt_size(rbt_t *rbt){
+    return rbt->size;
 }
 
 #ifdef DEBUG_RBTREE
