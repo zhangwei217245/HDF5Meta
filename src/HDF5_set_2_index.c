@@ -293,7 +293,8 @@ main(int argc, char const *argv[])
 
         mem_cost_t *mem_usage = get_mem_cost();
 
-        println("[LOAD_INDEX_FROM_HDF5_FILE] Rank %d : Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, %ld us on in-memory, %ld us on on-disk, %ld us for loading other index files. dataSize: %ld , indexSize : %ld", 
+        println("[LOAD_INDEX_FROM_HDF5_FILE] Rank %d : Time for loading index from %ld HDF5 files with %ld objects and %ld attributes and %ld kv-pairs was %ld us, 
+        %ld us on in-memory, %ld us on on-disk, %ld us for loading other index files. dataSize: %ld , indexSize : %ld", 
         rank,
         idx_anchor->total_num_files,
         idx_anchor->total_num_objects,
