@@ -226,11 +226,13 @@ main(int argc, char const *argv[])
         }
 
         timer_pause(&disk_loading_time);
-        println("[LOAD_INDEX_FROM_%s_FILE] Rank %d : Time for loading %ld kv-pairs was %ld us, %ld us on in-memory.", 
+        if (!need_to_build_from_scratch) {
+            println("[LOAD_INDEX_FROM_%s_FILE] Rank %d : Time for loading %ld kv-pairs was %ld us, %ld us on in-memory.", 
             persistence_type_name,
             rank,
             idx_anchor->total_num_kv_pairs, 
             timer_delta_us(&disk_loading_time));
+        }
     } 
 
 #ifdef ENABLE_MPI
