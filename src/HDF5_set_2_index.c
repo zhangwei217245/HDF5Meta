@@ -295,7 +295,7 @@ main(int argc, char const *argv[])
             stopwatch_t mdb_indexing_time;
             timer_start(&mdb_indexing_time);
 
-            dump_mdb_index_to_disk(full_file_name);
+            dump_mdb_index_to_disk(full_file_name, idx_anchor);
 
             timer_pause(&mdb_indexing_time);
             disk_indexing_time += timer_delta_us(&mdb_indexing_time);

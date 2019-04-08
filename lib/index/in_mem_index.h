@@ -104,7 +104,7 @@ power_search_rst_t *float_value_search(char *attr_name, double value);
 power_search_rst_t *string_value_search(char *attr_name, char *value);
 
 
-int dump_mdb_index_to_disk(char *filename);
+int dump_mdb_index_to_disk(char *filename, index_anchor *idx_anchor);
 int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor);
 
 
