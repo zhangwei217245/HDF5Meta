@@ -240,7 +240,7 @@ int load_mdb_file_to_index(char *filename){
         size_t fsize = get_file_size(filename);
         if (fsize > 0) {
             FILE *disk_idx_stream = fopen(filename, "r");
-            rewind(disk_idx_stream);
+            fseek(disk_idx_stream, 0, SEEK_SET);
             root_idx_anchor()->file_paths_list = list_create();
             int rst = read_into_path_list(root_idx_anchor()->file_paths_list, disk_idx_stream);
 
