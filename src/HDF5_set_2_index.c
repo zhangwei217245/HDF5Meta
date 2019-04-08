@@ -309,9 +309,9 @@ main(int argc, char const *argv[])
         MPI_Barrier(MPI_COMM_WORLD);
 
         if (persistence_type == 1) { // mdb
-            need_to_build_from_scratch = load_mdb_files(rank, size, idx_anchor, 1);
+            need_to_build_from_scratch = load_mdb_files(index_dir_path, rank, size, idx_anchor, 1);
         } else if (persistence_type ==2) { // aof
-            need_to_build_from_scratch = load_aof_files(rank, size, idx_anchor, 1);
+            need_to_build_from_scratch = load_aof_files(index_dir_path, rank, size, idx_anchor, 1);
         }
         timer_pause(&loading_other_disk_index_time);
         loading_other_index_time = timer_delta_us(&loading_other_disk_index_time);
