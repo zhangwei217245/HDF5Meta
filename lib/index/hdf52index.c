@@ -5,19 +5,17 @@
 
 
 int is_specified_field(char *name, index_anchor *idx_anchor) {
-    int has_specified_field = 0;
+    int is_specified_field = 0;
     if (idx_anchor->num_indexed_field > 0) {
         int f = 0;
         for (f = 0; f < idx_anchor->num_indexed_field; f++) {
             if (strcmp(name, idx_anchor->indexed_attr[f]) == 0) {
-                has_specified_field = 1;
+                is_specified_field = 1;
                 break;
             }
         } 
-    } else {
-        has_specified_field = 1;
     }
-    return has_specified_field;
+    return is_specified_field;
 }
 
 
@@ -131,50 +129,57 @@ int on_attr(void *opdata, h5attribute_t *attr){
 
     idx_anchor->total_num_attrs+=1;
 
-    int has_specified_field = is_specified_field(name, idx_anchor);
+    int is_specified_field = is_specified_field(name, idx_anchor);
     
     // Create in-memory index according to specified field list.
-    if (has_specified_field == 1) {
+    int build_index = 0;
+    if (idx_anchor->num_indexed_field > 0) {
+        if (is_specified_field == 1){
+            build_index = 1;
+        }
+    } else {
+        build_index = 1;
+    }
+
+    if (build_index == 1) {
         create_in_mem_index_for_attr(idx_anchor, attr);
         idx_anchor->total_num_indexed_kv_pairs+=attr->attribute_value_length;
-    }
 
-    // Create on-disk AOF index, if the index file is not read only, 
-    // no matter if the field has been specified or not. 
-    if (idx_anchor->on_disk_file_stream!= NULL && idx_anchor->is_readonly_index_file==0) {
-        stopwatch_t one_disk_attr;   
-        timer_start(&one_disk_attr);
+        // Create on-disk AOF index, if the index file is not read only.
+        if (idx_anchor->on_disk_file_stream!= NULL && idx_anchor->is_readonly_index_file==0) {
+            stopwatch_t one_disk_attr;   
+            timer_start(&one_disk_attr);
 
-        if (attr->attr_type == H5T_INTEGER) {
-            int i = 0;
-            for (i = 0; i < attr->attribute_value_length; i++) {
-                int *value_arr = (int *)attr->attribute_value;
-                index_record_t *ir =
-                create_index_record(1, attr->attr_name, (void *)(&(value_arr[i])), file_path, obj_path);
-                append_index_record(ir, idx_anchor->on_disk_file_stream);
+            if (attr->attr_type == H5T_INTEGER) {
+                int i = 0;
+                for (i = 0; i < attr->attribute_value_length; i++) {
+                    int *value_arr = (int *)attr->attribute_value;
+                    index_record_t *ir =
+                    create_index_record(1, attr->attr_name, (void *)(&(value_arr[i])), file_path, obj_path);
+                    append_index_record(ir, idx_anchor->on_disk_file_stream);
+                }
+            } else if (attr->attr_type == H5T_FLOAT) {
+                int i = 0;
+                for (i = 0; i < attr->attribute_value_length; i++) {
+                    double *value_arr = (double *)attr->attribute_value;
+                    index_record_t *ir =
+                    create_index_record(2, attr->attr_name, (void *)(&(value_arr[i])), file_path, obj_path);
+                    append_index_record(ir, idx_anchor->on_disk_file_stream);
+                }
+            } else if (attr->attr_type == H5T_STRING) {
+                int i = 0;
+                for (i = 0; i < attr->attribute_value_length; i++) {
+                    char  **value_arr = (char  **)attr->attribute_value;
+                    index_record_t *ir =
+                    create_index_record(3, attr->attr_name, (void *)(&(value_arr[i])), file_path, obj_path);
+                    append_index_record(ir, idx_anchor->on_disk_file_stream);
+                }
             }
-        } else if (attr->attr_type == H5T_FLOAT) {
-            int i = 0;
-            for (i = 0; i < attr->attribute_value_length; i++) {
-                double *value_arr = (double *)attr->attribute_value;
-                index_record_t *ir =
-                create_index_record(2, attr->attr_name, (void *)(&(value_arr[i])), file_path, obj_path);
-                append_index_record(ir, idx_anchor->on_disk_file_stream);
-            }
-        } else if (attr->attr_type == H5T_STRING) {
-            int i = 0;
-            for (i = 0; i < attr->attribute_value_length; i++) {
-                char  **value_arr = (char  **)attr->attribute_value;
-                index_record_t *ir =
-                create_index_record(3, attr->attr_name, (void *)(&(value_arr[i])), file_path, obj_path);
-                append_index_record(ir, idx_anchor->on_disk_file_stream);
-            }
+            suseconds_t one_disk_attr_duration = timer_delta_us(&one_disk_attr);
+            idx_anchor->us_to_disk_index += one_disk_attr_duration;
         }
-        suseconds_t one_disk_attr_duration = timer_delta_us(&one_disk_attr);
-        idx_anchor->us_to_disk_index += one_disk_attr_duration;
+        idx_anchor->total_num_kv_pairs+=attr->attribute_value_length;
     }
-    idx_anchor->total_num_kv_pairs+=attr->attribute_value_length;
-    
     //TODO: currently ignore any error.
     return 1;
 }
