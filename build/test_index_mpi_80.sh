@@ -27,4 +27,4 @@ PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 1 --mem=40960 --gres=craynetwo
 
 PROC=/global/homes/w/wzhang5/software/MIQS/build/bin/hdf5_set_2_index
 
-srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT $ATTRNUM $PERSISTENCE_TYPE
+srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT $ATTRNUM $PERSISTENCE_TYPE $INDEX_DIR
