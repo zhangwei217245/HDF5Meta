@@ -468,7 +468,7 @@ int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE
     if (_value) {
         rst = rst | read_file_obj_path_pair_list(val_leaf, stream);
     } else {
-        rst = 1;
+        rst = rst | read_file_obj_path_pair_list(NULL, stream);
     }
     return rst;
 }
