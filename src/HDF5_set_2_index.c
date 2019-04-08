@@ -1,4 +1,4 @@
-//#define ENABLE_MPI
+#define ENABLE_MPI
 
 #ifdef ENABLE_MPI
 #include "mpi.h"
