@@ -281,7 +281,7 @@ void print_mem_usage(char *prefix){
 }
 
 int load_mdb(char *filepath, index_file_loading_param_t *param) {
-    return load_mdb_file_to_index(filepath);
+    return load_mdb_file_to_index(filepath, param->idx_anchor);
 }
 
 int load_aof(char *filepath, index_file_loading_param_t *param){

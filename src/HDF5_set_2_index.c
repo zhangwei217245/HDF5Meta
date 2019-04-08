@@ -60,7 +60,7 @@ int parse_files_in_dir(char *path, const int topk) {
 
 int on_mdb(struct dirent *f_entry, const char *parent_path, void *args){
     index_file_loading_param_t *param = (index_file_loading_param_t *)args;
-    char *filepath = (char *)calloc(strlen(parent_path)+11, sizeof(char));
+    char *filepath = (char *)calloc(511, sizeof(char));
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
 
     if (param->is_building) {
@@ -95,6 +95,10 @@ int on_aof(struct dirent *f_entry, const char *parent_path, void *args){
 int load_mdb_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
     index_file_loading_param_t *param = 
         (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
+    param->idx_anchor = idx_anchor;
+    param->size = size;
+    param->rank = rank;
+    param->is_building = is_building;
     if (dir_exists(index_dir)) {
         collect_dir(index_dir, is_mdb, alphasort, ASC, 0, on_mdb, NULL, param, NULL, NULL);
         return 1;
@@ -110,6 +114,10 @@ int load_mdb_files(char *index_dir, int rank, int size, index_anchor *idx_anchor
 int load_aof_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
     index_file_loading_param_t *param = 
         (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
+    param->idx_anchor = idx_anchor;
+    param->size = size;
+    param->rank = rank;
+    param->is_building = is_building;
     if (dir_exists(index_dir)) {
         collect_dir(index_dir, is_aof, alphasort, ASC, 0, on_aof, NULL, param, NULL, NULL);
         return 1;

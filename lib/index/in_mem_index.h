@@ -105,7 +105,7 @@ power_search_rst_t *string_value_search(char *attr_name, char *value);
 
 
 int dump_mdb_index_to_disk(char *filename);
-int load_mdb_file_to_index(char *filename);
+int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor);
 
 
 #endif /* !MIQS_IN_MEM_INDEX */

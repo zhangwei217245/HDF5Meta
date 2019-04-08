@@ -217,22 +217,22 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
  * |file_list_region|object_list_region|attribute region|
  * return 1 on success;
  */
-int dump_mdb_index_to_disk(char *filename){
+int dump_mdb_index_to_disk(char *filename, index_anchor *idx_anchor){
     FILE *disk_idx_stream = fopen(filename, "w");
     //1. Append all file_paths 
-    linked_list_t *file_list = root_idx_anchor()->file_paths_list;
+    linked_list_t *file_list = idx_anchor->file_paths_list;
     append_path_list(file_list, disk_idx_stream);
     //2. Append all object_paths
-    linked_list_t *object_list = root_idx_anchor()->object_paths_list;
+    linked_list_t *object_list = idx_anchor->object_paths_list;
     append_path_list(object_list, disk_idx_stream);
     //3. append attribute region
-    art_tree *name_art = root_idx_anchor()->root_art;
+    art_tree *name_art = idx_anchor->root_art;
     append_attr_root_tree(name_art, disk_idx_stream);
     fclose(disk_idx_stream);
     return 1;
 }
 
-int load_mdb_file_to_index(char *filename){
+int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor){
     int rst = 0;
     if (access(filename, F_OK)==0 && 
         access(filename, R_OK)==0 
@@ -241,23 +241,23 @@ int load_mdb_file_to_index(char *filename){
         if (fsize > 0) {
             FILE *disk_idx_stream = fopen(filename, "r");
             fseek(disk_idx_stream, 0, SEEK_SET);
-            root_idx_anchor()->file_paths_list = list_create();
-            int rst = read_into_path_list(root_idx_anchor()->file_paths_list, disk_idx_stream);
+            idx_anchor->file_paths_list = list_create();
+            int rst = read_into_path_list(idx_anchor->file_paths_list, disk_idx_stream);
 
             if (rst != 1){
                 return 0;
             }
 
-            root_idx_anchor()->object_paths_list = list_create();
-            rst = read_into_path_list(root_idx_anchor()->object_paths_list, disk_idx_stream);
+            idx_anchor->object_paths_list = list_create();
+            rst = read_into_path_list(idx_anchor->object_paths_list, disk_idx_stream);
 
             if (rst != 1){
                 return 0;
             }
 
-            root_idx_anchor()->root_art = (art_tree *)calloc(1, sizeof(art_tree));
-            art_tree_init(root_idx_anchor()->root_art);
-            rst = read_into_attr_root_tree(root_idx_anchor()->root_art, disk_idx_stream);
+            idx_anchor->root_art = (art_tree *)calloc(1, sizeof(art_tree));
+            art_tree_init(idx_anchor->root_art);
+            rst = read_into_attr_root_tree(idx_anchor->root_art, disk_idx_stream);
             fclose(disk_idx_stream);
         }
     }
