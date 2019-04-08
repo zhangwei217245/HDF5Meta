@@ -7,6 +7,9 @@
  * 
  */
 
+size_t num_kv_pairs_loaded_mdb = 0;
+size_t num_attrs_loaded_mdb = 0;
+
 /**
  * Old Index format
  * 
@@ -485,6 +488,7 @@ int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE
     }
     
     if (_value) {
+        num_kv_pairs_loaded_mdb++;
         rst = rst | read_file_obj_path_pair_list(val_leaf, stream);
     } else {
         rst = rst | read_file_obj_path_pair_list(NULL, stream);
@@ -529,13 +533,24 @@ int read_attr_name_node(art_tree *art, FILE *stream){
  * return 1 on success;
  */
 int read_into_attr_root_tree(art_tree *art, FILE *stream){
+    num_kv_pairs_loaded_mdb = 0;
+    num_attrs_loaded_mdb = 0;
     uint64_t *num_attrs = miqs_read_uint64(stream);
+    num_attrs_loaded_mdb = (size_t)num_attrs;
     uint64_t i = 0;
     int rst = 0;
     for (i = 0; i < *num_attrs; i++){
         rst = rst | read_attr_name_node(art, stream);
     }
     return rst == 0;
+}
+
+size_t get_num_kv_pairs_loaded_mdb(){
+    return num_kv_pairs_loaded_mdb;
+}
+
+size_t get_num_attrs_loaded_mdb(){
+    return num_attrs_loaded_mdb;
 }
 /*****************************************/
 

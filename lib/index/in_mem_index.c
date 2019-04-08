@@ -243,14 +243,14 @@ int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor){
             fseek(disk_idx_stream, 0, SEEK_SET);
             idx_anchor->file_paths_list = list_create();
             int rst = read_into_path_list(idx_anchor->file_paths_list, disk_idx_stream);
-
+            idx_anchor->total_num_files += list_count(idx_anchor->file_paths_list);
             if (rst != 1){
                 return 0;
             }
 
             idx_anchor->object_paths_list = list_create();
             rst = read_into_path_list(idx_anchor->object_paths_list, disk_idx_stream);
-
+            idx_anchor->total_num_objects += list_count(idx_anchor->object_paths_list);
             if (rst != 1){
                 return 0;
             }
@@ -259,6 +259,8 @@ int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor){
             art_tree_init(idx_anchor->root_art);
             rst = read_into_attr_root_tree(idx_anchor->root_art, disk_idx_stream);
             fclose(disk_idx_stream);
+            idx_anchor->total_num_kv_pairs += get_num_kv_pairs_loaded_mdb();
+            idx_anchor->total_num_attrs += get_num_attrs_loaded_mdb();
         }
     }
     return rst;
