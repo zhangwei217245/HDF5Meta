@@ -291,6 +291,20 @@ rbt_walk_return_code_t append_float_value_node(rbt_t *rbt,
 }
 
 /**
+ * This is a float value node
+ * |double value|file_obj_pair_list|
+ */
+rbt_walk_return_code_t rbt_size_cb(rbt_t *rbt,
+                                                    void *key,
+                                                    size_t klen,
+                                                    void *value,
+                                                    void *priv){
+    uint64_t *size = (uint64_t *)priv;
+    size[0] = size[0]+1;
+    return RBT_WALK_CONTINUE;
+}
+
+/**
  * This is the string value region
  * |type = 3|number of values = n|value_node_1|...|value_node_n|
  * 
@@ -300,7 +314,7 @@ int append_string_value_tree(art_tree *art, FILE *stream){
     // 1. type
     miqs_append_type(3, stream);
     // 2. number of values
-    uint64_t num_str_value = art_size(art);
+    uint64_t num_str_value = art_iter_size(art);
     miqs_append_uint64(num_str_value, stream);
     // 3. value nodes
     int rst = art_iter(art, append_string_value_node, stream);
@@ -322,8 +336,10 @@ int append_numeric_value_tree(rbt_t *rbt, int is_float, FILE *stream){
     }
     miqs_append_type(type, stream);
     // 2. number of values
-    uint64_t num_num_value = rbt_size(rbt);
-    miqs_append_uint64(num_num_value, stream);
+    uint64_t *num_num_value = (uint64_t *)calloc(1, sizeof(uint64_t));
+    rbt_walk(rbt, rbt_size_cb, num_num_value);
+
+    miqs_append_uint64(*num_num_value, stream);
     // 3. value nodes
     int rst = 0;
     if (is_float){
@@ -363,7 +379,7 @@ int append_attr_name_node(void *fh, const unsigned char *key,
  * |number of attributes = n|attr_node 1|...|attr_node n|
  */
 int append_attr_root_tree(art_tree *art, FILE *stream){
-    uint64_t num_str_value = art_size(art);
+    uint64_t num_str_value = art_iter_size(art);
     miqs_append_uint64(num_str_value, stream);
     return art_iter(art, append_attr_name_node, stream);
 }

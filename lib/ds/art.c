@@ -960,6 +960,24 @@ int art_iter_prefix(art_tree *t, const unsigned char *key, int key_len, art_call
     return 0;
 }
 
+int size_incr(void *data, const unsigned char *key, uint32_t key_len, void *value){
+    uint64_t *size = (uint64_t *)data;
+    size[0]=size[0]+1;
+    return 0;
+}
+
+uint64_t art_iter_size(art_tree *t){
+    uint64_t *rst = (uint64_t *)calloc(1, sizeof(uint64_t));
+    art_iter(t, size_incr, rst);
+    return *rst;
+}
+
+uint64_t art_iter_prefix_size(art_tree *t, const unsigned char *prefix, int prefix_len){
+    uint64_t *rst = (uint64_t *)calloc(1, sizeof(uint64_t));
+    art_iter_prefix(t, prefix, prefix_len, size_incr, rst);
+    return *rst;
+}
+
 size_t get_art_mem_size(){
     return art_mem_size;
 }

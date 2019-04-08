@@ -199,6 +199,17 @@ int art_iter(art_tree *t, art_callback cb, void *data);
  */
 int art_iter_prefix(art_tree *t, const unsigned char *prefix, int prefix_len, art_callback cb, void *data);
 
+/**
+ * Get number of items visited by art_iter callback function. 
+ */
+uint64_t art_iter_size(art_tree *t);
+
+/**
+ * Get number of items visited by art_iter_prefix callback function. 
+ */
+uint64_t art_iter_prefix_size(art_tree *t, const unsigned char *prefix, int prefix_len);
+
+
 size_t get_art_mem_size();
 
 size_t get_mem_usage_by_all_arts();
