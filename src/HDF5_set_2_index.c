@@ -127,7 +127,7 @@ int load_aof_files(char *index_dir, int rank, int size, index_anchor *idx_anchor
 }
 
 int 
-main(int argc, char const *argv[])
+main(int argc, char *argv[])
 {
     int rank = 0, size = 1;
 
