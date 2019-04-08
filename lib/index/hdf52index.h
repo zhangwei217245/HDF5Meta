@@ -14,6 +14,7 @@ typedef struct{
     int rank;
     int size;
     int is_building;
+    int current_file_count;
 }index_file_loading_param_t;
 
 void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, h5attribute_t *attr, index_record_t *ir);

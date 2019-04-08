@@ -37,13 +37,24 @@ int is_hdf5(const struct dirent *entry){
 }
 
 int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
+
     char *filepath = (char *)calloc(512, sizeof(char));
 
     sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
-    parse_hdf5_file(filepath);
+    
+    parse_single_hdf5_file(filepath, arg);
 
     print_mem_usage(filepath);
     return 1;
+}
+
+int parse_single_hdf5_file(char *filepath, void *args){
+    index_file_loading_param_t *pargs = (index_file_loading_param_t *)args;
+    pargs->current_file_count = pargs->current_file_count+1;
+    if (pargs->current_file_count % pargs->size != pargs->rank) {
+        return 0;
+    }
+    parse_hdf5_file(filepath);
 }
 
 int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
@@ -53,8 +64,8 @@ int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
     return 1;
 }
 
-int parse_files_in_dir(char *path, const int topk) {
-    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, NULL, NULL, NULL);
+int parse_files_in_dir(char *path, const int topk, void *args) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, args, NULL, NULL);
     return 0;
 }
 
@@ -92,13 +103,7 @@ int on_aof(struct dirent *f_entry, const char *parent_path, void *args){
  * load index from mdb files
  * return 1 for loaded if directory exists, otherwise, return 0;
  */
-int load_mdb_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
-    index_file_loading_param_t *param = 
-        (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
-    param->idx_anchor = idx_anchor;
-    param->size = size;
-    param->rank = rank;
-    param->is_building = is_building;
+int load_mdb_files(char *index_dir, index_file_loading_param_t *param){
     if (dir_exists(index_dir)) {
         collect_dir(index_dir, is_mdb, alphasort, ASC, 0, on_mdb, NULL, param, NULL, NULL);
         return 1;
@@ -111,13 +116,7 @@ int load_mdb_files(char *index_dir, int rank, int size, index_anchor *idx_anchor
  * load index from aof files
  * return 1 for loaded if directory exists, otherwise, return 0;
  */
-int load_aof_files(char *index_dir, int rank, int size, index_anchor *idx_anchor, int is_building){
-    index_file_loading_param_t *param = 
-        (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
-    param->idx_anchor = idx_anchor;
-    param->size = size;
-    param->rank = rank;
-    param->is_building = is_building;
+int load_aof_files(char *index_dir, index_file_loading_param_t *param){
     if (dir_exists(index_dir)) {
         collect_dir(index_dir, is_aof, alphasort, ASC, 0, on_aof, NULL, param, NULL, NULL);
         return 1;
@@ -214,6 +213,13 @@ main(int argc, char *argv[])
     idx_anchor->indexed_attr = indexed_attr;
     idx_anchor->num_indexed_field = num_indexed_field;
 
+    index_file_loading_param_t *param = 
+        (index_file_loading_param_t *)calloc(1, sizeof(index_file_loading_param_t));
+    param->idx_anchor = idx_anchor;
+    param->size = size;
+    param->rank = rank;
+    
+
     int need_to_build_from_scratch = 1;
 
 #ifdef ENABLE_MPI
@@ -221,15 +227,17 @@ main(int argc, char *argv[])
 #endif
 
     if (persistence_type > 0) {
+        
         stopwatch_t disk_loading_time;
         timer_start(&disk_loading_time);
         char *persistence_type_name = "";
         // 1. try to load different index files, if return 1, means index files does not exists. 
+        param->is_building = 0;
         if (persistence_type == 1) {// mdb
-            need_to_build_from_scratch = (load_mdb_files(index_dir_path, rank, size, idx_anchor, 0)==0);
+            need_to_build_from_scratch = (load_mdb_files(index_dir_path, param)==0);
             persistence_type_name="MDB";
         } else if (persistence_type == 2){ // aof
-            need_to_build_from_scratch = (load_aof_files(index_dir_path, rank, size, idx_anchor, 0)==0);
+            need_to_build_from_scratch = (load_aof_files(index_dir_path, param)==0);
             persistence_type_name="AOF";
         }
 
@@ -275,14 +283,15 @@ main(int argc, char *argv[])
         suseconds_t disk_indexing_time = 0;
         suseconds_t loading_other_index_time = 0;
         // build index from HDF5 files
+        param->current_file_count=0;
         stopwatch_t hdf5_indexing_timer;
         timer_start(&hdf5_indexing_timer);
         int count = 0;
         if (is_regular_file(path)) {
-            parse_hdf5_file((char *)path);
+            parse_single_hdf5_file((char *)path, param);
             rst = 0;
         } else {
-            rst = parse_files_in_dir((char *)path, topk);
+            rst = parse_files_in_dir((char *)path, topk, param);
         }
 
         if (persistence_type == 2) {
@@ -307,11 +316,11 @@ main(int argc, char *argv[])
         timer_start(&loading_other_disk_index_time);
 
         MPI_Barrier(MPI_COMM_WORLD);
-
+        param->is_building=1;
         if (persistence_type == 1) { // mdb
-            need_to_build_from_scratch = load_mdb_files(index_dir_path, rank, size, idx_anchor, 1);
+            need_to_build_from_scratch = load_mdb_files(index_dir_path, param);
         } else if (persistence_type ==2) { // aof
-            need_to_build_from_scratch = load_aof_files(index_dir_path, rank, size, idx_anchor, 1);
+            need_to_build_from_scratch = load_aof_files(index_dir_path, param);
         }
         timer_pause(&loading_other_disk_index_time);
         loading_other_index_time = timer_delta_us(&loading_other_disk_index_time);
