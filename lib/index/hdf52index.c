@@ -23,6 +23,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
     art_tree *global_art = idx_anchor->root_art;
     char *file_path = idx_anchor->file_path;
     char *obj_path = idx_anchor->obj_path;
+    int into_art = 1;
     stopwatch_t one_attr;   
     timer_start(&one_attr);
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, attr->attr_name, strlen(attr->attr_name));
@@ -48,9 +49,12 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
                 leaf_cnt->is_numeric = 0;
                 leaf_cnt->art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
             default:
+                into_art = 0;
                 break;
         }
-        art_insert(global_art, attr->attr_name, strlen(attr->attr_name), leaf_cnt);
+        if (into_art == 1) {
+            art_insert(global_art, attr->attr_name, strlen(attr->attr_name), leaf_cnt);
+        }
     }
 
     switch(attr->attr_type) {
@@ -68,6 +72,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
             break;
         default:
             // printf("Ignore unsupported attr_type for attribute %s\n", name);
+            // into_art = 0;
             break;
     }
     timer_pause(&one_attr);
