@@ -81,7 +81,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
         void *entry;
         size_t k_size;
         void *key;
-        if (leaf_cnt->is_float!=1) {
+        if (leaf_cnt->is_float==0) {
             k_size = sizeof(int);
             int *_attr_value = (int *)attr_val;
             key = &(_attr_value[i]);

@@ -405,9 +405,12 @@ int read_into_path_list(linked_list_t *list, FILE *stream){
 }
 
 int read_into_file_obj_list(linked_list_t *list, FILE *stream){
-    file_obj_pair_t *pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
     size_t *file_pos = miqs_read_size_t(stream);
     size_t *obj_pos = miqs_read_size_t(stream);
+    if (list == NULL) {
+        return 0;
+    }
+    file_obj_pair_t *pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
     pair->file_list_pos = *file_pos;
     pair->obj_list_pos = *obj_pos;
     return list_push_value(list, pair);
@@ -416,6 +419,14 @@ int read_into_file_obj_list(linked_list_t *list, FILE *stream){
 int read_file_obj_path_pair_list(value_tree_leaf_content_t *vtree_leaf, FILE *stream){
     int rst = 0;
     size_t *list_len = miqs_read_size_t(stream);
+
+    if (vtree_leaf==NULL) {
+        size_t i = 0;
+        for (i = 0; i < *list_len; i++){
+            rst = rst | read_into_file_obj_list(NULL, stream);
+        }
+        return rst;
+    }
     vtree_leaf->file_obj_pair_list=list_create();
     size_t i = 0;
     for (i = 0; i < *list_len; i++){
@@ -428,18 +439,32 @@ int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE
     value_tree_leaf_content_t *val_leaf = (value_tree_leaf_content_t *)
                     calloc(1, sizeof(value_tree_leaf_content_t));
     int rst = 0;
+    void *_value = NULL;
     if (type == 3){
-        char *val = miqs_read_string(stream);
-        art_insert(attr_val_node->art, (const unsigned char *)val, strlen(val), val_leaf);
-        rst = 0;
+        _value = miqs_read_string(stream);
+        if (_value) {
+            char *val = (char *)_value;
+            art_insert(attr_val_node->art, (const unsigned char *)val, strlen(val), val_leaf);
+            rst = 0;
+        }
     } else if (type == 2){
-        double *val = miqs_read_double(stream);
-        rst = rbt_add(attr_val_node->rbt, val, sizeof(double), val_leaf);
+        _value = miqs_read_double(stream);
+        if (_value) {
+            double *val = (double *)_value;
+            rst = rbt_add(attr_val_node->rbt, val, sizeof(double), val_leaf);
+        }
     } else if (type == 1) {
-        int *val = miqs_read_int(stream);
-        rst = rbt_add(attr_val_node->rbt, val, sizeof(int), val_leaf);
+        _value = miqs_read_int(stream);
+        if (_value) {
+            int *val = (int *)_value;
+            rst = rbt_add(attr_val_node->rbt, val, sizeof(int), val_leaf);
+        }
     }
-    rst = rst | read_file_obj_path_pair_list(val_leaf, stream);
+    if (_value) {
+        rst = rst | read_file_obj_path_pair_list(val_leaf, stream);
+    } else {
+        rst = 1;
+    }
     return rst;
 }
 
