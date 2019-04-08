@@ -5,17 +5,17 @@
 
 
 int is_specified_field(char *name, index_anchor *idx_anchor) {
-    int is_specified_field = 0;
+    int rst = 0;
     if (idx_anchor->num_indexed_field > 0) {
         int f = 0;
         for (f = 0; f < idx_anchor->num_indexed_field; f++) {
             if (strcmp(name, idx_anchor->indexed_attr[f]) == 0) {
-                is_specified_field = 1;
+                rst = 1;
                 break;
             }
         } 
     }
-    return is_specified_field;
+    return rst;
 }
 
 
@@ -128,13 +128,11 @@ int on_attr(void *opdata, h5attribute_t *attr){
     int ir_type = 1;
 
     idx_anchor->total_num_attrs+=1;
-
-    int is_specified_field = is_specified_field(name, idx_anchor);
     
     // Create in-memory index according to specified field list.
     int build_index = 0;
     if (idx_anchor->num_indexed_field > 0) {
-        if (is_specified_field == 1){
+        if (is_specified_field(name, idx_anchor) == 1){
             build_index = 1;
         }
     } else {
