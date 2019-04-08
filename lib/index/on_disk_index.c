@@ -314,7 +314,12 @@ int append_string_value_tree(art_tree *art, FILE *stream){
  */
 int append_numeric_value_tree(rbt_t *rbt, int is_float, FILE *stream){
     // 1. type
-    int type = is_float?2:1;
+    int type = 1;
+    if (is_float == 0) {
+        type = 1;
+    } else if (is_float==1) {
+        type = 2;
+    }
     miqs_append_type(type, stream);
     // 2. number of values
     uint64_t num_num_value = rbt_size(rbt);
