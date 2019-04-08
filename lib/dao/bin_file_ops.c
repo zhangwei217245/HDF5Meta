@@ -112,6 +112,21 @@ size_t miqs_skip_field(FILE *stream){
     return rst;
 }
 
+void *miqs_read_index_numeric_value(int *is_float, FILE *file){
+    int type = 1;
+    size_t len = 1;
+    void **data = (void **)calloc(1,sizeof(void *));
+    miqs_read_general(&type, &len, data, file);
+    if (len == 1) {
+        if (type == 1) {
+            *is_float = 0;
+        } else if (type == 2){
+            *is_float = 1;
+        }
+    }
+    return *data;
+}
+
 int *miqs_read_int(FILE *file){
     int type = 1;
     size_t len = 1;

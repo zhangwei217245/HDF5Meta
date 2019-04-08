@@ -27,6 +27,8 @@ int *miqs_read_int(FILE *file);
 
 double *miqs_read_double(FILE *file);
 
+void *miqs_read_index_numeric_value(int *is_float, FILE *file);
+
 char *miqs_read_string(FILE *file);
 
 uint64_t *miqs_read_uint64(FILE *file);

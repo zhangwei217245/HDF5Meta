@@ -327,9 +327,9 @@ int append_numeric_value_tree(rbt_t *rbt, int is_float, FILE *stream){
     // 3. value nodes
     int rst = 0;
     if (is_float){
-        rst = rbt_walk(rbt, append_int_value_node, stream);
-    } else {
         rst = rbt_walk(rbt, append_float_value_node, stream);
+    } else {
+        rst = rbt_walk(rbt, append_int_value_node, stream);
     }
     return rst;
 }
@@ -452,19 +452,22 @@ int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE
             art_insert(attr_val_node->art, (const unsigned char *)val, strlen(val), val_leaf);
             rst = 0;
         }
-    } else if (type == 2){
-        _value = miqs_read_double(stream);
-        if (_value) {
-            double *val = (double *)_value;
-            rst = rbt_add(attr_val_node->rbt, val, sizeof(double), val_leaf);
-        }
-    } else if (type == 1) {
-        _value = miqs_read_int(stream);
-        if (_value) {
-            int *val = (int *)_value;
-            rst = rbt_add(attr_val_node->rbt, val, sizeof(int), val_leaf);
+    } else {
+        if (type == 2){
+            _value = miqs_read_double(stream);
+            if (_value) {
+                double *val = (double *)_value;
+                rst = rbt_add(attr_val_node->rbt, val, sizeof(double), val_leaf);
+            }
+        } else if (type == 1) {
+            _value = miqs_read_int(stream);
+            if (_value) {
+                int *val = (int *)_value;
+                rst = rbt_add(attr_val_node->rbt, val, sizeof(int), val_leaf);
+            }
         }
     }
+    
     if (_value) {
         rst = rst | read_file_obj_path_pair_list(val_leaf, stream);
     } else {
