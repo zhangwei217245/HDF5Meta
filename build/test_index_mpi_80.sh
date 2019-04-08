@@ -19,7 +19,7 @@ N_NODE=80
 
 DATASET_NAME="/global/cscratch1/sd/houhun/h5boss_v1"
 COUNT=$N_NODE
-ATTRNUM=16
+ATTRNUM=0
 PERSISTENCE_TYPE=1
 INDEX_DIR=/global/cscratch1/sd/wzhang5/data/miqs/idx80
 
