@@ -375,8 +375,8 @@ main(int argc, char *argv[])
         }
     }
     timer_pause(&timer_search);
-    println("[META_SEARCH_MEMO] Time for 1024 queries on %d indexes and spent %d microseconds.  %d", 
-    num_indexed_field, timer_delta_us(&timer_search), numrst);
+    println("[META_SEARCH_MEMO] Rank %d : Time for 1024 queries on %d indexes and spent %d microseconds.  %d", 
+    rank, num_indexed_field, timer_delta_us(&timer_search), numrst);
 
     // search on disk
     // timer_start(&timer_search);
