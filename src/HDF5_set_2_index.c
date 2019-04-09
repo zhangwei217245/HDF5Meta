@@ -36,6 +36,16 @@ int is_hdf5(const struct dirent *entry){
     return 0;
 }
 
+
+int parse_single_hdf5_file(char *filepath, void *args){
+    index_file_loading_param_t *pargs = (index_file_loading_param_t *)args;
+    pargs->current_file_count = pargs->current_file_count+1;
+    if (pargs->current_file_count % pargs->size != pargs->rank) {
+        return 0;
+    }
+    parse_hdf5_file(filepath);
+}
+
 int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
 
     char *filepath = (char *)calloc(512, sizeof(char));
@@ -46,15 +56,6 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
 
     print_mem_usage(filepath);
     return 1;
-}
-
-int parse_single_hdf5_file(char *filepath, void *args){
-    index_file_loading_param_t *pargs = (index_file_loading_param_t *)args;
-    pargs->current_file_count = pargs->current_file_count+1;
-    if (pargs->current_file_count % pargs->size != pargs->rank) {
-        return 0;
-    }
-    parse_hdf5_file(filepath);
 }
 
 int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
