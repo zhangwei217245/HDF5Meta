@@ -10,8 +10,8 @@
 #SBATCH -J INSERT_INDEX_100
 #SBATCH -A m2621
 #SBATCH --mem=40GB
-#SBATCH -o /global/cscratch1/sd/wzhang5/data/miqs/o%j.insert_index_100
-#SBATCH -e /global/cscratch1/sd/wzhang5/data/miqs/o%j.insert_index_100
+#SBATCH -o /global/cscratch1/sd/wzhang5/data/miqs/o%j.insert_index_101
+#SBATCH -e /global/cscratch1/sd/wzhang5/data/miqs/o%j.insert_index_101
 # #DW jobdw capacity=2000GB access_mode=striped type=scratch pool=sm_pool
 
 
