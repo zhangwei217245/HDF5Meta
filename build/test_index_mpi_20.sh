@@ -20,8 +20,8 @@ N_NODE=20
 DATASET_NAME="/global/cscratch1/sd/houhun/h5boss_v1"
 COUNT=$N_NODE
 ATTRNUM=16
-PERSISTENCE_TYPE=1
-INDEX_DIR=/global/cscratch1/sd/wzhang5/data/miqs/idx22
+PERSISTENCE_TYPE=2
+INDEX_DIR=/global/cscratch1/sd/wzhang5/data/miqs/idx24
 
 PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 1 --mem=40960 --gres=craynetwork:1"
 
