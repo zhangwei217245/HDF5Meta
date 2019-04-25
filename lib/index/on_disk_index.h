@@ -83,7 +83,8 @@ int append_path_list(linked_list_t *list, FILE *stream);
 int read_into_path_list(linked_list_t *list, FILE *stream);
 int read_into_attr_root_tree(art_tree *art, FILE *stream);
 
-
+size_t get_num_kv_pairs_loaded_mdb();
+size_t get_num_attrs_loaded_mdb();
 
 int is_aof(const struct dirent *entry);
 
