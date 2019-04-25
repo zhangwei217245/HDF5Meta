@@ -37,6 +37,22 @@ int search_number_from_tsearch_index(void *index_root, void *key, void **out){
     return rst;
 }
 
+void walk_with_range(const void *nodep, VISIT value, int level){
+    // the problem is that the callback function does not take any
+    // user-provided parameter and there is no way to pass the boundaries
+    // of the range condition to callback function. 
+}
+
+linked_list_t *search_numeric_range_from_tsearch_index(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size){
+    linked_list_t *rst = NULL;
+    if (index_root == NULL){
+        return rst;
+    }
+    twalk(index_root, walk_with_range);
+    return rst; // seems like we cannot provide such implementation 
+                //and currently there is no need for this. 
+}
+
 size_t get_mem_in_tsearch(){
     return 0;
 }

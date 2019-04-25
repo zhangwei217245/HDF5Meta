@@ -140,6 +140,39 @@ int rbt_walk(rbt_t *rbt, rbt_walk_callback cb, void *priv);
 int rbt_walk_sorted(rbt_t *rbt, rbt_walk_callback cb, void *priv);
 
 /**
+ * @brief Walk the node with its key within the given range in the tree and call the callback for each visited node
+ * @param rbt  A valid pointer to an initialized rbt_t structure
+ * @param begin_key key to begin with 
+ * @param bgk_size size of the key to  begin with
+ * @param end_key key to end with
+ * @param edk_size size of the key to end with
+ * @param cb   The callback to call for each visited node
+ * @param priv A pointer to private data provided passed as argument to the
+ *             callback when invoked.
+ * @return The number of visited nodes
+ * 
+ */
+int rbt_range_walk(rbt_t *rbt, void *begin_key, size_t bgk_size,
+    void *end_key, size_t edk_size, rbt_walk_callback cb, void *priv);
+
+
+/**
+ * @brief Walk the node with its key within the given range in the tree in ascending order and call the callback for each visited node
+ * @param rbt  A valid pointer to an initialized rbt_t structure
+ * @param begin_key key to begin with 
+ * @param bgk_size size of the key to  begin with
+ * @param end_key key to end with
+ * @param edk_size size of the key to end with
+ * @param cb   The callback to call for each visited node
+ * @param priv A pointer to private data provided passed as argument to the
+ *             callback when invoked.
+ * @return The number of visited nodes
+ */
+int rbt_range_walk_sorted(rbt_t *rbt, void *begin_key, size_t bgk_size,
+    void *end_key, size_t edk_size, rbt_walk_callback cb, void *priv);
+
+
+/**
  * @brief Return the size of the tree, which is the number of nodes in the tree
  * @param rbt  A valid pointer to an initialized rbt_t structure
  * @return The number of nodes in the tree. 

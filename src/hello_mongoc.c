@@ -233,7 +233,7 @@ main (int argc, char *argv[])
 {
 
     int64_t doc_count = init_db();
-    printf("successfully init db, %d documents in mongodb.\n", doc_count);    
+    printf("successfully init db, %lld documents in mongodb.\n", doc_count);    
 
     char* filename;
     char test_opt;

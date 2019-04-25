@@ -37,6 +37,7 @@ typedef int (*libhl_cmp_callback_t)(void *k1,
                                     size_t k2size);
 
 
+
 #define LIBHL_CMP_KEYS_TYPE(_type, _k1, _k1s, _k2, _k2s) \
 { \
     if (_k1s < sizeof(_type) || _k2s < sizeof(_type) || _k1s != _k2s) \

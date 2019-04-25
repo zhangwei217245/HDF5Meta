@@ -261,7 +261,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
             /* puts(" 'H5T_INTEGER'."); */
 
             if (1 == is_compound) {
-                sprintf(tmp_str, "I%lu,", size);
+                sprintf(tmp_str, "I%llu,", size);
                 //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             }
@@ -281,7 +281,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
         } else if(t_class == H5T_FLOAT) {
             /* puts(" 'H5T_FLOAT'."); */
             if (1 == is_compound) {
-                sprintf(tmp_str, "F%lu,", size);
+                sprintf(tmp_str, "F%llu,", size);
                 //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_string(tmp_str));
             }
@@ -348,7 +348,7 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
                 json_object_object_add(jsonobj, key_name, json_object_new_string(attr_string));
             } // End if is_compound == 0
             else {
-                sprintf(tmp_str, "S%lu,", size);
+                sprintf(tmp_str, "S%llu,", size);
                 //println("%s",tmp_str);
                 json_object_object_add(jsonobj, key_name, json_object_new_string(attr_string));
             }
@@ -389,11 +389,11 @@ do_dtype(hid_t tid, hid_t oid, int is_compound, char *key_name, json_object *jso
             H5Tget_array_dims2(tid, dims);
             /* printf(" 'H5T_ARRAY', ndim=%d:  ", ndim); */
             // FIXME: to confirm what is the structure of this array. Should we include 'ndim' in the array?
-            sprintf(tmp_str, "A%d", ndim);
+            sprintf(tmp_str, "A%llu", ndim);
             //println("%s",tmp_str);
             for (i = 0; i < ndim; i++) {
                 /* printf("%d, ", dims[i]); */
-                sprintf(tmp_str, "_%d", dims[i]);
+                sprintf(tmp_str, "_%llu", dims[i]);
                 //println("%s",tmp_str);
                 // json_object_array_add(subarray, json_object_new_int(dims[i]));
             }

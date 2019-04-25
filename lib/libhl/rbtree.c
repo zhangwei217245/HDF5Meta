@@ -75,6 +75,76 @@ rbt_destroy(rbt_t *rbt)
 }
 
 static int
+rbt_range_walk_internal(rbt_t *rbt, rbt_node_t *node, void *begin_key, size_t bgk_size,
+                    void *end_key, size_t edk_size, int sorted, rbt_walk_callback cb, void *priv)
+{
+    if (!node)
+        return 0;
+
+    int rc = 1;
+    int cbrc = 0;
+
+    if (sorted && node->left) {
+        int rrc = rbt_range_walk_internal(rbt, node->left, 
+        begin_key, bgk_size,
+        end_key, edk_size, sorted, cb, priv);
+        if (rrc == 0)
+            return rc + 1;
+        rc += rrc;
+    }
+
+    if (rbt->cmp_keys_cb(begin_key, bgk_size, end_key, edk_size) < 0 && 
+            rbt->cmp_keys_cb(node->key, node->klen, begin_key, bgk_size) >= 0 &&
+            rbt->cmp_keys_cb(node->key, node->klen, end_key, edk_size) < 0){
+        cbrc = cb(rbt, node->key, node->klen, node->value, priv);
+        switch(cbrc) {
+            case RBT_WALK_DELETE_AND_STOP:
+                rbt_remove(rbt, node->key, node->klen, NULL);
+                return 0;
+            case RBT_WALK_DELETE_AND_CONTINUE:
+                {
+                    if (node->left && node->right) {
+                        rbt_remove(rbt, node->key, node->klen, NULL);
+                        return rbt_range_walk_internal(rbt, node, begin_key, bgk_size,
+                end_key, edk_size, sorted, cb, priv);
+                    } else if (node->left || node->right) {
+                        return rbt_range_walk_internal(rbt, node->left ? node->left : node->right, begin_key, bgk_size,
+                end_key, edk_size, sorted, cb, priv);
+                    }
+                    // this node was a leaf
+                    return 1;
+                }
+            case RBT_WALK_STOP:
+                return 0;
+            case RBT_WALK_CONTINUE:
+                break;
+            default:
+                // TODO - Error Messages
+                break;
+        }
+    } else {
+        return 0; // just like WALK_STOP
+    }
+
+    if (!sorted && node->left) {
+        int rrc = rbt_range_walk_internal(rbt, node->left, begin_key, bgk_size,
+            end_key, edk_size, sorted, cb, priv);
+        if (rrc == 0)
+            return rc + 1;
+        rc += rrc;
+    }
+
+    if (node->right) {
+        int rrc = rbt_range_walk_internal(rbt, node->right, begin_key, bgk_size,
+            end_key, edk_size, sorted, cb, priv);
+        if (rrc == 0)
+            return rc + 1;
+        rc += rrc;
+    }
+    return rc;
+}
+
+static int
 rbt_walk_internal(rbt_t *rbt, rbt_node_t *node, int sorted, rbt_walk_callback cb, void *priv)
 {
     if (!node)
@@ -146,6 +216,26 @@ rbt_walk_sorted(rbt_t *rbt, rbt_walk_callback cb, void *priv)
 {
     if (rbt->root)
         return rbt_walk_internal(rbt, rbt->root, 1, cb, priv);
+
+    return 0;
+}
+
+
+int rbt_range_walk(rbt_t *rbt, void *begin_key, size_t bgk_size,
+                    void *end_key, size_t edk_size, rbt_walk_callback cb, void *priv){
+    if (rbt->root)
+        return rbt_range_walk_internal(rbt, rbt->root, begin_key, bgk_size,
+        end_key, edk_size, 0, cb, priv);
+
+    return 0;
+}
+
+
+int rbt_range_walk_sorted(rbt_t *rbt, void *begin_key, size_t bgk_size,
+                    void *end_key, size_t edk_size, rbt_walk_callback cb, void *priv){
+    if (rbt->root)
+        return rbt_range_walk_internal(rbt, rbt->root, begin_key, bgk_size,
+        end_key, edk_size, 1, cb, priv);
 
     return 0;
 }

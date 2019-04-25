@@ -2,13 +2,17 @@
 #define MIQS_SPARSE_ARRAY_NUMBER_INDEX_H
 
 #include "../libhl/sparse_array.h"
+#include "../libhl/linklist.h"
 
 
 int create_sparse_array_index(void **idx_ptr);
 
-int insert_number_to_sparse_array(void *index_root, void *number, size_t num_size, void *data);
+int insert_number_to_sparse_array(void *index_root, void *key, size_t klen, void *data);
 
-int search_number_from_sparse_array(void *index_root, void *number, size_t num_size, void **out);
+int search_number_from_sparse_array(void *index_root, void *key, size_t klen, void **out);
+
+linked_list_t *search_numeric_range_from_sparse_array(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size);
+// linked_list_t *search_numeric_range_from_sparse_array(void *index_root, size_t begin, size_t end);
 
 size_t get_mem_in_sparse_array();
 

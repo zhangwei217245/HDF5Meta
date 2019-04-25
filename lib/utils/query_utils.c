@@ -63,11 +63,12 @@ char *gen_tags(int obj_id){
     int tag_num = obj_id%20;
     char *ret=NULL;
     for (j=0 ; j <= tag_num; j++){
-        // char *fspace=ret;
-        asprintf(&ret, "%stag%d=%d%d,", j, obj_id, j);
-        // if (strlen(fspace)>0){
-        //     free(fspace);
-        // }
+        char *fspace = (char *)calloc(strlen(ret)+1, sizeof(char));
+        strcpy(fspace, ret);
+        asprintf(&ret, "%stag%d=%d%d,", fspace, j, obj_id, j);
+        if (strlen(fspace)>0){
+            free(fspace);
+        }
     }
     ret[strlen(ret)-1]='\0';
     return ret;

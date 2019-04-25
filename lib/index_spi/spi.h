@@ -4,11 +4,17 @@
 #include "../include/base_stdlib.h"
 #include "../utils/string_utils.h"
 #include "../libhl/comparators.h"
+#include "../libhl/linklist.h"
 
 
 #define MIQS_STRING_IDX_VAR_NAME "MIQS_STR_IDX_IMPL"
 #define MIQS_NUMBER_IDX_VAR_NAME "MIQS_NUM_IDX_IMPL"
 
+typedef enum affix_type{
+    PREFIX = 0,
+    SUFFIX = 1,
+    INFIX = 2
+} affix_type_t;
 
 /**
  * create index data structure and initialize it. 
@@ -35,6 +41,9 @@ int update_string(void *index_root, char *key, void *newdata);
  * if len = 0, it is an exact search. Otherwise, it is an affix search.
  */
 int search_string(void *index_root, char *key, int len, void **out);
+
+
+linked_list_t *search_affix(void *index_root, affix_type_t afx_type, char *affix);
 
 /**
  * Get string data structure memory consumption
@@ -65,6 +74,8 @@ int update_number(void *index_root, void *key, size_t ksize, void *newdata);
  * search a number on the index for related data. 
  */
 int search_number(void *index_root, void *key, size_t ksize, void **out);
+
+linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size);
 
 
 int destroy_number_index(void **idx_ptr);

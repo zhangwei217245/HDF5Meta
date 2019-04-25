@@ -90,6 +90,40 @@ skiplist_search(skiplist_t *skl, void *key, size_t klen)
     return NULL;
 }
 
+
+
+void
+skiplist_range_search(skiplist_t *skl, void *begin_key, size_t bgklen, 
+    void *end_key, size_t edklen, skiplist_range_search_cb cb, void *user)
+{
+    int i = skl->num_layers-1;
+    skl_item_wrapper_t *prev_item = NULL;
+    while (i >= 0) {
+        skl_item_wrapper_t *item;
+        if (prev_item)
+            item = TAILQ_NEXT(&prev_item->data->wrappers[i], next);
+        else
+            item = TAILQ_FIRST(&skl->layers[i]);
+
+        while (item) {
+            if (skl->cmp_keys_cb(begin_key, bgklen, end_key, edklen) < 0 && 
+            skl->cmp_keys_cb(item->data->key, item->data->klen, 
+                            begin_key, bgklen) > 0)
+                break;
+            prev_item = item;
+            item = TAILQ_NEXT(item, next);
+        }
+        if (i == 0) {
+            if (skl->cmp_keys_cb(item->data->key, item->data->klen, 
+                            end_key, edklen) <= 0 && prev_item){
+                cb(skl, prev_item->data->key, prev_item->data->klen,
+                    prev_item->data->value, user);
+            }
+        }
+        i--;
+    }
+}
+
 int
 skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
 {

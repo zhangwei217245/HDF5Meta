@@ -1,4 +1,29 @@
 cmake_minimum_required(VERSION 2.8)
+
+# Setup cmake policies.
+foreach(p
+    CMP0012
+    CMP0013
+    CMP0014
+    CMP0022 # CMake 2.8.12
+    CMP0025 # CMake 3.0
+    CMP0053 # CMake 3.1
+    CMP0054 # CMake 3.1
+  )
+  if(POLICY ${p})
+    cmake_policy(SET ${p} NEW)
+  endif()
+endforeach()
+
+# Set a consistent MACOSX_RPATH default across all CMake versions.
+# When CMake 2.8.12 is required, change this default to 1.
+# When CMake 3.0.0 is required, remove this block (see CMP0042).
+if (APPLE) 
+  if(NOT DEFINED CMAKE_MACOSX_RPATH)
+    set(CMAKE_MACOSX_RPATH 0)
+  endif()
+endif()
+
 PROJECT(HDF5Meta)
 
 #-----------------------------------------------------------------------------

@@ -140,6 +140,34 @@ int search_string(void *index_root, char *key, int len, void **out){
     return rst; 
 }
 
+linked_list_t *search_affix(void *index_root, affix_type_t afx_type, char *affix){
+    linked_list_t *rst = NULL;
+    const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
+
+    stopwatch_t time_to_search;
+    timer_start(&time_to_search);
+
+    // if (s != NULL) {
+    //     if (strcmp(s, "HASHTABLE")==0) {
+    //         rst = search_affix_in_hashtable(index_root, afx_type, affix);
+    //     } else if (strcmp(s, "SBST")==0) {
+    //         rst = search_affix_in_rbtree(index_root, afx_type, affix);
+    //     } else if (strcmp(s, "TRIE")==0) {
+    //         rst = search_affix_in_trie(index_root, afx_type, affix);
+    //     } else {
+    //         rst = search_affix_in_art(index_root, afx_type, affix);
+    //     }
+    // } else {
+    //     rst = search_affix_in_art(index_root, afx_type, affix);
+    // }
+    
+    timer_pause(&time_to_search);
+    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    println("[%s]Time to search is %ld ns.", s, index_search_duration);
+
+    return rst; 
+}
+
 size_t get_string_ds_mem(){
     size_t rst = 0;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
@@ -301,6 +329,36 @@ int search_number(void *index_root, void *key, size_t ksize, void **out){
     println("[%s]Time to search is %ld ns.", s, index_search_duration);
     return rst; 
 }
+
+
+linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size){
+    const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    linked_list_t *result_list=list_create();
+
+    stopwatch_t time_to_search;
+    timer_start(&time_to_search);
+    if (s != NULL) {
+        if (strcmp(s, "SPARSEARRAY")==0) {
+            result_list = search_numeric_range_from_sparse_array(index_root, begin_key, bgk_size, end_key, edk_size);
+        } else if (strcmp(s, "SBST")==0) {
+            result_list = search_numeric_range_from_rbtree(index_root, begin_key, bgk_size, end_key, edk_size);
+        } else if (strcmp(s, "SKIPLIST")==0) {
+            result_list = search_numeric_range_from_skiplist(index_root, begin_key, bgk_size, end_key, edk_size);
+        } else {
+            perror("[RANGE_SEARCH]Data Structure not specified, fallback to tsearch\n");
+            result_list = search_numeric_range_from_tsearch_index(index_root, begin_key, bgk_size, end_key, edk_size);
+        }
+    } else {
+        perror("[RANGE_SEARCH]Data Structure not specified, fallback to tsearch\n");
+        result_list = search_numeric_range_from_tsearch_index(index_root, begin_key, bgk_size, end_key, edk_size);
+    }
+    timer_pause(&time_to_search);
+    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    println("[%s]Time to finish range query is %ld ns.", s, index_search_duration);
+
+    return result_list;
+}
+
 
 int destroy_number_index(void **idx_ptr){
     int rst = -1;

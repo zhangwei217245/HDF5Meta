@@ -26,6 +26,7 @@ typedef struct _skiplist_s skiplist_t;
  */
 typedef void (*skiplist_free_value_callback_t)(void *value);
 
+
 /**
  * @brief Create a new skip list
  * @param num_layers    The number of layers used by the skip list
@@ -79,6 +80,13 @@ void *skiplist_search(skiplist_t *skl, void *key, size_t klen);
  * @param skl  A valid pointer to an initialized skiplist_t structure
  */
 void skiplist_destroy(skiplist_t *skl);
+
+
+typedef void (*skiplist_range_search_cb)(skiplist_t *skl, void *key, size_t klen, void *value, void *user);
+
+void
+skiplist_range_search(skiplist_t *skl, void *begin_key, size_t bgklen, 
+    void *end_key, size_t edklen, skiplist_range_search_cb cb, void *user);
 
 /**
  * @brief Return the number of elements in the skip list
