@@ -33,7 +33,7 @@ int search_string_in_hashtable(void *index_root, char *key, size_t len, void **o
     return dlen;
 }
 
-ht_iterator_status_t affix_match_cb(hashtable_t *table, void *key, size_t klen, void *value, size_t vlen, void *user){
+ht_iterator_status_t ht_affix_match_cb(hashtable_t *table, void *key, size_t klen, void *value, size_t vlen, void *user){
     affix_t *affix_info = (affix_t *)user;
     if (is_matching_given_affix((const char *)key, affix_info)) {
         linked_list_t *collector = (linked_list_t *)affix_info->user;
@@ -50,7 +50,7 @@ linked_list_t *search_affix_in_hashtable(void *index_root, pattern_type_t afx_ty
     rst = list_create();
     hashtable_t *table = (hashtable_t *)index_root;
     affix_t *affix_info = create_affix_info((const char *)affix, strlen(affix), afx_type, rst);
-    ht_foreach_pair(table, affix_match_cb, affix_info);
+    ht_foreach_pair(table, ht_affix_match_cb, affix_info);
     return rst;
 }
 
