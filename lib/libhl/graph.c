@@ -16,7 +16,7 @@ struct _graph_s {
     char *label;
     hashtable_t *nodes;
     graph_free_value_callback_t free_value_cb;
-    int errno;
+    int errid;
 };
 
 struct _graph_node_connection_s {
@@ -90,10 +90,10 @@ graph_node_delete(graph_t *graph, char *label __attribute__ ((unused)), graph_no
     graph_node_t *node = NULL;
     int rc = ht_delete(graph->nodes, node->label, strlen(node->label), (void **)&node, NULL);
     if (rc != 0) {
-        graph->errno = EGRAPHTABLEERR;
+        graph->errid = EGRAPHTABLEERR;
         return -1;
     } else if (!node) {
-        graph->errno = EGRAPHNONODE;
+        graph->errid = EGRAPHNONODE;
         return -1;
     }
 
@@ -108,13 +108,13 @@ static inline graph_node_t *
 graph_node_create(graph_t *graph, char *label, void *value, size_t vlen)
 {
     if (!label) { 
-        graph->errno = EGRAPHNOLABEL;
+        graph->errid = EGRAPHNOLABEL;
         return NULL;
     }
 
     graph_node_t *node = calloc(1, sizeof(graph_node_t));
     if (!node) {
-        graph->errno = EGRAPHNOMEM;
+        graph->errid = EGRAPHNOMEM;
         return NULL;
     }
 
@@ -133,7 +133,7 @@ graph_node_add(graph_t *graph, char *label, void *value, size_t vsize)
     node->graph = graph;
     TAILQ_INIT(&node->connections);
     if (ht_set(graph->nodes, label, strlen(label), node, sizeof(graph_node_t)) != 0) {
-        graph->errno = EGRAPHTABLEERR;
+        graph->errid = EGRAPHTABLEERR;
         graph_node_destroy(node);
         return NULL;
     }
@@ -148,7 +148,7 @@ graph_node_connect(graph_node_t *node1,
 {
     graph_node_connection_t *connection = malloc(sizeof(graph_node_connection_t));
     if (!connection) {
-        node1->graph->errno = EGRAPHNOMEM;
+        node1->graph->errid = EGRAPHNOMEM;
         return -1;
     }
     connection->destination = node2;
@@ -169,7 +169,7 @@ graph_node_disconnect(graph_node_t *node1, graph_node_t *node2)
             return 0;
         }
     }
-    node1->graph->errno = EGRAPHCONNECTIONNOTFOUND;
+    node1->graph->errid = EGRAPHCONNECTIONNOTFOUND;
     return -1;
 }
 
@@ -225,7 +225,7 @@ graph_node_connections_get(graph_node_t *node, graph_node_t **connections, int m
 char *
 graph_strerror(graph_t *graph)
 {
-    int index = graph->errno - 600;
+    int index = graph->errid - 600;
     if (index >= 0 && index < (int)(sizeof(graph_error_messages) / sizeof(char *)))
         return graph_error_messages[index];
     return NULL;
@@ -233,5 +233,5 @@ graph_strerror(graph_t *graph)
 
 void
 graph_error_reset(graph_t *graph) {
-    graph->errno = EGRAPHNOERR;
+    graph->errid = EGRAPHNOERR;
 }
