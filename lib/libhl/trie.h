@@ -143,6 +143,35 @@ void *trie_find(trie_t *trie, char *key, size_t *vsize);
  */
 int trie_remove(trie_t *trie, char *key, void **value, size_t *vsize);
 
+/**
+ * @brief a callback function to when iterating all matching nodes for given prefix. 
+ * @param key_on_node: string key on the corresponding node
+ * @param value: the node value to be iterated
+ * @param vsize: the size of the node value
+ * @param user:  the user-provided data, can be a data collector. 
+ * @return : user-defined integer. Recommended to be the number of values collected, which is one :-)
+ */
+typedef int (*prefix_iter_callback_t)(char *key_on_node, void *value, size_t vsize, void *user);
+
+/**
+ * @brief iterating all given matching trie node for given prefix.
+ * @param trie      : the pointer to the trie
+ * @param prefix    : the given prefix
+ * @param cb        : iteration callback
+ * @param user      : the argument to pass to the callback function. 
+ * @return the sum of all callback returns. Can be the number of collected values. 
+ */
+int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void *user);
+
+/**
+ * @brief iterating all given matching trie node for given prefix.
+ * @param trie      : the pointer to the trie
+ * @param cb        : iteration callback
+ * @param user      : the argument to pass to the callback function. 
+ * @return the sum of all callback returns. Can be the number of collected values. 
+ */
+int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user);
+
 size_t get_mem_usage_by_all_tries();
 
 #ifdef __cplusplus

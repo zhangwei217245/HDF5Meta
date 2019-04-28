@@ -4,7 +4,14 @@
 #include "trie.h"
 #include "../profile/mem_perf.h"
 
+#define COMMON_STR_LEN 4096
+
 size_t mem_usage_by_all_tries;
+
+typedef struct _trie_iterated_char_seq_s{
+    char *seq;
+    size_t pos;
+} trie_iterated_char_seq_t;
 
 typedef struct _trie_node_s {
     void *value;
@@ -104,12 +111,89 @@ trie_node_set_value(trie_t *trie, trie_node_t *node, void *value, size_t vsize, 
     }
 }
 
+static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb, trie_iterated_char_seq_t *visited, void *user){
+    int rst = 0;
+    if (visited == NULL){
+        return rst;
+    }
+    if(node) {
+        if (strlen(visited->seq) >= visited->pos ){ 
+            // just in case visited-seq is not sufficient for concatenating more characters
+            char *new_space = realloc(visited->seq, strlen(visited->seq)*2*sizeof(char));
+            if (new_space == NULL) {
+                return 0;
+            } else {
+                if (visited->seq != new_space) {
+                    visited->seq = new_space;
+                }
+            }
+        }
+        // Concatenating one more character on the path
+        visited->seq[visited->pos]=node->pidx;
+        if (node->value){
+            rst = cb(visited->seq, node->value, node->vsize, user);
+        }        
+        int i = 0;
+        for (i = 0; i < node->num_children; i++) {
+            trie_node_t *child_node = node->child[i];
+            if (child_node) {
+                // For each non-empty child, we recursively call the function and
+                // before getting into the recursive call, we increase the pos pointer by 1
+                visited->pos++;
+                rst+=trie_node_iterate(child_node, cb, visited, user);//DFS
+                // after the recursive call, let pos step back to where it was for visiting other children
+                visited->pos--;
+            }
+        }
+    }
+    return rst;
+}
+
+int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user){
+    int rst = 0;
+    trie_iterated_char_seq_t *visited = (trie_iterated_char_seq_t *)calloc(1, sizeof(trie_iterated_char_seq_t));
+    visited->seq = (char *)calloc(COMMON_STR_LEN, sizeof(char));
+    visited->pos = 0;
+    trie_node_t *node = trie->root;
+    if (node) {
+        // if there are still characters to be iterated, we start collect the result from the node. 
+        rst = trie_node_iterate(node, cb, visited, user);
+    }
+    return rst;
+}
+
+int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void *user){
+    int rst = 0;
+    trie_iterated_char_seq_t *visited = (trie_iterated_char_seq_t *)calloc(1, sizeof(trie_iterated_char_seq_t));
+    visited->seq = (char *)calloc(COMMON_STR_LEN, sizeof(char));
+    visited->pos = 0;
+    trie_node_t *node = trie->root, *tmp;
+    char *_prefix = prefix;
+    while (*_prefix && (tmp = node->child[(int)*_prefix])) { 
+        // iterate each character of given prefix until it reaches to the end of the prefix. 
+        visited->seq[visited->pos] = *_prefix; 
+        node = tmp;
+        ++_prefix;
+        visited->pos++;
+    }
+    if (*prefix) {
+        // if character iteration of the prefix is not ended, we consider no matching prefix in the trie. 
+        return 0;
+    } else {
+        if (node) {
+            // if there are still characters to be iterated, we start collect the result from the node. 
+            rst = trie_node_iterate(node, cb, visited, user);
+        }
+    }
+    return rst;
+}
+
 int
 trie_insert(trie_t *trie, char *key, void *value, size_t vsize, int copy)
 {
     trie_node_t *node = trie->root, *tmp;
     int new_nodes = 0;
-    while (*key && (tmp = node->child[(int)*key])) {
+    while (*key && (tmp = node->child[(int)*key])) { // skip some characters if given key is longer than the existing path. 
             node = tmp;
             ++key;
     }

@@ -19,7 +19,6 @@ typedef struct parallel_args{
 } parallel_args_t;
 
 
-
 extern int64_t init_db();
 extern int64_t clear_all_docs();
 extern void clear_all_indexes();

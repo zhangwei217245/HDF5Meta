@@ -3,6 +3,8 @@
 
 
 #include "../libhl/trie.h"
+#include "../libhl/linklist.h"
+#include "../utils/string_utils.h"
 
 
 int create_trie(void **idx_ptr);
@@ -10,6 +12,8 @@ int create_trie(void **idx_ptr);
 int insert_string_to_trie(void *index_root, char *key, void *data);
 
 int search_string_in_trie(void *index_root, char *key, size_t len, void **out);
+
+linked_list_t *search_affix_in_trie(void *index_root, pattern_type_t afx_type, char *affix);
 
 size_t get_mem_in_trie();
 

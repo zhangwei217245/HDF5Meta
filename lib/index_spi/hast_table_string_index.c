@@ -1,5 +1,6 @@
 #include "hash_table_string_index.h"
 
+
 int create_hashtable(void **idx_ptr){
     int rst = -1;
     if (idx_ptr == NULL) {
@@ -30,6 +31,27 @@ int search_string_in_hashtable(void *index_root, char *key, size_t len, void **o
     void *data = ht_get((hashtable_t *)index_root, key, len, &dlen);
     out[0] = data;
     return dlen;
+}
+
+ht_iterator_status_t affix_match_cb(hashtable_t *table, void *key, size_t klen, void *value, size_t vlen, void *user){
+    affix_t *affix_info = (affix_t *)user;
+    if (is_matching_given_affix((const char *)key, affix_info)) {
+        linked_list_t *collector = (linked_list_t *)affix_info->user;
+        list_push_value(collector, value);
+    }
+    return HT_ITERATOR_CONTINUE;
+}
+
+linked_list_t *search_affix_in_hashtable(void *index_root, pattern_type_t afx_type, char *affix){
+    linked_list_t *rst = NULL;
+    if (index_root == NULL) {
+        return rst;
+    }
+    rst = list_create();
+    hashtable_t *table = (hashtable_t *)index_root;
+    affix_t *affix_info = create_affix_info((const char *)affix, strlen(affix), afx_type, rst);
+    ht_foreach_pair(table, affix_match_cb, affix_info);
+    return rst;
 }
 
 size_t get_mem_in_hashtable(){

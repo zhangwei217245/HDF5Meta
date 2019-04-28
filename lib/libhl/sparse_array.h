@@ -13,9 +13,9 @@ extern "C" {
 #define SPA_SIZE_MIN 65536
 
 typedef struct{
-    size_t size; // Overall length of the array
-    size_t max_size; // maximum length of the array that has been specified
-    size_t count;  // number of non-empty elements in the array. 
+    size_t size;        // Overall length of the array
+    size_t max_size;    // maximum length of the array that has been specified
+    size_t count;       // number of non-empty elements in the array. 
 } spa_size_info_t;
 
 typedef void (*spa_free_item_callback_t)(void *);

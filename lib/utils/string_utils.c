@@ -5,6 +5,15 @@
 #include "string_utils.h"
 
 
+affix_t *create_affix_info(const char *body, size_t len, pattern_type_t affix_type, void *user){
+    affix_t *rst = (affix_t *)calloc(1, sizeof(affix_t));
+    rst->body = body;
+    rst->length = len;
+    rst->type = affix_type;
+    rst->user = user;
+    return rst;
+}
+
 int startsWith(const char *str, const char *pre){
     char *found = strstr(str, pre);
     return (found && (found - str) == 0);
@@ -55,6 +64,25 @@ int simple_matches(const char *str, const char *pattern){
         //free(tok);
     }
     return result;
+}
+
+int is_matching_given_affix(const char *str, affix_t *affix_info){
+    int matched = 0;
+    switch (affix_info->type) 
+    {
+    case PATTERN_PREFIX:
+        matched = startsWith(str, affix_info->body);
+        break;
+    case PATTERN_SUFFIX:
+        matched = endsWith(str, affix_info->body);
+        break;
+    case PATTERN_MIDDLE:
+        matched = contains(str, affix_info->body);
+        break;
+    default:
+        break;
+    }
+    return matched;
 }
 
 pattern_type_t determine_pattern_type(const char *pattern){

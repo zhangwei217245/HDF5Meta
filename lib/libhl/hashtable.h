@@ -16,6 +16,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "../utils/string_utils.h"
 #include "linklist.h"
 
 /**

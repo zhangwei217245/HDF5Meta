@@ -44,6 +44,7 @@ int parse_single_hdf5_file(char *filepath, void *args){
         return 0;
     }
     parse_hdf5_file(filepath);
+    return 0;
 }
 
 int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
@@ -55,6 +56,7 @@ int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
     parse_single_hdf5_file(filepath, arg);
 
     print_mem_usage(filepath);
+
     return 1;
 }
 

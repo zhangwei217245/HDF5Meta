@@ -35,6 +35,14 @@ typedef enum {
     PATTERN_MIDDLE  = 5
 } pattern_type_t;
 
+
+typedef struct{
+    const char *body;
+    size_t length;
+    pattern_type_t type;
+    void *user;
+} affix_t;
+
 typedef struct {
     char *start;
     size_t length;
@@ -167,12 +175,20 @@ void stderr_println(const char *format, ...);
  * ab*
  * *ab*
  * ab
+ * 
  *
  * @param str
  * @param pattern
- * @return
+ * @return 1 if matched and 0 if not. 
  */
 int simple_matches(const char *str, const char *pattern);
+
+/**
+ * To test if str is matching with the given affix
+ * return 1 if matched, return 0 if not. 
+ * 
+ */
+int is_matching_given_affix(const char *str, affix_t *affix_info);
 
 /**
  * get the reverse of a given string. 
@@ -208,5 +224,10 @@ char **gen_random_strings(int count, int maxlen, int alphabet_size);
  * Read text file and store each line of the text file as a string
  */
 char **read_words_from_text(const char *fileName, int *word_count);
+
+/**
+ * get affix info
+ */
+affix_t *create_affix_info(const char *body, size_t len, pattern_type_t affix_type, void *user);
 
 #endif //PDC_STRING_UTILS_H
