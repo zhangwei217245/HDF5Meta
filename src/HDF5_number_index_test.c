@@ -27,7 +27,7 @@ int main(int argc, const char *argv[]){
     int i, j; 
     int rank = 0, size = 1;
 
-    int count = 1000;
+    int count = 2000;
     char *dataset_name = "";
     if (argc >= 2) {
         dataset_name = (char *)argv[1];
@@ -84,8 +84,14 @@ int main(int argc, const char *argv[]){
     }
     timer_pause(&time_to_insert);
     suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    println("Total time to insert %d keys into %s is %ld us.", count,  getenv(MIQS_NUMBER_IDX_VAR_NAME), index_insertion_duration);
-
+    perf_info_t *perf_info = get_number_ds_perf_info(index_root);
+    size_t ds_mem = perf_info->mem_usage;
+    uint64_t n_comp = perf_info->num_of_comparisons;
+    uint64_t n_realloc = perf_info->num_of_reallocs;
+    stw_nanosec_t t_locate=perf_info->time_to_locate;
+    stw_nanosec_t t_expand=perf_info->time_for_expansion;
+    println("Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
+    count,  getenv(MIQS_NUMBER_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
 
     stopwatch_t time_to_search;
     timer_start(&time_to_search);
@@ -95,11 +101,13 @@ int main(int argc, const char *argv[]){
     }
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    println("Total time to search %d keys in %s is %ld us.", count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration);
+    perf_info = get_number_ds_perf_info(index_root);
+    n_comp = n_comp - perf_info->num_of_comparisons;
+    t_locate=t_locate - perf_info->time_to_locate;
+    println("Total time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
+    count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
 
-    perf_info_t *perf_info  =  get_number_ds_perf_info(index_root);
-    size_t ds_mem = perf_info->mem_usage;
-    println("Total memory consumed by %s is %ld", getenv(MIQS_NUMBER_IDX_VAR_NAME), ds_mem);
+
 
 #ifdef ENABLE_MPI
     MPI_Finalize();

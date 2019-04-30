@@ -74,7 +74,6 @@ int search_number(void *index_root, void *key, size_t ksize, void **out);
 
 linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size);
 
-
 int destroy_number_index(void **idx_ptr);
 
 perf_info_t *get_number_ds_perf_info(void *index_root);
