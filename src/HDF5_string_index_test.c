@@ -120,8 +120,31 @@ int main(int argc, char **argv){
     println("Total time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
     count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
 
-
-
+    pattern_type_t affix_types[]={
+        PATTERN_PREFIX,
+        PATTERN_SUFFIX,
+        PATTERN_MIDDLE
+    };
+    char *afx_type_names[]={
+        "PREFIX",
+        "SUFFIX",
+        "INFIX"
+        };
+    int k = 0;
+    for (k = 0; k < 3; k++) {
+        pattern_type_t affix_type= affix_types[k];
+        // stopwatch_t time_to_search;
+        timer_start(&time_to_search);
+        for (i = 0; i < count; i++) {
+            void *out;
+            search_affix(index_root, affix_type, get_affix(affix_type, keys[i]));
+        }
+        timer_pause(&time_to_search);
+        index_search_duration = timer_delta_us(&time_to_search);
+        println("Total time to search %d %s in %s is %ld us.", 
+        count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration);
+    }
+    
 #ifdef ENABLE_MPI
     MPI_Finalize();
 #endif
