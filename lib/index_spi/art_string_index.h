@@ -14,6 +14,6 @@ int search_string_in_art(void *index_root, char *key, size_t len, void **out);
 
 linked_list_t *search_affix_in_art(void *index_root, pattern_type_t afx_type, char *affix);
 
-size_t get_mem_in_art();
+// size_t get_mem_in_art();
 
 #endif // ENDIF MIQS_TRIE_STRING_INDEX_H

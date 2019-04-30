@@ -35,13 +35,19 @@ struct _rbt_s {
     uint64_t size;
     libhl_cmp_callback_t cmp_keys_cb;
     rbt_free_value_callback_t free_value_cb;
+    DECLARE_PERF_INFO_FIELDS
+    stw_nanosec_t time_for_rotate;
 };
 
 rbt_t *
 rbt_create(libhl_cmp_callback_t cmp_keys_cb,
               rbt_free_value_callback_t free_value_cb)
 {
-    rbt_t *rbt = ctr_calloc(1, sizeof(rbt_t), &mem_usage_by_all_rbtrees);
+    rbt_t *rbt = calloc(1, sizeof(rbt_t));
+    INIT_PERF_INFO_FIELDS(rbt, rbt_t);
+    rbt->time_for_rotate=0;
+    mem_usage_by_all_rbtrees+=sizeof(rbt_t);
+
     if (!rbt)
         return NULL;
     rbt->free_value_cb = free_value_cb;
@@ -265,6 +271,8 @@ rbt_uncle(rbt_node_t *node)
 static inline int
 rbt_compare_keys(rbt_t *rbt, void *k1, size_t k1size, void *k2, size_t k2size)
 {
+    stopwatch_t t_locate;
+    timer_start(&t_locate);
     int rc;
     if (rbt->cmp_keys_cb) {
         rc = rbt->cmp_keys_cb(k1, k1size, k2, k2size);
@@ -279,6 +287,9 @@ rbt_compare_keys(rbt_t *rbt, void *k1, size_t k1size, void *k2, size_t k2size)
             rc = memcmp(k1, k2, k1size);
         }
     }
+    timer_pause(&t_locate);
+    rbt->time_to_locate+=timer_delta_ns(&t_locate);
+    rbt->num_of_comparisons++;
     return rc;
 }
 
@@ -391,11 +402,17 @@ int
 rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
 {
     int rc = 0;
-    rbt_node_t *node = ctr_calloc(1, sizeof(rbt_node_t), &mem_usage_by_all_rbtrees);
+    stopwatch_t t_expand;
+    timer_start(&t_expand);
+
+    rbt_node_t *node = ctr_calloc(1, sizeof(rbt_node_t), &rbt->mem_usage);
+    mem_usage_by_all_rbtrees+=sizeof(rbt_node_t);
     if (!node)
         return -1;
 
-    node->key = ctr_malloc(klen, &mem_usage_by_all_rbtrees);
+    rbt->num_of_reallocs++;
+    node->key = ctr_malloc(klen, &rbt->mem_usage);
+    mem_usage_by_all_rbtrees+=klen;
     if (!node->key) {
         free(node);
         return -1;
@@ -403,12 +420,16 @@ rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
     memcpy(node->key, k, klen);
     node->klen = klen;
     node->value = v;
+
+    timer_pause(&t_expand);
+    rbt->time_for_expansion+=timer_delta_ns(&t_expand);
+    rbt->num_of_comparisons++;
     if (!rbt->root) {
         PAINT_BLACK(node);
         rbt->root = node;
     } else {
         rc = rbt_add_internal(rbt, rbt->root, node);
-
+        rbt->num_of_comparisons++;
         if (IS_BLACK(node)) {
             // if the node just added is now black it means
             // it was already existing and this was only a value update
@@ -419,7 +440,7 @@ rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
             }
             return 1;
         }
-        
+        rbt->num_of_comparisons++;
         if (!node->parent) {
             // case 1
             PAINT_BLACK(node);
@@ -431,7 +452,7 @@ rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
             // case 3
             rbt_node_t *uncle = rbt_uncle(node);
             rbt_node_t *grandparent = rbt_grandparent(node);
-
+            rbt->num_of_comparisons++;
             if (IS_RED(uncle)) {
                 PAINT_BLACK(node->parent);
                 PAINT_BLACK(uncle);
@@ -441,6 +462,7 @@ rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
                 }
             } else if (grandparent) {
                 // case 4
+                rbt->num_of_comparisons++;
                 if (node == node->parent->right && node->parent == grandparent->left) {
                     rbt_rotate_left(rbt, node->parent);
                     node = node->left;
@@ -453,6 +475,7 @@ rbt_add(rbt_t *rbt, void *k, size_t klen, void *v)
                 if (node->parent) {
                     PAINT_BLACK(node->parent);
                     PAINT_RED(grandparent);
+                    rbt->num_of_comparisons++;
                     if (node == node->parent->left)
                         rbt_rotate_right(rbt, grandparent);
                     else
@@ -635,7 +658,8 @@ rbt_remove(rbt_t *rbt, void *k, size_t klen, void **v)
                 n = rbt_find_prev(node);
             else
                 n = rbt_find_next(node);
-            void *new_key = ctr_realloc(node->key, n->klen, &mem_usage_by_all_rbtrees);
+            void *new_key = ctr_realloc(node->key, n->klen, &rbt->mem_usage);
+            mem_usage_by_all_rbtrees+=n->klen;
             if (!new_key)
                 return -1;
             node->key = new_key;
@@ -802,7 +826,11 @@ void rbt_print(rbt_t *rbt)
         printf("%s\n", s[i]);
 }
 #endif
+      
 
+perf_info_t *get_perf_info_sbst(rbt_t *index_root){
+    GET_PERF_INFO(index_root);
+}
 
 size_t get_mem_usage_by_all_rbtrees(){
     return mem_usage_by_all_rbtrees;

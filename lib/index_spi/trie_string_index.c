@@ -74,6 +74,6 @@ linked_list_t *search_affix_in_trie(void *index_root, pattern_type_t afx_type, c
     return rst;
 }
 
-size_t get_mem_in_trie(){
-    return get_mem_usage_by_all_tries();
-}
+// size_t get_mem_in_trie(){
+//     return get_mem_usage_by_all_tries();
+// }

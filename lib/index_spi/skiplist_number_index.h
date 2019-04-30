@@ -13,6 +13,6 @@ int search_number_from_skiplist(void *index_root, void *key, size_t ksize, void 
 
 linked_list_t *search_numeric_range_from_skiplist(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size);
 
-size_t get_mem_in_skiplist();
+// size_t get_mem_in_skiplist();
 
 #endif //end MIQS_SKIPLIST_NUMBER_INDEX_H

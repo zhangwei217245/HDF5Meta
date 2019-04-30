@@ -14,6 +14,7 @@ extern "C" {
 
 #include <sys/types.h>
 #include <stdint.h>
+#include "../profile/mem_perf.h"
 
 
 typedef struct _trie_s trie_t;
@@ -172,7 +173,9 @@ int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void
  */
 int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user);
 
-size_t get_mem_usage_by_all_tries();
+
+perf_info_t *get_perf_info_trie(trie_t *index_root);
+// size_t get_mem_usage_by_all_tries();
 
 #ifdef __cplusplus
 }

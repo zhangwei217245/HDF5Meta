@@ -19,6 +19,7 @@ extern "C" {
 
 #include <stdint.h>
 #include "comparators.h"
+#include "../profile/mem_perf.h"
 
 /**
  * @brief Opaque structure representing the tree
@@ -178,6 +179,9 @@ int rbt_range_walk_sorted(rbt_t *rbt, void *begin_key, size_t bgk_size,
  * @return The number of nodes in the tree. 
  */
 uint64_t rbt_size(rbt_t *rbt);
+
+
+perf_info_t *get_perf_info_sbst(rbt_t *index_root);
 
 size_t get_mem_usage_by_all_rbtrees();
 

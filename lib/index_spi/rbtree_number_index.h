@@ -20,6 +20,6 @@ linked_list_t *search_numeric_range_from_rbtree(void *index_root, void *begin_ke
 // space complexity on differnet data structures, in the context of different queries. 
 
 
-size_t get_mem_in_number_rbtree();
+// size_t get_mem_in_number_rbtree();
 
 #endif // end MIQS_RBTREE_NUMBER_INDEX_H

@@ -9,7 +9,7 @@
 #include "atomic_defs.h"
 #include "hashtable.h"
 #include "sparse_array.h"
-#include "../profile/mem_perf.h"
+
 
 #ifdef USE_PACKED_STRUCTURES
 #define PACK_IF_NECESSARY __attribute__((packed))
@@ -17,14 +17,13 @@
 #define PACK_IF_NECESSARY
 #endif
 
-
-size_t mem_usage_all_sparse_array;
 // We currently implement this sparse array using hash table for simplicity. 
 struct _sparse_array_s {
     hashtable_t *core;
     void **array; // the actual array
     spa_size_info_t *size_info;
     spa_free_item_callback_t free_item_cb;
+    DECLARE_PERF_INFO_FIELDS
 };
 
 
@@ -34,12 +33,13 @@ int spa_init(sparse_array_t *spa, size_t initial_size, size_t max_size, spa_free
     }
     spa->size_info->size = initial_size > SPA_SIZE_MIN?initial_size:SPA_SIZE_MIN;
     spa->size_info->max_size = max_size;
-    spa->array = (void **)ctr_calloc(spa->size_info->size, sizeof(void *), &mem_usage_all_sparse_array);
+    spa->array = (void **)ctr_calloc(spa->size_info->size, sizeof(void *), &spa->mem_usage);
     return 0;
 }
 
 sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_free_item_callback_t cb){
-    sparse_array_t *spa = ctr_calloc(1, sizeof(sparse_array_t ), &mem_usage_all_sparse_array);
+    sparse_array_t *spa = calloc(1, sizeof(sparse_array_t));
+    INIT_PERF_INFO_FIELDS(spa, sparse_array_t);
     
     if (spa && spa_init(spa, initial_size, max_size, cb) != 0) {
         free(spa);
@@ -58,7 +58,8 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, size_t pos, void *da
         } 
         //grow sparse array to what is needed. 
         size_t new_size = pos + 1;
-        void **new_space = ctr_realloc(sparse_arr->array, new_size, &mem_usage_all_sparse_array);
+        void **new_space = ctr_realloc(sparse_arr->array, new_size, &(sparse_arr->mem_usage));
+        sparse_arr->num_of_reallocs++;
         if (new_space == NULL) { // realloc fail due to insufficient memory
             return rst;
         }
@@ -121,8 +122,7 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, size_t begin, size_t end,
 
 /**
  * Get memory usage by sparse array. 
- * 
  */
-size_t get_mem_usage_by_all_sparse_array(){
-    return mem_usage_all_sparse_array + get_mem_usage_by_all_hashtable();
+perf_info_t * get_perf_info_sparse_array(sparse_array_t *spa){
+    GET_PERF_INFO(spa);
 }

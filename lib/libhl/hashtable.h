@@ -17,6 +17,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include "../utils/string_utils.h"
+#include "../profile/mem_perf.h"
 #include "linklist.h"
 
 /**
@@ -404,7 +405,7 @@ void ht_foreach_pair(hashtable_t *table, ht_pair_iterator_callback_t cb, void *u
  * Get memory usage by hashtable. 
  * 
  */
-size_t get_mem_usage_by_all_hashtable();
+perf_info_t *get_perf_info_hashtable(hashtable_t *index_root);
 
 #ifdef __cplusplus
 }

@@ -4,6 +4,7 @@
 #include "../include/base_stdlib.h"
 #include "../libhl/linklist.h"
 #include <search.h>
+#include "../profile/mem_perf.h"
 
 
 
@@ -15,6 +16,8 @@ int search_number_from_tsearch_index(void *index_root, void *key, void **out);
 
 linked_list_t *search_numeric_range_from_tsearch_index(void *index_root, void *begin_key, size_t bgk_size, void *end_key, size_t edk_size);
 
-size_t get_mem_in_tsearch();
+perf_info_t *get_perf_info_tsearch(void *index_root);
+
+// size_t get_mem_in_tsearch();
 
 #endif // END MIQS_TSEARCH_NUMBER_INDEX_H

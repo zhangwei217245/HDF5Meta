@@ -6,7 +6,7 @@
 
 #define COMMON_STR_LEN 4096
 
-size_t mem_usage_by_all_tries;
+// size_t mem_usage_by_all_tries;
 
 typedef struct _trie_iterated_char_seq_s{
     char *seq;
@@ -28,13 +28,15 @@ struct _trie_s {
     int node_count;
     trie_node_t *root;
     trie_free_value_callback_t free_value_cb;
+    DECLARE_PERF_INFO_FIELDS
 };
 
 trie_t *
 trie_create(trie_free_value_callback_t free_value_cb)
 {
-    trie_t *trie = ctr_calloc(1, sizeof(trie_t), &mem_usage_by_all_tries);
-    trie->root = ctr_calloc(1, sizeof(trie_node_t), &mem_usage_by_all_tries);
+    trie_t *trie = calloc(1, sizeof(trie_t));
+    INIT_PERF_INFO_FIELDS(trie, trie_t);
+    trie->root = ctr_calloc(1, sizeof(trie_node_t), &(trie->mem_usage));
     trie->free_value_cb = free_value_cb;
     return trie;
 }
@@ -100,7 +102,8 @@ trie_node_set_value(trie_t *trie, trie_node_t *node, void *value, size_t vsize, 
     }
 
     if (copy) {
-        node->value = ctr_malloc(vsize, &mem_usage_by_all_tries);
+        node->value = ctr_malloc(vsize, &(trie->mem_usage));
+        trie->num_of_reallocs++;
         memcpy(node->value, value, vsize);
         node->vsize = vsize;
         node->is_copy = 1;
@@ -191,22 +194,33 @@ int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void
 int
 trie_insert(trie_t *trie, char *key, void *value, size_t vsize, int copy)
 {
+    stopwatch_t t_locate;
+    timer_start(&t_locate);
+
     trie_node_t *node = trie->root, *tmp;
     int new_nodes = 0;
     while (*key && (tmp = node->child[(int)*key])) { // skip some characters if given key is longer than the existing path. 
+            trie->num_of_comparisons++;
             node = tmp;
             ++key;
     }
+    timer_start(&t_locate);
+    trie->time_to_locate+=timer_delta_ns(&t_locate);
 
+    stopwatch_t t_expand;
+    timer_start(&t_expand);
     while (*key) {
         new_nodes++;
         node->num_children++;
-        tmp = node->child[(int)*key] = ctr_calloc(1, sizeof(trie_node_t), &mem_usage_by_all_tries);
+        tmp = node->child[(int)*key] = ctr_calloc(1, sizeof(trie_node_t), &trie->mem_usage);
+        trie->num_of_reallocs++;
         tmp->parent = node;
         tmp->pidx = *key;
         node = tmp;
         ++key;
     }
+    timer_pause(&t_expand);
+    trie->time_for_expansion+=timer_delta_ns(&t_expand);
 
     if (new_nodes) {
         trie->count++;
@@ -222,10 +236,18 @@ trie_insert(trie_t *trie, char *key, void *value, size_t vsize, int copy)
 static inline trie_node_t *
 trie_find_internal(trie_t *trie, char *key)
 {
+    stopwatch_t t_locate;
+    timer_start(&t_locate);
+
     trie_node_t *node;
     for (node = trie->root; *key && node; ++key) {
+        trie->num_of_comparisons++;
         node = node->child[(int)*key];
     }
+
+    timer_start(&t_locate);
+    trie->time_to_locate+=timer_delta_ns(&t_locate);
+
     return node;
 }
 
@@ -297,6 +319,10 @@ trie_find_and_insert(trie_t *trie, char *key, void *value, size_t vsize, void **
     return trie_insert(trie, key, value, vsize, copy);
 }
 
-size_t get_mem_usage_by_all_tries(){
-    return mem_usage_by_all_tries;
+perf_info_t *get_perf_info_trie(trie_t *index_root){
+    GET_PERF_INFO(index_root);
 }
+
+// size_t get_mem_usage_by_all_tries(){
+//     return mem_usage_by_all_tries;
+// }

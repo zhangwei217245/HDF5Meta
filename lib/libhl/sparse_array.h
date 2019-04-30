@@ -8,6 +8,7 @@ extern "C" {
 #include <stdlib.h>
 #include <sys/types.h>
 #include <stdint.h>
+#include "../profile/mem_perf.h"
 
 
 #define SPA_SIZE_MIN 65536
@@ -91,7 +92,7 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, size_t begin, size_t end, 
  * Get memory usage by sparse array. 
  * 
  */
-size_t get_mem_usage_by_all_sparse_array();
+perf_info_t * get_perf_info_sparse_array(sparse_array_t *spa);
 
 #ifdef __cplusplus
 }

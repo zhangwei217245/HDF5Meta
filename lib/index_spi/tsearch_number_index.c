@@ -53,6 +53,10 @@ linked_list_t *search_numeric_range_from_tsearch_index(void *index_root, void *b
                 //and currently there is no need for this. 
 }
 
-size_t get_mem_in_tsearch(){
-    return 0;
+perf_info_t *get_perf_info_tsearch(void *index_root){
+    return NULL;
 }
+
+// size_t get_mem_in_tsearch(){
+//     return 0;
+// }

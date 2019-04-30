@@ -53,6 +53,6 @@ linked_list_t *search_numeric_range_from_rbtree(void *index_root, void *begin_ke
 }
 
 
-size_t get_mem_in_number_rbtree(){
-    return get_mem_usage_by_all_rbtrees();
-}
+// size_t get_mem_in_number_rbtree(){
+//     return get_mem_usage_by_all_rbtrees();
+// }

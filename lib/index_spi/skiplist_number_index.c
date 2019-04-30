@@ -51,6 +51,6 @@ linked_list_t *search_numeric_range_from_skiplist(void *index_root, void *begin_
     return rst;
 }
 
-size_t get_mem_in_skiplist(){
-    return get_mem_usage_by_all_skiplists();
-}
+// size_t get_mem_in_skiplist(){
+//     return get_mem_usage_by_all_skiplists();
+// }

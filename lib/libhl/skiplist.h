@@ -12,6 +12,7 @@ extern "C" {
 #endif
 
 #include "comparators.h"
+#include "../profile/mem_perf.h"
 
 /**
  * @brief Opaque structure representing the skip list
@@ -98,7 +99,9 @@ size_t skiplist_count(skiplist_t *skl);
 /**
  * Get all memory used by all skiplists
  */
-size_t get_mem_usage_by_all_skiplists();
+// size_t get_mem_usage_by_all_skiplists();
+
+perf_info_t *get_perf_info_skiplist(skiplist_t *index_root);
 
 
 #ifdef __cplusplus

@@ -54,6 +54,6 @@ linked_list_t *search_numeric_range_from_sparse_array(void *index_root, void *be
     return rst;
 }
 
-size_t get_mem_in_sparse_array(){
-    return get_mem_usage_by_all_sparse_array();
-}
+// size_t get_mem_in_sparse_array(){
+//     return get_mem_usage_by_all_sparse_array();
+// }

@@ -978,6 +978,10 @@ uint64_t art_iter_prefix_size(art_tree *t, const unsigned char *prefix, int pref
     return *rst;
 }
 
+perf_info_t *get_perf_info_art(art_tree *art){
+    GET_PERF_INFO(art->root)
+}
+
 size_t get_art_mem_size(){
     return art_mem_size;
 }

@@ -70,6 +70,6 @@ linked_list_t *search_affix_in_art(void *index_root, pattern_type_t afx_type, ch
     return  rst;
 }
 
-size_t get_mem_in_art(){
-    return get_mem_usage_by_all_arts();
-}
+// size_t get_mem_in_art(){
+//     return get_mem_usage_by_all_arts();
+// }

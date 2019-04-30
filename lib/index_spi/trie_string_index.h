@@ -15,6 +15,6 @@ int search_string_in_trie(void *index_root, char *key, size_t len, void **out);
 
 linked_list_t *search_affix_in_trie(void *index_root, pattern_type_t afx_type, char *affix);
 
-size_t get_mem_in_trie();
+// size_t get_mem_in_trie();
 
 #endif // ENDIF MIQS_TRIE_STRING_INDEX_H

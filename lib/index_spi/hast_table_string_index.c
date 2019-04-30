@@ -54,6 +54,6 @@ linked_list_t *search_affix_in_hashtable(void *index_root, pattern_type_t afx_ty
     return rst;
 }
 
-size_t get_mem_in_hashtable(){
-    return get_mem_usage_by_all_hashtable();
-}
+// size_t get_mem_in_hashtable(){
+//     return get_mem_usage_by_all_hashtable();
+// }

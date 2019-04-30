@@ -37,6 +37,7 @@ typedef struct {
     uint8_t num_children;
     uint32_t partial_len;
     unsigned char partial[MAX_PREFIX_LEN];
+    DECLARE_PERF_INFO_FIELDS
 } art_node;
 
 /**
@@ -209,6 +210,8 @@ uint64_t art_iter_size(art_tree *t);
  */
 uint64_t art_iter_prefix_size(art_tree *t, const unsigned char *prefix, int prefix_len);
 
+
+perf_info_t *get_perf_info_art(art_tree *art);
 
 size_t get_art_mem_size();
 

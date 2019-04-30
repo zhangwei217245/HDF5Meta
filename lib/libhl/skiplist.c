@@ -2,9 +2,9 @@
 #include <string.h>
 #include "skiplist.h"
 #include "bsd_queue.h"
-#include "../profile/mem_perf.h"
+// #include "../profile/mem_perf.h"
 
-size_t mem_usage_by_all_skiplists;
+// size_t mem_usage_by_all_skiplists;
 
 typedef struct _skl_item_wrapper_s skl_item_wrapper_t;
 
@@ -28,6 +28,8 @@ struct _skiplist_s {
     skiplist_free_value_callback_t free_value_cb;
     TAILQ_HEAD(layer_list, _skl_item_wrapper_s) *layers;
     size_t count;
+    
+    DECLARE_PERF_INFO_FIELDS
 };
 
 
@@ -37,11 +39,12 @@ skiplist_create(int num_layers,
                 libhl_cmp_callback_t cmp_keys_cb,
                 skiplist_free_value_callback_t free_value_cb)
 {
-    skiplist_t *skl = ctr_calloc(1, sizeof(skiplist_t), &mem_usage_by_all_skiplists);
+    skiplist_t *skl = calloc(1, sizeof(skiplist_t));
+    INIT_PERF_INFO_FIELDS(skl, skiplist_t);
     if (!skl)
         return NULL;
 
-    skl->layers = ctr_calloc(num_layers, sizeof(struct layer_list), &mem_usage_by_all_skiplists);
+    skl->layers = ctr_calloc(num_layers, sizeof(struct layer_list), &skl->mem_usage);
     if (!skl->layers) {
         free(skl);
         return NULL;
@@ -61,6 +64,8 @@ skiplist_search_internal(skiplist_t *skl, void *key, size_t klen, skl_item_wrapp
 {
     int i = skl->num_layers-1;
     skl_item_wrapper_t *prev_item = NULL;
+    stopwatch_t t_locate;
+    timer_start(&t_locate);
     while (i >= 0) {
         skl_item_wrapper_t *item;
         if (prev_item)
@@ -69,6 +74,7 @@ skiplist_search_internal(skiplist_t *skl, void *key, size_t klen, skl_item_wrapp
             item = TAILQ_FIRST(&skl->layers[i]);
 
         while (item) {
+            skl->num_of_comparisons++;
             if (skl->cmp_keys_cb(item->data->key, item->data->klen, key, klen) > 0)
                 break;
             prev_item = item;
@@ -78,6 +84,8 @@ skiplist_search_internal(skiplist_t *skl, void *key, size_t klen, skl_item_wrapp
             path[i] = prev_item;
         i--;
     }
+    timer_pause(&t_locate);
+    skl->time_to_locate+=timer_delta_ns(&t_locate);
     return prev_item ? prev_item->data : NULL;
 }
 
@@ -127,7 +135,7 @@ skiplist_range_search(skiplist_t *skl, void *begin_key, size_t bgklen,
 int
 skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
 {
-    skl_item_wrapper_t **path = ctr_calloc(skl->num_layers, sizeof(skl_item_wrapper_t *), &mem_usage_by_all_skiplists);
+    skl_item_wrapper_t **path = ctr_calloc(skl->num_layers, sizeof(skl_item_wrapper_t *), &skl->mem_usage);
     if (!path)
         return -1;
 
@@ -140,14 +148,15 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
         free(path);
         return 1;
     }
-
+    stopwatch_t t_expand;
+    timer_start(&t_expand);
     // create a new item
-    skl_item_t *new_item = ctr_calloc(1, sizeof(skl_item_t), &mem_usage_by_all_skiplists);
+    skl_item_t *new_item = ctr_calloc(1, sizeof(skl_item_t), &skl->mem_usage);
     if (!new_item) {
         free(path);
         return -1;
     }
-    new_item->key = ctr_calloc(1, klen, &mem_usage_by_all_skiplists);
+    new_item->key = ctr_calloc(1, klen, &skl->mem_usage);
     if (!new_item->key) {
         free(new_item);
         free(path);
@@ -158,7 +167,7 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
     new_item->klen = klen;
     new_item->value = value;
 
-    new_item->layer_check = ctr_calloc(skl->num_layers, sizeof(char), &mem_usage_by_all_skiplists);
+    new_item->layer_check = ctr_calloc(skl->num_layers, sizeof(char), &skl->mem_usage);
     if (!new_item->layer_check) {
         free(new_item->key);
         free(new_item);
@@ -166,7 +175,7 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
         return -1;
     }
 
-    new_item->wrappers = ctr_calloc(skl->num_layers, sizeof(skl_item_wrapper_t), &mem_usage_by_all_skiplists);
+    new_item->wrappers = ctr_calloc(skl->num_layers, sizeof(skl_item_wrapper_t), &skl->mem_usage);
     if (!new_item->wrappers) {
         free(new_item->layer_check);
         free(new_item->key);
@@ -174,6 +183,10 @@ skiplist_insert(skiplist_t *skl, void *key, size_t klen, void *value)
         free(path);
         return -1;
     }
+    timer_pause(&t_expand);
+    skl->time_for_expansion+=timer_delta_ns(&t_expand);
+    skl->num_of_reallocs++;
+
     // initialize the list wrappers
     new_item->wrappers[0].data = new_item;
     // always insert the new item to the tail list
@@ -257,8 +270,12 @@ skiplist_count(skiplist_t *skl)
     return skl->count;
 }
 
-size_t get_mem_usage_by_all_skiplists(){
-    return mem_usage_by_all_skiplists;
+// size_t get_mem_usage_by_all_skiplists(){
+//     return mem_usage_by_all_skiplists;
+// }
+
+perf_info_t *get_perf_info_skiplist(skiplist_t *index_root){
+    GET_PERF_INFO(index_root);
 }
 
 // vim: tabstop=4 shiftwidth=4 expandtab:

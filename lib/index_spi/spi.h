@@ -5,6 +5,7 @@
 #include "../utils/string_utils.h"
 #include "../libhl/comparators.h"
 #include "../libhl/linklist.h"
+#include "../profile/mem_perf.h"
 
 
 #define MIQS_STRING_IDX_VAR_NAME "MIQS_STR_IDX_IMPL"
@@ -43,7 +44,7 @@ linked_list_t *search_affix(void *index_root, pattern_type_t afx_type, char *aff
 /**
  * Get string data structure memory consumption
  */
-size_t get_string_ds_mem();
+perf_info_t *get_string_ds_perf_info(void *index_root);
 
 int destroy_string_index(void **index_ptr);
 
@@ -76,6 +77,6 @@ linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bg
 
 int destroy_number_index(void **idx_ptr);
 
-size_t get_number_ds_mem();
+perf_info_t *get_number_ds_perf_info(void *index_root);
 
 #endif // endif  MIQS_DS_SPI_H

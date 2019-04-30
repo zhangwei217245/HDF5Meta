@@ -51,6 +51,8 @@ linked_list_t *search_affix_in_rbtree(void *index_root, pattern_type_t afx_type,
     return rst;
 }
 
-size_t get_mem_in_rbtree(){
-    return get_mem_usage_by_all_rbtrees();
-}
+
+
+// size_t get_mem_in_rbtree(){
+//     return get_mem_usage_by_all_rbtrees();
+// }

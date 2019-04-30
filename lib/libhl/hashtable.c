@@ -67,6 +67,7 @@ struct _hashtable_s {
     ht_items_list_t **items;
     ht_free_item_callback_t free_item_cb;
     ht_iterator_list_t *iterator_list;
+    DECLARE_PERF_INFO_FIELDS
 #ifdef THREAD_SAFE
     pthread_mutex_t iterator_lock;
 #endif
@@ -84,11 +85,11 @@ typedef struct _ht_collector_arg {
     size_t count;
 } ht_collector_arg_t;
 
-size_t mem_usage_all_hashtable;
+// size_t mem_usage_all_hashtable;
 
 static inline uint32_t
 ht_hash_one_at_a_time(hashtable_t *table, const unsigned char *str, const ssize_t len)
-{
+{   
     const unsigned char * const end = (const unsigned char *)str + len;
     uint32_t hash = table->seed + len;
     while (str < end) {
@@ -98,14 +99,18 @@ ht_hash_one_at_a_time(hashtable_t *table, const unsigned char *str, const ssize_
     }
     hash += (hash << 3);
     hash ^= (hash >> 11);
-    return (hash + (hash << 15));
+    uint32_t rst = (hash + (hash << 15));
+
+    return rst;
 }
 
 
 hashtable_t *
 ht_create(size_t initial_size, size_t max_size, ht_free_item_callback_t cb)
 {
-    hashtable_t *table = (hashtable_t *)ctr_calloc(1, sizeof(hashtable_t), &mem_usage_all_hashtable);
+    hashtable_t *table = (hashtable_t *)calloc(1, sizeof(hashtable_t));
+    
+    INIT_PERF_INFO_FIELDS(table, hashtable_t);
 
     if (table && ht_init(table, initial_size, max_size, cb) != 0) {
         free(table);
@@ -123,7 +128,7 @@ ht_init(hashtable_t *table,
 {
     table->size = initial_size > HT_SIZE_MIN ? initial_size : HT_SIZE_MIN;
     table->max_size = max_size;
-    table->items = (ht_items_list_t **)ctr_calloc(table->size, sizeof(ht_items_list_t *), &mem_usage_all_hashtable);
+    table->items = (ht_items_list_t **)ctr_calloc(table->size, sizeof(ht_items_list_t *), &table->mem_usage);
     if (!table->items)
         return -1;
 
@@ -135,7 +140,7 @@ ht_init(hashtable_t *table,
 #else
     table->seed = random()%UINT32_MAX;
 #endif
-    table->iterator_list = ctr_calloc(1, sizeof(ht_iterator_list_t), &mem_usage_all_hashtable);
+    table->iterator_list = ctr_calloc(1, sizeof(ht_iterator_list_t), &table->mem_usage);
     if (!table->iterator_list) {
         free(table->items);
         return -1;
@@ -201,6 +206,8 @@ ht_destroy(hashtable_t *table)
 static inline void
 ht_grow_table(hashtable_t *table)
 {
+    stopwatch_t t_expand;
+    timer_start(&t_expand);
     // if we are not able to change the status now, let's return.
     // ht_grow_table() will be called again next time a new key has been set
     if (!ATOMIC_CAS(table->status, HT_STATUS_IDLE, HT_STATUS_GROW))
@@ -212,7 +219,7 @@ ht_grow_table(hashtable_t *table)
         return;
     }
 
-    ht_iterator_list_t *new_iterator_list = ctr_calloc(1, sizeof(ht_iterator_list_t), &mem_usage_all_hashtable);
+    ht_iterator_list_t *new_iterator_list = ctr_calloc(1, sizeof(ht_iterator_list_t), &table->mem_usage);
     if (!new_iterator_list) {
         ATOMIC_CAS(table->status, HT_STATUS_GROW, HT_STATUS_IDLE);
         return;
@@ -226,7 +233,7 @@ ht_grow_table(hashtable_t *table)
         new_size = table->max_size;
 
     ht_items_list_t **items_list = 
-        (ht_items_list_t **)ctr_calloc(new_size, sizeof(ht_items_list_t *), &mem_usage_all_hashtable);
+        (ht_items_list_t **)ctr_calloc(new_size, sizeof(ht_items_list_t *), &table->mem_usage);
 
     if (!items_list) {
         free(new_iterator_list);
@@ -253,7 +260,7 @@ ht_grow_table(hashtable_t *table)
         while((item = TAILQ_FIRST(&list->head))) {
             ht_items_list_t *new_list = ATOMIC_READ(items_list[item->hash%new_size]);
             if (!new_list) {
-                new_list = ctr_malloc(sizeof(ht_items_list_t), &mem_usage_all_hashtable);
+                new_list = ctr_malloc(sizeof(ht_items_list_t), &table->mem_usage);
                 // XXX - if ctr_malloc fails here the table is irremediably corrupted
                 //       so there is no point in handling the case.
                 //       TODO : using an internal prealloc'd bufferpool would ensure
@@ -286,6 +293,9 @@ ht_grow_table(hashtable_t *table)
 
     free(old_items);
 
+    timer_pause(&t_expand);
+    table->time_for_expansion+=timer_delta_ns(&t_expand);
+    table->num_of_reallocs++;
     //fprintf(stderr, "Done growing table\n");
 }
 
@@ -345,7 +355,7 @@ ht_get_list(hashtable_t *table, uint32_t hash)
 static inline ht_items_list_t *
 ht_set_list(hashtable_t *table, uint32_t hash)
 {
-    ht_items_list_t *list = ctr_malloc(sizeof(ht_items_list_t), &mem_usage_all_hashtable);
+    ht_items_list_t *list = ctr_malloc(sizeof(ht_items_list_t), &table->mem_usage);
     if (!list)
         return NULL;
 
@@ -410,6 +420,10 @@ ht_set_internal(hashtable_t *table,
     if (!klen)
         return -1;
 
+    
+    stopwatch_t t_locate;
+    timer_start(&t_locate);
+
     uint32_t hash = ht_hash_one_at_a_time(table, key, klen);
 
     // let's first try checking if we fall in an existing bucket list
@@ -423,6 +437,7 @@ ht_set_internal(hashtable_t *table,
 
     ht_item_t *item = NULL;
     TAILQ_FOREACH(item, &list->head, next) {
+        table->num_of_comparisons++;
         if (/*ht_item->hash == arg->item.hash && */
             HT_KEY_EQUALS(item->key, item->klen, key, klen))
         {
@@ -432,8 +447,11 @@ ht_set_internal(hashtable_t *table,
         }
     }
 
+    timer_pause(&t_locate);
+    table->time_to_locate+=timer_delta_ns(&t_locate);
+
     if (!prev) {
-        ht_item_t *item = (ht_item_t *)ctr_calloc(1, sizeof(ht_item_t), &mem_usage_all_hashtable);
+        ht_item_t *item = (ht_item_t *)ctr_calloc(1, sizeof(ht_item_t), &table->mem_usage);
         if (!item) {
             //fprintf(stderr, "Can't create new item: %s\n", strerror(errno));
             SPIN_UNLOCK(list->lock);
@@ -443,7 +461,7 @@ ht_set_internal(hashtable_t *table,
         item->klen = klen;
 
         if (klen > sizeof(item->kbuf)) {
-            item->key = ctr_malloc(klen, &mem_usage_all_hashtable);
+            item->key = ctr_malloc(klen, &table->mem_usage);
             if (!item->key) {
                 free(item);
                 SPIN_UNLOCK(list->lock);
@@ -457,7 +475,7 @@ ht_set_internal(hashtable_t *table,
 
         if (copy) {
             if (dlen) {
-                item->data = ctr_malloc(dlen, &mem_usage_all_hashtable);
+                item->data = ctr_malloc(dlen, &table->mem_usage);
                 if (!item->data) {
                     if (klen > sizeof(item->kbuf))
                         free(item->key);
@@ -487,7 +505,7 @@ ht_set_internal(hashtable_t *table,
         }
         item->dlen = dlen;
         if (copy) {
-            void *dcopy = ctr_malloc(dlen, &mem_usage_all_hashtable);
+            void *dcopy = ctr_malloc(dlen, &table->mem_usage);
             if (!dcopy) {
                 SPIN_UNLOCK(list->lock);
                 return -1;
@@ -581,6 +599,8 @@ ht_call_internal(hashtable_t *table,
 {
     int ret = -1;
 
+    stopwatch_t t_locate;
+    timer_start(&t_locate);
     uint32_t hash = ht_hash_one_at_a_time(table, key, klen);
 
     ht_items_list_t *list  = ht_get_list(table, hash);
@@ -590,6 +610,7 @@ ht_call_internal(hashtable_t *table,
     ht_item_t *item = NULL;
     ht_item_t *tmp;
     TAILQ_FOREACH_SAFE(item, &list->head, next, tmp) {
+        table->num_of_comparisons++;
         if (/*ht_item->hash == arg->item.hash && */
             HT_KEY_EQUALS(item->key, item->klen, key, klen))
         {
@@ -609,6 +630,8 @@ ht_call_internal(hashtable_t *table,
             break;
         }
     }
+    timer_pause(&t_locate);
+    table->time_to_locate+=timer_delta_ns(&t_locate);
 
     SPIN_UNLOCK(list->lock);
 
@@ -804,7 +827,7 @@ ht_get_helper(hashtable_t *table __attribute__ ((unused)), void *key __attribute
         if (arg->copy_cb) {
             arg->data = arg->copy_cb(*value, *vlen, arg->user);
         } else {
-            arg->data = ctr_malloc(*vlen, &mem_usage_all_hashtable);
+            arg->data = ctr_malloc(*vlen, &table->mem_usage);
             if (!arg->data)
                 return -1;
             memcpy(arg->data, *value, *vlen);
@@ -881,14 +904,14 @@ ht_get_all_keys(hashtable_t *table)
 
         ht_item_t *item = NULL;
         TAILQ_FOREACH(item, &list->head, next) {
-            hashtable_key_t *key = ctr_malloc(sizeof(hashtable_key_t), &mem_usage_all_hashtable);
+            hashtable_key_t *key = ctr_malloc(sizeof(hashtable_key_t), &table->mem_usage);
             if (!key) {
                 SPIN_UNLOCK(list->lock);
                 MUTEX_UNLOCK(table->iterator_lock);
                 list_destroy(output);
                 return NULL;
             }
-            key->data = ctr_malloc(item->klen, &mem_usage_all_hashtable);
+            key->data = ctr_malloc(item->klen, &table->mem_usage);
             if (!key->data) {
                 SPIN_UNLOCK(list->lock);
                 MUTEX_UNLOCK(table->iterator_lock);
@@ -921,7 +944,7 @@ ht_get_all_values(hashtable_t *table)
 
         ht_item_t *item = NULL;
         TAILQ_FOREACH(item, &list->head, next) {
-            hashtable_value_t *v = ctr_malloc(sizeof(hashtable_value_t), &mem_usage_all_hashtable);
+            hashtable_value_t *v = ctr_malloc(sizeof(hashtable_value_t), &table->mem_usage);
             if (!v) {
                 SPIN_UNLOCK(list->lock);
                 MUTEX_UNLOCK(table->iterator_lock);
@@ -1019,10 +1042,14 @@ ht_count(hashtable_t *table)
     return ATOMIC_READ(table->count);
 }
 
-size_t get_mem_usage_by_all_hashtable() {
-    size_t rst = mem_usage_all_hashtable + get_mem_usage_by_all_linkedlist();
-    return rst;
+perf_info_t *get_perf_info_hashtable(hashtable_t *index_root){
+    GET_PERF_INFO(index_root);
 }
+
+// size_t get_mem_usage_by_all_hashtable() {
+//     size_t rst = mem_usage_all_hashtable + get_mem_usage_by_all_linkedlist();
+//     return rst;
+// }
 
 // vim: tabstop=4 shiftwidth=4 expandtab:
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */

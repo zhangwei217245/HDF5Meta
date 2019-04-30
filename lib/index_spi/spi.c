@@ -3,7 +3,7 @@
 #include "rbtree_string_index.h"
 #include "trie_string_index.h"
 #include "art_string_index.h"
-#include "../utils/timer_utils.h"
+
 
 #include "sparse_array_number_index.h"
 #include "rbtree_number_index.h"
@@ -168,26 +168,25 @@ linked_list_t *search_affix(void *index_root, pattern_type_t afx_type, char *aff
     return rst; 
 }
 
-size_t get_string_ds_mem(){
-    size_t rst = 0;
+perf_info_t *get_string_ds_perf_info(void *index_root) {
+    perf_info_t *rst = NULL;
+    if (index_root==NULL){return rst;} 
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
-
     if (s != NULL) {
         if (strcmp(s, "HASHTABLE")==0) {
-            rst = get_mem_in_hashtable();
+            rst = get_perf_info_hashtable((hashtable_t *)index_root);
         } else if (strcmp(s, "SBST")==0) {
-            rst = get_mem_in_rbtree();
+            rst = get_perf_info_sbst((rbt_t *)index_root);
         } else if (strcmp(s, "TRIE")==0) {
-            rst = get_mem_in_trie();
+            rst = get_perf_info_trie((trie_t *)index_root);
         } else {
             // perror("[MEM]Data Structure not specified, fallback to ART\n");
-            rst = get_mem_in_art();
+            rst = get_perf_info_art((art_tree *)index_root);
         }
     } else {
         // perror("[MEM]Data Structure not specified, fallback to ART\n");
-        rst = get_mem_in_art();
+        rst = get_perf_info_art((art_tree *)index_root);
     }
-
     return rst; 
 }
 
@@ -381,26 +380,24 @@ int destroy_number_index(void **idx_ptr){
     return rst;
 }
 
-
-size_t get_number_ds_mem(){
-    size_t rst = 0;
+perf_info_t *get_number_ds_perf_info(void *index_root){
+    perf_info_t *rst = NULL;
+    if (index_root==NULL){return rst;} 
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
-
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            rst = get_mem_in_sparse_array();
+            rst = get_perf_info_sparse_array((sparse_array_t *)index_root);
         } else if (strcmp(s, "SBST")==0) {
-            rst = get_mem_in_number_rbtree();
+            rst = get_perf_info_sbst((rbt_t *)index_root);
         } else if (strcmp(s, "SKIPLIST")==0) {
-            rst = get_mem_in_skiplist();
+            rst = get_perf_info_skiplist((skiplist_t *)index_root);
         } else {
             // perror("[MEM]Data Structure not specified, fallback to ART\n");
-            rst = get_mem_in_tsearch();
+            rst = get_perf_info_tsearch(index_root);
         }
     } else {
         // perror("[MEM]Data Structure not specified, fallback to ART\n");
-        rst = get_mem_in_tsearch();
+        rst = get_perf_info_tsearch(index_root);
     }
-
     return rst; 
 }

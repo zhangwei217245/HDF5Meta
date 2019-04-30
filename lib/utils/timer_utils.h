@@ -17,10 +17,11 @@
 
 #include <stdio.h>
 #include <time.h>				/* clock_gettime() */
+#include <stdint.h>
 #include <sys/time.h>			/* gettimeofday() */
 #include <stdbool.h>			/* bool */
 
-typedef long	 stw_nanosec_t;
+typedef uint64_t stw_nanosec_t;
 
 typedef struct stopwatch_t
 {
