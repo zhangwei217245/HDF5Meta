@@ -7,21 +7,21 @@
 #SBATCH --gres=craynetwork:2
 #SBATCH -L SCRATCH
 #SBATCH -C haswell
-#SBATCH -J STRING_IDX_WIKI
+#SBATCH -J NUMBER_IDX
 #SBATCH -A m2621
-#SBATCH -o o%j.wiki_4
-#SBATCH -e o%j.wiki_4
+#SBATCH -o o%j.number_4
+#SBATCH -e o%j.number_4
 # #DW jobdw capacity=2000GB access_mode=striped type=scratch pool=sm_pool
 
 
 N_NODE=4
 
 DATASET_NAME="EVEN"
-COUNT="20000"
+COUNT="630000"
 
 
 PROC_CMD="--cpu_bind=cores --ntasks-per-node=1 -c 1 --mem=10240 --gres=craynetwork:1"
 
-PROC=/global/homes/w/wzhang5/software/HDF5Meta/build/bin/hdf5_number_index_test
+PROC=/global/homes/w/wzhang5/software/MIQS/build/bin/hdf5_number_index_test
 
 srun -N $N_NODE -n $N_NODE $PROC_CMD $PROC $DATASET_NAME $COUNT 
