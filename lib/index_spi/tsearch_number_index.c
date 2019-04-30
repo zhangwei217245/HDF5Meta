@@ -54,7 +54,7 @@ linked_list_t *search_numeric_range_from_tsearch_index(void *index_root, void *b
 }
 
 perf_info_t *get_perf_info_tsearch(void *index_root){
-    return NULL;
+    return calloc(1, sizeof(perf_info_t));
 }
 
 // size_t get_mem_in_tsearch(){
