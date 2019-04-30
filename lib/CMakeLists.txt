@@ -1,4 +1,8 @@
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+
 
 find_package(JSON-C REQUIRED)
 find_package(HDF5 REQUIRED)
@@ -22,6 +26,12 @@ TARGET_LINK_LIBRARIES(query_utils string_utils)
 ADD_LIBRARY(timer_utils SHARED utils/timer_utils.c utils/timer_utils.h)
 
 ADD_LIBRARY(thpool SHARED thread/thpool.c thread/thpool.h)
+if(THREADS_HAVE_PTHREAD_ARG)
+  target_compile_options(thpool PUBLIC "-pthread")
+endif()
+if(CMAKE_THREAD_LIBS_INIT)
+  target_link_libraries(thpool "${CMAKE_THREAD_LIBS_INIT}")
+endif()
 
 ADD_LIBRARY(profile SHARED 
     profile/mem_perf.h

@@ -11,6 +11,9 @@
 #include <search.h>
 #include "on_disk_index.h"
 
+// #define GETTER_SETTER_NAME(_GS, _G_FD_NAME) _GS##_G_FD_NAME
+// #define GETTER_SETTER_DECLARE(_type, G_FD_NAME) _type GETTER_SETTER_NAME(get, G_FD_NAME) (index_anchor *idx_anchor);\
+// void GETTER_SETTER_NAME(set, G_FD_NAME)(index_anchor *idx_anchor, _type G_FD_NAME);
 
 
 // For index creation,
@@ -44,6 +47,25 @@ typedef struct {
     suseconds_t us_to_index;
     suseconds_t us_to_disk_index;
 } index_anchor;
+
+
+// GETTER_SETTER_DECLARE(char         *,file_path                 );
+// GETTER_SETTER_DECLARE(char         *,obj_path                  );
+// GETTER_SETTER_DECLARE(hid_t        ,object_id                 );
+// GETTER_SETTER_DECLARE(art_tree     *,root_art                  );
+// GETTER_SETTER_DECLARE(linked_list_t *,file_paths_list           );
+// GETTER_SETTER_DECLARE(linked_list_t *,object_paths_list         );
+// GETTER_SETTER_DECLARE(char         **,indexed_attr              );
+// GETTER_SETTER_DECLARE(int          ,num_indexed_field         );
+// GETTER_SETTER_DECLARE(FILE         *,on_disk_file_stream       );
+// GETTER_SETTER_DECLARE(int          ,is_readonly_index_file    );
+// GETTER_SETTER_DECLARE(size_t, total_num_files)
+// GETTER_SETTER_DECLARE(size_t, total_num_objects)
+// GETTER_SETTER_DECLARE(size_t, total_num_attrs)
+// GETTER_SETTER_DECLARE(size_t, total_num_indexed_kv_pairs)
+// GETTER_SETTER_DECLARE(size_t, total_num_kv_pairs)
+// GETTER_SETTER_DECLARE(suseconds_t, us_to_index)
+// GETTER_SETTER_DECLARE(suseconds_t, us_to_disk_index)
 
 typedef struct {
     char *file_path;

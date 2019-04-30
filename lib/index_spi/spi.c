@@ -212,16 +212,30 @@ int destroy_string_index(void **index_ptr){
 
 
 
-int create_number_index(void **idx_ptr){
+int create_number_index(void **idx_ptr, libhl_cmp_callback_t cb){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            rst = create_sparse_array_index(idx_ptr);
+            libhl_cmp_callback_t _cb = libhl_cast_any_to_int;
+            if (cb == libhl_cmp_keys_int) {
+                _cb = libhl_cast_int_to_int;
+            } else if (cb == libhl_cmp_keys_float) {
+                _cb = libhl_cast_float_to_int;
+            } else if (cb == libhl_cmp_keys_double) {
+                _cb = libhl_cast_double_to_int;
+            } else if (cb == libhl_cmp_keys_int16) {
+                _cb = libhl_cast_int16_to_int;
+            } else if (cb == libhl_cmp_keys_int32) {
+                _cb = libhl_cast_int32_to_int;
+            } else if (cb == libhl_cmp_keys_int64) {
+                _cb = libhl_cast_int64_to_int;
+            }
+            rst = create_sparse_array_index(idx_ptr, _cb);
         } else if (strcmp(s, "SBST")==0) {
-            rst = create_rbtree_number_index(idx_ptr);
+            rst = create_rbtree_number_index(idx_ptr, cb);
         } else if (strcmp(s, "SKIPLIST")==0) {
-            rst = create_skiplist_index(idx_ptr);
+            rst = create_skiplist_index(idx_ptr, cb);
         } else {
             perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
             rst = create_tsearch_index(idx_ptr);

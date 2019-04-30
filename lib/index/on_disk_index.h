@@ -18,6 +18,8 @@ typedef struct {
     rbt_t *rbt;
     art_tree *art;
 
+    void *secondary_idx;
+
     // size_t file_path_pos;
     // size_t obj_path_pos;
 } attr_tree_leaf_content_t;

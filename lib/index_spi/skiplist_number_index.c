@@ -1,12 +1,12 @@
 #include "skiplist_number_index.h"
 
 
-int create_skiplist_index(void **idx_ptr){
+int create_skiplist_index(void **idx_ptr, libhl_cmp_callback_t cb){
     int rst  = -1 ;
     if (idx_ptr == NULL) {
         return rst;
     }
-    skiplist_t *skiplist = skiplist_create(5, 50, libhl_cmp_keys_long, NULL);
+    skiplist_t *skiplist = skiplist_create(5, 50, cb, NULL);
     idx_ptr[0] = skiplist;
     rst = 0;
     return rst;

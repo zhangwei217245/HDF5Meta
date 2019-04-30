@@ -37,6 +37,13 @@ typedef int (*libhl_cmp_callback_t)(void *k1,
                                     size_t k2size);
 
 
+#define LIBHL_CAST_KEYS(_type, _k1) {\
+    _type _k1i = *((_type *)_k1);\
+    if (_k1i < 0) {\
+        _k1i = -_k1i;\
+    }\
+    return (int)_k1i;\
+}
 
 #define LIBHL_CMP_KEYS_TYPE(_type, _k1, _k1s, _k2, _k2s) \
 { \
@@ -45,6 +52,51 @@ typedef int (*libhl_cmp_callback_t)(void *k1,
     _type _k1i = *((_type *)_k1); \
     _type _k2i = *((_type *)_k2); \
     return _k1i - _k2i; \
+}
+
+static int 
+libhl_cast_any_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    int rst = *(int *)k1;
+    if (rst > 0) {
+        rst = -rst;
+    }
+    return rst;
+}
+
+static int 
+libhl_cast_int_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(int, k1);
+}
+
+static int 
+libhl_cast_long_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(long, k1);
+}
+
+static int 
+libhl_cast_int16_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(int16_t, k1);
+}
+
+static int 
+libhl_cast_int32_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(int32_t, k1);
+}
+
+static int 
+libhl_cast_int64_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(int64_t, k1);
+}
+
+
+static int 
+libhl_cast_float_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(float, k1);
+}
+
+static int 
+libhl_cast_double_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
+    LIBHL_CAST_KEYS(double, k1);
 }
 
 static int

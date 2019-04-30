@@ -7,7 +7,7 @@
 #include "../libhl/linklist.h"
 
 
-int create_rbtree_number_index(void **idx_ptr);
+int create_rbtree_number_index(void **idx_ptr, libhl_cmp_callback_t cb);
 
 int insert_number_to_rbtree(void *index_root, void *key, size_t ksize, void *data);
 

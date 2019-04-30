@@ -66,6 +66,7 @@ int scan_hdf5(char *file_path, metadata_collector_t *meta_collector, int is_visi
      * Close and release resources.
      */
     status = H5Fclose (file);
+    return 1;
 }
 
 /************************************************************

@@ -3,9 +3,10 @@
 
 #include "../libhl/sparse_array.h"
 #include "../libhl/linklist.h"
+#include "../libhl/comparators.h"
 
 
-int create_sparse_array_index(void **idx_ptr);
+int create_sparse_array_index(void **idx_ptr, libhl_cmp_callback_t cb);
 
 int insert_number_to_sparse_array(void *index_root, void *key, size_t klen, void *data);
 

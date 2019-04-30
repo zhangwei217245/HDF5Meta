@@ -22,7 +22,7 @@ int insert_string_to_art(void *index_root, char *key, void *data){
     if (index_root == NULL) {
         return rst;
     }
-    art_insert((art_tree *)index_root, key, strlen(key), data);
+    art_insert((art_tree *)index_root, (const unsigned char *)key, strlen(key), data);
     rst = 0;
     return rst;
 }
@@ -32,7 +32,7 @@ int search_string_in_art(void *index_root, char *key, size_t len, void **out){
     if (index_root == NULL || out == NULL) {
         return rst;
     }
-    void *data = art_search((art_tree *)index_root, key, strlen(key));
+    void *data = art_search((art_tree *)index_root, (const unsigned char *)key, strlen(key));
     out[0] = data;
     rst = 0;
     return rst;

@@ -5,6 +5,57 @@ index_anchor *idx_anchor;
 
 size_t index_mem_size;
 
+// #define GETTER_SETTER_NAME(_GS, _G_FD_NAME) _GS##_G_FD_NAME
+// #define GETTER_SETTER(_type, G_FD_NAME) _type GETTER_SETTER_NAME(get, G_FD_NAME) (index_anchor *idx_anchor){\
+//     return idx_anchor->G_FD_NAME;\
+// }\
+// void GETTER_SETTER_NAME(set, G_FD_NAME)(index_anchor *idx_anchor, _type G_FD_NAME){\
+//     idx_anchor->G_FD_NAME=G_FD_NAME;\
+// }
+
+
+// GETTER_SETTER(char         *,file_path                 );
+// GETTER_SETTER(char         *,obj_path                  );
+// GETTER_SETTER(hid_t        ,object_id                 );
+// GETTER_SETTER(art_tree     *,root_art                  );
+// GETTER_SETTER(linked_list_t *,file_paths_list           );
+// GETTER_SETTER(linked_list_t *,object_paths_list         );
+// GETTER_SETTER(char         **,indexed_attr              );
+// GETTER_SETTER(int          ,num_indexed_field         );
+// GETTER_SETTER(FILE         *,on_disk_file_stream       );
+// GETTER_SETTER(int          ,is_readonly_index_file    );
+
+// GETTER_SETTER(size_t, total_num_files)
+// GETTER_SETTER(size_t, total_num_objects)
+// GETTER_SETTER(size_t, total_num_attrs)
+// GETTER_SETTER(size_t, total_num_indexed_kv_pairs)
+// GETTER_SETTER(size_t, total_num_kv_pairs)
+// GETTER_SETTER(suseconds_t, us_to_index)
+// GETTER_SETTER(suseconds_t, us_to_disk_index)
+
+// size_t get_total_num_files              (index_anchor *idx_anchor){
+//     return idx_anchor->total_num_files;
+// }
+// size_t get_total_num_objects            (index_anchor *idx_anchor){
+//     return idx_anchor->total_num_objects;
+// }
+// size_t get_total_num_attrs              (index_anchor *idx_anchor){
+//     return idx_anchor->total_num_attrs;
+// }
+// size_t get_total_num_indexed_kv_pairs   (index_anchor *idx_anchor){
+//     return idx_anchor->total_num_indexed_kv_pairs;
+// }
+// size_t get_total_num_kv_pairs           (index_anchor *idx_anchor){
+//     return idx_anchor->total_num_kv_pairs;
+// }
+
+// suseconds_t get_us_to_index         (index_anchor *idx_anchor){
+//     return idx_anchor->us_to_index;
+// }
+// suseconds_t get_us_to_disk_index    (index_anchor *idx_anchor){
+//     return idx_anchor->us_to_disk_index;
+// }
+
 index_anchor *root_idx_anchor(){
     return idx_anchor;
 }
@@ -41,6 +92,7 @@ int collect_result_from_list(void *item, size_t idx, void *user){
     entry->file_path = file_path;
     entry->obj_path = obj_path;
     list_push_value(rst->rst_arr, (void *)entry);
+    return 1;
 }
 
 
@@ -119,7 +171,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         char *k = attr_val[i];
-        value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, k, strlen(k));
+        value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)k, strlen(k));
         if (test_cnt == NULL){
             test_cnt = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t) , &index_mem_size);
             art_insert(leaf_cnt->art, (unsigned char *)k, strlen(k), (void *)test_cnt);

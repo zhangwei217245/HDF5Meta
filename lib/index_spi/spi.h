@@ -49,7 +49,7 @@ perf_info_t *get_string_ds_perf_info(void *index_root);
 int destroy_string_index(void **index_ptr);
 
 
-int create_number_index(void **idx_ptr);
+int create_number_index(void **idx_ptr, libhl_cmp_callback_t cb);
 
 /**
  * insert a number into an index with given data

@@ -26,7 +26,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
     int into_art = 1;
     stopwatch_t one_attr;   
     timer_start(&one_attr);
-    attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, attr->attr_name, strlen(attr->attr_name));
+    attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name));
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), get_index_size_ptr());
         // void *bptr = NULL;
@@ -53,7 +53,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, h5attribute_t *attr)
                 break;
         }
         if (into_art == 1) {
-            art_insert(global_art, attr->attr_name, strlen(attr->attr_name), leaf_cnt);
+            art_insert(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name), leaf_cnt);
         }
     }
 

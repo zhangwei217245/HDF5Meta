@@ -9,6 +9,7 @@ extern "C" {
 #include <sys/types.h>
 #include <stdint.h>
 #include "../profile/mem_perf.h"
+#include "comparators.h"
 
 
 #define SPA_SIZE_MIN 65536
@@ -37,7 +38,7 @@ typedef enum {
  *
  * The sparse array will be expanded if necessary
  */
-sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_free_item_callback_t cb);
+sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_free_item_callback_t cb, libhl_cmp_callback_t locate_cb);
 
 /**
  * @brief put data into corresponding element of the array at the specified position
@@ -46,7 +47,7 @@ sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_fr
  * @param data : the data that should be put in the array. 
  * @return 0 on success, -1 otherwise.
  */
-int set_element_to_sparse_array(sparse_array_t *sparse_arr, size_t pos, void *data);
+int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *pos, void *data);
 
 /**
  * @brief get the data stored in the corresponding space of the array indicated by 'pos'
@@ -54,7 +55,7 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, size_t pos, void *da
  * @param pos : a valid position in the array. 
  * @return : a valid pointer to the data element in the array specified by 'pos'. 
  */
-void *get_element_in_sparse_array(sparse_array_t *sparse_arr, size_t pos);
+void *get_element_in_sparse_array(sparse_array_t *sparse_arr, void *pos);
 
 /**
  * @brief get the size information of sparse array
@@ -86,7 +87,7 @@ typedef spa_iterator_status_t (*spa_iterator_callback_t)(sparse_array_t *spa, si
  * @param cb    : an spa_iterator_callback_t function
  * @param user  : A pointer which will be passed to the iterator callback at each call
  */
-void spa_foreach_elements(sparse_array_t *sparse_arr, size_t begin, size_t end, spa_iterator_callback_t cb, void *user);
+void spa_foreach_elements(sparse_array_t *sparse_arr, void *begin, void *end, spa_iterator_callback_t cb, void *user);
 
 /**
  * Get memory usage by sparse array. 
