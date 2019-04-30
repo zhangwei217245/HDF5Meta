@@ -43,7 +43,7 @@ int spa_init(sparse_array_t *spa, size_t initial_size, size_t max_size, spa_free
 sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_free_item_callback_t cb, libhl_cmp_callback_t locate_cb){
     sparse_array_t *spa = calloc(1, sizeof(sparse_array_t));
     INIT_PERF_INFO_FIELDS(spa, sparse_array_t);
-    
+    spa->size_info = calloc(1, sizeof(spa_size_info_t));
     if (spa && spa_init(spa, initial_size, max_size, cb, locate_cb) != 0) {
         free(spa);
         return NULL;
