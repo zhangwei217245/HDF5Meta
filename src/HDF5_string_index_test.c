@@ -115,8 +115,8 @@ int main(int argc, char **argv){
     timer_pause(&time_to_search);
     suseconds_t index_search_duration = timer_delta_us(&time_to_search);
     perf_info = get_string_ds_perf_info(index_root);
-    n_comp = n_comp - perf_info->num_of_comparisons;
-    t_locate=t_locate - perf_info->time_to_locate;
+    n_comp = perf_info->num_of_comparisons;
+    t_locate = perf_info->time_to_locate;
     println("Total time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
     count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
 
