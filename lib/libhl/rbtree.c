@@ -87,6 +87,10 @@ rbt_range_walk_internal(rbt_t *rbt, rbt_node_t *node, void *begin_key, size_t bg
     if (!node)
         return 0;
 
+    if (rbt->cmp_keys_cb(begin_key, bgk_size, end_key, edk_size) >=0 ){
+        return 0;
+    }
+
     int rc = 1;
     int cbrc = 0;
 
@@ -99,48 +103,59 @@ rbt_range_walk_internal(rbt_t *rbt, rbt_node_t *node, void *begin_key, size_t bg
         rc += rrc;
     }
 
-    if (rbt->cmp_keys_cb(begin_key, bgk_size, end_key, edk_size) < 0 && 
-            rbt->cmp_keys_cb(node->key, node->klen, begin_key, bgk_size) >= 0 &&
-            rbt->cmp_keys_cb(node->key, node->klen, end_key, edk_size) < 0){
-        cbrc = cb(rbt, node->key, node->klen, node->value, priv);
-        switch(cbrc) {
-            case RBT_WALK_DELETE_AND_STOP:
-                rbt_remove(rbt, node->key, node->klen, NULL);
-                return 0;
-            case RBT_WALK_DELETE_AND_CONTINUE:
-                {
-                    if (node->left && node->right) {
-                        rbt_remove(rbt, node->key, node->klen, NULL);
-                        return rbt_range_walk_internal(rbt, node, begin_key, bgk_size,
-                end_key, edk_size, sorted, cb, priv);
-                    } else if (node->left || node->right) {
-                        return rbt_range_walk_internal(rbt, node->left ? node->left : node->right, begin_key, bgk_size,
-                end_key, edk_size, sorted, cb, priv);
-                    }
-                    // this node was a leaf
-                    return 1;
-                }
-            case RBT_WALK_STOP:
-                return 0;
-            case RBT_WALK_CONTINUE:
-                break;
-            default:
-                // TODO - Error Messages
-                break;
+    // current node = begin : no need for left child, collect
+    // current node < begin : no need for left child
+    // current node > begin : go for left child, if current node < end, collect
+    // current node = end : no need for right child, do not collect
+    // current node < end : go for the right child, if current node >= begin, collect
+    // current node > end : no need for right child
+    int go_for_left = 0;
+    int go_for_right = 0;
+    if (rbt->cmp_keys_cb(node->key, node->klen, begin_key, bgk_size)==0) {
+        cbrc = cb(rbt, node->key, node->klen, node->value, priv); 
+        go_for_right = 1;
+    } else if(rbt->cmp_keys_cb(node->key, node->klen, begin_key, bgk_size) > 0) {
+        if (rbt->cmp_keys_cb(node->key, node->klen, end_key, edk_size) < 0) {
+            cbrc = cb(rbt, node->key, node->klen, node->value, priv); 
+            go_for_right = 1;
         }
-    } else {
-        return 0; // just like WALK_STOP
+        go_for_left = 1;
     }
-
-    if (!sorted && node->left) {
-        int rrc = rbt_range_walk_internal(rbt, node->left, begin_key, bgk_size,
+    
+    switch(cbrc) {
+        case RBT_WALK_DELETE_AND_STOP:
+            rbt_remove(rbt, node->key, node->klen, NULL);
+            return 0;
+        case RBT_WALK_DELETE_AND_CONTINUE:
+            {
+                if (node->left && node->right) {
+                    rbt_remove(rbt, node->key, node->klen, NULL);
+                    return rbt_range_walk_internal(rbt, node, begin_key, bgk_size,
             end_key, edk_size, sorted, cb, priv);
+                } else if (node->left || node->right) {
+                    return rbt_range_walk_internal(rbt, node->left ? node->left : node->right, begin_key, bgk_size,
+            end_key, edk_size, sorted, cb, priv);
+                }
+                // this node was a leaf
+                return 1;
+            }
+        case RBT_WALK_STOP:
+            return 0;
+        case RBT_WALK_CONTINUE:
+            break;
+        default:
+            // TODO - Error Messages
+            break;
+    }
+    
+    if (!sorted && go_for_left && node->left) {
+        int rrc = rbt_walk_internal(rbt, node->left, sorted, cb, priv);
         if (rrc == 0)
             return rc + 1;
         rc += rrc;
     }
 
-    if (node->right) {
+    if (go_for_right && node->right) {
         int rrc = rbt_range_walk_internal(rbt, node->right, begin_key, bgk_size,
             end_key, edk_size, sorted, cb, priv);
         if (rrc == 0)
