@@ -150,7 +150,7 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
             //     break;
             // }
             void *v = sparse_arr->array[i];
-            printf("%d\n",i);
+            // printf("%d\n",i);
         }
     }
     timer_pause(&t_adjust_range);
