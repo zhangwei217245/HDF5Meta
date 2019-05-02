@@ -109,8 +109,8 @@ rbt_range_walk_internal(rbt_t *rbt, rbt_node_t *node, void *begin_key, size_t bg
     // current node = end : no need for right child, do not collect
     // current node < end : go for the right child, if current node >= begin, collect
     // current node > end : no need for right child
-    int go_for_left = 0;
-    int go_for_right = 0;
+    int go_for_left = 1;
+    int go_for_right = 1;
     if (rbt->cmp_keys_cb(node->key, node->klen, begin_key, bgk_size)==0) {
         cbrc = cb(rbt, node->key, node->klen, node->value, priv); 
         go_for_right = 1;
