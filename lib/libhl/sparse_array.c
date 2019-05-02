@@ -54,8 +54,9 @@ sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_fr
 int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *data){
     // return ht_set(sparse_arr->core, key, ksize, data, sizeof(data)); //FIXME: what is dlen;
     int rst = -1;
-    size_t pos = (sparse_arr->locate_cb!=NULL)?
+    size_t pos = (sparse_arr->locate_cb)?
         sparse_arr->locate_cb(poss, 0, NULL, 0):(*(size_t *)poss);
+    printf("set pos = %ld\n", pos);
     if (pos >= sparse_arr->size_info->size){
         if (pos >= sparse_arr->size_info->max_size) {
             return rst; // if invalid pos, return -1
@@ -87,7 +88,7 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
 }
 
 void *get_element_in_sparse_array(sparse_array_t *sparse_arr, void *poss){
-    size_t pos = (sparse_arr->locate_cb!=NULL)?
+    size_t pos = (sparse_arr->locate_cb)?
         sparse_arr->locate_cb(poss, 0, NULL, 0):(*(size_t *)poss);
     if (pos >= sparse_arr->size_info->size){
         return NULL;
