@@ -8,6 +8,7 @@ extern "C" {
 #include <sys/types.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 /**
  * @brief Callback that, if provided, will be used to compare node keys.
