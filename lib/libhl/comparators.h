@@ -39,9 +39,6 @@ typedef int (*libhl_cmp_callback_t)(void *k1,
 
 #define LIBHL_CAST_KEYS(_type, _k1) {\
     _type _k1i = *((_type *)_k1);\
-    if (_k1i < 0) {\
-        _k1i = -_k1i;\
-    }\
     return (int)_k1i;\
 }
 
