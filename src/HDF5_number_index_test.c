@@ -112,14 +112,14 @@ int main(int argc, const char *argv[]){
     for (i = 0; i < count; i++) {
         void *out;
         long end = keys[i]+20;
-        // printf("[spi range] %ld, %ld\n", keys[i], end);
         range_rst = search_numeric_range(index_root, &keys[i], sizeof(long), 
             &end, sizeof(long));
+        println("[spi range] %ld, %ld, rst = %d", keys[i], end, list_count(range_rst));
     }
     timer_pause(&time_to_search);
     index_search_duration = timer_delta_us(&time_to_search);
-    println("[Total] time for range query %d keys in %s is %ld us. get %ld result", 
-    count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, list_count(range_rst));
+    println("[Total] time for range query %d keys in %s is %ld us.", 
+    count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration);
 
 #ifdef ENABLE_MPI
     MPI_Finalize();

@@ -80,8 +80,8 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
         timer_pause(&t_expand);
         sparse_arr->time_for_expansion+=timer_delta_ns(&t_expand);
     }
-    // ATOMIC_SET(sparse_arr->array[pos], data);
-    sparse_arr->array[pos]= data;
+    ATOMIC_SET(sparse_arr->array[pos], data);
+    // sparse_arr->array[pos]= data;
     sparse_arr->num_of_comparisons++;
     ATOMIC_INCREMENT(sparse_arr->size_info->count);
     rst = 0;
