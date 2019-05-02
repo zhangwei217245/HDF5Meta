@@ -40,8 +40,8 @@ typedef int (*libhl_cmp_callback_t)(void *k1,
 
 #define LIBHL_CAST_KEYS(_type, _k1) {\
     _type _k1i = *((_type *)_k1);\
-    printf("[cast]%d\n", (int)_k1i);\
-    return (int)_k1i;\
+    int rst = (int)_k1i;\
+    return rst >=0?rst:-rst;\
 }
 
 #define LIBHL_CMP_KEYS_TYPE(_type, _k1, _k1s, _k2, _k2s) \
