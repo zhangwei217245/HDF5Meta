@@ -44,8 +44,8 @@ int insert_string(void *index_root, char *key, void *data){
     int rst = -1;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
 
-    stopwatch_t time_to_insert;
-    timer_start(&time_to_insert);
+    // stopwatch_t time_to_insert;
+    // timer_start(&time_to_insert);
     if (s != NULL) {
         if (strcmp(s, "HASHTABLE")==0) {
             rst = insert_string_to_hashtable(index_root, key, data);
@@ -62,9 +62,9 @@ int insert_string(void *index_root, char *key, void *data){
         rst = insert_string_to_art(index_root, key, data);
     }
     
-    timer_pause(&time_to_insert);
-    stw_nanosec_t index_insertion_duration = timer_delta_ns(&time_to_insert);
-    println("[%s]Time to insert is %ld ns.", s, index_insertion_duration);
+    // timer_pause(&time_to_insert);
+    // stw_nanosec_t index_insertion_duration = timer_delta_ns(&time_to_insert);
+    // println("[%s]Time to insert is %ld ns.", s, index_insertion_duration);
     return rst; 
 }
 
@@ -114,8 +114,8 @@ int search_string(void *index_root, char *key, int len, void **out){
     int rst = -1;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
 
-    stopwatch_t time_to_search;
-    timer_start(&time_to_search);
+    // stopwatch_t time_to_search;
+    // timer_start(&time_to_search);
 
     if (s != NULL) {
         if (strcmp(s, "HASHTABLE")==0) {
@@ -133,9 +133,9 @@ int search_string(void *index_root, char *key, int len, void **out){
         search_string_in_art(index_root, key, len, out);
     }
     
-    timer_pause(&time_to_search);
-    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
-    println("[%s]Time to search is %ld ns.", s, index_search_duration);
+    // timer_pause(&time_to_search);
+    // stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    // println("[%s]Time to search is %ld ns.", s, index_search_duration);
 
     return rst; 
 }
@@ -144,8 +144,8 @@ linked_list_t *search_affix(void *index_root, pattern_type_t afx_type, char *aff
     linked_list_t *rst = NULL;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
 
-    stopwatch_t time_to_search;
-    timer_start(&time_to_search);
+    // stopwatch_t time_to_search;
+    // timer_start(&time_to_search);
 
     if (s != NULL) {
         if (strcmp(s, "HASHTABLE")==0) {
@@ -161,9 +161,9 @@ linked_list_t *search_affix(void *index_root, pattern_type_t afx_type, char *aff
         rst = search_affix_in_art(index_root, afx_type, affix);
     }
     
-    timer_pause(&time_to_search);
-    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
-    println("[%s]Time to search is %ld ns.", s, index_search_duration);
+    // timer_pause(&time_to_search);
+    // stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    // println("[%s]Time to search is %ld ns.", s, index_search_duration);
 
     return rst; 
 }
@@ -254,8 +254,8 @@ int insert_number(void *index_root, void *key, size_t ksize, void *data){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
 
-    stopwatch_t time_to_insert;
-    timer_start(&time_to_insert);
+    // stopwatch_t time_to_insert;
+    // timer_start(&time_to_insert);
 
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
@@ -272,9 +272,9 @@ int insert_number(void *index_root, void *key, size_t ksize, void *data){
         perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
         rst = insert_number_to_tsearch_index(index_root, key, data);
     }
-    timer_pause(&time_to_insert);
-    stw_nanosec_t index_insertion_duration = timer_delta_ns(&time_to_insert);
-    println("[%s]Time to insert is %ld ns.", s, index_insertion_duration);
+    // timer_pause(&time_to_insert);
+    // stw_nanosec_t index_insertion_duration = timer_delta_ns(&time_to_insert);
+    // println("[%s]Time to insert is %ld ns.", s, index_insertion_duration);
     return rst; 
 }
 
@@ -320,8 +320,8 @@ int update_number(void *index_root, void *key, size_t ksize, void *newdata){
 int search_number(void *index_root, void *key, size_t ksize, void **out){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
-    stopwatch_t time_to_search;
-    timer_start(&time_to_search);
+    // stopwatch_t time_to_search;
+    // timer_start(&time_to_search);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
             rst = search_number_from_sparse_array(index_root, key, ksize,  out);
@@ -337,9 +337,9 @@ int search_number(void *index_root, void *key, size_t ksize, void **out){
         perror("[INSERT]Data Structure not specified, fallback to tsearch\n");
         rst = search_number_from_tsearch_index(index_root, key, out);
     }
-    timer_pause(&time_to_search);
-    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
-    println("[%s]Time to search is %ld ns.", s, index_search_duration);
+    // timer_pause(&time_to_search);
+    // stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    // println("[%s]Time to search is %ld ns.", s, index_search_duration);
     return rst; 
 }
 
@@ -348,8 +348,8 @@ linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bg
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     linked_list_t *result_list=list_create();
 
-    stopwatch_t time_to_search;
-    timer_start(&time_to_search);
+    // stopwatch_t time_to_search;
+    // timer_start(&time_to_search);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
             result_list = search_numeric_range_from_sparse_array(index_root, begin_key, bgk_size, end_key, edk_size);
@@ -365,9 +365,9 @@ linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bg
         perror("[RANGE_SEARCH]Data Structure not specified, fallback to tsearch\n");
         result_list = search_numeric_range_from_tsearch_index(index_root, begin_key, bgk_size, end_key, edk_size);
     }
-    timer_pause(&time_to_search);
-    stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
-    println("[%s]Time to finish range query is %ld ns.", s, index_search_duration);
+    // timer_pause(&time_to_search);
+    // stw_nanosec_t index_search_duration = timer_delta_ns(&time_to_search);
+    // println("[%s]Time to finish range query is %ld ns.", s, index_search_duration);
 
     return result_list;
 }
