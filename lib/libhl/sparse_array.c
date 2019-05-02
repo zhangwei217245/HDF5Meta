@@ -114,6 +114,10 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
     if (sparse_arr == NULL) {
         return;
     }
+
+    stopwatch_t t_adjust_range;
+    timer_start(&t_adjust_range);
+
     size_t begin = (sparse_arr->locate_cb!=NULL)?
         sparse_arr->locate_cb(beginn, 0, NULL, 0):(*(size_t *)beginn);
     size_t end = (sparse_arr->locate_cb!=NULL)?
@@ -131,6 +135,11 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
         _bgn = begin;
         _end = end;
     }
+
+    timer_pause(&t_adjust_range);
+    stw_nanosec_t time_adjust = timer_delta_ns(&t_adjust_range);
+    printf("Time to adjust range is  %llu \n", time_adjust);
+
     int i = _bgn;
     for (i = _bgn; i < _end; i++) {
         if (cb){
