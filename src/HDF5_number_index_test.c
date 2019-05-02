@@ -112,6 +112,7 @@ int main(int argc, const char *argv[]){
     for (i = 0; i < 1; i++) {
         void *out;
         long end = keys[i]+20;
+        printf("[spi range] %ld, %ld\n", keys[i], end);
         range_rst = search_numeric_range(index_root, &keys[i], sizeof(long), 
             &end, sizeof(long));
     }
