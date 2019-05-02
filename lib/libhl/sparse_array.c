@@ -146,9 +146,9 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
     for (i = _bgn; i < _end; i++) {
         if (cb && sparse_arr->array[i]){
             spa_iterator_status_t st = cb(sparse_arr, i, sparse_arr->array[i], user);
-            // if (st == SPA_ITERATOR_STOP) {
-            //     break;
-            // }
+            if (st == SPA_ITERATOR_STOP) {
+                break;
+            }
             // void *v = sparse_arr->array[i];
             // printf("%d\n",i);
         }
