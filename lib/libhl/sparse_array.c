@@ -124,6 +124,8 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
     size_t end = (sparse_arr->locate_cb!=NULL)?
     sparse_arr->locate_cb(endd, 0, NULL, 0):(*(size_t *)endd);
 
+    printf("[sparse range]%ld, %ld\n", begin, end);
+
     int _bgn, _end;
     if (begin < 0 || 
         begin >= sparse_arr->size_info->size || 
