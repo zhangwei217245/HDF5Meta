@@ -104,6 +104,9 @@ void
 skiplist_range_search(skiplist_t *skl, void *begin_key, size_t bgklen, 
     void *end_key, size_t edklen, skiplist_range_search_cb cb, void *user)
 {
+    if (skl->cmp_keys_cb(begin_key, bgklen, end_key, edklen) >= 0) {
+        return;
+    }
     int i = skl->num_layers-1;
     skl_item_wrapper_t *prev_item = NULL;
     while (i >= 0) {
@@ -114,19 +117,16 @@ skiplist_range_search(skiplist_t *skl, void *begin_key, size_t bgklen,
             item = TAILQ_FIRST(&skl->layers[i]);
 
         while (item) {
-            if (skl->cmp_keys_cb(begin_key, bgklen, end_key, edklen) < 0 && 
-            skl->cmp_keys_cb(item->data->key, item->data->klen, 
-                            begin_key, bgklen) > 0)
+            if (i > 0  && skl->cmp_keys_cb(item->data->key, item->data->klen,  begin_key, bgklen) >= 0) {
                 break;
+            }
+            if (i == 0 && skl->cmp_keys_cb(item->data->key, item->data->klen,  begin_key, bgklen) >= 0 && 
+            skl->cmp_keys_cb(item->data->key, item->data->klen,  end_key, edklen) < 0) {
+                cb(skl, item->data->key, item->data->klen,
+                    item->data->value, user);
+            }   
             prev_item = item;
             item = TAILQ_NEXT(item, next);
-        }
-        if (i == 0) {
-            if (skl->cmp_keys_cb(item->data->key, item->data->klen, 
-                            end_key, edklen) <= 0 && prev_item){
-                cb(skl, prev_item->data->key, prev_item->data->klen,
-                    prev_item->data->value, user);
-            }
         }
         i--;
     }
