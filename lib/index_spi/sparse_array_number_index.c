@@ -5,7 +5,7 @@ int create_sparse_array_index(void **idx_ptr, libhl_cmp_callback_t cb){
     if (idx_ptr == NULL) {
         return rst;
     }
-    sparse_array_t *sparse_arr = create_sparse_array(2^20, 0, free, cb);
+    sparse_array_t *sparse_arr = create_sparse_array(0, 0, free, cb);
     idx_ptr[0] = sparse_arr;
     rst = 0;
     return rst;

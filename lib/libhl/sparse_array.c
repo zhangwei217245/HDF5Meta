@@ -54,10 +54,10 @@ sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_fr
 int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *data){
     // return ht_set(sparse_arr->core, key, ksize, data, sizeof(data)); //FIXME: what is dlen;
     int rst = -1;
-    // size_t pos = (sparse_arr->locate_cb)?
-    //     sparse_arr->locate_cb(poss, 0, NULL, 0):(*(size_t *)poss);
-    size_t pos = *(size_t *)poss;
-    printf("set pos = %ld\n", pos);
+    size_t pos = (sparse_arr->locate_cb)?
+        sparse_arr->locate_cb(poss, 0, NULL, 0):(*(size_t *)poss);
+    // size_t pos = *(size_t *)poss;
+    // printf("set pos = %ld\n", pos);
     if (pos >= sparse_arr->size_info->size){
         if (pos >= sparse_arr->size_info->max_size) {
             return rst; // if invalid pos, return -1
@@ -126,7 +126,7 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
     size_t end = (sparse_arr->locate_cb!=NULL)?
     sparse_arr->locate_cb(endd, 0, NULL, 0):(*(size_t *)endd);
 
-    printf("[sparse range]%ld, %ld\n", begin, end);
+    // printf("[sparse range]%ld, %ld\n", begin, end);
 
     int _bgn, _end;
     if (begin < 0 || 
@@ -147,11 +147,11 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
 
     // timer_start(&t_adjust_range);
 
-    printf("[sparse range]%d, %d\n", _bgn, _end);
+    // printf("[sparse range]%d, %d\n", _bgn, _end);
     int i = _bgn;
     for (i = _bgn; i < _end; i++) {
         if (cb && (sparse_arr->array)[i]){
-            printf("[sparse range]%d, %ld\n", i, *(long *)(sparse_arr->array)[i]);
+            // printf("[sparse range]%d, %ld\n", i, *(long *)(sparse_arr->array)[i]);
             spa_iterator_status_t st = cb(sparse_arr, i, sparse_arr->array[i], user);
             if (st == SPA_ITERATOR_STOP) {
                 break;
