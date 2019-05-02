@@ -56,10 +56,7 @@ typedef int (*libhl_cmp_callback_t)(void *k1,
 static int 
 libhl_cast_any_to_int(void *k1, size_t k1size, void *k2, size_t k2size){
     int rst = *(int *)k1;
-    if (rst > 0) {
-        rst = -rst;
-    }
-    return rst;
+    return rst >=0 ? rst: -rst;
 }
 
 static int 
