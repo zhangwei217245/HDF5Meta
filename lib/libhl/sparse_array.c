@@ -140,6 +140,8 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
     stw_nanosec_t time_adjust = timer_delta_ns(&t_adjust_range);
     printf("Time to adjust range is  %llu \n", time_adjust);
 
+    timer_start(&t_adjust_range);
+
     int i = _bgn;
     for (i = _bgn; i < _end; i++) {
         if (cb){
@@ -149,6 +151,9 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
             }
         }
     }
+    timer_pause(&t_adjust_range);
+    stw_nanosec_t time_range = timer_delta_ns(&t_adjust_range);
+    printf("Time to go through range is  %llu \n", time_range);
 }
 
 /**
