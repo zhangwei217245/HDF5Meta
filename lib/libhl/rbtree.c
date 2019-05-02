@@ -149,7 +149,8 @@ rbt_range_walk_internal(rbt_t *rbt, rbt_node_t *node, void *begin_key, size_t bg
     }
     
     if (!sorted && go_for_left && node->left) {
-        int rrc = rbt_walk_internal(rbt, node->left, sorted, cb, priv);
+        int rrc = rbt_range_walk_internal(rbt, node->left, begin_key, bgk_size,
+            end_key, edk_size, sorted, cb, priv);
         if (rrc == 0)
             return rc + 1;
         rc += rrc;
