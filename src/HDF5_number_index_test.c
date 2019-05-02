@@ -13,7 +13,7 @@ long *generating_even_numbers(int count){
     long *rst = calloc(count, sizeof(long));
     int i = 0;
     for (i =0; i < count; i++) {
-        rst[0] = (long)(1000 + i);
+        rst[i] = (long)(1000 + i);
     }
     return rst;
 }
