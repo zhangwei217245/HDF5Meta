@@ -107,17 +107,18 @@ int main(int argc, const char *argv[]){
     println("[Total] time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
     count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
 
+    linked_list_t *range_rst;
     timer_start(&time_to_search);
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < 1; i++) {
         void *out;
         long end = keys[i]+20;
-        search_numeric_range(index_root, &keys[i], sizeof(long), 
+        range_rst = search_numeric_range(index_root, &keys[i], sizeof(long), 
             &end, sizeof(long));
     }
     timer_pause(&time_to_search);
     index_search_duration = timer_delta_us(&time_to_search);
-    println("[Total] time for range query %d keys in %s is %ld us.", 
-    count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration);
+    println("[Total] time for range query %d keys in %s is %ld us. get %ld result", 
+    1, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, list_count(range_rst));
 
 #ifdef ENABLE_MPI
     MPI_Finalize();
