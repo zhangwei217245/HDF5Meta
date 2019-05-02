@@ -48,7 +48,7 @@ linked_list_t *search_numeric_range_from_rbtree(void *index_root, void *begin_ke
     }
     rbt_t *rbtree = (rbt_t *)index_root;
     rst = list_create();
-    rbt_walk(rbtree, rbt_walk_cb, rst);
+    rbt_range_walk(rbtree, begin_key,  bgk_size, end_key,  edk_size, rbt_walk_cb, rst);
     return rst;
 }
 
