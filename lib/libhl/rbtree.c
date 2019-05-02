@@ -92,7 +92,7 @@ rbt_range_walk_internal(rbt_t *rbt, rbt_node_t *node, void *begin_key, size_t bg
     }
 
     int rc = 1;
-    int cbrc = 0;
+    int cbrc = 1;
 
     if (sorted && node->left) {
         int rrc = rbt_range_walk_internal(rbt, node->left, 

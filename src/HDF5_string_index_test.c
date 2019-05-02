@@ -102,7 +102,7 @@ int main(int argc, char **argv){
     uint64_t n_realloc = perf_info->num_of_reallocs;
     stw_nanosec_t t_locate=perf_info->time_to_locate;
     stw_nanosec_t t_expand=perf_info->time_for_expansion;
-    println("Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
+    println("[Total] Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
     count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
 
 
@@ -117,7 +117,7 @@ int main(int argc, char **argv){
     perf_info = get_string_ds_perf_info(index_root);
     n_comp = perf_info->num_of_comparisons;
     t_locate = perf_info->time_to_locate;
-    println("Total time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
+    println("[Total] time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
     count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
 
     pattern_type_t affix_types[]={
@@ -141,7 +141,7 @@ int main(int argc, char **argv){
         }
         timer_pause(&time_to_search);
         index_search_duration = timer_delta_us(&time_to_search);
-        println("Total time to search %d %s in %s is %ld us.", 
+        println("[Total] time to search %d %s in %s is %ld us.", 
         100, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration);
     }
     
