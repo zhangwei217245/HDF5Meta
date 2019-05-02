@@ -115,8 +115,8 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
         return;
     }
 
-    stopwatch_t t_adjust_range;
-    timer_start(&t_adjust_range);
+    // stopwatch_t t_adjust_range;
+    // timer_start(&t_adjust_range);
 
     size_t begin = (sparse_arr->locate_cb!=NULL)?
         sparse_arr->locate_cb(beginn, 0, NULL, 0):(*(size_t *)beginn);
@@ -136,9 +136,9 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
         _end = end;
     }
 
-    timer_pause(&t_adjust_range);
-    stw_nanosec_t time_adjust = timer_delta_ns(&t_adjust_range);
-    printf("Time to adjust range is  %llu \n", time_adjust);
+    // timer_pause(&t_adjust_range);
+    // stw_nanosec_t time_adjust = timer_delta_ns(&t_adjust_range);
+    // printf("Time to adjust range is  %llu \n", time_adjust);
 
     timer_start(&t_adjust_range);
 
@@ -153,9 +153,9 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
             // printf("%d\n",i);
         }
     }
-    timer_pause(&t_adjust_range);
-    stw_nanosec_t time_range = timer_delta_ns(&t_adjust_range);
-    printf("Time to go through range is  %llu \n", time_range);
+    // timer_pause(&t_adjust_range);
+    // stw_nanosec_t time_range = timer_delta_ns(&t_adjust_range);
+    // printf("Time to go through range is  %llu \n", time_range);
 }
 
 /**
