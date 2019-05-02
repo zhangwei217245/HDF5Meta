@@ -76,7 +76,7 @@ int main(int argc, const char *argv[]){
     } 
 
     void *index_root;
-    create_number_index(&index_root, libhl_cmp_keys_long);
+    create_number_index(&index_root, libhl_cast_long_to_int);
     stopwatch_t time_to_insert;
     timer_start(&time_to_insert);
     for (i = 0; i < count; i++) {
