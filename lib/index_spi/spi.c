@@ -220,6 +220,8 @@ int create_number_index(void **idx_ptr, libhl_cmp_callback_t cb){
             libhl_cmp_callback_t _cb = libhl_cast_any_to_int;
             if (cb == libhl_cmp_keys_int) {
                 _cb = libhl_cast_int_to_int;
+            } else if (cb == libhl_cmp_keys_long) {
+                _cb = libhl_cast_long_to_int;
             } else if (cb == libhl_cmp_keys_float) {
                 _cb = libhl_cast_float_to_int;
             } else if (cb == libhl_cmp_keys_double) {
