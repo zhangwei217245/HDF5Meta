@@ -46,6 +46,8 @@ linked_list_t *search_affix(void *index_root, pattern_type_t afx_type, char *aff
  */
 perf_info_t *get_string_ds_perf_info(void *index_root);
 
+void reset_string_ds_perf_info_counters(void *index_root);
+
 int destroy_string_index(void **index_ptr);
 
 
@@ -77,5 +79,7 @@ linked_list_t *search_numeric_range(void *index_root, void *begin_key, size_t bg
 int destroy_number_index(void **idx_ptr);
 
 perf_info_t *get_number_ds_perf_info(void *index_root);
+
+void reset_number_ds_perf_info_counters(void *index_root)
 
 #endif // endif  MIQS_DS_SPI_H
