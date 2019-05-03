@@ -104,6 +104,9 @@ size_t skiplist_count(skiplist_t *skl);
 perf_info_t *get_perf_info_skiplist(skiplist_t *index_root);
 
 
+void reset_perf_info_counters_skiplist(skiplist_t *skl);
+
+
 #ifdef __cplusplus
 }
 #endif

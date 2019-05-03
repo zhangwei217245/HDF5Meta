@@ -95,6 +95,8 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *begin, void *end, sp
  */
 perf_info_t * get_perf_info_sparse_array(sparse_array_t *spa);
 
+void reset_perf_info_counters_sparse_array(sparse_array_t *spa);
+
 #ifdef __cplusplus
 }
 #endif

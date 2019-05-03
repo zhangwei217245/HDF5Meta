@@ -24,11 +24,13 @@ struct _sparse_array_s {
     spa_size_info_t *size_info;
     spa_free_item_callback_t free_item_cb;
     libhl_cmp_callback_t locate_cb;
+    libhl_cmp_callback_t cmp_cb;
     DECLARE_PERF_INFO_FIELDS
 };
 
 
-int spa_init(sparse_array_t *spa, size_t initial_size, size_t max_size, spa_free_item_callback_t cb, libhl_cmp_callback_t locate_cb){
+int spa_init(sparse_array_t *spa, size_t initial_size, size_t max_size, spa_free_item_callback_t cb, 
+    libhl_cmp_callback_t cmp_cb){
     if (spa == NULL) {
         return -1;
     }
@@ -36,15 +38,31 @@ int spa_init(sparse_array_t *spa, size_t initial_size, size_t max_size, spa_free
     spa->size_info->max_size = max_size;
     spa->array = (void **)ctr_calloc(spa->size_info->size, sizeof(void *), &spa->mem_usage);
     spa->free_item_cb=cb;
-    spa->locate_cb = locate_cb;
+    spa->cmp_cb = cmp_cb;
+    spa->locate_cb = libhl_cast_any_to_int;
+    if (spa->cmp_cb == libhl_cmp_keys_int) {
+        spa->locate_cb = libhl_cast_int_to_int;
+    } else if (spa->cmp_cb == libhl_cmp_keys_long) {
+        spa->locate_cb = libhl_cast_long_to_int;
+    } else if (spa->cmp_cb == libhl_cmp_keys_float) {
+        spa->locate_cb = libhl_cast_float_to_int;
+    } else if (spa->cmp_cb == libhl_cmp_keys_double) {
+        spa->locate_cb = libhl_cast_double_to_int;
+    } else if (spa->cmp_cb == libhl_cmp_keys_int16) {
+        spa->locate_cb = libhl_cast_int16_to_int;
+    } else if (spa->cmp_cb == libhl_cmp_keys_int32) {
+        spa->locate_cb = libhl_cast_int32_to_int;
+    } else if (spa->cmp_cb == libhl_cmp_keys_int64) {
+        spa->locate_cb = libhl_cast_int64_to_int;
+    }
     return 0;
 }
 
-sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_free_item_callback_t cb, libhl_cmp_callback_t locate_cb){
+sparse_array_t *create_sparse_array(size_t initial_size, size_t max_size, spa_free_item_callback_t cb, libhl_cmp_callback_t cmp_cb){
     sparse_array_t *spa = calloc(1, sizeof(sparse_array_t));
     INIT_PERF_INFO_FIELDS(spa, sparse_array_t);
     spa->size_info = calloc(1, sizeof(spa_size_info_t));
-    if (spa && spa_init(spa, initial_size, max_size, cb, locate_cb) != 0) {
+    if (spa && spa_init(spa, initial_size, max_size, cb, cmp_cb) != 0) {
         free(spa);
         return NULL;
     }
@@ -80,7 +98,12 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
         timer_pause(&t_expand);
         sparse_arr->time_for_expansion+=timer_delta_ns(&t_expand);
     }
-    ATOMIC_SET(sparse_arr->array[pos], data);
+    // ATOMIC_SET(sparse_arr->array[pos], data);
+    if (!sparse_arr->array[pos]) {
+        sparse_arr->array[pos] = list_create();
+    } 
+    linked_list_t *element_list = (linked_list_t *)sparse_arr->array[pos]; 
+    list_push_value(element_list, data);
     // sparse_arr->array[pos]= data;
     sparse_arr->num_of_comparisons++;
     ATOMIC_INCREMENT(sparse_arr->size_info->count);
@@ -170,4 +193,8 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
  */
 perf_info_t * get_perf_info_sparse_array(sparse_array_t *spa){
     GET_PERF_INFO(spa);
+}
+
+void reset_perf_info_counters_sparse_array(sparse_array_t *spa){
+    RESET_PERF_INFO_COUNTERS(spa);
 }

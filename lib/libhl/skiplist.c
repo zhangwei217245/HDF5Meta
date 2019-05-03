@@ -278,5 +278,10 @@ perf_info_t *get_perf_info_skiplist(skiplist_t *index_root){
     GET_PERF_INFO(index_root);
 }
 
+
+void reset_perf_info_counters_skiplist(skiplist_t *skl){
+    RESET_PERF_INFO_COUNTERS(skl);
+}
+
 // vim: tabstop=4 shiftwidth=4 expandtab:
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */

@@ -62,12 +62,6 @@ int main(int argc, const char *argv[]){
         setenv(MIQS_NUMBER_IDX_VAR_NAME, "SBST", 1);
     }
 
-    // char *alpha = "Hello ";
-    // char *beta = "World!";
-    // char *gamma = " This is a program!";
-    // println("%s", concat(alpha, beta, gamma));
-
-    
 
     if (strcmp(dataset_name, "SKEW")==0) {
         keys = generating_skew_numbers(count);
@@ -114,7 +108,7 @@ int main(int argc, const char *argv[]){
         long end = keys[i]+20;
         range_rst = search_numeric_range(index_root, &keys[i], sizeof(long), 
             &end, sizeof(long));
-        println("[spi range] %ld, %ld, rst = %d", keys[i], end, list_count(range_rst));
+        // println("[spi range] %ld, %ld, rst = %d", keys[i], end, list_count(range_rst));
     }
     timer_pause(&time_to_search);
     index_search_duration = timer_delta_us(&time_to_search);

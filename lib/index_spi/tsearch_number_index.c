@@ -57,6 +57,11 @@ perf_info_t *get_perf_info_tsearch(void *index_root){
     return calloc(1, sizeof(perf_info_t));
 }
 
+
+void reset_perf_info_counters_tsearch_tree(void *index_root){
+    return;
+}
+
 // size_t get_mem_in_tsearch(){
 //     return 0;
 // }

@@ -323,6 +323,10 @@ perf_info_t *get_perf_info_trie(trie_t *index_root){
     GET_PERF_INFO(index_root);
 }
 
+void reset_perf_info_counters_trie(trie_t *trie){
+    RESET_PERF_INFO_COUNTERS(trie);
+}
+
 // size_t get_mem_usage_by_all_tries(){
 //     return mem_usage_by_all_tries;
 // }

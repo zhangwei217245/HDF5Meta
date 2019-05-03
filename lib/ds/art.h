@@ -213,6 +213,8 @@ uint64_t art_iter_prefix_size(art_tree *t, const unsigned char *prefix, int pref
 
 perf_info_t *get_perf_info_art(art_tree *art);
 
+void reset_perf_info_counters_art(art_tree *art);
+
 size_t get_art_mem_size();
 
 size_t get_mem_usage_by_all_arts();

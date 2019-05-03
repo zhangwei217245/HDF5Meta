@@ -982,6 +982,10 @@ perf_info_t *get_perf_info_art(art_tree *art){
     GET_PERF_INFO(art->root)
 }
 
+void reset_perf_info_counters_art(art_tree *art){
+    RESET_PERF_INFO_COUNTERS(art->root);
+}
+
 size_t get_art_mem_size(){
     return art_mem_size;
 }

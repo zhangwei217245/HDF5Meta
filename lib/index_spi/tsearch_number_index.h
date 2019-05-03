@@ -18,6 +18,8 @@ linked_list_t *search_numeric_range_from_tsearch_index(void *index_root, void *b
 
 perf_info_t *get_perf_info_tsearch(void *index_root);
 
+void reset_perf_info_counters_tsearch_tree(void *index_root);
+
 // size_t get_mem_in_tsearch();
 
 #endif // END MIQS_TSEARCH_NUMBER_INDEX_H

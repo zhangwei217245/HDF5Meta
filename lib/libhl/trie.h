@@ -175,6 +175,8 @@ int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user);
 
 
 perf_info_t *get_perf_info_trie(trie_t *index_root);
+
+void reset_perf_info_counters_trie(trie_t *trie);
 // size_t get_mem_usage_by_all_tries();
 
 #ifdef __cplusplus

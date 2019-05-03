@@ -844,8 +844,12 @@ void rbt_print(rbt_t *rbt)
 #endif
       
 
-perf_info_t *get_perf_info_sbst(rbt_t *index_root){
+perf_info_t *get_perf_info_rbtree(rbt_t *index_root){
     GET_PERF_INFO(index_root);
+}
+
+void reset_perf_info_counters_rbtree(rbt_t *rbt){
+    RESET_PERF_INFO_COUNTERS(rbt);
 }
 
 size_t get_mem_usage_by_all_rbtrees(){

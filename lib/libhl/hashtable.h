@@ -406,6 +406,7 @@ void ht_foreach_pair(hashtable_t *table, ht_pair_iterator_callback_t cb, void *u
  * 
  */
 perf_info_t *get_perf_info_hashtable(hashtable_t *index_root);
+void reset_perf_info_counters_hashtable(hashtable_t *ht);
 
 #ifdef __cplusplus
 }

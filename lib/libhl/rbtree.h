@@ -181,7 +181,9 @@ int rbt_range_walk_sorted(rbt_t *rbt, void *begin_key, size_t bgk_size,
 uint64_t rbt_size(rbt_t *rbt);
 
 
-perf_info_t *get_perf_info_sbst(rbt_t *index_root);
+perf_info_t *get_perf_info_rbtree(rbt_t *index_root);
+
+void reset_perf_info_counters_rbtree(rbt_t *rbt);
 
 size_t get_mem_usage_by_all_rbtrees();
 

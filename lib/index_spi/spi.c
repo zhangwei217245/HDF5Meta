@@ -176,7 +176,7 @@ perf_info_t *get_string_ds_perf_info(void *index_root) {
         if (strcmp(s, "HASHTABLE")==0) {
             rst = get_perf_info_hashtable((hashtable_t *)index_root);
         } else if (strcmp(s, "SBST")==0) {
-            rst = get_perf_info_sbst((rbt_t *)index_root);
+            rst = get_perf_info_rbtree((rbt_t *)index_root);
         } else if (strcmp(s, "TRIE")==0) {
             rst = get_perf_info_trie((trie_t *)index_root);
         } else {
@@ -188,6 +188,27 @@ perf_info_t *get_string_ds_perf_info(void *index_root) {
         rst = get_perf_info_art((art_tree *)index_root);
     }
     return rst; 
+}
+
+
+void reset_string_ds_perf_info_counters(void *index_root){
+    if (index_root==NULL){return ;} 
+    const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
+    if (s != NULL) {
+        if (strcmp(s, "HASHTABLE")==0) {
+            reset_perf_info_counters_hashtable((hashtable_t *)index_root);
+        } else if (strcmp(s, "SBST")==0) {
+            reset_perf_info_counters_rbtree((rbt_t *)index_root);
+        } else if (strcmp(s, "TRIE")==0) {
+            reset_perf_info_counters_trie((trie_t *)index_root);
+        } else {
+            // perror("[MEM]Data Structure not specified, fallback to tsearch\n");
+            reset_perf_info_counters_art(index_root);
+        }
+    } else {
+        // perror("[MEM]Data Structure not specified, fallback to tsearch\n");
+        reset_perf_info_counters_art(index_root);
+    }
 }
 
 /**
@@ -217,23 +238,7 @@ int create_number_index(void **idx_ptr, libhl_cmp_callback_t cb){
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            libhl_cmp_callback_t _cb = libhl_cast_any_to_int;
-            if (cb == libhl_cmp_keys_int) {
-                _cb = libhl_cast_int_to_int;
-            } else if (cb == libhl_cmp_keys_long) {
-                _cb = libhl_cast_long_to_int;
-            } else if (cb == libhl_cmp_keys_float) {
-                _cb = libhl_cast_float_to_int;
-            } else if (cb == libhl_cmp_keys_double) {
-                _cb = libhl_cast_double_to_int;
-            } else if (cb == libhl_cmp_keys_int16) {
-                _cb = libhl_cast_int16_to_int;
-            } else if (cb == libhl_cmp_keys_int32) {
-                _cb = libhl_cast_int32_to_int;
-            } else if (cb == libhl_cmp_keys_int64) {
-                _cb = libhl_cast_int64_to_int;
-            }
-            rst = create_sparse_array_index(idx_ptr, _cb);
+            rst = create_sparse_array_index(idx_ptr, cb);
         } else if (strcmp(s, "SBST")==0) {
             rst = create_rbtree_number_index(idx_ptr, cb);
         } else if (strcmp(s, "SKIPLIST")==0) {
@@ -404,16 +409,36 @@ perf_info_t *get_number_ds_perf_info(void *index_root){
         if (strcmp(s, "SPARSEARRAY")==0) {
             rst = get_perf_info_sparse_array((sparse_array_t *)index_root);
         } else if (strcmp(s, "SBST")==0) {
-            rst = get_perf_info_sbst((rbt_t *)index_root);
+            rst = get_perf_info_rbtree((rbt_t *)index_root);
         } else if (strcmp(s, "SKIPLIST")==0) {
             rst = get_perf_info_skiplist((skiplist_t *)index_root);
         } else {
-            // perror("[MEM]Data Structure not specified, fallback to ART\n");
+            // perror("[MEM]Data Structure not specified, fallback to tsearch\n");
             rst = get_perf_info_tsearch(index_root);
         }
     } else {
-        // perror("[MEM]Data Structure not specified, fallback to ART\n");
+        // perror("[MEM]Data Structure not specified, fallback to tsearch\n");
         rst = get_perf_info_tsearch(index_root);
     }
     return rst; 
+}
+
+void reset_number_ds_perf_info_counters(void *index_root){
+    if (index_root==NULL){return ;} 
+    const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
+    if (s != NULL) {
+        if (strcmp(s, "SPARSEARRAY")==0) {
+            reset_perf_info_counters_sparse_array((sparse_array_t *)index_root);
+        } else if (strcmp(s, "SBST")==0) {
+            reset_perf_info_counters_rbtree((rbt_t *)index_root);
+        } else if (strcmp(s, "SKIPLIST")==0) {
+            reset_perf_info_counters_skiplist((skiplist_t *)index_root);
+        } else {
+            // perror("[MEM]Data Structure not specified, fallback to tsearch\n");
+            reset_perf_info_counters_tsearch_tree(index_root);
+        }
+    } else {
+        // perror("[MEM]Data Structure not specified, fallback to tsearch\n");
+        reset_perf_info_counters_tsearch_tree(index_root);
+    }
 }
