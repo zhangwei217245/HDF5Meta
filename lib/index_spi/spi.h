@@ -80,6 +80,6 @@ int destroy_number_index(void **idx_ptr);
 
 perf_info_t *get_number_ds_perf_info(void *index_root);
 
-void reset_number_ds_perf_info_counters(void *index_root)
+void reset_number_ds_perf_info_counters(void *index_root);
 
 #endif // endif  MIQS_DS_SPI_H
