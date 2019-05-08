@@ -177,8 +177,9 @@ int main(int argc, char **argv){
             timer_pause(&time_to_search);
             index_search_duration = timer_delta_us(&time_to_search);
             perf_info = get_number_ds_perf_info(index_root);
+            n_comp = perf_info->num_of_comparisons;
             println("[Total%d] time to search %d %s in %s is %ld us. Number of comparisons = %llu", 
-            insert_count, count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, perf_info->num_of_comparisons);
+            insert_count, count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, n_comp);
         }
 
     }
