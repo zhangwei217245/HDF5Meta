@@ -105,7 +105,7 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
     linked_list_t *element_list = (linked_list_t *)sparse_arr->array[pos]; 
     list_push_value(element_list, data);
     // sparse_arr->array[pos]= data;
-    sparse_arr->num_of_comparisons++;
+    // sparse_arr->num_of_comparisons++;
     ATOMIC_INCREMENT(sparse_arr->size_info->count);
     rst = 0;
     return rst;
