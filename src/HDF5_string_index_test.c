@@ -164,7 +164,7 @@ int main(int argc, char **argv){
             };
         int k = 0;
         for (k = 0; k < 3; k++) {
-            reset_number_ds_perf_info_counters(index_root);
+            // reset_number_ds_perf_info_counters(index_root);
 
             pattern_type_t affix_type= affix_types[k];
             // stopwatch_t time_to_search;
