@@ -84,19 +84,19 @@ int main(int argc, char **argv){
         keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/mini_wiki_no_count.txt", &len_key_arr);
     } else if (strcmp(dataset_name, "DICT") == 0) {
         keys = read_words_from_text("/global/cscratch1/sd/wzhang5/data/dart/words_lower.txt", &len_key_arr);
-    } else if (strcmp(dataset_name, "BOSSNAME")){
+    } else if (strcmp(dataset_name, "BOSSNAME")==0){
         len_key_arr = len_string_ATTR_NAMES;
         keys = string_ATTR_NAMES;
-    } else if (strcmp(dataset_name, "OBJFILE")){
+    } else if (strcmp(dataset_name, "OBJFILE")== 0){
         len_key_arr = len_string_vals[0];
         keys = string_OBJFILE;
-    } else if (strcmp(dataset_name, "DATE-OBS")){
+    } else if (strcmp(dataset_name, "DATE-OBS")== 0){
         len_key_arr = len_string_vals[1];
         keys = string_DATE_OBS;
-    } else if (strcmp(dataset_name, "GUIDERN")){
+    } else if (strcmp(dataset_name, "GUIDERN")== 0){
         len_key_arr = len_string_vals[2];
         keys = string_GUIDERN;
-    } else if (strcmp(dataset_name, "EXPID02")){
+    } else if (strcmp(dataset_name, "EXPID02")== 0){
         len_key_arr = len_string_vals[3];
         keys = string_EXPID02;
     } else {
