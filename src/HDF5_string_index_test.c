@@ -104,75 +104,85 @@ int main(int argc, char **argv){
         keys = string_ATTR_NAMES;
     }
 
-    void *index_root;
-    create_string_index(&index_root);
-    stopwatch_t time_to_insert;
-    timer_start(&time_to_insert);
-    for (i = 0; i < len_key_arr; i++) {
-        insert_string(index_root, keys[i], keys[i]);
-    }
-    timer_pause(&time_to_insert);
-    suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    perf_info_t *perf_info = get_string_ds_perf_info(index_root);
-    size_t ds_mem = perf_info->mem_usage;
-    uint64_t n_comp = perf_info->num_of_comparisons;
-    uint64_t n_realloc = perf_info->num_of_reallocs;
-    stw_nanosec_t t_locate=perf_info->time_to_locate;
-    stw_nanosec_t t_expand=perf_info->time_for_expansion;
-    println("[Total] Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
-    count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
-
-    reset_string_ds_perf_info_counters(index_root);
-
-    srand(time(0));
     
 
-    stopwatch_t time_to_search;
-    timer_start(&time_to_search);
-    for (i = 0; i < count; i++) {
-        void *out; 
-        int rnd = rand() %  len_key_arr;
-        search_string(index_root, keys[rnd], strlen(keys[rnd]), &out);
-    }
-    timer_pause(&time_to_search);
-    suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    perf_info = get_string_ds_perf_info(index_root);
-    n_comp = perf_info->num_of_comparisons;
-    t_locate = perf_info->time_to_locate;
-    println("[Total] time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
-    count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
+    int round = 0;
+    for  (round = 0; round < 4; round ++) {
+        void *index_root;
+        create_string_index(&index_root);
 
+        int insert_count = len_key_arr-(len_key_arr/4)*(round);
 
-    
+        stopwatch_t time_to_insert;
+        timer_start(&time_to_insert);
+        for (i = 0; i < (len_key_arr-(len_key_arr/4)*(round)); i++) {
+            insert_string(index_root, keys[i], keys[i]);
+        }
+        timer_pause(&time_to_insert);
+        suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
+        perf_info_t *perf_info = get_string_ds_perf_info(index_root);
+        size_t ds_mem = perf_info->mem_usage;
+        uint64_t n_comp = perf_info->num_of_comparisons;
+        uint64_t n_realloc = perf_info->num_of_reallocs;
+        stw_nanosec_t t_locate=perf_info->time_to_locate;
+        stw_nanosec_t t_expand=perf_info->time_for_expansion;
+        println("[Total%d] Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
+        insert_count, count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
 
-    pattern_type_t affix_types[]={
-        PATTERN_PREFIX,
-        PATTERN_SUFFIX,
-        PATTERN_MIDDLE
-    };
-    char *afx_type_names[]={
-        "PREFIX",
-        "SUFFIX",
-        "INFIX"
-        };
-    int k = 0;
-    for (k = 0; k < 3; k++) {
-        reset_number_ds_perf_info_counters(index_root);
+        reset_string_ds_perf_info_counters(index_root);
 
-        pattern_type_t affix_type= affix_types[k];
-        // stopwatch_t time_to_search;
+        srand(time(0));
+        
+
+        stopwatch_t time_to_search;
         timer_start(&time_to_search);
         for (i = 0; i < count; i++) {
-            void *out;
-            int rnd = rand() %  len_key_arr;
-            search_affix(index_root, affix_type, get_affix(affix_type, keys[rnd]));
+            void *out; 
+            int rnd = rand() %  insert_count;
+            search_string(index_root, keys[rnd], strlen(keys[rnd]), &out);
         }
         timer_pause(&time_to_search);
-        index_search_duration = timer_delta_us(&time_to_search);
-        perf_info = get_number_ds_perf_info(index_root);
-        println("[Total] time to search %d %s in %s is %ld us. Number of comparisons = %llu", 
-        count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, perf_info->num_of_comparisons);
+        suseconds_t index_search_duration = timer_delta_us(&time_to_search);
+        perf_info = get_string_ds_perf_info(index_root);
+        n_comp = perf_info->num_of_comparisons;
+        t_locate = perf_info->time_to_locate;
+        println("[Total%d] time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
+        insert_count, count, getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
+
+
+        
+
+        pattern_type_t affix_types[]={
+            PATTERN_PREFIX,
+            PATTERN_SUFFIX,
+            PATTERN_MIDDLE
+        };
+        char *afx_type_names[]={
+            "PREFIX",
+            "SUFFIX",
+            "INFIX"
+            };
+        int k = 0;
+        for (k = 0; k < 3; k++) {
+            reset_number_ds_perf_info_counters(index_root);
+
+            pattern_type_t affix_type= affix_types[k];
+            // stopwatch_t time_to_search;
+            timer_start(&time_to_search);
+            for (i = 0; i < count; i++) {
+                void *out;
+                int rnd = rand() %  insert_count;
+                search_affix(index_root, affix_type, get_affix(affix_type, keys[rnd]));
+            }
+            timer_pause(&time_to_search);
+            index_search_duration = timer_delta_us(&time_to_search);
+            perf_info = get_number_ds_perf_info(index_root);
+            println("[Total%d] time to search %d %s in %s is %ld us. Number of comparisons = %llu", 
+            insert_count, count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, perf_info->num_of_comparisons);
+        }
+
     }
+    
     
 #ifdef ENABLE_MPI
     MPI_Finalize();

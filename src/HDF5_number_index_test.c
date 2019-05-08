@@ -65,6 +65,7 @@ int main(int argc, const char *argv[]){
         setenv(MIQS_NUMBER_IDX_VAR_NAME, "SBST", 1);
     }
 
+    int len_key_arr = count;
     libhl_cmp_callback_t cmp_callback = libhl_cmp_keys_long;
 
     if (strcmp(dataset_name, "SKEW")==0) {
@@ -72,112 +73,132 @@ int main(int argc, const char *argv[]){
     } else if (strcmp(dataset_name, "EXPOSURE")==0){
         cmp_callback = libhl_cmp_keys_long; 
         int_keys = int_EXPOSURE;
+        len_key_arr = len_int_vals[0];
     } else if (strcmp(dataset_name, "COLLB")==0){
         cmp_callback = libhl_cmp_keys_long;
         int_keys = int_COLLB;
+        len_key_arr = len_int_vals[1];
     } else if (strcmp(dataset_name, "PLATEID")==0){
         cmp_callback = libhl_cmp_keys_long;
         int_keys = int_PLATEID;
+        len_key_arr = len_int_vals[2];
     } else if (strcmp(dataset_name, "TILEID")==0){
         cmp_callback = libhl_cmp_keys_long;
         int_keys = int_TILEID;
+        len_key_arr = len_int_vals[3];
     } else if (strcmp(dataset_name, "DEREDSN2")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
         float_keys = float_DEREDSN2;
+        len_key_arr = len_float_vals[0];
     } else if (strcmp(dataset_name, "AZ")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
         float_keys = float_AZ;
+        len_key_arr = len_float_vals[1];
     } else if (strcmp(dataset_name, "ARCOFFX")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
         float_keys = float_ARCOFFX;
+        len_key_arr = len_float_vals[2];
     } else if (strcmp(dataset_name, "RMSOFF20")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
         float_keys = float_RMSOFF20;
+        len_key_arr = len_float_vals[3];
     } else {
         int_keys = generating_even_numbers(count);
     } 
 
-    void *index_root;
-    create_number_index(&index_root, cmp_callback);
-    stopwatch_t time_to_insert;
-    timer_start(&time_to_insert);
-    if (is_float) {
-        for (i = 0; i < count; i++) {
-            insert_number(index_root, &float_keys[i], sizeof(double), &float_keys[i]);
+    int round = 0;
+    for (round = 0; round < 4; round++) {
+        void *index_root;
+        create_number_index(&index_root, cmp_callback);
+
+        int insert_count = len_key_arr-(len_key_arr/4)*(round);
+
+        stopwatch_t time_to_insert;
+        timer_start(&time_to_insert);
+        if (is_float) {
+            for (i = 0; i < insert_count; i++) {
+                insert_number(index_root, &float_keys[i], sizeof(double), &float_keys[i]);
+            }
+        } else {
+            for (i = 0; i < insert_count; i++) {
+                insert_number(index_root, &int_keys[i], sizeof(long), &int_keys[i]);
+            }
         }
-    } else {
-        for (i = 0; i < count; i++) {
-            insert_number(index_root, &int_keys[i], sizeof(long), &int_keys[i]);
+        
+        timer_pause(&time_to_insert);
+        suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
+        perf_info_t *perf_info = get_number_ds_perf_info(index_root);
+        size_t ds_mem = perf_info->mem_usage;
+        uint64_t n_comp = perf_info->num_of_comparisons;
+        uint64_t n_realloc = perf_info->num_of_reallocs;
+        stw_nanosec_t t_locate=perf_info->time_to_locate;
+        stw_nanosec_t t_expand=perf_info->time_for_expansion;
+        println("[Total%d] Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
+        insert_count, count,  getenv(MIQS_NUMBER_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
+
+        reset_number_ds_perf_info_counters(index_root);
+        srand(time(0));
+
+        stopwatch_t time_to_search;
+        timer_start(&time_to_search);
+        if (is_float) {
+            for (i = 0; i < count; i++) {
+                void *out;
+                int rnd = rand() %  insert_count;
+                search_number(index_root, &float_keys[rnd], sizeof(double), &out);
+            }
+        } else {
+            for (i = 0; i < count; i++) {
+                void *out;
+                int rnd = rand() %  insert_count;
+                search_number(index_root, &int_keys[rnd], sizeof(long), &out);
+            }
         }
+        
+        timer_pause(&time_to_search);
+        suseconds_t index_search_duration = timer_delta_us(&time_to_search);
+        perf_info = get_number_ds_perf_info(index_root);
+        n_comp = perf_info->num_of_comparisons;
+        t_locate = perf_info->time_to_locate;
+        println("[Total%d] time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
+        insert_count, count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
+
+        reset_number_ds_perf_info_counters(index_root);
+
+        linked_list_t *range_rst;
+        timer_start(&time_to_search);
+        if (is_float) {
+            for (i = 0; i < count; i++) {
+                void *out;
+                int rnd = rand() %  insert_count;
+                double end = float_keys[rnd]+20.0;
+                range_rst = search_numeric_range(index_root, &float_keys[rnd], sizeof(double), 
+                    &end, sizeof(double));
+                println("[spi range] %ld, %ld, rst = %d", float_keys[rnd], end, list_count(range_rst));
+            }
+        } else {
+            for (i = 0; i < count; i++) {
+                void *out;
+                int rnd = rand() %  insert_count;
+                long end = int_keys[rnd]+20;
+                range_rst = search_numeric_range(index_root, &int_keys[rnd], sizeof(long), 
+                    &end, sizeof(long));
+                println("[spi range] %ld, %ld, rst = %d", int_keys[rnd], end, list_count(range_rst));
+            }
+        }
+        
+        timer_pause(&time_to_search);
+        index_search_duration = timer_delta_us(&time_to_search);
+        perf_info = get_number_ds_perf_info(index_root);
+        println("[Total%d] time for range query %d keys in %s is %ld us. Number of comparisons = %llu", 
+        insert_count, count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, perf_info->num_of_comparisons);
+
     }
     
-    timer_pause(&time_to_insert);
-    suseconds_t index_insertion_duration = timer_delta_us(&time_to_insert);
-    perf_info_t *perf_info = get_number_ds_perf_info(index_root);
-    size_t ds_mem = perf_info->mem_usage;
-    uint64_t n_comp = perf_info->num_of_comparisons;
-    uint64_t n_realloc = perf_info->num_of_reallocs;
-    stw_nanosec_t t_locate=perf_info->time_to_locate;
-    stw_nanosec_t t_expand=perf_info->time_for_expansion;
-    println("[Total] Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
-    count,  getenv(MIQS_NUMBER_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
-
-    reset_number_ds_perf_info_counters(index_root);
-
-    stopwatch_t time_to_search;
-    timer_start(&time_to_search);
-    if (is_float) {
-        for (i = 0; i < count; i++) {
-            void *out;
-            search_number(index_root, &float_keys[i], sizeof(double), &out);
-        }
-    } else {
-        for (i = 0; i < count; i++) {
-            void *out;
-            search_number(index_root, &int_keys[i], sizeof(long), &out);
-        }
-    }
-    
-    timer_pause(&time_to_search);
-    suseconds_t index_search_duration = timer_delta_us(&time_to_search);
-    perf_info = get_number_ds_perf_info(index_root);
-    n_comp = perf_info->num_of_comparisons;
-    t_locate = perf_info->time_to_locate;
-    println("[Total] time to search %d keys in %s is %ld us. %llu ns for locate. %llu comparisons", 
-    count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, t_locate, n_comp);
-
-    reset_number_ds_perf_info_counters(index_root);
-
-    linked_list_t *range_rst;
-    timer_start(&time_to_search);
-    if (is_float) {
-        for (i = 0; i < count; i++) {
-            void *out;
-            double end = float_keys[i]+20.0;
-            range_rst = search_numeric_range(index_root, &float_keys[i], sizeof(double), 
-                &end, sizeof(double));
-            // println("[spi range] %ld, %ld, rst = %d", keys[i], end, list_count(range_rst));
-        }
-    } else {
-        for (i = 0; i < count; i++) {
-            void *out;
-            long end = int_keys[i]+20;
-            range_rst = search_numeric_range(index_root, &int_keys[i], sizeof(long), 
-                &end, sizeof(long));
-            // println("[spi range] %ld, %ld, rst = %d", keys[i], end, list_count(range_rst));
-        }
-    }
-    
-    timer_pause(&time_to_search);
-    index_search_duration = timer_delta_us(&time_to_search);
-    perf_info = get_number_ds_perf_info(index_root);
-    println("[Total] time for range query %d keys in %s is %ld us. Number of comparisons = %llu", 
-    count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, perf_info->num_of_comparisons);
-
 #ifdef ENABLE_MPI
     MPI_Finalize();
 #endif
