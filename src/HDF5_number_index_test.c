@@ -197,7 +197,7 @@ int main(int argc, const char *argv[]){
             timer_pause(&time_to_search);
             index_search_duration = timer_delta_us(&time_to_search);
             perf_info = get_number_ds_perf_info(index_root);
-            println("[Total%d] time for range %d query %d keys in %s is %ld us. Number of comparisons = %llu", 
+            println("[Total%d] search time for range %d query %d keys in %s is %ld us. Number of comparisons = %llu", 
             insert_count, range_size_arr[k], count, getenv(MIQS_NUMBER_IDX_VAR_NAME), index_search_duration, perf_info->num_of_comparisons);
         }
     }
