@@ -127,7 +127,7 @@ int main(int argc, char **argv){
         stw_nanosec_t t_locate=perf_info->time_to_locate;
         stw_nanosec_t t_expand=perf_info->time_for_expansion;
         println("[Total%d] Insert %d keys into %s took %ld us. %llu memory consumed, %llu comparisons, %llu reallocations, %llu ns for locate, %llu ns for expansion", 
-        insert_count, count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
+        insert_count, insert_count,  getenv(MIQS_STRING_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
 
         reset_string_ds_perf_info_counters(index_root);
 
