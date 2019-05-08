@@ -141,20 +141,20 @@ int main(int argc, const char *argv[]){
         insert_count, insert_count,  getenv(MIQS_NUMBER_IDX_VAR_NAME), index_insertion_duration, ds_mem, n_comp, n_realloc, t_locate, t_expand);
 
         reset_number_ds_perf_info_counters(index_root);
-        srand(time(0));
+        // srand(0);
 
         stopwatch_t time_to_search;
         timer_start(&time_to_search);
         if (is_float) {
             for (i = 0; i < count; i++) {
                 void *out;
-                int rnd = rand() %  insert_count;
+                int rnd = i%  insert_count;
                 search_number(index_root, &float_keys[rnd], sizeof(double), &out);
             }
         } else {
             for (i = 0; i < count; i++) {
                 void *out;
-                int rnd = rand() %  insert_count;
+                int rnd = i %  insert_count;
                 search_number(index_root, &int_keys[rnd], sizeof(long), &out);
             }
         }
@@ -177,7 +177,7 @@ int main(int argc, const char *argv[]){
             if (is_float) {
                 for (i = 0; i < count; i++) {
                     void *out;
-                    int rnd = rand() %  insert_count;
+                    int rnd = i %  insert_count;
                     double end = float_keys[rnd]+(double)range_size_arr[k];
                     range_rst = search_numeric_range(index_root, &float_keys[rnd], sizeof(double), 
                         &end, sizeof(double));
@@ -186,7 +186,7 @@ int main(int argc, const char *argv[]){
             } else {
                 for (i = 0; i < count; i++) {
                     void *out;
-                    int rnd = rand() %  insert_count;
+                    int rnd = i %  insert_count;
                     long end = int_keys[rnd]+(long)range_size_arr[k];
                     range_rst = search_numeric_range(index_root, &int_keys[rnd], sizeof(long), 
                         &end, sizeof(long));
