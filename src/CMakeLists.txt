@@ -42,11 +42,11 @@ target_link_libraries(hdf5_set_2_index PRIVATE hdf52index index_spi ${MPI_mpi_LI
 target_include_directories(hdf5_set_2_index PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 
 
-add_executable(hdf5_string_index_test HDF5_string_index_test.c)
+add_executable(hdf5_string_index_test HDF5_string_index_test.c boss_dataset.h)
 target_link_libraries(hdf5_string_index_test PRIVATE index_spi "${MPI_C_LIBRARIES}")
 target_include_directories(hdf5_string_index_test PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 
-add_executable(hdf5_number_index_test HDF5_number_index_test.c)
+add_executable(hdf5_number_index_test HDF5_number_index_test.c boss_dataset.h)
 target_link_libraries(hdf5_number_index_test PRIVATE index_spi "${MPI_C_LIBRARIES}")
 target_include_directories(hdf5_number_index_test PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 

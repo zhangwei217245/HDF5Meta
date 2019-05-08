@@ -1009,6 +1009,7 @@ ht_foreach_pair(hashtable_t *table, ht_pair_iterator_callback_t cb, void *user)
         SPIN_LOCK(list->lock);
         ht_item_t *item = NULL;
         TAILQ_FOREACH(item, &list->head, next) {
+            table->num_of_comparisons +=1;
             rc = cb(table, item->key, item->klen, item->data, item->dlen, user);
             if (rc <= 0)
                 break;

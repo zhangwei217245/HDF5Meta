@@ -117,9 +117,11 @@ skiplist_range_search(skiplist_t *skl, void *begin_key, size_t bgklen,
             item = TAILQ_FIRST(&skl->layers[i]);
 
         while (item) {
+            skl->num_of_comparisons+=1;
             if (i > 0  && skl->cmp_keys_cb(item->data->key, item->data->klen,  begin_key, bgklen) >= 0) {
                 break;
             }
+            skl->num_of_comparisons+=1;
             if (i == 0 && skl->cmp_keys_cb(item->data->key, item->data->klen,  begin_key, bgklen) >= 0 && 
             skl->cmp_keys_cb(item->data->key, item->data->klen,  end_key, edklen) < 0) {
                 cb(skl, item->data->key, item->data->klen,

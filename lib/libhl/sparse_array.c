@@ -173,6 +173,7 @@ void spa_foreach_elements(sparse_array_t *sparse_arr, void *beginn, void *endd,
     // printf("[sparse range]%d, %d\n", _bgn, _end);
     int i = _bgn;
     for (i = _bgn; i < _end; i++) {
+        sparse_arr->num_of_comparisons++;
         if (cb && (sparse_arr->array)[i]){
             // printf("[sparse range]%d, %ld\n", i, *(long *)(sparse_arr->array)[i]);
             spa_iterator_status_t st = cb(sparse_arr, i, sparse_arr->array[i], user);

@@ -162,6 +162,7 @@ int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user){
         // if there are still characters to be iterated, we start collect the result from the node. 
         rst = trie_node_iterate(node, cb, visited, user);
     }
+    trie->num_of_comparisons += rst;
     return rst;
 }
 
@@ -178,6 +179,7 @@ int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void
         node = tmp;
         ++_prefix;
         visited->pos++;
+        rst ++;
     }
     if (*prefix) {
         // if character iteration of the prefix is not ended, we consider no matching prefix in the trie. 
@@ -185,9 +187,10 @@ int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void
     } else {
         if (node) {
             // if there are still characters to be iterated, we start collect the result from the node. 
-            rst = trie_node_iterate(node, cb, visited, user);
+            rst += trie_node_iterate(node, cb, visited, user);
         }
     }
+    trie->num_of_comparisons+=rst;
     return rst;
 }
 

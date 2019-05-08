@@ -227,39 +227,47 @@ rbt_walk_internal(rbt_t *rbt, rbt_node_t *node, int sorted, rbt_walk_callback cb
 int
 rbt_walk(rbt_t *rbt, rbt_walk_callback cb, void *priv)
 {
+    int rst  = 0;
     if (rbt->root)
-        return rbt_walk_internal(rbt, rbt->root, 0, cb, priv);
+        rst = rbt_walk_internal(rbt, rbt->root, 0, cb, priv);
 
-    return 0;
+    rbt->num_of_comparisons += rst;
+    return rst;
 }
 
 int
 rbt_walk_sorted(rbt_t *rbt, rbt_walk_callback cb, void *priv)
 {
+    int rst =  0;
     if (rbt->root)
-        return rbt_walk_internal(rbt, rbt->root, 1, cb, priv);
+        rst = rbt_walk_internal(rbt, rbt->root, 1, cb, priv);
 
-    return 0;
+    rbt->num_of_comparisons += rst;
+    return rst;
 }
 
 
 int rbt_range_walk(rbt_t *rbt, void *begin_key, size_t bgk_size,
                     void *end_key, size_t edk_size, rbt_walk_callback cb, void *priv){
+    int rst = 0;
     if (rbt->root)
-        return rbt_range_walk_internal(rbt, rbt->root, begin_key, bgk_size,
+        rst = rbt_range_walk_internal(rbt, rbt->root, begin_key, bgk_size,
         end_key, edk_size, 0, cb, priv);
 
-    return 0;
+    rbt->num_of_comparisons += rst;
+    return rst;
 }
 
 
 int rbt_range_walk_sorted(rbt_t *rbt, void *begin_key, size_t bgk_size,
                     void *end_key, size_t edk_size, rbt_walk_callback cb, void *priv){
+    int rst = 0;
     if (rbt->root)
-        return rbt_range_walk_internal(rbt, rbt->root, begin_key, bgk_size,
+        rst = rbt_range_walk_internal(rbt, rbt->root, begin_key, bgk_size,
         end_key, edk_size, 1, cb, priv);
 
-    return 0;
+    rbt->num_of_comparisons += rst;
+    return rst;
 }
 
 

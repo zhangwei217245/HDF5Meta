@@ -46,7 +46,7 @@ int trie_iter_infix_cb(char *key_on_node, void *value, size_t vsize, void *user)
         list_push_value(args->rst, value);
         return 1;
     } 
-    return 0;
+    return 1;
 }
 
 int trie_iter_prefix_cb(char *key_on_node, void *value, size_t vsize, void *user){
