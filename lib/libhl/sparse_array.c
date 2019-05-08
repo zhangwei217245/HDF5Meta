@@ -122,7 +122,7 @@ void *get_element_in_sparse_array(sparse_array_t *sparse_arr, void *poss){
     void *rst = sparse_arr->array[pos];
     timer_pause(&t_locate);
     sparse_arr->time_to_locate+=timer_delta_ns(&t_locate);
-    sparse_arr->num_of_comparisons++;
+    // sparse_arr->num_of_comparisons++;
     return rst;
 }
 
