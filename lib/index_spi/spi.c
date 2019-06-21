@@ -44,7 +44,7 @@ int insert_string(void *index_root, char *key, void *data){
     int rst = -1;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
     char *keyword = strdup(key);
-    char *rev_str = strrev(key);
+    char *rev_str = reverse_str(key);
     // stopwatch_t time_to_insert;
     // timer_start(&time_to_insert);
     if (s != NULL) {
