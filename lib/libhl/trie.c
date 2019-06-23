@@ -10,6 +10,7 @@
 
 typedef struct _trie_iterated_char_seq_s{
     char *seq;
+    size_t seq_len;
     size_t pos;
 } trie_iterated_char_seq_t;
 
@@ -120,21 +121,23 @@ static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb
         return rst;
     }
     if(node) {
-        if (strlen(visited->seq) <= visited->pos ){ 
+        if (visited->seq_len <= visited->pos ){ 
             // just in case visited-seq is not sufficient for concatenating more characters
-            char *new_space = realloc(visited->seq, (strlen(visited->seq)+1)*2*sizeof(char));
+            char *new_space = realloc(visited->seq, (visited->seq_len)*2*sizeof(char));
             if (new_space == NULL) {
                 return 0;
             } else {
                 if (visited->seq != new_space) {
                     visited->seq = new_space;
                 }
+                visited->seq_len *= 2;
             }
         }
         // Concatenating one more character on the path
         visited->seq[visited->pos]=node->pidx;
         if (node->value){
-            rst = cb(visited->seq, node->value, node->vsize, user);
+            cb(visited->seq, node->value, node->vsize, user);
+            rst = 1;
         }        
         int i = 0;
         for (i = 0; i < node->num_children; i++) {
@@ -156,6 +159,7 @@ int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user){
     int rst = 0;
     trie_iterated_char_seq_t *visited = (trie_iterated_char_seq_t *)calloc(1, sizeof(trie_iterated_char_seq_t));
     visited->seq = (char *)calloc(COMMON_STR_LEN, sizeof(char));
+    visited->seq_len = COMMON_STR_LEN;
     visited->pos = 0;
     trie_node_t *node = trie->root;
     if (node) {
@@ -170,26 +174,41 @@ int trie_iter_prefix(trie_t *trie, char *prefix, prefix_iter_callback_t cb, void
     int rst = 0;
     trie_iterated_char_seq_t *visited = (trie_iterated_char_seq_t *)calloc(1, sizeof(trie_iterated_char_seq_t));
     visited->seq = (char *)calloc(COMMON_STR_LEN, sizeof(char));
+    visited->seq_len = COMMON_STR_LEN;
     visited->pos = 0;
-    trie_node_t *node = trie->root, *tmp;
+    trie_node_t *node;
     char *_prefix = prefix;
-    while (*_prefix && (tmp = node->child[(int)*_prefix])) { 
-        // iterate each character of given prefix until it reaches to the end of the prefix. 
-        visited->seq[visited->pos] = *_prefix; 
-        node = tmp;
-        ++_prefix;
-        visited->pos++;
-        rst ++;
-    }
-    if (*prefix) {
-        // if character iteration of the prefix is not ended, we consider no matching prefix in the trie. 
-        return 0;
-    } else {
-        if (node) {
-            // if there are still characters to be iterated, we start collect the result from the node. 
-            rst += trie_node_iterate(node, cb, visited, user);
+    for (node = trie->root; *_prefix && node; ++_prefix){
+        node = node->child[(int)*_prefix];
+        if (node == NULL){
+            return rst;
         }
+        visited->seq[visited->pos] = *_prefix; 
+        visited->pos++;
     }
+    // prefix is consumed if program reaches to this line
+    if (node->value) {
+        cb(visited->seq, node->value, node->vsize, user);
+        rst+=1;
+    } 
+    rst += trie_node_iterate(node, cb, visited, user);    
+    // while (*_prefix && (tmp = node->child[(int)*_prefix])) { 
+    //     // iterate each character of given prefix until it reaches to the end of the prefix. 
+    //     visited->seq[visited->pos] = *_prefix; 
+    //     node = tmp;
+    //     ++_prefix;
+    //     visited->pos++;
+    //     rst ++;
+    // }
+    // if (*prefix) {
+    //     // if character iteration of the prefix is not ended, we consider no matching prefix in the trie. 
+    //     return 0;
+    // } else {
+    //     if (node) {
+    //         // if there are still characters to be iterated, we start collect the result from the node. 
+    //         rst += trie_node_iterate(node, cb, visited, user);
+    //     }
+    // }
     trie->num_of_comparisons+=rst;
     return rst;
 }
