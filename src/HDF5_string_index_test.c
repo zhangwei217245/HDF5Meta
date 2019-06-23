@@ -115,7 +115,7 @@ int main(int argc, char **argv){
 
         stopwatch_t time_to_insert;
         timer_start(&time_to_insert);
-        for (i = 0; i < (len_key_arr-(len_key_arr/4)*(round)); i++) {
+        for (i = 0; i < (insert_count); i++) {
             insert_string(index_root, keys[i], keys[i]);
         }
         timer_pause(&time_to_insert);
