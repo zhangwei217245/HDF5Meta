@@ -120,9 +120,9 @@ static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb
         return rst;
     }
     if(node) {
-        if (strlen(visited->seq) >= visited->pos ){ 
+        if (strlen(visited->seq) <= visited->pos ){ 
             // just in case visited-seq is not sufficient for concatenating more characters
-            char *new_space = realloc(visited->seq, strlen(visited->seq)*2*sizeof(char));
+            char *new_space = realloc(visited->seq, (strlen(visited->seq)+1)*2*sizeof(char));
             if (new_space == NULL) {
                 return 0;
             } else {
