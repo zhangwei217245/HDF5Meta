@@ -21,6 +21,8 @@ char *get_affix(pattern_type_t affix_type, const char *original){
         strncpy(rst, &original[target_len/2+target_len%2], target_len);
     } else if (affix_type == PATTERN_SUFFIX) {
         strncpy(rst, &original[strlen(original)-target_len], target_len);
+        char *tmp = reverse_str(rst);
+        rst = tmp;
     } else if (affix_type == PATTERN_PREFIX) {
         strncpy(rst, original, target_len);
     } else {
