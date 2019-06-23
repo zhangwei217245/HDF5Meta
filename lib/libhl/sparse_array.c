@@ -89,12 +89,18 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
         if (new_space == NULL) { // realloc fail due to insufficient memory
             return rst;
         }
+        // fill zero for new_space
+        size_t arr_idx = sparse_arr->size_info->size;
+        for (; arr_idx < new_size ; arr_idx++){
+            new_space[arr_idx] = NULL;
+        }
         if (new_space != sparse_arr->array) { //new block allocated
             sparse_arr->array = new_space;
             ATOMIC_SET(sparse_arr->size_info->size, new_size);
         } else { // expanded, not much to do. 
             ATOMIC_SET(sparse_arr->size_info->size, new_size);
         }
+
         timer_pause(&t_expand);
         sparse_arr->time_for_expansion+=timer_delta_ns(&t_expand);
     }
