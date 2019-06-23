@@ -12,7 +12,7 @@ extern "C" {
 #include "comparators.h"
 
 
-#define SPA_SIZE_MIN 128
+#define SPA_SIZE_MIN 1024
 
 typedef struct{
     size_t size;        // Overall length of the array
