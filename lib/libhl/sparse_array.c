@@ -83,8 +83,8 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
         stopwatch_t t_expand;
         timer_start(&t_expand);
         //grow sparse array to what is needed. 
-        size_t new_size = (pos + 1)*sizeof(void *);
-        void **new_space = ctr_realloc(sparse_arr->array, new_size, &(sparse_arr->mem_usage));
+        size_t new_size = (pos + 1);
+        void **new_space = ctr_realloc(sparse_arr->array, new_size*sizeof(void *), &(sparse_arr->mem_usage));
         sparse_arr->num_of_reallocs++;
         if (new_space == NULL) { // realloc fail due to insufficient memory
             return rst;
