@@ -140,7 +140,8 @@ static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb
             rst = 1;
         }        
         int i = 0;
-        for (i = 0; i < node->num_children; i++) {
+        int num_visited_child=0;
+        for (i = 0; i < 256; i++) {
             trie_node_t *child_node = node->child[i];
             if (child_node) {
                 // For each non-empty child, we recursively call the function and
@@ -149,6 +150,10 @@ static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb
                 rst+=trie_node_iterate(child_node, cb, visited, user);//DFS
                 // after the recursive call, let pos step back to where it was for visiting other children
                 visited->pos--;
+                num_visited_child++;
+                if (num_visited_child >= node->num_children) {
+                    break;
+                }
             }
         }
     }
