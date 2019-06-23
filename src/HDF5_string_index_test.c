@@ -168,18 +168,21 @@ int main(int argc, char **argv){
 
             pattern_type_t affix_type= affix_types[k];
             // stopwatch_t time_to_search;
+            size_t rst_count = 0;
             timer_start(&time_to_search);
             for (i = 0; i < count; i++) {
                 void *out;
                 int rnd = rand() %  insert_count;
-                search_affix(index_root, affix_type, get_affix(affix_type, keys[rnd]));
+                char *affix = get_affix(affix_type, keys[rnd]);
+                linked_list_t *rst = search_affix(index_root, affix_type, affix);
+                rst_count+=list_count(rst);
             }
             timer_pause(&time_to_search);
             index_search_duration = timer_delta_us(&time_to_search);
             perf_info = get_number_ds_perf_info(index_root);
             n_comp = perf_info->num_of_comparisons;
-            println("[Total%d] time to search %d %s in %s is %ld us. Number of comparisons = %llu", 
-            insert_count, count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, n_comp);
+            println("[Total%d] time to search %d %s in %s is %ld us. Number of comparisons = %llu. Number of results = %lu", 
+            insert_count, count, afx_type_names[k], getenv(MIQS_STRING_IDX_VAR_NAME), index_search_duration, n_comp, rst_count);
         }
 
     }
