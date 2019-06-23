@@ -78,9 +78,9 @@ int main(int argc, const char *argv[]){
         cmp_callback = libhl_cmp_keys_long;
         int_keys = int_COLLB;
         len_key_arr = len_int_vals[1];
-    } else if (strcmp(dataset_name, "PLATEID")==0){
+    } else if (strcmp(dataset_name, "DUSTA")==0){
         cmp_callback = libhl_cmp_keys_long;
-        int_keys = int_PLATEID;
+        int_keys = int_DUSTA;
         len_key_arr = len_int_vals[2];
     } else if (strcmp(dataset_name, "TILEID")==0){
         cmp_callback = libhl_cmp_keys_long;
