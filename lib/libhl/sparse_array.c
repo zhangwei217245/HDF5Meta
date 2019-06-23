@@ -77,7 +77,7 @@ int set_element_to_sparse_array(sparse_array_t *sparse_arr, void *poss, void *da
     // size_t pos = *(size_t *)poss;
     // printf("set pos = %ld\n", pos);
     if (pos >= sparse_arr->size_info->size){
-        if (pos >= sparse_arr->size_info->max_size) {
+        if (sparse_arr->size_info->max_size>0 && pos >= sparse_arr->size_info->max_size) {
             return rst; // if invalid pos, return -1
         }
         stopwatch_t t_expand;
