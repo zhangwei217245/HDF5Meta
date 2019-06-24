@@ -1,11 +1,12 @@
 #include "sparse_array_number_index.h"
 
-int create_sparse_array_index(void **idx_ptr, libhl_cmp_callback_t cb){
+int create_sparse_array_index(void **idx_ptr, DATA_TYPE data_type){
     int rst = -1;
     if (idx_ptr == NULL) {
         return rst;
     }
-    sparse_array_t *sparse_arr = create_sparse_array(0, 0, free, cb);
+    LIBHL_CHOOSE_CMP_CB(data_type);
+    sparse_array_t *sparse_arr = create_sparse_array(0, 0, free, locate_cb);
     idx_ptr[0] = sparse_arr;
     rst = 0;
     return rst;

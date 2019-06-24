@@ -240,19 +240,16 @@ int destroy_string_index(void **index_ptr){
     return rst;
 }
 
-
-
-
-int create_number_index(void **idx_ptr, libhl_cmp_callback_t cb){
+int create_number_index(void **idx_ptr, DATA_TYPE data_type){
     int rst = -1;
     const char* s = getenv(MIQS_NUMBER_IDX_VAR_NAME);
     if (s != NULL) {
         if (strcmp(s, "SPARSEARRAY")==0) {
-            rst = create_sparse_array_index(idx_ptr, cb);
+            rst = create_sparse_array_index(idx_ptr, data_type);
         } else if (strcmp(s, "SBST")==0) {
-            rst = create_rbtree_number_index(idx_ptr, cb);
+            rst = create_rbtree_number_index(idx_ptr, data_type);
         } else if (strcmp(s, "SKIPLIST")==0) {
-            rst = create_skiplist_index(idx_ptr, cb);
+            rst = create_skiplist_index(idx_ptr, data_type);
         } else {
             perror("[CREATE]Data Structure not specified, fallback to tsearch\n");
             rst = create_tsearch_index(idx_ptr);

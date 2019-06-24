@@ -15,7 +15,7 @@ typedef struct perf_info{
     DECLARE_PERF_INFO_FIELDS
 } perf_info_t;
 
-#define GET_PERF_INFO(_ds) {\
+#define GET_PERF_INFO(_ds) \
     perf_info_t *perf_info = (perf_info_t *)calloc(1, sizeof(perf_info_t));\
     perf_info->mem_usage = _ds->mem_usage;\
     perf_info->num_of_comparisons = _ds->num_of_comparisons;\
@@ -23,19 +23,19 @@ typedef struct perf_info{
     perf_info->time_to_locate = _ds->time_to_locate;\
     perf_info->time_for_expansion = _ds->time_for_expansion;\
     return perf_info;\
-}
 
-#define RESET_PERF_INFO_COUNTERS(_ds){\
+
+#define RESET_PERF_INFO_COUNTERS(_ds) \
     _ds->num_of_comparisons=0;\
     _ds->num_of_reallocs=0;\
     _ds->time_to_locate=0;\
     _ds->time_for_expansion=0;\
-}
 
-#define INIT_PERF_INFO_FIELDS(_ds, _type){\
+
+#define INIT_PERF_INFO_FIELDS(_ds, _type)\
     _ds->mem_usage+=sizeof(_type);\
     RESET_PERF_INFO_COUNTERS(_ds)\
-}
+
 
 
 

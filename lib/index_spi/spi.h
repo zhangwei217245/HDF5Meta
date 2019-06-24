@@ -12,6 +12,8 @@
 #define MIQS_NUMBER_IDX_VAR_NAME "MIQS_NUM_IDX_IMPL"
 
 
+
+
 /**
  * create index data structure and initialize it. 
  */
@@ -51,7 +53,7 @@ void reset_string_ds_perf_info_counters(void *index_root);
 int destroy_string_index(void **index_ptr);
 
 
-int create_number_index(void **idx_ptr, libhl_cmp_callback_t cb);
+int create_number_index(void **idx_ptr, DATA_TYPE num_type);
 
 /**
  * insert a number into an index with given data

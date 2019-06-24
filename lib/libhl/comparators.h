@@ -10,6 +10,11 @@ extern "C" {
 #include <string.h>
 #include <stdio.h>
 
+typedef enum  {
+    INT, LONG, INT16, INT32, INT64, UINT16, UINT32, UINT64, SIZE_T, 
+    FLOAT, DOUBLE, STRING
+}DATA_TYPE;
+
 /**
  * @brief Callback that, if provided, will be used to compare node keys.
  *        If not defined memcmp() will be used in the following way :
@@ -191,6 +196,58 @@ static int libhl_cmp_keys_double(void *k1, size_t k1size,
 {
     LIBHL_CMP_KEYS_TYPE(double, k1, k1size, k2, k2size);
 }
+
+#define LIBHL_CHOOSE_CMP_CB(DT) \
+    libhl_cmp_callback_t cmp_cb;\
+    libhl_cmp_callback_t locate_cb;\
+    switch (DT) \
+    { \
+    case INT:\
+        cmp_cb = libhl_cmp_keys_int;\
+        locate_cb = libhl_cast_int_to_int;\
+        break;\
+    case LONG:\
+        cmp_cb = libhl_cmp_keys_long;\
+        locate_cb = libhl_cast_long_to_int;\
+        break;\
+    case FLOAT:\
+        cmp_cb = libhl_cmp_keys_float;\
+        locate_cb = libhl_cast_float_to_int;\
+        break;\
+    case DOUBLE:\
+        cmp_cb = libhl_cmp_keys_double;\
+        locate_cb = libhl_cast_double_to_int;\
+        break;\
+    case INT16:\
+        cmp_cb = libhl_cmp_keys_int16;\
+        locate_cb = libhl_cast_int16_to_int;\
+        break;\
+    case INT32:\
+        cmp_cb = libhl_cmp_keys_int32;\
+        locate_cb = libhl_cast_int32_to_int;\
+        break;\
+    case INT64:\
+        cmp_cb = libhl_cmp_keys_int64;\
+        locate_cb = libhl_cast_int64_to_int;\
+        break;\
+    case UINT16:\
+        cmp_cb = libhl_cmp_keys_uint16;\
+        locate_cb = libhl_cast_any_to_int;\
+        break;\
+    case UINT32:\
+        cmp_cb = libhl_cmp_keys_uint32;\
+        locate_cb = libhl_cast_any_to_int;\
+        break;\
+    case UINT64:\
+        cmp_cb = libhl_cmp_keys_uint64;\
+        locate_cb = libhl_cast_any_to_int;\
+        break;\
+    default:\
+        cmp_cb = NULL;\
+        locate_cb = NULL;\
+        break;\
+    }\
+
 
 #ifdef __cplusplus
 }

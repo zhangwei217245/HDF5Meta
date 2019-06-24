@@ -39,22 +39,22 @@ int spa_init(sparse_array_t *spa, size_t initial_size, size_t max_size, spa_free
     spa->array = (void **)ctr_calloc(spa->size_info->size, sizeof(void *), &spa->mem_usage);
     spa->free_item_cb=cb;
     spa->cmp_cb = cmp_cb;
-    spa->locate_cb = libhl_cast_any_to_int;
-    if (spa->cmp_cb == libhl_cmp_keys_int) {
-        spa->locate_cb = libhl_cast_int_to_int;
-    } else if (spa->cmp_cb == libhl_cmp_keys_long) {
-        spa->locate_cb = libhl_cast_long_to_int;
-    } else if (spa->cmp_cb == libhl_cmp_keys_float) {
-        spa->locate_cb = libhl_cast_float_to_int;
-    } else if (spa->cmp_cb == libhl_cmp_keys_double) {
-        spa->locate_cb = libhl_cast_double_to_int;
-    } else if (spa->cmp_cb == libhl_cmp_keys_int16) {
-        spa->locate_cb = libhl_cast_int16_to_int;
-    } else if (spa->cmp_cb == libhl_cmp_keys_int32) {
-        spa->locate_cb = libhl_cast_int32_to_int;
-    } else if (spa->cmp_cb == libhl_cmp_keys_int64) {
-        spa->locate_cb = libhl_cast_int64_to_int;
-    }
+    spa->locate_cb = cmp_cb;
+    // if (spa->cmp_cb == libhl_cmp_keys_int) {
+    //     spa->locate_cb = libhl_cast_int_to_int;
+    // } else if (spa->cmp_cb == libhl_cmp_keys_long) {
+    //     spa->locate_cb = libhl_cast_long_to_int;
+    // } else if (spa->cmp_cb == libhl_cmp_keys_float) {
+    //     spa->locate_cb = libhl_cast_float_to_int;
+    // } else if (spa->cmp_cb == libhl_cmp_keys_double) {
+    //     spa->locate_cb = libhl_cast_double_to_int;
+    // } else if (spa->cmp_cb == libhl_cmp_keys_int16) {
+    //     spa->locate_cb = libhl_cast_int16_to_int;
+    // } else if (spa->cmp_cb == libhl_cmp_keys_int32) {
+    //     spa->locate_cb = libhl_cast_int32_to_int;
+    // } else if (spa->cmp_cb == libhl_cmp_keys_int64) {
+    //     spa->locate_cb = libhl_cast_int64_to_int;
+    // }
     return 0;
 }
 

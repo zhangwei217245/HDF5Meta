@@ -1,11 +1,13 @@
 #include "rbtree_number_index.h"
 
-int create_rbtree_number_index(void **idx_ptr, libhl_cmp_callback_t cb){
+int create_rbtree_number_index(void **idx_ptr, DATA_TYPE data_type){
     int rst  = -1 ;
     if (idx_ptr == NULL) {
         return rst;
     }
-    rbt_t *rbt = rbt_create(cb, NULL);
+    // libhl_cmp_callback_t cmp_cb;
+    LIBHL_CHOOSE_CMP_CB(data_type)
+    rbt_t *rbt = rbt_create(cmp_cb, NULL);
     idx_ptr[0] = rbt;
     rst = 0;
     return rst;

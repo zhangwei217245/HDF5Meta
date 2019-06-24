@@ -6,7 +6,7 @@
 #include "../libhl/comparators.h"
 
 
-int create_sparse_array_index(void **idx_ptr, libhl_cmp_callback_t cb);
+int create_sparse_array_index(void **idx_ptr, DATA_TYPE data_type);
 
 int insert_number_to_sparse_array(void *index_root, void *key, size_t klen, void *data);
 
