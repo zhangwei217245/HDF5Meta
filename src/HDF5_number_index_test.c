@@ -67,53 +67,63 @@ int main(int argc, const char *argv[]){
 
     int len_key_arr = count;
     libhl_cmp_callback_t cmp_callback = libhl_cmp_keys_long;
+    DATA_TYPE dt = INT;
 
     if (strcmp(dataset_name, "SKEW")==0) {
         int_keys = generating_skew_numbers(count);
     } else if (strcmp(dataset_name, "EXPOSURE")==0){
         cmp_callback = libhl_cmp_keys_long; 
+        dt = LONG;
         int_keys = int_EXPOSURE;
         len_key_arr = len_int_vals[0];
     } else if (strcmp(dataset_name, "COLLB")==0){
         cmp_callback = libhl_cmp_keys_long;
+        dt = LONG;
         int_keys = int_COLLB;
         len_key_arr = len_int_vals[1];
     } else if (strcmp(dataset_name, "DUSTA")==0){
         cmp_callback = libhl_cmp_keys_long;
+        dt = LONG;
         int_keys = int_DUSTA;
         len_key_arr = len_int_vals[2];
     } else if (strcmp(dataset_name, "TILEID")==0){
         cmp_callback = libhl_cmp_keys_long;
+        dt = LONG;
         int_keys = int_TILEID;
         len_key_arr = len_int_vals[3];
     } else if (strcmp(dataset_name, "DEREDSN2")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
         float_keys = float_DEREDSN2;
         len_key_arr = len_float_vals[0];
     } else if (strcmp(dataset_name, "AZ")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
         float_keys = float_AZ;
         len_key_arr = len_float_vals[1];
     } else if (strcmp(dataset_name, "ARCOFFX")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
         float_keys = float_ARCOFFX;
         len_key_arr = len_float_vals[2];
     } else if (strcmp(dataset_name, "RMSOFF20")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
         float_keys = float_RMSOFF20;
         len_key_arr = len_float_vals[3];
     } else {
         int_keys = generating_even_numbers(count);
+        dt = INT;
     } 
 
     int round = 0;
     for (round = 0; round < 1; round++) {
         void *index_root;
-        create_number_index(&index_root, cmp_callback);
+        create_number_index(&index_root, dt);
 
         int insert_count = len_key_arr-(len_key_arr/4)*(round);
 
