@@ -63,6 +63,9 @@ linked_list_t *search_affix_in_trie(void *index_root, pattern_type_t afx_type, c
     trie_t *trie = (trie_t *)index_root;
     rst = list_create();
     if (afx_type == PATTERN_MIDDLE) {
+        infix_iter_arg_t *infix_args = (infix_iter_arg_t *)calloc(1, sizeof(infix_iter_arg_t));
+        infix_args->rst = rst;
+        infix_args->infix = affix;
         trie_iter_all(trie, trie_iter_infix_cb, rst);
     } else if (afx_type == PATTERN_PREFIX || afx_type == PATTERN_SUFFIX) {
         trie_iter_prefix(trie, affix, trie_iter_prefix_cb, rst);
