@@ -66,7 +66,7 @@ linked_list_t *search_affix_in_trie(void *index_root, pattern_type_t afx_type, c
         infix_iter_arg_t *infix_args = (infix_iter_arg_t *)calloc(1, sizeof(infix_iter_arg_t));
         infix_args->rst = rst;
         infix_args->infix = affix;
-        trie_iter_all(trie, trie_iter_infix_cb, rst);
+        trie_iter_all(trie, trie_iter_infix_cb, infix_args);
     } else if (afx_type == PATTERN_PREFIX || afx_type == PATTERN_SUFFIX) {
         trie_iter_prefix(trie, affix, trie_iter_prefix_cb, rst);
     } else { // exact query
