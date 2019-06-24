@@ -44,27 +44,30 @@ int insert_string(void *index_root, char *key, void *data){
     int rst = -1;
     const char* s = getenv(MIQS_STRING_IDX_VAR_NAME);
     char *keyword = strdup(key);
-    char *rev_str = reverse_str(key);
+    
     // stopwatch_t time_to_insert;
     // timer_start(&time_to_insert);
     if (s != NULL) {
         if (strcmp(s, "HASHTABLE")==0) {
             rst = insert_string_to_hashtable(index_root, keyword, data);
-            rst |= insert_string_to_hashtable(index_root, rev_str, data);
+            
         } else if (strcmp(s, "SBST")==0) {
             rst = insert_string_to_rbtree(index_root, keyword, data);
-            rst |= insert_string_to_rbtree(index_root, rev_str, data);
+            
         } else if (strcmp(s, "TRIE")==0) {
             rst = insert_string_to_trie(index_root, keyword, data);
+            char *rev_str = reverse_str(key);
             rst |= insert_string_to_trie(index_root, rev_str, data);
         } else {
             // perror("[INSERT]Data Structure not specified, fallback to ART\n");
             rst = insert_string_to_art(index_root, keyword, data);
+            char *rev_str = reverse_str(key);
             rst |= insert_string_to_art(index_root, rev_str, data);
         }
     } else {
         // perror("[INSERT]Data Structure not specified, fallback to ART\n");
         rst = insert_string_to_art(index_root, keyword, data);
+        char *rev_str = reverse_str(key);
         rst |= insert_string_to_art(index_root, rev_str, data);
 
     }

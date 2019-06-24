@@ -67,8 +67,11 @@ linked_list_t *search_affix_in_trie(void *index_root, pattern_type_t afx_type, c
         infix_args->rst = rst;
         infix_args->infix = affix;
         trie_iter_all(trie, trie_iter_infix_cb, infix_args);
-    } else if (afx_type == PATTERN_PREFIX || afx_type == PATTERN_SUFFIX) {
+    } else if (afx_type == PATTERN_PREFIX ){
         trie_iter_prefix(trie, affix, trie_iter_prefix_cb, rst);
+    } else if(afx_type == PATTERN_SUFFIX) {
+        char *reverse_affix = reverse_str(affix);
+        trie_iter_prefix(trie, reverse_affix, trie_iter_prefix_cb, rst);
     } else { // exact query
         void *data = NULL;
         search_string_in_trie(index_root, affix, strlen(affix), &data);

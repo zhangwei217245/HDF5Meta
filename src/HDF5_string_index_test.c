@@ -21,8 +21,6 @@ char *get_affix(pattern_type_t affix_type, const char *original){
         strncpy(rst, &original[target_len/2+target_len%2], target_len);
     } else if (affix_type == PATTERN_SUFFIX) {
         strncpy(rst, &original[strlen(original)-target_len], target_len);
-        char *tmp = reverse_str(rst);
-        rst = tmp;
     } else if (affix_type == PATTERN_PREFIX) {
         strncpy(rst, original, target_len);
     } else {
@@ -109,7 +107,7 @@ int main(int argc, char **argv){
     
 
     int round = 0;
-    for  (round = 0; round < 4; round ++) {
+    for  (round = 0; round < 1; round ++) {
         void *index_root;
         create_string_index(&index_root);
 
@@ -133,7 +131,8 @@ int main(int argc, char **argv){
 
         reset_string_ds_perf_info_counters(index_root);
 
-        srand(time(0));
+        // srand(time(0));
+        srand(0);
         
 
         stopwatch_t time_to_search;

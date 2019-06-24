@@ -111,7 +111,7 @@ int main(int argc, const char *argv[]){
     } 
 
     int round = 0;
-    for (round = 0; round < 4; round++) {
+    for (round = 0; round < 1; round++) {
         void *index_root;
         create_number_index(&index_root, cmp_callback);
 
