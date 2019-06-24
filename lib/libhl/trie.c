@@ -134,7 +134,9 @@ static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb
             }
         }
         // Concatenating one more character on the path
-        visited->seq[visited->pos]=node->pidx;
+        if (node->pidx > 0) {
+            visited->seq[visited->pos]=node->pidx;
+        }
         if (node->value){
             cb(visited->seq, node->value, node->vsize, user);
             rst = 1;
@@ -156,6 +158,8 @@ static inline int trie_node_iterate(trie_node_t *node, prefix_iter_callback_t cb
                 }
             }
         }
+
+        
     }
     return rst;
 }
@@ -165,7 +169,7 @@ int trie_iter_all(trie_t *trie, prefix_iter_callback_t cb, void *user){
     trie_iterated_char_seq_t *visited = (trie_iterated_char_seq_t *)calloc(1, sizeof(trie_iterated_char_seq_t));
     visited->seq = (char *)calloc(COMMON_STR_LEN, sizeof(char));
     visited->seq_len = COMMON_STR_LEN;
-    visited->pos = 0;
+    visited->pos = -1;
     trie_node_t *node = trie->root;
     if (node) {
         // if there are still characters to be iterated, we start collect the result from the node. 
