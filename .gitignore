@@ -3,3 +3,4 @@ CMakeFiles
 build
 cmake-build
 .vscode
+.ipynb_checkpoints/
