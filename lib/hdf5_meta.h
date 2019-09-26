@@ -4,7 +4,7 @@
 #include "utils/query_utils.h"
 #include "utils/timer_utils.h"
 #include "hdf5.h"
-#include "json.h"
+#include "json-c/json.h"
 
 /***************************************************************************/
 /* This one follows the old HDF5 metadata reader and translate HDF5        */
