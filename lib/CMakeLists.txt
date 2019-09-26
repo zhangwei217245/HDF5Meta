@@ -119,12 +119,12 @@ TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
 
 ADD_LIBRARY(bin_file_ops SHARED dao/bin_file_ops.c dao/bin_file_ops.h)
 
-ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
-# include_directories(${JSON-C_INCLUDE_DIRS})
-# include_directories (${PROJECT_SOURCE_DIR}/lib)
-# link_directories (${PROJECT_BINARY_DIR}/lib)
-target_include_directories(hdf5_meta PRIVATE "${JSON-C_INCLUDE_DIR}" "${HDF5_INCLUDE_DIRS}")
-target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils timer_utils thpool indexds fs_utils c_base_utils ${HDF5_LIBRARIES})
+# ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
+# # include_directories(${JSON-C_INCLUDE_DIRS})
+# # include_directories (${PROJECT_SOURCE_DIR}/lib)
+# # link_directories (${PROJECT_BINARY_DIR}/lib)
+# target_include_directories(hdf5_meta PRIVATE "${JSON-C_INCLUDE_DIR}" "${HDF5_INCLUDE_DIRS}")
+# target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils timer_utils thpool indexds fs_utils c_base_utils ${HDF5_LIBRARIES})
 
 
 ADD_LIBRARY(new_hdf5_meta SHARED hdf5/new_hdf5_meta.c hdf5/new_hdf5_meta.h)
