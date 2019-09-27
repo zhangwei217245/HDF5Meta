@@ -9,12 +9,12 @@ else()
     set(LIB_RUST_MONGO ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 endif()
 
-# The "hello_mongoc.c" sample program is shared among four tests.
-add_executable (hello_mongoc hello_mongoc.c)
-#target_include_directories (hello_mongoc PRIVATE "${MONGOC_INCLUDE_DIRS}")
-target_link_libraries (hello_mongoc PRIVATE hdf5_meta ${LIB_RUST_MONGO})
-target_include_directories(hello_mongoc PRIVATE "${JSON-C_INCLUDE_DIRS}" "${HDF5_INCLUDE_DIRS}")
-# #target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
+# # The "hello_mongoc.c" sample program is shared among four tests.
+# add_executable (hello_mongoc hello_mongoc.c)
+# #target_include_directories (hello_mongoc PRIVATE "${MONGOC_INCLUDE_DIRS}")
+# target_link_libraries (hello_mongoc PRIVATE hdf5_meta ${LIB_RUST_MONGO})
+# target_include_directories(hello_mongoc PRIVATE "${JSON-C_INCLUDE_DIRS}" "${HDF5_INCLUDE_DIRS}")
+# # #target_compile_definitions (hello_mongoc PRIVATE "${MONGOC_DEFINITIONS}")
 
 # add_executable (test_unindexed_hdf5 test_unindexed_hdf5.c)
 # target_link_libraries(test_unindexed_hdf5 PRIVATE 
