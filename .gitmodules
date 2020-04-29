@@ -1,3 +1,3 @@
 [submodule "lib/rust_mongo_bench"]
 	path = lib/rust_mongo_bench
-	url = git@bitbucket.org:zhangwei217245/rust_mongo_bench.git
+	url = git@github.com:zhangwei217245/rust_mongo_bench.git
