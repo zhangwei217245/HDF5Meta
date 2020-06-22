@@ -8,7 +8,7 @@ git clone
 
 ```bash
 git submodule init
-git submodule updage
+git submodule update
 ```
 
 ## Compile the rust_mongo_bench library first
