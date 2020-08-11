@@ -1,12 +1,6 @@
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
 
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-set(CMAKE_HAVE_THREADS_LIBRARY 1)
-set(CMAKE_USE_WIN32_THREADS_INIT 0)
-set(CMAKE_USE_PTHREADS_INIT 1)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-find_package(Threads REQUIRED)
 
 # add_subdirectory(json-c)
 
@@ -16,11 +10,11 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
 
 # message(${PKG_CONFIG_EXECUTABLE})
-message(${JSON-C_LIBRARY_DIRS})
+# message(${JSON-C_LIBRARY_DIRS})
 
-message(${JSON-C_INCLUDE_DIRS})
+# message(${JSON-C_INCLUDE_DIRS})
 
-message(${HDF5_INCLUDE_DIRS})
+# message(${HDF5_INCLUDE_DIRS})
 
 
 if(APPLE)

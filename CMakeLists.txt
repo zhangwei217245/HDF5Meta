@@ -30,12 +30,21 @@ endif()
 
 PROJECT(MIQS)
 
+
+
+set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+set(CMAKE_HAVE_THREADS_LIBRARY 1)
+set(CMAKE_USE_WIN32_THREADS_INIT 0)
+set(CMAKE_USE_PTHREADS_INIT 1)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+find_package(Threads REQUIRED)
+
+
+set(ENV{PKG_CONFIG_PATH} "${PKG_CONFIG_PATH};${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
+
 find_package(MPI REQUIRED)
 find_package(HDF5 REQUIRED)
-
-
-set(ENV{PKG_CONFIG_PATH} "${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
-
 
 #-----------------------------------------------------------------------------
 # MPI option
