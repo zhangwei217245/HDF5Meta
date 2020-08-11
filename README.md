@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-git clone https://zhangwei217245@bitbucket.org/berkeleylab/miqs.git MIQS
+git clone git@bitbucket.org:berkeleylab/miqs.git MIQS
 cd MIQS
 export MIQS_HOME=`pwd`
 ```
