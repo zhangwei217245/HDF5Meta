@@ -15,8 +15,6 @@ find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
 
-find_package(HDF5 REQUIRED)
-
 # message(${PKG_CONFIG_EXECUTABLE})
 message(${JSON-C_LIBRARY_DIRS})
 
