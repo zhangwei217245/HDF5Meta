@@ -1,7 +1,7 @@
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
+# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
 find_package(MPI REQUIRED)
-find_package(HDF5 REQUIRED)
-find_package(JSON-C REQUIRED)
+# find_package(HDF5 REQUIRED)
+# find_package(JSON-C REQUIRED)
 
 if(APPLE)
     set(LIB_RUST_MONGO ${PROJECT_SOURCE_DIR}/lib/rust_mongo_bench/target/release/librust_mongo_bench.dylib)
