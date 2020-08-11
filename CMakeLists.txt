@@ -50,6 +50,8 @@ find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
 
+pkg_search_module(UUID REQUIRED uuid)
+
 #-----------------------------------------------------------------------------
 # MPI option
 #-----------------------------------------------------------------------------
