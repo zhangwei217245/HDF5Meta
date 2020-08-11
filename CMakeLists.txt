@@ -41,7 +41,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 
-# set(ENV{PKG_CONFIG_PATH} "${PKG_CONFIG_PATH}:${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
+set(ENV{PKG_CONFIG_PATH} "${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
 
 find_package(MPI REQUIRED)
 find_package(HDF5 REQUIRED)
