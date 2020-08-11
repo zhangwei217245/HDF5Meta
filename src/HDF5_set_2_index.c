@@ -5,7 +5,7 @@
 #endif
 
 #include "../lib/include/base_stdlib.h"
-#include "../lib/index/hdf52index.h"
+#include "../lib/h52index/hdf52index.h"
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"

@@ -2,10 +2,22 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+# add_subdirectory(json-c)
 
+# find_package(JSON-C REQUIRED)
+find_package(PkgConfig REQUIRED)
 
-find_package(JSON-C REQUIRED)
+pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
+
 find_package(HDF5 REQUIRED)
+
+# message(${PKG_CONFIG_EXECUTABLE})
+message(${JSON-C_LIBRARY_DIRS})
+
+message(${JSON-C_INCLUDE_DIRS})
+
+message(${HDF5_INCLUDE_DIRS})
+
 
 if(APPLE)
     set(BASE_LIBRARIES m)
@@ -109,7 +121,7 @@ ADD_LIBRARY(index_spi SHARED
     index_spi/trie_string_index.c
     index_spi/trie_string_index.h
     index_spi/tsearch_number_index.c
-    index_spi/tsearch_number_index.h    
+    index_spi/tsearch_number_index.h
 )
 TARGET_LINK_LIBRARIES(index_spi indexds query_utils)
 
@@ -119,6 +131,9 @@ TARGET_LINK_LIBRARIES(fs_utils string_utils c_base_utils)
 
 ADD_LIBRARY(bin_file_ops SHARED dao/bin_file_ops.c dao/bin_file_ops.h)
 
+
+
+
 # ADD_LIBRARY(hdf5_meta hdf5_meta.c hdf5_meta.h)
 # # include_directories(${JSON-C_INCLUDE_DIRS})
 # # include_directories (${PROJECT_SOURCE_DIR}/lib)
@@ -127,16 +142,35 @@ ADD_LIBRARY(bin_file_ops SHARED dao/bin_file_ops.c dao/bin_file_ops.h)
 # target_link_libraries(hdf5_meta PRIVATE "${JSON-C_LIBRARIES}" m  query_utils timer_utils thpool indexds fs_utils c_base_utils ${HDF5_LIBRARIES})
 
 
-ADD_LIBRARY(new_hdf5_meta SHARED hdf5/new_hdf5_meta.c hdf5/new_hdf5_meta.h)
-target_link_libraries(new_hdf5_meta  profile m  query_utils timer_utils thpool indexds fs_utils cmd_utils c_base_utils ${HDF5_LIBRARIES})
-target_include_directories(new_hdf5_meta PRIVATE "${HDF5_INCLUDE_DIRS}")
+ADD_LIBRARY(miqs_metadata SHARED 
+    metadata/miqs_metadata.c 
+    metadata/miqs_metadata.h 
+    metadata/miqs_meta_collector.c
+    metadata/miqs_meta_collector.h
+    )
+target_link_libraries(miqs_metadata profile m  query_utils timer_utils thpool indexds fs_utils cmd_utils c_base_utils)
 
-# message(${JSON-C_INCLUDE_DIRS})
+ADD_LIBRARY(hdf5_meta_extractor SHARED  
+    metadata/extractor/hdf5_meta_extractor.c
+    metadata/extractor/hdf5_meta_extractor.h
+)
+target_link_libraries(hdf5_meta_extractor miqs_metadata ${HDF5_LIBRARIES})
+target_include_directories(hdf5_meta_extractor PRIVATE "${HDF5_INCLUDE_DIRS}")
 
-ADD_LIBRARY(hdf52json hdf5/hdf52json.c hdf5/hdf52json.h)
-target_link_libraries(hdf52json PRIVATE "${JSON-C_LIBRARIES}" new_hdf5_meta)
-target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIR}" "${HDF5_INCLUDE_DIRS}")
 
-ADD_LIBRARY(hdf52index index/in_mem_index.c index/in_mem_index.h index/on_disk_index.c index/on_disk_index.h index/hdf52index.c index/hdf52index.h)
-target_link_libraries(hdf52index PRIVATE new_hdf5_meta indexds bin_file_ops index_spi)
+ADD_LIBRARY(miqs_index SHARED 
+    index/in_mem_index.c 
+    index/in_mem_index.h 
+    index/on_disk_index.c 
+    index/on_disk_index.h 
+)
+target_link_libraries(miqs_index miqs_metadata indexds bin_file_ops index_spi)
+
+
+ADD_LIBRARY(hdf52json SHARED h52json/hdf52json.c h52json/hdf52json.h)
+target_link_libraries(hdf52json PkgConfig::JSON-C hdf5_meta_extractor)
+target_include_directories(hdf52json PRIVATE "${JSON-C_INCLUDE_DIRS}" "${HDF5_INCLUDE_DIRS}")
+
+ADD_LIBRARY(hdf52index SHARED h52index/hdf52index.c h52index/hdf52index.h)
+target_link_libraries(hdf52index miqs_index hdf5_meta_extractor)
 target_include_directories(hdf52index PRIVATE "${HDF5_INCLUDE_DIRS}")

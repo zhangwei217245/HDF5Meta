@@ -1,14 +1,14 @@
 #ifndef MIQS_IN_MEM_INDEX
 #define MIQS_IN_MEM_INDEX
 
-#include "hdf5.h"
+// #include "hdf5.h"
 #include "../ds/art.h"
-#include "../ds/bplustree.h"
+// #include "../ds/bplustree.h"
 #include "../ds/hashset.h"
 #include "../utils/string_utils.h"
 #include "../libhl/linklist.h"
 #include "../libhl/rbtree.h"    
-#include <search.h>
+// #include <search.h>
 #include "on_disk_index.h"
 
 // #define GETTER_SETTER_NAME(_GS, _G_FD_NAME) _GS##_G_FD_NAME
@@ -21,7 +21,7 @@
 typedef struct {
     char *file_path;
     char *obj_path;
-    hid_t object_id;
+    void *object_id;
     art_tree *root_art;
 
     //Collections of file_paths and object_paths

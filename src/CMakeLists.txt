@@ -38,7 +38,7 @@ target_include_directories(hdf5_set_2_mongo PRIVATE "${HDF5_INCLUDE_DIRS}" "${MP
 
 # build hdf5_set_2_index
 add_executable (hdf5_set_2_index HDF5_set_2_index.c)
-target_link_libraries(hdf5_set_2_index PRIVATE hdf52index index_spi ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
+target_link_libraries(hdf5_set_2_index PRIVATE hdf52index miqs_index index_spi ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
 target_include_directories(hdf5_set_2_index PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 
 

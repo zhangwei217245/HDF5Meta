@@ -4,7 +4,7 @@
 #include "mpi.h"
 #endif
 
-#include "../lib/hdf5/hdf52json.h"
+#include "../lib/h52json/hdf52json.h"
 #include "../lib/fs/fs_ops.h"
 #include "../lib/utils/string_utils.h"
 #include "../lib/utils/timer_utils.h"

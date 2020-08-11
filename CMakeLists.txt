@@ -25,7 +25,11 @@ if (APPLE)
   endif()
 endif()
 
-PROJECT(HDF5Meta)
+PROJECT(MIQS)
+
+
+set(ENV{PKG_CONFIG_PATH} "${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
+
 
 #-----------------------------------------------------------------------------
 # MPI option
