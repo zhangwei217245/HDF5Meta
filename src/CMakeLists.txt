@@ -1,5 +1,5 @@
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
-find_package(MPI REQUIRED)
+
 # find_package(HDF5 REQUIRED)
 # find_package(JSON-C REQUIRED)
 

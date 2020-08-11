@@ -30,6 +30,7 @@ endif()
 
 PROJECT(MIQS)
 
+find_package(MPI REQUIRED)
 find_package(HDF5 REQUIRED)
 
 
