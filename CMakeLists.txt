@@ -27,6 +27,10 @@ endif()
 
 PROJECT(MIQS)
 
+
+find_package(MPI REQUIRED)
+find_package(HDF5 REQUIRED)
+
 set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
@@ -40,8 +44,7 @@ find_package(Threads REQUIRED)
 
 # set(ENV{PKG_CONFIG_PATH} "${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
 
-find_package(MPI REQUIRED)
-find_package(HDF5 REQUIRED)
+
 
 find_package(PkgConfig REQUIRED)
 
