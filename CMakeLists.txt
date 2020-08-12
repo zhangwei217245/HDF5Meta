@@ -28,49 +28,53 @@ endif()
 PROJECT(MIQS)
 
 
-find_package(MPI REQUIRED)
-find_package(HDF5 REQUIRED)
+#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${PROJECT_BINARY_DIR}/config.h)
 
+
+#-----------------------------------------------------------------------------
+# dynamic linking
+#-----------------------------------------------------------------------------
 set(BUILD_SHARED_LIBS ON)
-
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-set(CMAKE_HAVE_THREADS_LIBRARY 1)
-set(CMAKE_USE_WIN32_THREADS_INIT 0)
-set(CMAKE_USE_PTHREADS_INIT 1)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-
-find_package(Threads REQUIRED)
-
-set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
-
-find_package(PkgConfig REQUIRED)
-
-pkg_search_module(UUID REQUIRED uuid)
-
-pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
-
+SET(ENV(CRAYPE_LINK_TYPE) "dynamic")
+SET(CMAKE_C_FLAGS -dynamic)
+SET(LIB_PATH ${PROJECT_BINARY_DIR}/lib)
 
 
 #-----------------------------------------------------------------------------
 # MPI option
 #-----------------------------------------------------------------------------
-option(MIQS_RPC_MPI_ENABLED "Enable MPI on MIQS RPC module." OFF)
-if(MIQS_RPC_MPI_ENABLED)
-  find_package(MPI)
+option(MIQS_MPI_ENABLED "Enable MPI on MIQS RPC module." OFF)
+if(MIQS_MPI_ENABLED)
+  find_package(MPI REQUIRED)
   if(MPI_FOUND)
-    set(MIQS_RPC_MPI_ENABLED 1)
+    set(MIQS_MPI_ENABLED 1)
   endif()
 endif()
 
 
-#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${PROJECT_BINARY_DIR}/config.h)
+#-----------------------------------------------------------------------------
+# pthread option
+#-----------------------------------------------------------------------------
+set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+set(CMAKE_HAVE_THREADS_LIBRARY 1)
+set(CMAKE_USE_WIN32_THREADS_INIT 0)
+set(CMAKE_USE_PTHREADS_INIT 1)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
+#-----------------------------------------------------------------------------
+# HDF5
+#-----------------------------------------------------------------------------
+find_package(HDF5 REQUIRED)
 
-SET(CMAKE_C_FLAGS -dynamic)
-SET(LIB_PATH ${PROJECT_BINARY_DIR}/lib)
+#-----------------------------------------------------------------------------
+# using pkgconfig for json-c and uuid
+#-----------------------------------------------------------------------------
+set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_SOURCE_DIR}/src/lib/json-c/build/json_c_lib/lib/pkgconfig")
+find_package(PkgConfig REQUIRED)
+pkg_search_module(UUID REQUIRED uuid)
+pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
 
-ADD_SUBDIRECTORY(lib)
-ADD_SUBDIRECTORY(src bin)
+ADD_SUBDIRECTORY(src)
 

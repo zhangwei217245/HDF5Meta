@@ -1,6 +1,6 @@
-[submodule "lib/rust_mongo_bench"]
-	path = lib/rust_mongo_bench
+[submodule "src/lib/rust_mongo_bench"]
+	path = src/lib/rust_mongo_bench
 	url = git@github.com:zhangwei217245/rust_mongo_bench.git
-[submodule "lib/json-c"]
-	path = lib/json-c
+[submodule "src/lib/json-c"]
+	path = src/lib/json-c
 	url = git@github.com:json-c/json-c.git
