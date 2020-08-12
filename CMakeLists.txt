@@ -16,6 +16,9 @@ foreach(p
   endif()
 endforeach()
 
+
+
+
 # Set a consistent MACOSX_RPATH default across all CMake versions.
 # When CMake 2.8.12 is required, change this default to 1.
 # When CMake 3.0.0 is required, remove this block (see CMP0042).
@@ -26,9 +29,6 @@ if (APPLE)
 endif()
 
 PROJECT(MIQS)
-
-
-#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${PROJECT_BINARY_DIR}/config.h)
 
 
 #-----------------------------------------------------------------------------
@@ -71,11 +71,21 @@ find_package(HDF5 REQUIRED)
 # using pkgconfig for json-c and uuid
 #-----------------------------------------------------------------------------
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/src/lib/json-c/build/json_c_lib/lib/pkgconfig;${CMAKE_PREFIX_PATH}")
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/extern/json-c/build/json_c_lib/lib/pkgconfig;${CMAKE_PREFIX_PATH}")
 find_package(PkgConfig REQUIRED)
 pkg_search_module(UUID REQUIRED uuid)
-pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+find_package(JSON-C REQUIRED)
+
+# pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/project/config.h.in ${PROJECT_SOURCE_DIR}/include/project/config.h)
 
 
+ADD_SUBDIRECTORY(extern)
 ADD_SUBDIRECTORY(src)
-
+ADD_SUBDIRECTORY(app)
+ADD_SUBDIRECTORY(tests)
+ADD_SUBDIRECTORY(docs)
+ADD_SUBDIRECTORY(scripts)
