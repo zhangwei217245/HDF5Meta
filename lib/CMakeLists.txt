@@ -1,3 +1,19 @@
+# Setup cmake policies.
+foreach(p
+    CMP0012
+    CMP0013
+    CMP0014
+    CMP0022 # CMake 2.8.12
+    CMP0025 # CMake 3.0
+    CMP0053 # CMake 3.1
+    CMP0054 # CMake 3.1
+    CMP0074 # CMake 3.4
+  )
+  if(POLICY ${p})
+    cmake_policy(SET ${p} NEW)
+  endif()
+endforeach()
+
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
 
 
