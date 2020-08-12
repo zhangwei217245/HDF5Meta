@@ -13,6 +13,20 @@ git submodule init
 git submodule update
 ```
 
+## Ensure Compilation Environment
+On Cori, run the following command:
+
+
+```bash
+module unload PrgEnv-intel
+module load PrgEnv-gnu/6.0.5
+module load cray-hdf5-parallel/1.10.5.2
+module load cmake/3.14.4
+module load gcc
+module load openmpi/3.1.3
+module load llvm/10.0.0
+```
+
 ## Compile the rust_mongo_bench library first
 
 ### Make sure Rust is installed
@@ -46,9 +60,16 @@ make && make install
 
 ### Compile the MIQS software prototype
 
+On Cori supercomputer, you can run the following to make sure dynamic linking is enabled:
+
 ```bash
-cd ${MIQS_HOME}
-mkdir build
+export CRAYPE_LINK_TYPE=dynamic 
+```
+
+For other platforms, you can enable dynamic linking using platform-specific methods. 
+
+```bash
+cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -H${MIQS_HOME} -B${MIQS_HOME}/build -G "Unix Makefiles"
 cmake --build ${MIQS_HOME}/build --config Debug --target all -- -j 14
 ```
 
