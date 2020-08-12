@@ -41,16 +41,17 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Threads REQUIRED)
 
+set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 
-# set(ENV{PKG_CONFIG_PATH} "${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
-
-
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_SOURCE_DIR}/lib/json-c/build/json_c_lib/lib/pkgconfig")
 
 find_package(PkgConfig REQUIRED)
 
+pkg_search_module(UUID REQUIRED uuid)
+
 pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
 
-pkg_search_module(UUID REQUIRED uuid)
+
 
 #-----------------------------------------------------------------------------
 # MPI option
