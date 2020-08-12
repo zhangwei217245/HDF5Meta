@@ -71,7 +71,7 @@ find_package(HDF5 REQUIRED)
 # using pkgconfig for json-c and uuid
 #-----------------------------------------------------------------------------
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_SOURCE_DIR}/src/lib/json-c/build/json_c_lib/lib/pkgconfig")
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/src/lib/json-c/build/json_c_lib/lib/pkgconfig;${CMAKE_PREFIX_PATH}")
 find_package(PkgConfig REQUIRED)
 pkg_search_module(UUID REQUIRED uuid)
 pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
