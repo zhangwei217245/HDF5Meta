@@ -55,7 +55,7 @@ cd ${MIQS_HOME}/lib/json-c
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=./json_c_lib ../
-make && make install
+make -j 14 && make install
 ```
 
 ### Compile the MIQS software prototype
