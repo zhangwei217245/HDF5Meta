@@ -43,11 +43,13 @@ SET(LIB_PATH ${PROJECT_BINARY_DIR}/lib)
 #-----------------------------------------------------------------------------
 # MPI option
 #-----------------------------------------------------------------------------
-option(MIQS_MPI_ENABLED "Enable MPI on MIQS RPC module." OFF)
+option(MIQS_MPI_ENABLED "Enable MPI on MIQS RPC module." ON)
 if(MIQS_MPI_ENABLED)
   find_package(MPI REQUIRED)
   if(MPI_FOUND)
     set(MIQS_MPI_ENABLED 1)
+  else()
+    set(MIQS_MPI_ENABLED 0)
   endif()
 endif()
 
@@ -71,7 +73,7 @@ find_package(HDF5 REQUIRED)
 # using pkgconfig for json-c and uuid
 #-----------------------------------------------------------------------------
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/extern/json-c/build/json_c_lib/lib/pkgconfig;${CMAKE_PREFIX_PATH}")
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/src/lib/json-c/build/json_c_lib/lib/pkgconfig;${CMAKE_PREFIX_PATH}")
 find_package(PkgConfig REQUIRED)
 pkg_search_module(UUID REQUIRED uuid)
 
@@ -79,10 +81,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 find_package(JSON-C REQUIRED)
 
 # pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
-
-
-
-
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)

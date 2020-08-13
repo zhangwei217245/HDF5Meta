@@ -139,7 +139,7 @@ target_link_libraries(miqs_index PUBLIC miqs_metadata indexds bin_file_ops index
 
 
 ADD_LIBRARY(hdf52json SHARED h52json/hdf52json.c h52json/hdf52json.h)
-target_link_libraries(hdf52json PUBLIC JSON-C_LIBRARIES hdf5_meta_extractor)
+target_link_libraries(hdf52json PUBLIC ${JSON-C_LIBRARIES} hdf5_meta_extractor)
 target_include_directories(hdf52json PUBLIC "${JSON-C_INCLUDE_DIRS}" "${HDF5_INCLUDE_DIRS}")
 
 ADD_LIBRARY(hdf52index SHARED h52index/hdf52index.c h52index/hdf52index.h)

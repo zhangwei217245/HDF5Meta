@@ -1,4 +1,5 @@
 CMakeFiles
+src/lib/include/config.h
 *.cmake
 build
 cmake-build

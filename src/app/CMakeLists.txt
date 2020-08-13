@@ -4,9 +4,9 @@
 # find_package(JSON-C REQUIRED)
 
 if(APPLE)
-    set(LIB_RUST_MONGO ${PROJECT_SOURCE_DIR}/extern/rust_mongo_bench/target/release/librust_mongo_bench.dylib)
+    set(LIB_RUST_MONGO ${PROJECT_SOURCE_DIR}/src/lib/rust_mongo_bench/target/release/librust_mongo_bench.dylib)
 else()
-    set(LIB_RUST_MONGO ${PROJECT_SOURCE_DIR}/extern/rust_mongo_bench/target/release/librust_mongo_bench.so)
+    set(LIB_RUST_MONGO ${PROJECT_SOURCE_DIR}/src/lib/rust_mongo_bench/target/release/librust_mongo_bench.so)
 endif()
 
 # # The "test_mongoc.c" sample program is shared among four tests.
