@@ -44,14 +44,14 @@ rustup update
 ### Compile the Rust-based MongoDB test library
 
 ```bash
-cd ${MIQS_HOME}/lib/rust_mongo_bench
+cd ${MIQS_HOME}/src/lib/rust_mongo_bench
 cargo build --release
 ```
 
 ### Compile the Json-C library
 
 ```bash
-cd ${MIQS_HOME}/lib/json-c
+cd ${MIQS_HOME}/src/lib/json-c
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=./json_c_lib ../

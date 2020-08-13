@@ -27,6 +27,7 @@ make && make install
 
 
 cd ${MIQS_HOME}
+export CRAYPE_LINK_TYPE=dynamic 
 cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -H${MIQS_HOME} -B${MIQS_HOME}/build -G "Unix Makefiles"
 cmake --build ${MIQS_HOME}/build --config Debug --target all -- -j 14
 
