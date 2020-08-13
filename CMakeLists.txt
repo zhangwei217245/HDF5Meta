@@ -80,12 +80,11 @@ find_package(JSON-C REQUIRED)
 
 # pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/project/config.h.in ${PROJECT_SOURCE_DIR}/include/project/config.h)
 
 
-ADD_SUBDIRECTORY(extern)
+
+
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(app)
 ADD_SUBDIRECTORY(tests)
 ADD_SUBDIRECTORY(docs)
 ADD_SUBDIRECTORY(scripts)

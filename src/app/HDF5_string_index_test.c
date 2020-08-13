@@ -1,9 +1,9 @@
 // #define ENABLE_MPI
 
 #include <math.h>
-#include "index_spi/spi.h"
-#include "utils/timer_utils.h"
-#include "utils/string_utils.h"
+#include "../lib/index_spi/spi.h"
+#include "../lib/utils/timer_utils.h"
+#include "../lib/utils/string_utils.h"
 #include "boss_dataset.h"
 
 #ifdef ENABLE_MPI
