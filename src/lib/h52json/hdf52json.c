@@ -1,5 +1,21 @@
 #include "hdf52json.h"
 
+const char *get_h5obj_type_str(H5O_type_t t){
+    switch(t) {
+        case H5O_TYPE_UNKNOWN:
+            return "UNKNOWN";
+        case H5O_TYPE_GROUP:             /* Object is a group                        */
+            return "GROUP";
+        case H5O_TYPE_DATASET:           /* Object is a dataset                      */
+            return "DATASET";
+        case H5O_TYPE_NAMED_DATATYPE:    /* Object is a committed (named) datatype   */
+            return "NAMED_DATATYPE";
+        case H5O_TYPE_NTYPES:
+            return "NTYPES";
+        default:
+            return "UNKNOWN";          
+    }
+}
 
 void parse_hdf5_file(char *filepath, json_object **out){
     int i = 0;
@@ -24,17 +40,17 @@ void parse_hdf5_file(char *filepath, json_object **out){
         char mtime_buff[20];
         char ctime_buff[20];
         char btime_buff[20];
-        char *obj_type_buff;
+        // char *obj_type_buff;
 
         H5O_info_t *curr_obj_info = (H5O_info_t *)curr_obj->obj_info;
 
-        get_h5obj_type_str(curr_obj_info->type, &obj_type_buff);
+        const char *type_str = get_h5obj_type_str(curr_obj_info->type);
 
         //FIXME: this can be ugly if you don't need to split the entire JSON object.
         json_object_object_add(curr_json_obj, "hdf5_filename", json_object_new_string(basename(filepath)));
 
         json_object_object_add(curr_json_obj, "name", json_object_new_string(curr_obj->obj_name));
-        json_object_object_add(curr_json_obj, "type", json_object_new_string(obj_type_buff));
+        json_object_object_add(curr_json_obj, "type", json_object_new_string(type_str));
 
 
         strftime(atime_buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&(curr_obj_info->atime)));

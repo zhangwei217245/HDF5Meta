@@ -6,6 +6,7 @@
 #include "../ds/art.h"
 #include "../fs/fs_ops.h"
 #include "../utils/string_utils.h"
+#include "../metadata/miqs_metadata.h"
 #include <sys/stat.h>
 #include <unistd.h>
 // #include "in_mem_index.h"
@@ -37,7 +38,7 @@ typedef struct {
 } file_obj_pair_t;
 
 typedef struct{
-    int type; // type: 1, int, 2, float, 3. string
+    miqs_attr_type_t type; // type: 1, int, 2, float, 3. string
     char *name;
     void *data;
     char *file_path;
@@ -48,7 +49,7 @@ typedef struct{
  * Create index record in memory.
  * 
  */
-index_record_t *create_index_record(int type, char *name, void *data, char *file_path, char *object_path);
+index_record_t *create_index_record(miqs_attr_type_t type, char *name, void *data, char *file_path, char *object_path);
 
 /**
  *  append index_record to the current position of the stream

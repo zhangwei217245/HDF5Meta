@@ -7,7 +7,8 @@
 #include "../ds/hashset.h"
 #include "../utils/string_utils.h"
 #include "../libhl/linklist.h"
-#include "../libhl/rbtree.h"    
+#include "../libhl/rbtree.h"
+#include "../metadata/miqs_metadata.h"
 // #include <search.h>
 #include "on_disk_index.h"
 
@@ -49,6 +50,14 @@ typedef struct {
 } index_anchor;
 
 
+typedef struct{
+    index_anchor *idx_anchor;
+    int rank;
+    int size;
+    int is_building;
+    int current_file_count;
+}index_file_loading_param_t;
+
 // GETTER_SETTER_DECLARE(char         *,file_path                 );
 // GETTER_SETTER_DECLARE(char         *,obj_path                  );
 // GETTER_SETTER_DECLARE(hid_t        ,object_id                 );
@@ -85,7 +94,10 @@ typedef struct {
 }power_search_rst_t;
 
 
-
+typedef struct{
+    size_t metadata_size;
+    size_t overall_index_size;
+} mem_cost_t;
 
 index_anchor *root_idx_anchor();
 
@@ -100,6 +112,11 @@ int init_in_mem_index();
  * Create index based on given index_record_t.
  */
 int indexing_record(index_record_t *ir);
+
+
+int indexing_attr(index_anchor *idx_anchor, miqs_meta_attribute_t *attr);
+
+void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_t *attr);
 
 /**
  * This is a function for indexing numeric fields in the HDF5 metadata. 
@@ -126,8 +143,15 @@ power_search_rst_t *float_value_search(char *attr_name, double value);
 power_search_rst_t *string_value_search(char *attr_name, char *value);
 
 
+void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, miqs_meta_attribute_t *attr, index_record_t *ir);
+
 int dump_mdb_index_to_disk(char *filename, index_anchor *idx_anchor);
 int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor);
+
+void write_aof(FILE *stream, miqs_meta_attribute_t *attr, char *file_path, char *obj_path);
+int load_mdb(char *filepath, index_file_loading_param_t *param);
+int load_aof(char *filepath, index_file_loading_param_t *param);
+
 
 
 #endif /* !MIQS_IN_MEM_INDEX */

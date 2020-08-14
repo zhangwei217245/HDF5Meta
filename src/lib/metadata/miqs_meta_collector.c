@@ -40,6 +40,7 @@ void init_data_object(miqs_data_object_t *data_obj,
     data_obj->obj_id = obj_id;
     data_obj->obj_name = obj_name;
     data_obj->obj_info = obj_info;
+    data_obj->obj_type = MIQS_OT_UNKNOWN;
     data_obj->num_attrs = num_attrs;
     data_obj->attr_linked_list = attr_list_head;
     data_obj->on_attr = on_attr;

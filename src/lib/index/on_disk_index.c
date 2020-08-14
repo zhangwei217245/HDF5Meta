@@ -19,7 +19,7 @@ size_t num_attrs_loaded_mdb = 0;
  * Create index record in memory.
  * 
  */
-index_record_t *create_index_record(int type, char *name, void *data, char *file_path, char *object_path){
+index_record_t *create_index_record(miqs_attr_type_t type, char *name, void *data, char *file_path, char *object_path){
     index_record_t *rst = (index_record_t *)calloc(1, sizeof(index_record_t));
     rst->type = type;
     rst->name = name;
@@ -39,18 +39,18 @@ void append_index_record(index_record_t *ir, FILE *stream){
 
     if (ir == NULL) return;
 
-    miqs_append_type(ir->type, stream );
+    miqs_append_type((int)ir->type, stream );
 
     miqs_append_string(ir->name, stream);
 
 
-    if (ir->type == 1) {
+    if (ir->type == MIQS_AT_INTEGER) {
         int *valp = (int *)ir->data;
         miqs_append_int(*valp, stream);
-    } else if (ir->type == 2) {
+    } else if (ir->type == MIQS_AT_FLOAT) {
         double *valp = (double *)ir->data;
         miqs_append_double(*valp, stream);
-    } else if (ir->type == 3) {
+    } else if (ir->type == MIQS_AT_STRING) {
         char *strv = (char *)ir->data;
         miqs_append_string(strv, stream);
     }
@@ -69,14 +69,15 @@ index_record_t *read_index_record(FILE *stream){
     if (ptr == NULL){
         return NULL;
     }
-    rst->type = *ptr;
+    
+    rst->type = get_miqs_type_from_int(*ptr);
 
     rst->name = miqs_read_string(stream);
-    if (rst->type == 1){
+    if (rst->type == MIQS_AT_INTEGER){
         rst->data = (void *)miqs_read_int(stream);
-    } else if (rst->type == 2) {
+    } else if (rst->type == MIQS_AT_FLOAT) {
         rst->data = (void *)miqs_read_double(stream);
-    } else if (rst->type == 3) {
+    } else if (rst->type == MIQS_AT_STRING) {
         rst->data = (void *)miqs_read_string(stream);
     }
     rst->file_path = miqs_read_string(stream);
@@ -92,17 +93,17 @@ void print_index_record(index_record_t ir){
     char *template = "%s : %s -> %s : %s\n";
     char *pattern = (char *)calloc(1024, sizeof(char));
     char *data_ptn = "%s";
-    if (ir.type == 1) {
+    if (ir.type == MIQS_AT_INTEGER) {
         data_ptn = "%d";
         int *v = (int *)ir.data;
         sprintf(pattern, template, ir.name, data_ptn, ir.file_path, ir.object_path);
         printf(pattern, *v);
-    } else if (ir.type == 2){
+    } else if (ir.type == MIQS_AT_FLOAT){
         data_ptn = "%.2f";
         double *v = (double *)ir.data;
         sprintf(pattern, template, ir.name, data_ptn, ir.file_path, ir.object_path);
         printf(pattern, *v);
-    } else if (ir.type == 3) {
+    } else if (ir.type == MIQS_AT_STRING) {
         data_ptn = "%s";
         char *str = (char *)ir.data;
         sprintf(pattern, template, ir.name, data_ptn, ir.file_path, ir.object_path);
@@ -144,16 +145,16 @@ index_record_t **find_index_record(char *name,
 
         long int skip_offset = 0;
 
-        int type = *ptr;
+        miqs_attr_type_t type = get_miqs_type_from_int(*ptr);
         void *data;
 
         char *name_from_disk = miqs_read_string(stream);
         if (strcmp(name, name_from_disk)==0) {
-            if (type == 1){
+            if (type == MIQS_AT_INTEGER){
                 data = (void *)miqs_read_int(stream);
-            } else if (type == 2) {
+            } else if (type == MIQS_AT_FLOAT) {
                 data = (void *)miqs_read_double(stream);
-            } else if (type == 3) {
+            } else if (type == MIQS_AT_STRING) {
                 data = (void *)miqs_read_string(stream);
             }
 
@@ -459,12 +460,12 @@ int read_file_obj_path_pair_list(value_tree_leaf_content_t *vtree_leaf, FILE *st
     return rst;
 }
 
-int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE *stream){
+int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, miqs_attr_type_t type, FILE *stream){
     value_tree_leaf_content_t *val_leaf = (value_tree_leaf_content_t *)
                     calloc(1, sizeof(value_tree_leaf_content_t));
     int rst = 0;
     void *_value = NULL;
-    if (type == 3){
+    if (type == MIQS_AT_STRING){
         _value = miqs_read_string(stream);
         if (_value) {
             char *val = (char *)_value;
@@ -472,13 +473,13 @@ int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE
             rst = 0;
         }
     } else {
-        if (type == 2){
+        if (type == MIQS_AT_FLOAT){
             _value = miqs_read_double(stream);
             if (_value) {
                 double *val = (double *)_value;
                 rst = rbt_add(attr_val_node->rbt, val, sizeof(double), val_leaf);
             }
-        } else if (type == 1) {
+        } else if (type == MIQS_AT_INTEGER) {
             _value = miqs_read_int(stream);
             if (_value) {
                 int *val = (int *)_value;
@@ -498,18 +499,19 @@ int read_attr_value_node(attr_tree_leaf_content_t *attr_val_node, int type, FILE
 
 int read_attr_values(attr_tree_leaf_content_t *attr_val_node, FILE *stream){
     int rst = 0;
-    int *type = miqs_read_int(stream);
-    if (*type == 3) { //string
+    int *tv = miqs_read_int(stream);
+    miqs_attr_type_t type = get_miqs_type_from_int(*tv);
+    if (type == MIQS_AT_STRING) { //string
         attr_val_node->is_numeric=0;
         attr_val_node->is_float=0;
         attr_val_node->art = (art_tree *)calloc(1, sizeof(art_tree));
         art_tree_init(attr_val_node->art);
     } else {
         attr_val_node->is_numeric=1;
-        if (*type == 1){ // int
+        if (type == MIQS_AT_INTEGER){ // int
             attr_val_node->is_float=0;
             attr_val_node->rbt = rbt_create(libhl_cmp_keys_int, free);
-        } else if (*type == 2){// double
+        } else if (type == MIQS_AT_FLOAT){// double
             attr_val_node->is_float=1;
             attr_val_node->rbt = rbt_create(libhl_cmp_keys_double, free);
         }
@@ -517,7 +519,7 @@ int read_attr_values(attr_tree_leaf_content_t *attr_val_node, FILE *stream){
     uint64_t *num_values = miqs_read_uint64(stream);
     uint64_t i = 0;
     for (i = 0; i < *num_values; i++){
-        rst = rst | read_attr_value_node(attr_val_node, *type, stream);
+        rst = rst | read_attr_value_node(attr_val_node, type, stream);
     }
     return rst;
 }

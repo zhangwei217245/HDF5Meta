@@ -34,6 +34,24 @@ static herr_t read_float_attr(int npoints, hid_t attr, hid_t atype, miqs_meta_at
 static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, miqs_meta_attribute_t *curr_attr);
 
 
+miqs_object_type_t get_miqs_type_from_h5(H5O_type_t obj_type){
+    miqs_object_type_t rst = MIQS_OT_UNKNOWN;
+    switch (obj_type) {
+        case H5O_TYPE_GROUP:
+            rst = MIQS_OT_GROUP;
+            break;
+        case H5O_TYPE_DATASET:
+            rst = MIQS_OT_DATASET;
+            break;
+        case H5O_TYPE_NAMED_DATATYPE:
+            rst = MIQS_OT_UNKNOWN;
+            break;
+        default:
+            rst = MIQS_OT_UNKNOWN;
+    }
+    return rst;
+}
+
 int scan_hdf5(char *file_path, miqs_metadata_collector_t *meta_collector, int is_visit_link){
     hid_t           file;           /* Handle */
     herr_t          status;
@@ -92,7 +110,7 @@ static herr_t op_func (hid_t loc_id, const char *name, const H5O_info_t *info,
         obj_info = (H5O_info_t *)ctr_calloc(1, sizeof(H5O_info_t), &hdf5_meta_size);
         H5Oget_info((hid_t)mdo->obj_id, obj_info);
     }
-        
+    mdo->obj_type = get_miqs_type_from_h5(obj_info->type);
     // TODO: try H5Oget_info2
     mdo->obj_info = (void **)obj_info;
     mdo->num_attrs = H5Aget_num_attrs((hid_t)mdo->obj_id);
@@ -187,16 +205,19 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *mdo)
     curr_attr->next = NULL;
     sprintf(curr_attr->attr_name, "%s", name);
 
-    curr_attr->attr_type = (void *)attr_type;
+    // curr_attr->attr_type = (void *)attr_type;
 
     switch(attr_type) {
         case H5T_INTEGER:
+            curr_attr->attr_type = MIQS_AT_INTEGER;
             read_int_attr(npoints, attr, atype, curr_attr);
             break;
         case H5T_FLOAT:
+            curr_attr->attr_type = MIQS_AT_FLOAT;
             read_float_attr(npoints, attr, atype, curr_attr);
             break;
         case H5T_STRING:
+            curr_attr->attr_type = MIQS_AT_STRING;
             read_string_attr(npoints, attr, atype, curr_attr);
             break;
         default:
@@ -290,24 +311,6 @@ static herr_t read_string_attr(int npoints, hid_t attr, hid_t atype, miqs_meta_a
     }
     return ret;
 }
-
-void get_h5obj_type_str(H5O_type_t obj_type, char **out){
-    *out = (char *)ctr_calloc(20, sizeof(char), &hdf5_meta_size);
-    switch (obj_type) {
-        case H5O_TYPE_GROUP:
-            sprintf (*out, "GROUP");
-            break;
-        case H5O_TYPE_DATASET:
-            sprintf (*out, "DATASET");
-            break;
-        case H5O_TYPE_NAMED_DATATYPE:
-            sprintf (*out, "NAMED_DATATYPE");
-            break;
-        default:
-            sprintf (*out, "UNKNOWN");
-    }
-}
-
 
 size_t get_hdf5_meta_size(){
     return hdf5_meta_size;
