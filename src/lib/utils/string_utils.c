@@ -268,10 +268,18 @@ char **gen_uuids_strings(int count){
     return result;
 }
 
+char **gen_rand_strings(int count, int maxlen){
+    return gen_random_strings(count, maxlen, 26);
+}
+
 char **gen_random_strings(int count, int maxlen, int alphabet_size){
     
     int c = 0;
     int i = 0;
+    int abc_size = alphabet_size;
+    if (alphabet_size > 26){
+        abc_size = 26;
+    }
     char **result = (char **)calloc(count, sizeof(char*));
     for (c = 0; c < count ; c++) {
         //int len = maxlen;//rand()%maxlen;
@@ -280,7 +288,14 @@ char **gen_random_strings(int count, int maxlen, int alphabet_size){
         for (i = 0; i < len-1; i++) {
             int randnum = rand();
             if (randnum < 0) randnum *= -1;
-            char c = (char)((randnum%alphabet_size)+65);
+            char c = (char)32;
+            if (randnum % 3 == 0) {
+                c = (char)((randnum%abc_size)+65);// A-Z
+            } else if (randnum % 3 == 1){
+                c = (char)((randnum%abc_size)+97);// a-z
+            } else if (randnum % 3 == 2) {
+                c = (char)((randnum%10)+48);// 0-9
+            }
             str[i] = c;
         }
         str[len-1] = '\0';

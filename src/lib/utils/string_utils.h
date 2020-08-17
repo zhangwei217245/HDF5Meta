@@ -224,6 +224,11 @@ char **gen_uuids_strings(int count);
 char **gen_random_strings(int count, int maxlen, int alphabet_size);
 
 /**
+ *  Generating a series of random string of specified length.
+ */
+char **gen_rand_strings(int count, int maxlen);
+
+/**
  * Read text file and store each line of the text file as a string
  */
 char **read_words_from_text(const char *fileName, int *word_count);
