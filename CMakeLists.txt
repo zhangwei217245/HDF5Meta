@@ -36,7 +36,7 @@ PROJECT(MIQS)
 #-----------------------------------------------------------------------------
 set(BUILD_SHARED_LIBS ON)
 SET(ENV(CRAYPE_LINK_TYPE) "dynamic")
-SET(CMAKE_C_FLAGS -dynamic)
+SET(CMAKE_C_FLAGS "-dynamic")
 SET(LIB_PATH ${PROJECT_BINARY_DIR}/lib)
 
 
@@ -69,6 +69,13 @@ find_package(Threads REQUIRED)
 #-----------------------------------------------------------------------------
 find_package(HDF5 REQUIRED)
 
+string(REGEX MATCH "^[1]\\.(10|12)" HDF5_MAJOR_MINOR ${HDF5_VERSION})
+string(COMPARE EQUAL ${HDF5_MAJOR_MINOR} "1.12" NEED_HDF5_COMPATIBLE_API)
+
+if(NEED_HDF5_COMPATIBLE_API)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DH5_USE_110_API")
+endif()
+
 #-----------------------------------------------------------------------------
 # using pkgconfig for json-c and uuid
 #-----------------------------------------------------------------------------
@@ -81,7 +88,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 find_package(JSON-C REQUIRED)
 
 # pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
-
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
