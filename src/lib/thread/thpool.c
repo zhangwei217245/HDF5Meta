@@ -8,7 +8,14 @@
  *
  ********************************/
 
-#define _POSIX_C_SOURCE 200809L
+#if defined(__APPLE__)
+	#include <AvailabilityMacros.h>
+#else
+	#ifndef _POSIX_C_SOURCE
+		#define _POSIX_C_SOURCE 200809L
+	#endif
+#endif
+
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
@@ -18,6 +25,9 @@
 #include <time.h>
 #if defined(__linux__)
 #include <sys/prctl.h>
+#endif
+#if defined(__FreeBSD__) || defined(__OpenBSD__)
+#include <pthread_np.h>
 #endif
 
 #include "thpool.h"
@@ -94,7 +104,7 @@ typedef struct thpool_{
 
 
 static int  thread_init(thpool_* thpool_p, struct thread** thread_p, int id);
-static void* thread_do(struct thread* thread_p);
+static void* thread_do(void * arg);
 static void  thread_hold(int sig_id);
 static void  thread_destroy(struct thread* thread_p);
 
@@ -123,8 +133,8 @@ struct thpool_* thpool_init(int num_threads){
 	threads_on_hold   = 0;
 	threads_keepalive = 1;
 
-	if (num_threads < 0){
-		num_threads = 0;
+	if (num_threads < 1){
+		num_threads = 1;
 	}
 
 	/* Make new thread pool */
@@ -282,7 +292,7 @@ int thpool_num_threads_working(thpool_* thpool_p){
 static int thread_init (thpool_* thpool_p, struct thread** thread_p, int id){
 
 	*thread_p = (struct thread*)malloc(sizeof(struct thread));
-	if (thread_p == NULL){
+	if (*thread_p == NULL){
 		err("thread_init(): Could not allocate memory for thread\n");
 		return -1;
 	}
@@ -290,7 +300,7 @@ static int thread_init (thpool_* thpool_p, struct thread** thread_p, int id){
 	(*thread_p)->thpool_p = thpool_p;
 	(*thread_p)->id       = id;
 
-	pthread_create(&(*thread_p)->pthread, NULL, (void *)thread_do, (*thread_p));
+	pthread_create(&(*thread_p)->pthread, NULL, (void * (*)(void *)) thread_do, (*thread_p));
 	pthread_detach((*thread_p)->pthread);
 	return 0;
 }
@@ -314,7 +324,13 @@ static void thread_hold(int sig_id) {
 * @param  thread        thread that will run this function
 * @return nothing
 */
-static void* thread_do(struct thread* thread_p){
+static void* thread_do(void * arg){
+
+	struct thread * thread_p = (struct thread *)arg;
+	if (thread_p == NULL){
+		err("thread_do(): Could not access cookie\n");
+		return NULL;
+	}
 
 	/* Set thread name for profiling and debuging */
 	char thread_name[128] = {0};
@@ -325,6 +341,8 @@ static void* thread_do(struct thread* thread_p){
 	prctl(PR_SET_NAME, thread_name);
 #elif defined(__APPLE__) && defined(__MACH__)
 	pthread_setname_np(thread_name);
+#elif defined(__FreeBSD__) || defined(__OpenBSD__)
+	pthread_set_name_np(thread_p->pthread, thread_name);
 #else
 	err("thread_do(): pthread_setname_np is not supported on this system");
 #endif
@@ -455,6 +473,9 @@ static void jobqueue_push(jobqueue* jobqueue_p, struct job* newjob){
 }
 
 
+/* Get first job from queue(removes it from queue)
+ * Notice: Caller MUST hold a mutex
+ */
 static struct job* jobqueue_pull(jobqueue* jobqueue_p){
 
 	pthread_mutex_lock(&jobqueue_p->rwmutex);
