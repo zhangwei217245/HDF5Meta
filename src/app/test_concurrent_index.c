@@ -193,7 +193,7 @@ void *doQuery(void *tp) {
 
 
 int main(int argc, char *argv[]) {
-    test_config_t test_cfg = {4, 1000, 1000};
+    test_config_t test_cfg = {4, 100, 100};
 
     test_cfg.num_threads = atoi(argv[1]);
     // test_cfg.use_pool = atoi(argv[2]);
