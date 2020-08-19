@@ -16,7 +16,7 @@ typedef struct test_config{
 
 typedef struct test_thread_param{
     test_config_t test_cfg;
-    int tid;
+    long tid;
     long N;
 }test_thread_param_t;
 
@@ -62,8 +62,8 @@ char *mkrndstr(size_t length) { // const size_t length, supra
 
 
 void *genData(void *tp){
-    long i, j;
-    int l, t, tid;
+    long i, j, tid;
+    int l, t;
     test_thread_param_t *thread_param = (test_thread_param_t *) tp;
     test_config_t test_cfg = thread_param->test_cfg;
     miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
@@ -108,7 +108,7 @@ void *genData(void *tp){
         }
         // attr_arr[i] = curr_attr;
     }
-    printf("t %d created %d attributes.\n", thread_param->tid, thread_param->tid - tid);
+    println("t %ld created %ld attributes.", thread_param->tid, thread_param->tid - tid);
     pthread_exit((void *)((long)(thread_param->tid - tid)));
 }
 
@@ -135,7 +135,7 @@ void *doWork(void *tp) {
         timer_start(&timerWatch);
         create_in_mem_index_for_attr(idx_anchor, &attr_arr[i]);
         timer_pause(&timerWatch);
-        printf("%d\t%d\t%llu\n", thread_param->tid, i, timer_delta_ns(&timerWatch));
+        printf("%ld\t%d\t%llu\n", thread_param->tid, i, timer_delta_ns(&timerWatch));
 
     }
 
@@ -163,27 +163,27 @@ void *doQuery(void *tp) {
             int *value = (int *)attr_arr[i].attribute_value;
             power_search_rst_t *rst = int_value_search(attr_arr[i].attr_name, *value);
             if(rst->num_files==0){
-                printf("Not found for type INTEGER with value %d\n",*value);
+                println("Not found for type INTEGER with value %d",*value);
             }
             resultCount += rst->num_files;
         } else if (attr_arr[i].attr_type == MIQS_AT_FLOAT) {
             float *value = (float *)attr_arr[i].attribute_value;
             power_search_rst_t *rst = float_value_search(attr_arr[i].attr_name, *value);
             if(rst->num_files==0){
-                printf("Not found for type FLOAT with value %f\n",*value);
+                println("Not found for type FLOAT with value %f",*value);
             }
             resultCount += rst->num_files;
         } else {
             char *value = attr_arr[i].attribute_value;
             power_search_rst_t *rst = string_value_search(attr_arr[i].attr_name, value);
             if(rst->num_files==0){
-                printf("Not found for type STRING with value %s\n",value);
+                println("Not found for type STRING with value %s",value);
             }
             resultCount += rst->num_files;
         }
     }
     timer_pause(&timerWatch);
-    printf("Thread %d execute %d queries in %llu nanoseconds results %d\n", thread_param->tid, quotion, timer_delta_ns(&timerWatch), resultCount);
+    printf("Thread %ld execute %d queries in %llu nanoseconds results %d\n", thread_param->tid, quotion, timer_delta_ns(&timerWatch), resultCount);
     pthread_exit((void *)((long)i));
 }
 
@@ -207,12 +207,12 @@ int main(int argc, char *argv[]) {
     long i, j;
     int l, t, tid;
 
-    int num_kvs = test_cfg.n_attrs*test_cfg.n_avg_attr_vals;
+    long num_kvs = test_cfg.n_attrs*test_cfg.n_avg_attr_vals;
 
     idx_anchor = root_idx_anchor();
 
-    attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs * test_cfg.num_threads * 2);
-    printf("preparing dataset... \n");
+    attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs * test_cfg.num_threads);
+    println("preparing dataset... ");
     pthread_t data_threads[test_cfg.num_threads];
     test_thread_param_t *tparam = (test_thread_param_t *)calloc(test_cfg.num_threads, sizeof(test_thread_param_t));
     
@@ -222,7 +222,7 @@ int main(int argc, char *argv[]) {
         tparam[i].N = num_kvs;
         status = pthread_create(&data_threads[i], NULL, genData, (void *) &tparam[i]);
         if (status != 0) {
-            printf("ERROR; return code from pthread_create() is %d\n", status);
+            println("ERROR; return code from pthread_create() is %d", status);
             exit(-1);
         }
     }
@@ -239,20 +239,20 @@ int main(int argc, char *argv[]) {
     for (tid = 0; tid < 2*test_cfg.num_threads; tid++) {
          thread_param[i].N = num_kvs;
     }
-    printf("Sample size = %d - Number of Threads used: %d\n", num_kvs, test_cfg.num_threads);
+    println("Sample size = %d - Number of Threads used: %d", num_kvs, test_cfg.num_threads);
     //Print out sample of generated data
-    printf("List 10 sample data \n");
+    println("List 10 sample data ");
     for(i=0;i<10;i++){
         if (attr_arr[i].attr_type == MIQS_AT_INTEGER) {
             int *value = (int *)attr_arr[i].attribute_value;
-            printf("Key = %s - Type = INT - Value = %d\n",attr_arr[i].attr_name,*value);
+            println("Key = %s - Type = INT - Value = %d",attr_arr[i].attr_name,*value);
         } else if (attr_arr[i].attr_type == MIQS_AT_FLOAT) {
             float *value = (float *)attr_arr[i].attribute_value;
-            printf("Key = %s - Type = FLOAT - Value = %f\n",attr_arr[i].attr_name,*value);
+            println("Key = %s - Type = FLOAT - Value = %f",attr_arr[i].attr_name,*value);
 
         } else {
             char *value = attr_arr[i].attribute_value;
-            printf("Key = %s - Type = STRING - Value = %s\n",attr_arr[i].attr_name,value);
+            println("Key = %s - Type = STRING - Value = %s",attr_arr[i].attr_name,value);
 
         }
     }
@@ -265,14 +265,14 @@ int main(int argc, char *argv[]) {
         thread_param[i].tid=(int)i;
         status = pthread_create(&wr_threads[i], NULL, doWork, (void *) &thread_param[i]);
         if (status != 0) {
-            printf("ERROR; return code from pthread_create() is %d\n", status);
+            println("ERROR; return code from pthread_create() is %d", status);
             exit(-1);
         }
     }
     /* join threads */
     for (i = 0; i < test_cfg.num_threads; i++) {
         if (pthread_join(wr_threads[i], ret) != 0) {
-            printf("Error : pthread_join failed on joining thread %ld\n", i);
+            println("Error : pthread_join failed on joining thread %ld", i);
             return -1;
         }
     }
@@ -281,8 +281,8 @@ int main(int argc, char *argv[]) {
     double time_int_second = (double)timer_delta_ms(&timer_index)/1000;
     int throughputI = (int)((double)num_kvs*test_cfg.num_threads*10/time_int_second);
     long int responseI = (int)timer_delta_ns(&timer_index)/(num_kvs*test_cfg.num_threads*10);
-    printf("%d attributes indexed in %.6f seconds, overall throughput is %d qps, overall average response time is %ld nano seconds \n",
-           num_kvs*test_cfg.num_threads*10, (double)timer_delta_ms(&timer_index)/1000,throughputI,responseI);
+    println("%ld attributes indexed in %.6f seconds, overall throughput is %d qps, overall average response time is %ld nano seconds",
+           num_kvs*(long)test_cfg.num_threads, (double)timer_delta_ms(&timer_index)/1000,throughputI,responseI);
 
     // do querying
     stopwatch_t timer_query;
@@ -309,8 +309,8 @@ int main(int argc, char *argv[]) {
     double time_int_second_Q = (double)timer_delta_ms(&timer_query)/1000;
     int throughputQ = (int)((double)num_kvs*test_cfg.num_threads*10/time_int_second_Q);
     long int responsetimeQ = (int)timer_delta_ns(&timer_query)/(num_kvs*test_cfg.num_threads*10);
-    printf("%d queries finished in %0.6f seconds, overall throughput is %d qps, overall average response time is %ld nano seconds \n",
-           num_kvs*test_cfg.num_threads*10, (double)timer_delta_ms(&timer_query)/1000, throughputQ,responsetimeQ );
+    println("%ld queries finished in %0.6f seconds, overall throughput is %d qps, overall average response time is %ld nano seconds",
+           num_kvs*(long)test_cfg.num_threads, (double)timer_delta_ms(&timer_query)/1000, throughputQ,responsetimeQ );
 
     free(attr_arr);
     exit(0);
