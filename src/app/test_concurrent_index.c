@@ -30,9 +30,11 @@ miqs_meta_attribute_t *attr_arr;
 
 index_anchor *idx_anchor;
 
-void *doWork(void *tid);
+void *doWork(void *tp);
 
-void *doQuery(void *tid);
+void *doQuery(void *tp);
+
+void *genData(void *tp);
 
 
 char *mkrndstr(size_t length) { // const size_t length, supra
@@ -59,10 +61,60 @@ char *mkrndstr(size_t length) { // const size_t length, supra
 }
 
 
+void *genData(void *tp){
+    long i, j;
+    int l, t, tid;
+    test_thread_param_t *thread_param = (test_thread_param_t *) tp;
+    test_config_t test_cfg = thread_param->test_cfg;
+    miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
+    tid = thread_param->tid;
+    for (i = 0; i < test_cfg.n_attrs; i++) {
+        // char file_path_str[100];
+        // sprintf(file_path_str,"file_%ld", i);
+        
+        char *buff = mkrndstr(rand() % 11);
+        // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
+
+        for (j = 0; j < test_cfg.n_avg_attr_vals; j++){
+            miqs_meta_attribute_t *curr_attr = &attr_arr[tid++];
+            // char obj_path_str[100];
+            // sprintf(obj_path_str,"obj_%ld", j);
+            l = rand() % 31;
+            t = rand() % 3;
+
+            curr_attr->attr_name = (char *) ctr_calloc(strlen(buff), sizeof(char), &mem_size);
+            curr_attr->next = NULL;
+            sprintf(curr_attr->attr_name, "%s", buff);
+            curr_attr->attr_type = attr_types_array[t];
+            curr_attr->attribute_value_length = 1;
+
+            void *_value;
+
+            if (curr_attr->attr_type == MIQS_AT_INTEGER) {
+                int *_integer = (int *) malloc(sizeof(int));
+                *_integer = rand() % 20 + 5;
+                _value = (void *)_integer;
+            } else if (curr_attr->attr_type == MIQS_AT_FLOAT) {
+                double *_double = (double *)malloc(sizeof(double));
+                *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
+                _value = (void *)_double;
+            } else {
+                char *val_temp = mkrndstr(l);
+                _value = val_temp;
+                curr_attr->attribute_value_length = l;
+            }
+            curr_attr->attribute_value = _value;
+            // curr_attr->
+        }
+        
+        // attr_arr[i] = curr_attr;
+    }
+}
+
 
 void *doWork(void *tp) {
 
-
+    
     test_thread_param_t *thread_param = (test_thread_param_t *) tp;
     int i, r, t;
     int offset = 0;
@@ -147,7 +199,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
+    
 
     int status;
     void **ret;
@@ -158,48 +210,23 @@ int main(int argc, char *argv[]) {
 
     idx_anchor = root_idx_anchor();
 
-    attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs);
+    attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs * test_cfg.num_threads * 10);
     printf("preparing dataset... \n");
-    for (i = 0; i < test_cfg.n_attrs; i++) {
-        // char file_path_str[100];
-        // sprintf(file_path_str,"file_%ld", i);
-        miqs_meta_attribute_t *curr_attr = &attr_arr[i];
-        char *buff = mkrndstr(rand() % 11);
-        // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
-
-        for (j = 0; j < test_cfg.n_avg_attr_vals; j++){
-            // char obj_path_str[100];
-            // sprintf(obj_path_str,"obj_%ld", j);
-            l = rand() % 31;
-            t = rand() % 3;
-
-            curr_attr->attr_name = (char *) ctr_calloc(strlen(buff), sizeof(char), &mem_size);
-            curr_attr->next = NULL;
-            sprintf(curr_attr->attr_name, "%s", buff);
-            curr_attr->attr_type = attr_types_array[t];
-            curr_attr->attribute_value_length = 1;
-
-            void *_value;
-
-            if (curr_attr->attr_type == MIQS_AT_INTEGER) {
-                int *_integer = (int *) malloc(sizeof(int));
-                *_integer = rand() % 20 + 5;
-                _value = (void *)_integer;
-            } else if (curr_attr->attr_type == MIQS_AT_FLOAT) {
-                double *_double = (double *)malloc(sizeof(double));
-                *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
-                _value = (void *)_double;
-            } else {
-                char *val_temp = mkrndstr(l);
-                _value = val_temp;
-                curr_attr->attribute_value_length = l;
-            }
-            curr_attr->attribute_value = _value;
-            // curr_attr->
+    pthread_t data_threads[test_cfg.num_threads];
+    test_thread_param_t *tparam = (test_thread_param_t *)calloc(test_cfg.num_threads, sizeof(test_thread_param_t));
+    
+    for (i = 0; i < test_cfg.num_threads; i++) {
+        tparam[i].test_cfg=test_cfg;
+        tparam[i].tid=(int)i;
+        tparam[i].N = num_kvs;
+        status = pthread_create(&data_threads[i], NULL, genData, (void *) &tparam[i]);
+        if (status != 0) {
+            printf("ERROR; return code from pthread_create() is %d\n", status);
+            exit(-1);
         }
-        
-        // attr_arr[i] = curr_attr;
     }
+
+    
 
 
     pthread_t wr_threads[test_cfg.num_threads];
