@@ -230,16 +230,23 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    for (i = 0; i < test_cfg.num_threads; i++) {
+        if (pthread_join(data_threads[i], ret) != 0) {
+            println("Error : pthread_join failed on joining thread %ld", i);
+            return -1;
+        }
+    }
+
     pthread_t wr_threads[test_cfg.num_threads];
     pthread_t rd_threads[test_cfg.num_threads];
 
 
-    int partial_list_size = (num_kvs / (int) (test_cfg.num_threads)) + (num_kvs % (int) (test_cfg.num_threads));
+    // int partial_list_size = (num_kvs / (int) (test_cfg.num_threads)) + (num_kvs % (int) (test_cfg.num_threads));
     test_thread_param_t *thread_param = (test_thread_param_t *)calloc(test_cfg.num_threads * 2, sizeof(test_thread_param_t));
     // for (tid = 0; tid < 2*test_cfg.num_threads; tid++) {
     //      thread_param[i].N = num_kvs;
     // }
-    println("Sample size = %d - Number of Threads used: %d", num_kvs, test_cfg.num_threads);
+    println("Sample size = %ld - Number of Threads used: %d", num_kvs * (long)test_cfg.num_threads, test_cfg.num_threads);
     //Print out sample of generated data
     println("List 10 sample data ");
     for(i=0;i<10;i++){
