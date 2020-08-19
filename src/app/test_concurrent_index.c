@@ -106,9 +106,10 @@ void *genData(void *tp){
             curr_attr->attribute_value = _value;
             // curr_attr->
         }
-        
         // attr_arr[i] = curr_attr;
     }
+    printf("t %d created %d attributes.\n", thread_param->tid, thread_param->tid - tid);
+    pthread_exit((void *)((long)(thread_param->tid - tid)));
 }
 
 
@@ -210,7 +211,7 @@ int main(int argc, char *argv[]) {
 
     idx_anchor = root_idx_anchor();
 
-    attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs * test_cfg.num_threads * 10);
+    attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs * test_cfg.num_threads * 2);
     printf("preparing dataset... \n");
     pthread_t data_threads[test_cfg.num_threads];
     test_thread_param_t *tparam = (test_thread_param_t *)calloc(test_cfg.num_threads, sizeof(test_thread_param_t));
@@ -278,10 +279,10 @@ int main(int argc, char *argv[]) {
 //
     timer_pause(&timer_index);
     double time_int_second = (double)timer_delta_ms(&timer_index)/1000;
-    int throughputI = (int)((double)num_kvs/time_int_second);
-    long int responseI = (int)timer_delta_ns(&timer_index)/num_kvs;
+    int throughputI = (int)((double)num_kvs*test_cfg.num_threads*10/time_int_second);
+    long int responseI = (int)timer_delta_ns(&timer_index)/(num_kvs*test_cfg.num_threads*10);
     printf("%d attributes indexed in %.6f seconds, overall throughput is %d qps, overall average response time is %ld nano seconds \n",
-           num_kvs, (double)timer_delta_ms(&timer_index)/1000,throughputI,responseI);
+           num_kvs*test_cfg.num_threads*10, (double)timer_delta_ms(&timer_index)/1000,throughputI,responseI);
 
     // do querying
     stopwatch_t timer_query;
@@ -306,10 +307,10 @@ int main(int argc, char *argv[]) {
 ////
     timer_pause(&timer_query);
     double time_int_second_Q = (double)timer_delta_ms(&timer_query)/1000;
-    int throughputQ = (int)((double)num_kvs/time_int_second_Q);
-    long int responsetimeQ = (int)timer_delta_ns(&timer_query)/num_kvs;
+    int throughputQ = (int)((double)num_kvs*test_cfg.num_threads*10/time_int_second_Q);
+    long int responsetimeQ = (int)timer_delta_ns(&timer_query)/(num_kvs*test_cfg.num_threads*10);
     printf("%d queries finished in %0.6f seconds, overall throughput is %d qps, overall average response time is %ld nano seconds \n",
-           num_kvs, (double)timer_delta_ms(&timer_query)/1000, throughputQ,responsetimeQ );
+           num_kvs*test_cfg.num_threads*10, (double)timer_delta_ms(&timer_query)/1000, throughputQ,responsetimeQ );
 
     free(attr_arr);
     exit(0);
