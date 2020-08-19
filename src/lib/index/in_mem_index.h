@@ -25,6 +25,19 @@ typedef struct {
     void *object_id;
     art_tree *root_art;
 
+    /**
+     * 1, mutual exclusion on the entire index
+     * 2, read/write lock on attr name and attr value 
+     * 3, node-level read/write locks
+     */
+    #if MIQS_INDEX_CONCURRENT_LEVEL==1
+        pthread_rwlock_t GLOBAL_INDEX_LOCK;
+    #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_t TOP_ART_LOCK;
+    #else
+        /* nothing here for tree-node protection */
+    #endif
+
     //Collections of file_paths and object_paths
     //We use tagged entry along with its position
     //So, in leaf node of value tree, we only maintain the position number of the file_path/object_path

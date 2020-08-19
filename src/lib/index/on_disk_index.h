@@ -11,6 +11,7 @@
 #include <unistd.h>
 // #include "in_mem_index.h"
 
+#define MIQS_INDEX_CONCURRENT_LEVEL 1
 
 typedef struct {
     int is_numeric;
@@ -21,6 +22,12 @@ typedef struct {
 
     void *secondary_idx;
 
+    #if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_t VALUE_TREE_LOCK;
+    #else
+        /* nothing here for tree-node protection */
+    #endif
+
     // size_t file_path_pos;
     // size_t obj_path_pos;
 } attr_tree_leaf_content_t;
@@ -30,6 +37,12 @@ typedef struct {
     // map_t path_hash_map;
     // art_tree *file_path_art;
     linked_list_t *file_obj_pair_list;
+
+    #if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_t VALUE_TREE_LEAF_LOCK;
+    #else
+        /* nothing here for tree-node protection */
+    #endif
 } value_tree_leaf_content_t;
 
 typedef struct {

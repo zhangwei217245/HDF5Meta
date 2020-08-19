@@ -1,4 +1,5 @@
 #include "in_mem_index.h"
+#include <pthread.h>
 
 
 index_anchor *idx_anchor;
@@ -128,6 +129,16 @@ int init_in_mem_index(){
     idx_anchor->total_num_kv_pairs=0;
     idx_anchor->us_to_index=0;
     idx_anchor->us_to_disk_index=0;
+
+    #if MIQS_INDEX_CONCURRENT_LEVEL==1
+        pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK), NULL);
+        pthread_rwlock_t GLOBAL_INDEX_LOCK;
+    #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
+    #else
+        /* nothing here for tree-node protection */
+    #endif
+
     return 1;
 }
 
@@ -138,7 +149,21 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
     int into_art = 1;
     stopwatch_t one_attr;   
     timer_start(&one_attr);
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
+#else
+    /* nothing here for tree-node protection */
+#endif
+
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name));
+    
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
+
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), get_index_size_ptr());
         // void *bptr = NULL;
@@ -165,7 +190,16 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
                 break;
         }
         if (into_art == 1) {
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+            pthread_rwlock_wrlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
             art_insert(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name), leaf_cnt);
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+            pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
+
         }
     }
 
@@ -187,6 +221,11 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
             // into_art = 0;
             break;
     }
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+            pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+#endif
+
     timer_pause(&one_attr);
     suseconds_t one_attr_duration = timer_delta_us(&one_attr);
     idx_anchor->us_to_index += one_attr_duration;
@@ -254,11 +293,27 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             double *_attr_value = (double *)attr_val;
             key = &(_attr_value[i]);
         }
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
+
         int rbt_found = rbt_find(leaf_cnt->rbt, key, k_size, &entry);
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
+
         if (rbt_found != 0) {// not found
             entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
             ((value_tree_leaf_content_t *)entry)->file_obj_pair_list = list_create();
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+            pthread_rwlock_wrlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
             rbt_add(leaf_cnt->rbt, key, k_size, entry);
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+            pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
         }
         size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
         size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
@@ -283,10 +338,22 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
         char *k = attr_val[i];
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
         value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)k, strlen(k));
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
         if (test_cnt == NULL){
             test_cnt = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t) , &index_mem_size);
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+            pthread_rwlock_wrlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
             art_insert(leaf_cnt->art, (unsigned char *)k, strlen(k), (void *)test_cnt);
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+            pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif
             test_cnt->file_obj_pair_list = list_create();
         }
         size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
@@ -302,6 +369,9 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
 
 
 power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t value_size){
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+#endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
 
@@ -310,17 +380,27 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
     if (idx_anchor== NULL) {
         return prst;
     }
-    
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
     attr_tree_leaf_content_t *leaf_cnt =
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
-
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
     if (leaf_cnt == NULL || leaf_cnt->rbt == NULL) {
         return prst;
     }
 
     void *entry;
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif 
     int rbt_found = rbt_find(leaf_cnt->rbt, value_p, value_size, &entry);
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif 
     if (rbt_found!=0){//Not found
         return prst;
     } else {
@@ -329,6 +409,9 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
         list_foreach_value(node->file_obj_pair_list, collect_result_from_list, prst);
         prst->num_files = list_count(prst->rst_arr);
     }
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+#endif
     return prst;
 }
 
@@ -345,6 +428,9 @@ power_search_rst_t *float_value_search(char *attr_name, double value) {
 }
 
 power_search_rst_t *string_value_search(char *attr_name, char *value) {
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+#endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
 
@@ -353,17 +439,25 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     if (idx_anchor== NULL) {
         return prst;
     }
-    
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
     attr_tree_leaf_content_t *leaf_cnt =
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
     (const unsigned char *)attr_name, strlen(attr_name));
-
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
+#endif
     if (leaf_cnt == NULL || leaf_cnt->art == NULL) {
         return prst;
     }
-
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif   
     value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
-
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+#endif 
     if (test_cnt == NULL) {
         return prst;
     } else {
@@ -373,6 +467,9 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         prst->rst_arr = list_create();
         list_foreach_value(test_cnt->file_obj_pair_list, collect_result_from_list, prst);
     }
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+#endif
     return prst;
 }
 
