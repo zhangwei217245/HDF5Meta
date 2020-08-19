@@ -208,9 +208,9 @@ int main(int argc, char *argv[]) {
 
     int partial_list_size = (num_kvs / (int) (test_cfg.num_threads)) + (num_kvs % (int) (test_cfg.num_threads));
     test_thread_param_t *thread_param = (test_thread_param_t *)calloc(test_cfg.num_threads * 2, sizeof(test_thread_param_t));
-    // for (tid = 0; tid < test_cfg.num_threads; tid++) {
-    //     thread_param[i].tid = tid;
-    // }
+    for (tid = 0; tid < 2*test_cfg.num_threads; tid++) {
+         thread_param[i].N = num_kvs;
+    }
     printf("Sample size = %d - Number of Threads used: %d\n", num_kvs, test_cfg.num_threads);
     //Print out sample of generated data
     printf("List 10 sample data \n");
