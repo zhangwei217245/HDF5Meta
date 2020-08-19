@@ -11,7 +11,7 @@
 #include <unistd.h>
 // #include "in_mem_index.h"
 
-#define MIQS_INDEX_CONCURRENT_LEVEL 1
+#define MIQS_INDEX_CONCURRENT_LEVEL 2
 
 typedef struct {
     int is_numeric;
