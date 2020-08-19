@@ -228,9 +228,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    
-
-
     pthread_t wr_threads[test_cfg.num_threads];
     pthread_t rd_threads[test_cfg.num_threads];
 

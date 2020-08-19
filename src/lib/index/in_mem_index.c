@@ -337,11 +337,12 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
     }
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
-        char *k = attr_val[i];
+        // char *k = attr_val[i];
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
         pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
 #endif
-        value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)k, strlen(k));
+        value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, 
+            (const unsigned char *)attr_val[i], strlen(attr_val[i]));
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
         pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
 #endif
@@ -350,7 +351,7 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
             pthread_rwlock_wrlock(&(leaf_cnt->VALUE_TREE_LOCK));
 #endif
-            art_insert(leaf_cnt->art, (unsigned char *)k, strlen(k), (void *)test_cnt);
+            art_insert(leaf_cnt->art, (unsigned char *)attr_val[i], strlen(attr_val[i]), (void *)test_cnt);
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
             pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
 #endif
