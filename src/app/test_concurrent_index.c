@@ -37,28 +37,30 @@ void *doQuery(void *tp);
 void *genData(void *tp);
 
 
-char *mkrndstr(size_t length) { // const size_t length, supra
+// char *mkrndstr(size_t length) { // const size_t length, supra
 
-    static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
-    char *randomString;
+//     static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
+//     char *randomString;
 
-    if (length) {
-        randomString = malloc(length + 1); // sizeof(char) == 1, cf. C99
+//     if (length) {
+//         randomString = malloc(length + 1); // sizeof(char) == 1, cf. C99
 
-        if (randomString) {
-            int l = (int) (sizeof(charset) - 1); // (static/global, could be const or #define SZ, would be even better)
-            int key;  // one-time instantiation (static/global would be even better)
-            for (int n = 0; n < length; n++) {
-                key = rand() % l;   // no instantiation, just assignment, no overhead from sizeof
-                randomString[n] = charset[key];
-            }
+//         if (randomString) {
+//             int l = (int) (sizeof(charset) - 1); // (static/global, could be const or #define SZ, would be even better)
+//             int key;  // one-time instantiation (static/global would be even better)
+//             for (int n = 0; n < length; n++) {
+//                 key = rand() % l;   // no instantiation, just assignment, no overhead from sizeof
+//                 randomString[n] = charset[key];
+//             }
 
-            randomString[length] = '\0';
-        }
-    }
+//             randomString[length] = '\0';
+//         }
+//     }
 
-    return randomString;
-}
+//     return randomString;
+// }
+
+
 
 
 void *genData(void *tp){
@@ -72,7 +74,7 @@ void *genData(void *tp){
         char file_path_str[100];
         sprintf(file_path_str,"file_%ld", i);
         
-        char *buff = mkrndstr(rand() % 11);
+        char *buff = gen_rand_strings(1, 11)[0];
         // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
 
         for (j = 0; j < test_cfg.n_avg_attr_vals; j++){
@@ -99,8 +101,8 @@ void *genData(void *tp){
                 *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
                 _value = (void *)_double;
             } else {
-                char *val_temp = mkrndstr(l);
-                _value = (void *)&val_temp;
+                char **val_temp = gen_rand_strings(1, l);
+                _value = (void *)val_temp;
                 curr_attr->attribute_value_length = 1;
             }
             curr_attr->attribute_value = _value;
