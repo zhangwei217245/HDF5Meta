@@ -69,7 +69,7 @@ void *genData(void *tp){
     test_thread_param_t *thread_param = (test_thread_param_t *) tp;
     test_config_t test_cfg = thread_param->test_cfg;
     miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
-    tid = thread_param->tid;
+    tid = thread_param->tid*thread_param->N;
     for (i = 0; i < test_cfg.n_attrs; i++) {
         char file_path_str[100];
         sprintf(file_path_str,"file_%ld", i);
@@ -122,24 +122,23 @@ void *doWork(void *tp) {
     test_thread_param_t *thread_param = (test_thread_param_t *) tp;
     int i, r, t;
     int offset = 0;
-    int quotion = thread_param->N / thread_param->test_cfg.num_threads;
-    int mod = thread_param->N % thread_param->test_cfg.num_threads;
-    if (thread_param->tid < mod) quotion += 1;
+    // int quotion = thread_param->N;
+    // int mod = thread_param->N % thread_param->test_cfg.num_threads;
+    // if (thread_param->tid < mod) quotion += 1;
 //    printf("Thread %d was assigned %d jobs\n",*thread_index,quotion);
-    int currentIndex = thread_param->tid * quotion;
-    if (thread_param->tid >= mod) currentIndex += mod;
-    int lastIndex = currentIndex + quotion;
+    // int currentIndex = thread_param->tid * quotion;
+    // if (thread_param->tid >= mod) currentIndex += mod;
+    // int lastIndex = currentIndex + quotion;
 
 //    printf("Thread %d start from %d to %d\n",*thread_index, currentIndex, lastIndex-1);
     //Start doing the work here
 
-    for (i = currentIndex; i < lastIndex; i++) {
+    for (i = 0; i < thread_param->N; i++) {
         stopwatch_t timerWatch;
         timer_start(&timerWatch);
-        create_in_mem_index_for_attr(idx_anchor, &attr_arr[i]);
+        create_in_mem_index_for_attr(idx_anchor, &attr_arr[thread_param->tid*thread_param->N+i]);
         timer_pause(&timerWatch);
         // printf("%ld\t%d\t%llu\n", thread_param->tid, i, timer_delta_ns(&timerWatch));
-
     }
 
     pthread_exit((void *)((long)i));
@@ -150,35 +149,37 @@ void *doQuery(void *tp) {
     int i, r, t;
     int offset = 0;
     int resultCount = 0;
-    int quotion = thread_param->N / thread_param->test_cfg.num_threads;
-    int mod = thread_param->N % thread_param->test_cfg.num_threads;
-    if (thread_param->tid - thread_param->test_cfg.num_threads < mod) quotion += 1;
-    int currentIndex = thread_param->tid * quotion;
-    if (thread_param->tid - thread_param->test_cfg.num_threads >= mod) currentIndex += mod;
-    int lastIndex = currentIndex + quotion;
+    // int quotion = thread_param->N / thread_param->test_cfg.num_threads;
+    // int mod = thread_param->N % thread_param->test_cfg.num_threads;
+    // if (thread_param->tid - thread_param->test_cfg.num_threads < mod) quotion += 1;
+    // int currentIndex = thread_param->tid * quotion;
+    // if (thread_param->tid - thread_param->test_cfg.num_threads >= mod) currentIndex += mod;
+    // int lastIndex = currentIndex + quotion;
 //    printf("Thread %d was assigned %d jobs from %d to %d\n",*thread_index,quotion, currentIndex, lastIndex);
 
     //Start doing the work here
+    
     stopwatch_t timerWatch;
     timer_start(&timerWatch);
-    for (i = currentIndex; i < lastIndex; i++) {
-        if (attr_arr[i].attr_type == MIQS_AT_INTEGER) {
-            int *value = (int *)attr_arr[i].attribute_value;
-            power_search_rst_t *rst = int_value_search(attr_arr[i].attr_name, *value);
+    for (i = 0; i < thread_param->N; i++) {
+        miqs_meta_attribute_t meta_attr = attr_arr[thread_param->tid*thread_param->N+i];
+        if (meta_attr.attr_type == MIQS_AT_INTEGER) {
+            int *value = (int *)meta_attr.attribute_value;
+            power_search_rst_t *rst = int_value_search(meta_attr.attr_name, *value);
             if(rst->num_files==0){
                 println("Not found for type INTEGER with value %d",*value);
             }
             resultCount += rst->num_files;
-        } else if (attr_arr[i].attr_type == MIQS_AT_FLOAT) {
-            float *value = (float *)attr_arr[i].attribute_value;
-            power_search_rst_t *rst = float_value_search(attr_arr[i].attr_name, *value);
+        } else if (meta_attr.attr_type == MIQS_AT_FLOAT) {
+            float *value = (float *)meta_attr.attribute_value;
+            power_search_rst_t *rst = float_value_search(meta_attr.attr_name, *value);
             if(rst->num_files==0){
                 println("Not found for type FLOAT with value %f",*value);
             }
             resultCount += rst->num_files;
         } else {
-            char *value = attr_arr[i].attribute_value;
-            power_search_rst_t *rst = string_value_search(attr_arr[i].attr_name, value);
+            char *value = meta_attr.attribute_value;
+            power_search_rst_t *rst = string_value_search(meta_attr.attr_name, value);
             if(rst->num_files==0){
                 println("Not found for type STRING with value %s",value);
             }
