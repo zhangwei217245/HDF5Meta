@@ -101,7 +101,7 @@ void *genData(void *tp){
                 *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
                 _value = (void *)_double;
             } else {
-                char **val_temp = gen_rand_strings(1, l);
+                char **val_temp = gen_rand_strings(1, l+10);
                 _value = (void *)val_temp;
                 curr_attr->attribute_value_length = 1;
             }
