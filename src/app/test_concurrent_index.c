@@ -138,7 +138,7 @@ void *doWork(void *tp) {
         timer_start(&timerWatch);
         create_in_mem_index_for_attr(idx_anchor, &attr_arr[i]);
         timer_pause(&timerWatch);
-        printf("%ld\t%d\t%llu\n", thread_param->tid, i, timer_delta_ns(&timerWatch));
+        // printf("%ld\t%d\t%llu\n", thread_param->tid, i, timer_delta_ns(&timerWatch));
 
     }
 
