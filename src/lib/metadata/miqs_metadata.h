@@ -15,6 +15,8 @@ typedef struct miqs_meta_attribute {
     void *attribute_value;
     int attribute_value_length;
 
+    char *file_path_str;
+    char *obj_path_str;
     struct miqs_meta_attribute *next;
     struct miqs_meta_attribute *head; // each node maintains the head pointer. 
     struct miqs_meta_attribute *tail; // Only head maintain tail pointer. 

@@ -69,16 +69,16 @@ void *genData(void *tp){
     miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
     tid = thread_param->tid;
     for (i = 0; i < test_cfg.n_attrs; i++) {
-        // char file_path_str[100];
-        // sprintf(file_path_str,"file_%ld", i);
+        char file_path_str[100];
+        sprintf(file_path_str,"file_%ld", i);
         
         char *buff = mkrndstr(rand() % 11);
         // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
 
         for (j = 0; j < test_cfg.n_avg_attr_vals; j++){
             miqs_meta_attribute_t *curr_attr = &attr_arr[tid++];
-            // char obj_path_str[100];
-            // sprintf(obj_path_str,"obj_%ld", j);
+            char obj_path_str[100];
+            sprintf(obj_path_str,"obj_%ld", j);
             l = rand() % 31;
             t = rand() % 3;
 
@@ -104,7 +104,8 @@ void *genData(void *tp){
                 curr_attr->attribute_value_length = l;
             }
             curr_attr->attribute_value = _value;
-            // curr_attr->
+            curr_attr->file_path_str = file_path_str;
+            curr_attr->obj_path_str = obj_path_str;
         }
         // attr_arr[i] = curr_attr;
     }

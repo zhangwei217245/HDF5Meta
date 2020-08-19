@@ -16,6 +16,8 @@ int on_obj(void *opdata, miqs_data_object_t *obj){
 int on_attr(void *opdata, miqs_meta_attribute_t *attr){
     
     index_anchor *idx_anchor = (index_anchor *)opdata;
+    attr->file_path_str = idx_anchor->file_path;
+    attr->obj_path_str = idx_anchor->obj_path;
     return indexing_attr(idx_anchor, attr);
 }
 

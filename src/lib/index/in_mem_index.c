@@ -144,8 +144,8 @@ int init_in_mem_index(){
 
 void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_t *attr){
     art_tree *global_art = idx_anchor->root_art;
-    char *file_path = idx_anchor->file_path;
-    char *obj_path = idx_anchor->obj_path;
+    char *file_path = attr->file_path_str;
+    char *obj_path = attr->obj_path_str;
     int into_art = 1;
     stopwatch_t one_attr;   
     timer_start(&one_attr);
