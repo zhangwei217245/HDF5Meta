@@ -149,7 +149,7 @@ void *doQuery(void *tp) {
     int i, r, t;
     int offset = 0;
     int resultCount = 0;
-    // int quotion = thread_param->N / thread_param->test_cfg.num_threads;
+    long quotion = thread_param->N;
     // int mod = thread_param->N % thread_param->test_cfg.num_threads;
     // if (thread_param->tid - thread_param->test_cfg.num_threads < mod) quotion += 1;
     // int currentIndex = thread_param->tid * quotion;
@@ -187,7 +187,7 @@ void *doQuery(void *tp) {
         }
     }
     timer_pause(&timerWatch);
-    printf("Thread %ld execute %d queries in %lu nanoseconds results %d\n", thread_param->tid, quotion, timer_delta_ns(&timerWatch), resultCount);
+    printf("Thread %ld execute %ld queries in %lu nanoseconds results %d\n", thread_param->tid, quotion, timer_delta_ns(&timerWatch), resultCount);
     pthread_exit((void *)((long)i));
 }
 
