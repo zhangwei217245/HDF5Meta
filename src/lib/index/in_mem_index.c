@@ -1,4 +1,5 @@
 #include "in_mem_index.h"
+#include <string.h>
 #include <pthread.h>
 
 
