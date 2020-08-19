@@ -236,9 +236,9 @@ int main(int argc, char *argv[]) {
 
     int partial_list_size = (num_kvs / (int) (test_cfg.num_threads)) + (num_kvs % (int) (test_cfg.num_threads));
     test_thread_param_t *thread_param = (test_thread_param_t *)calloc(test_cfg.num_threads * 2, sizeof(test_thread_param_t));
-    for (tid = 0; tid < 2*test_cfg.num_threads; tid++) {
-         thread_param[i].N = num_kvs;
-    }
+    // for (tid = 0; tid < 2*test_cfg.num_threads; tid++) {
+    //      thread_param[i].N = num_kvs;
+    // }
     println("Sample size = %d - Number of Threads used: %d", num_kvs, test_cfg.num_threads);
     //Print out sample of generated data
     println("List 10 sample data ");
@@ -263,6 +263,7 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < test_cfg.num_threads; i++) {
         thread_param[i].test_cfg=test_cfg;
         thread_param[i].tid=(int)i;
+        thread_param[i].N=num_kvs;
         status = pthread_create(&wr_threads[i], NULL, doWork, (void *) &thread_param[i]);
         if (status != 0) {
             println("ERROR; return code from pthread_create() is %d", status);
@@ -290,6 +291,7 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < test_cfg.num_threads; i++) {
         thread_param[test_cfg.num_threads+i].test_cfg=test_cfg;
         thread_param[test_cfg.num_threads+i].tid=test_cfg.num_threads+(int)i;
+        thread_param[test_cfg.num_threads+i].N=num_kvs;
         status = pthread_create(&rd_threads[i], NULL, doQuery, (void *) &thread_param[test_cfg.num_threads+i]);
         if (status != 0) {
             printf("ERROR; return code from pthread_create() is %d\n", status);
