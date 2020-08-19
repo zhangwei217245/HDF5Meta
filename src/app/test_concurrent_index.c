@@ -100,8 +100,8 @@ void *genData(void *tp){
                 _value = (void *)_double;
             } else {
                 char *val_temp = mkrndstr(l);
-                _value = val_temp;
-                curr_attr->attribute_value_length = l;
+                _value = (void *)&val_temp;
+                curr_attr->attribute_value_length = 1;
             }
             curr_attr->attribute_value = _value;
             curr_attr->file_path_str = file_path_str;
