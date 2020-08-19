@@ -186,7 +186,7 @@ void *doQuery(void *tp) {
         }
     }
     timer_pause(&timerWatch);
-    printf("Thread %ld execute %d queries in %llu nanoseconds results %d\n", thread_param->tid, quotion, timer_delta_ns(&timerWatch), resultCount);
+    printf("Thread %ld execute %d queries in %lu nanoseconds results %d\n", thread_param->tid, quotion, timer_delta_ns(&timerWatch), resultCount);
     pthread_exit((void *)((long)i));
 }
 
