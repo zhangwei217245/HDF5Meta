@@ -136,7 +136,7 @@ void *doQuery(void *tp) {
 
 
 int main(int argc, char *argv[]) {
-    test_config_t test_cfg = {4, 1000, 1000000};
+    test_config_t test_cfg = {4, 1000, 1000};
 
     test_cfg.num_threads = atoi(argv[1]);
     // test_cfg.use_pool = atoi(argv[2]);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
     idx_anchor = root_idx_anchor();
 
     attr_arr = (miqs_meta_attribute_t *)malloc(sizeof(miqs_meta_attribute_t) * num_kvs);
-    
+    printf("preparing dataset... \n");
     for (i = 0; i < test_cfg.n_attrs; i++) {
         // char file_path_str[100];
         // sprintf(file_path_str,"file_%ld", i);
