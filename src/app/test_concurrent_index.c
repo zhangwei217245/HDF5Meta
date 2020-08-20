@@ -52,7 +52,7 @@ void *genData(void *tp){
         // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
 
         for (j = 0; j < tparam->n_avg_attr_vals; j++){
-            if (tparam->tid % num_kvs== c) {
+            if (c % num_kvs == tparam->tid) {
                 miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)calloc(1, sizeof(miqs_meta_attribute_t));
                 char obj_path_str[100];
                 sprintf(obj_path_str,"obj_%ld", j);
@@ -102,7 +102,7 @@ void *doIndexing(void *tp) {
     stopwatch_t timerWatch;
     timer_start(&timerWatch);
     for (c = 0; c < num_kvs; c++) {
-        if (tparam->tid % num_kvs == c) {
+        if (c % num_kvs == tparam->tid) {
             // timer_start(&timerWatch);
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
             // timer_pause(&timerWatch);
@@ -111,7 +111,7 @@ void *doIndexing(void *tp) {
         }
     }
     // timer_pause(&timerWatch);
-    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(&timerWatch));
+    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(&timerWatch));
     pthread_exit((void *)c);
 }
 
@@ -127,7 +127,7 @@ void *doQuery(void *tp) {
     stopwatch_t timerWatch;
     timer_start(&timerWatch);
     for (c = 0; c < num_kvs; c++) {
-        if (tparam->tid % num_kvs == c) {
+        if (c % num_kvs == tparam->tid) {
             miqs_meta_attribute_t *meta_attr = attr_arr[c];
             if (meta_attr->attr_type == MIQS_AT_INTEGER) {
                 int *value = (int *)meta_attr->attribute_value;
