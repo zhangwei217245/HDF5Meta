@@ -87,7 +87,7 @@ void *genData(void *tp){
             c++;
         }
     }
-    println("t %ld created %ld attributes.", tparam->tid, c);
+    println("t %ld created %ld attributes.", tparam->tid, n);
     pthread_exit((void *)n);
 }
 
@@ -186,6 +186,7 @@ int main(int argc, char *argv[]) {
     idx_anchor = root_idx_anchor();
 
     attr_arr = (miqs_meta_attribute_t **)calloc(num_kvs, sizeof(miqs_meta_attribute_t *));
+
     println("preparing dataset... ");
     int gen_data_t_count = 20;
     pthread_t data_threads[gen_data_t_count];
