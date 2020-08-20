@@ -209,21 +209,21 @@ int main(int argc, char *argv[]) {
 
     println("Sample size = %ld - Number of Threads used: %d", num_kvs, gen_data_t_count);
     //Print out sample of generated data
-    println("List 10 sample data ");
-    for(i=0;i<10;i++){
-        if (attr_arr[i]->attr_type == MIQS_AT_INTEGER) {
-            int *value = (int *)attr_arr[i]->attribute_value;
-            println("Key = %s - Type = INT - Value = %d",attr_arr[i]->attr_name,*value);
-        } else if (attr_arr[i]->attr_type == MIQS_AT_FLOAT) {
-            float *value = (float *)attr_arr[i]->attribute_value;
-            println("Key = %s - Type = FLOAT - Value = %.2f",attr_arr[i]->attr_name,*value);
+    // println("List 10 sample data ");
+    // for(i=0;i<10;i++){
+    //     if (attr_arr[i]->attr_type == MIQS_AT_INTEGER) {
+    //         int *value = (int *)attr_arr[i]->attribute_value;
+    //         println("Key = %s - Type = INT - Value = %d",attr_arr[i]->attr_name,*value);
+    //     } else if (attr_arr[i]->attr_type == MIQS_AT_FLOAT) {
+    //         float *value = (float *)attr_arr[i]->attribute_value;
+    //         println("Key = %s - Type = FLOAT - Value = %.2f",attr_arr[i]->attr_name,*value);
 
-        } else {
-            char *value = attr_arr[i]->attribute_value;
-            println("Key = %s - Type = STRING - Value = %s",attr_arr[i]->attr_name,value);
+    //     } else {
+    //         char *value = attr_arr[i]->attribute_value;
+    //         println("Key = %s - Type = STRING - Value = %s",attr_arr[i]->attr_name,value);
 
-        }
-    }
+    //     }
+    // }
 
 //     pthread_t wr_threads[thread_count];
 //     pthread_t rd_threads[thread_count];
