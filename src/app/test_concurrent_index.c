@@ -49,46 +49,45 @@ void *genData(void *tp){
         sprintf(file_path_str,"file_%ld", i);
         
         char *buff = gen_rand_strings(1, 11)[0];
-        // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
 
         for (j = 0; j < tparam->n_avg_attr_vals; j++){
             if (c % num_kvs == tparam->tid) {
-                miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)calloc(1, sizeof(miqs_meta_attribute_t));
-                char obj_path_str[100];
-                sprintf(obj_path_str,"obj_%ld", j);
-                l = rand() % 31;
-                t = rand() % 3;
+                // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
+                // char obj_path_str[100];
+                // sprintf(obj_path_str,"obj_%ld", j);
+                // l = rand() % 31;
+                // t = rand() % 3;
 
-                curr_attr->attr_name = (char *) ctr_calloc(strlen(buff), sizeof(char), &mem_size);
-                curr_attr->next = NULL;
-                sprintf(curr_attr->attr_name, "%s", buff);
-                curr_attr->attr_type = attr_types_array[t];
-                curr_attr->attribute_value_length = 1;
-                void *_value;
+                // curr_attr->attr_name = (char *)ctr_calloc(strlen(buff), sizeof(char), &mem_size);
+                // curr_attr->next = NULL;
+                // sprintf(curr_attr->attr_name, "%s", buff);
+                // curr_attr->attr_type = attr_types_array[t];
+                // curr_attr->attribute_value_length = 1;
+                // void *_value;
 
-                if (curr_attr->attr_type == MIQS_AT_INTEGER) {
-                    int *_integer = (int *) malloc(sizeof(int));
-                    *_integer = rand() % 20 + 5;
-                    _value = (void *)_integer;
-                } else if (curr_attr->attr_type == MIQS_AT_FLOAT) {
-                    double *_double = (double *)malloc(sizeof(double));
-                    *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
-                    _value = (void *)_double;
-                } else {
-                    char **val_temp = gen_rand_strings(1, l+10);
-                    _value = (void *)val_temp;
-                    curr_attr->attribute_value_length = 1;
-                }
-                curr_attr->attribute_value = _value;
-                curr_attr->file_path_str = file_path_str;
-                curr_attr->obj_path_str = obj_path_str;
-                attr_arr[c] = curr_attr;
+                // if (curr_attr->attr_type == MIQS_AT_INTEGER) {
+                //     int *_integer = (int *) malloc(sizeof(int));
+                //     *_integer = rand() % 20 + 5;
+                //     _value = (void *)_integer;
+                // } else if (curr_attr->attr_type == MIQS_AT_FLOAT) {
+                //     double *_double = (double *)malloc(sizeof(double));
+                //     *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
+                //     _value = (void *)_double;
+                // } else {
+                //     char **val_temp = gen_rand_strings(1, l+10);
+                //     _value = (void *)val_temp;
+                //     curr_attr->attribute_value_length = 1;
+                // }
+                // curr_attr->attribute_value = _value;
+                // curr_attr->file_path_str = file_path_str;
+                // curr_attr->obj_path_str = obj_path_str;
+                // attr_arr[c] = curr_attr;
                 n++;
             }
             c++;
         }
     }
-    println("t %ld created %ld attributes.", tparam->tid, n);
+    println("t %ld created %ld attributes.", tparam->tid, c);
     pthread_exit((void *)n);
 }
 
@@ -225,62 +224,62 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    pthread_t wr_threads[thread_count];
-    pthread_t rd_threads[thread_count];
+//     pthread_t wr_threads[thread_count];
+//     pthread_t rd_threads[thread_count];
 
-    // Do Indexing
-    stopwatch_t timer_index;
-    timer_start(&timer_index);
-    for (i = 0; i < thread_count; i++) {
-        test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
-        status = pthread_create(&wr_threads[i], NULL, doIndexing, (void *)tparam);
-        if (status != 0) {
-            println("ERROR; return code from pthread_create() is %d", status);
-            exit(-1);
-        }
-    }
-    /* join threads */
-    for (i = 0; i < thread_count; i++) {
-        if (pthread_join(wr_threads[i], ret) != 0) {
-            println("Error : pthread_join failed on joining thread %ld", i);
-            return -1;
-        }
-    }
-//
-    timer_pause(&timer_index);
-    double index_duration = (double)timer_delta_ms(&timer_index)/1000;
-    double throughputI = (double)num_kvs/index_duration;
-    uint64_t responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
-    println("%ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds",
-           num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputI,responseI);
+//     // Do Indexing
+//     stopwatch_t timer_index;
+//     timer_start(&timer_index);
+//     for (i = 0; i < thread_count; i++) {
+//         test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
+//         status = pthread_create(&wr_threads[i], NULL, doIndexing, (void *)tparam);
+//         if (status != 0) {
+//             println("ERROR; return code from pthread_create() is %d", status);
+//             exit(-1);
+//         }
+//     }
+//     /* join threads */
+//     for (i = 0; i < thread_count; i++) {
+//         if (pthread_join(wr_threads[i], ret) != 0) {
+//             println("Error : pthread_join failed on joining thread %ld", i);
+//             return -1;
+//         }
+//     }
+// //
+//     timer_pause(&timer_index);
+//     double index_duration = (double)timer_delta_ms(&timer_index)/1000;
+//     double throughputI = (double)num_kvs/index_duration;
+//     uint64_t responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
+//     println("%ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds",
+//            num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputI,responseI);
 
-    // do querying
-    stopwatch_t timer_query;
-    timer_start(&timer_query);
-    for (i = 0; i < thread_count; i++) {
-        test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
-        status = pthread_create(&rd_threads[i], NULL, doQuery, (void *)tparam);
-        if (status != 0) {
-            println("ERROR; return code from pthread_create() is %d\n", status);
-            exit(-1);
-        }
-    }
-    /* join threads */
-    for (i = 0; i < thread_count; i++) {
-        if (pthread_join(rd_threads[i], ret) != 0) {
-            println("Error : pthread_join failed on joining thread %ld\n", i);
-            return -1;
-        }
-    }
-////
-////
-    timer_pause(&timer_query);
-    double query_duration = (double)timer_delta_ms(&timer_query)/1000;
-    double throughputQ = (double)num_kvs/query_duration;
-    long responseQ = timer_delta_ns(&timer_query)/num_kvs;
-    println("%ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds",
-           num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputQ,responseQ);
+//     // do querying
+//     stopwatch_t timer_query;
+//     timer_start(&timer_query);
+//     for (i = 0; i < thread_count; i++) {
+//         test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
+//         status = pthread_create(&rd_threads[i], NULL, doQuery, (void *)tparam);
+//         if (status != 0) {
+//             println("ERROR; return code from pthread_create() is %d\n", status);
+//             exit(-1);
+//         }
+//     }
+//     /* join threads */
+//     for (i = 0; i < thread_count; i++) {
+//         if (pthread_join(rd_threads[i], ret) != 0) {
+//             println("Error : pthread_join failed on joining thread %ld\n", i);
+//             return -1;
+//         }
+//     }
+// ////
+// ////
+//     timer_pause(&timer_query);
+//     double query_duration = (double)timer_delta_ms(&timer_query)/1000;
+//     double throughputQ = (double)num_kvs/query_duration;
+//     long responseQ = timer_delta_ns(&timer_query)/num_kvs;
+//     println("%ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds",
+//            num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputQ,responseQ);
 
-    free(attr_arr);
+    // free(attr_arr);
     exit(0);
 }
