@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    println("Sample size = %ld - Number of Threads used: %d", num_kvs * (long)thread_count, thread_count);
+    println("Sample size = %ld - Number of Threads used: %d", num_kvs, gen_data_t_count);
     //Print out sample of generated data
     println("List 10 sample data ");
     for(i=0;i<10;i++){
