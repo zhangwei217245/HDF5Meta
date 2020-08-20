@@ -43,6 +43,7 @@ void *genData(void *tp){
     int l, t;
     test_param_t *tparam = (test_param_t *) tp;
     miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
+    long num_kvs = tparam->n_attrs * tparam->n_avg_attr_vals;
     for (i = 0; i < tparam->n_attrs; i++) {
         char file_path_str[100];
         sprintf(file_path_str,"file_%ld", i);
@@ -51,7 +52,7 @@ void *genData(void *tp){
         // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
 
         for (j = 0; j < tparam->n_avg_attr_vals; j++){
-            if (c % tparam->tid == 0) {
+            if (tparam->tid % num_kvs== c) {
                 miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)calloc(1, sizeof(miqs_meta_attribute_t));
                 char obj_path_str[100];
                 sprintf(obj_path_str,"obj_%ld", j);
@@ -101,7 +102,7 @@ void *doIndexing(void *tp) {
     stopwatch_t timerWatch;
     timer_start(&timerWatch);
     for (c = 0; c < num_kvs; c++) {
-        if (c % tparam->tid == 0) {
+        if (tparam->tid % num_kvs == c) {
             // timer_start(&timerWatch);
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
             // timer_pause(&timerWatch);
@@ -126,7 +127,7 @@ void *doQuery(void *tp) {
     stopwatch_t timerWatch;
     timer_start(&timerWatch);
     for (c = 0; c < num_kvs; c++) {
-        if (c % tparam->tid == 0) {
+        if (tparam->tid % num_kvs == c) {
             miqs_meta_attribute_t *meta_attr = attr_arr[c];
             if (meta_attr->attr_type == MIQS_AT_INTEGER) {
                 int *value = (int *)meta_attr->attribute_value;
