@@ -51,7 +51,7 @@ void *genData(void *tp){
         char *buff = gen_rand_strings(1, 11)[0];
 
         for (j = 0; j < tparam->n_avg_attr_vals; j++){
-            if (c % num_kvs == tparam->tid) {
+            if (c % tparam->num_threads == tparam->tid) {
                 // miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
                 // char obj_path_str[100];
                 // sprintf(obj_path_str,"obj_%ld", j);
