@@ -133,7 +133,6 @@ int init_in_mem_index(){
 
     #if MIQS_INDEX_CONCURRENT_LEVEL==1
         pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK), NULL);
-        pthread_rwlock_t GLOBAL_INDEX_LOCK;
     #elif MIQS_INDEX_CONCURRENT_LEVEL==2
         pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
     #else
@@ -167,6 +166,9 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
 
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), get_index_size_ptr());
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+        pthread_rwlock_init(&(leaf_cnt->VALUE_TREE_LOCK), NULL);
+#endif
         // void *bptr = NULL;
         // leaf_cnt->bpt = (void ***)ctr_calloc(1, sizeof(void **), get_index_size_ptr());
         // (leaf_cnt->bpt)[0] = (void **)ctr_calloc(1, sizeof(void *), get_index_size_ptr());
