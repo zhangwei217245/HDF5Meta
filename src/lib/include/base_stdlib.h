@@ -18,6 +18,8 @@
 #include <signal.h>  //	Signal handling
 #include <locale.h>  //	Localization utilities
 
+#include "config.h"
+
 #endif /* !MIQS_BASE_STDLIB_H */
 
 

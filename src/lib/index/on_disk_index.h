@@ -7,11 +7,12 @@
 #include "../fs/fs_ops.h"
 #include "../utils/string_utils.h"
 #include "../metadata/miqs_metadata.h"
+#include "../include/base_stdlib.h"
 #include <sys/stat.h>
 #include <unistd.h>
 // #include "in_mem_index.h"
 
-#define MIQS_INDEX_CONCURRENT_LEVEL 1
+// #define MIQS_INDEX_CONCURRENT_LEVEL 1
 
 typedef struct {
     int is_numeric;

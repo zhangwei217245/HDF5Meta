@@ -65,6 +65,13 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 #-----------------------------------------------------------------------------
+# MIQS concurrency level option
+#-----------------------------------------------------------------------------
+if (NOT DEFINED MIQS_INDEX_CONCURRENT_LEVEL)
+  set(MIQS_INDEX_CONCURRENT_LEVEL 1)
+endif()
+
+#-----------------------------------------------------------------------------
 # HDF5
 #-----------------------------------------------------------------------------
 find_package(HDF5 REQUIRED)
