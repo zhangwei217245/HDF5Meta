@@ -220,8 +220,8 @@ int main(int argc, char *argv[]) {
             println("Key = %s - Type = FLOAT - Value = %.2f",attr_arr[i]->attr_name,*value);
 
         } else {
-            char *value = attr_arr[i]->attribute_value;
-            println("Key = %s - Type = STRING - Value = %s",attr_arr[i]->attr_name,value);
+            char **value = attr_arr[i]->attribute_value;
+            println("Key = %s - Type = STRING - Value = %s",attr_arr[i]->attr_name,value[0]);
 
         }
     }
