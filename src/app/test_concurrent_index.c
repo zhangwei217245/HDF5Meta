@@ -275,7 +275,7 @@ int main(int argc, char *argv[]) {
     double throughputI = (double)num_kvs/index_duration;
     uint64_t responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
     printf("%ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
-           num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputI,responseI);
+           num_kvs, index_duration,throughputI,responseI);
 
     // do querying
     stopwatch_t timer_query;
@@ -302,7 +302,7 @@ int main(int argc, char *argv[]) {
     double throughputQ = (double)num_kvs/query_duration;
     uint64_t responseQ = timer_delta_ns(&timer_query)/num_kvs;
     printf("%ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
-           num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputQ,responseQ);
+           num_kvs, query_duration,throughputQ,responseQ);
 
     pthread_rwlock_destroy(&ATTR_ARRAY_LOCK);
     free(attr_arr);
