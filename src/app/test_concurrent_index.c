@@ -102,15 +102,15 @@ void *doIndexing(void *tp) {
     timer_start(&timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
-            // timer_start(&timerWatch);
+            timer_start(&timerWatch);
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
-            // timer_pause(&timerWatch);
+            timer_pause(&timerWatch);
             num_indexed++;
-            // println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(&timerWatch));
+            println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(&timerWatch));
         }
     }
     // timer_pause(&timerWatch);
-    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(&timerWatch));
+    // println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(&timerWatch));
     pthread_exit((void *)c);
 }
 
