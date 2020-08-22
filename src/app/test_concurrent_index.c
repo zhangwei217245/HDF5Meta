@@ -90,7 +90,7 @@ void *genData(void *tp){
         }
     }
     timer_pause(tparam->timerWatch);
-    println("t %ld created %ld attributes in %"PRIu64" ns.", tparam->tid, n, timer_delta_ns(tparam->timerWatch));
+    printf("t %d created %ld attributes in %"PRIu64" ns.\n", tparam->tid, n, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)n);
 }
 
@@ -108,11 +108,11 @@ void *doIndexing(void *tp) {
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
             timer_pause(tparam->timerWatch);
             num_indexed++;
-            println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
+            printf("thread %d indexed the %ld th attribute in %" PRIu64 " ns \n", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
         }
     }
     // timer_pause(tparam->timerWatch);
-    // println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
+    // printf("thread %d indexed %ld attributes in %" PRIu64 " ns \n", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)c);
 }
 
@@ -133,21 +133,21 @@ void *doQuery(void *tp) {
                 int *value = (int *)meta_attr->attribute_value;
                 power_search_rst_t *rst = int_value_search(meta_attr->attr_name, *value);
                 if(rst->num_files==0){
-                    // println("Not found for type INTEGER with value %d", *value);
+                    // printf("Not found for type INTEGER with value %d", *value);
                 }
                 resultCount += rst->num_files;
             } else if (meta_attr->attr_type == MIQS_AT_FLOAT) {
                 double *value = (double *)meta_attr->attribute_value;
                 power_search_rst_t *rst = float_value_search(meta_attr->attr_name, *value);
                 if(rst->num_files==0){
-                    // println("Not found for type FLOAT with value %.2f", *value);
+                    // printf("Not found for type FLOAT with value %.2f", *value);
                 }
                 resultCount += rst->num_files;
             } else {
                 char *value = meta_attr->attribute_value;
                 power_search_rst_t *rst = string_value_search(meta_attr->attr_name, value);
                 if(rst->num_files==0){
-                    // println("Not found for type STRING with value %s",value);
+                    // printf("Not found for type STRING with value %s",value);
                 }
                 resultCount += rst->num_files;
             }
@@ -155,7 +155,7 @@ void *doQuery(void *tp) {
         }
     }
     timer_pause(tparam->timerWatch);
-    println("Thread %d execute %ld queries in %"PRIu64" nanoseconds results %ld", 
+    printf("Thread %d execute %ld queries in %"PRIu64" nanoseconds results %ld \n"  , 
         tparam->tid, num_queried, timer_delta_ns(tparam->timerWatch), resultCount);
     pthread_exit((void *)c);
 }
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
 
     attr_arr = (miqs_meta_attribute_t **)calloc(num_kvs, sizeof(miqs_meta_attribute_t *));
 
-    println("preparing dataset... ");
+    printf("preparing dataset... ");
     int gen_data_t_count = 20;
     pthread_t data_threads[gen_data_t_count];
     
@@ -196,32 +196,32 @@ int main(int argc, char *argv[]) {
         test_param_t *tparam = gen_test_param(gen_data_t_count, n_attrs, n_avg_attr_vals, i);
         status = pthread_create(&data_threads[i], NULL, genData, (void *)tparam);
         if (status != 0) {
-            println("ERROR; return code from pthread_create() is %d", status);
+            printf("ERROR; return code from pthread_create() is %d \n", status);
             exit(-1);
         }
     }
 
     for (i = 0; i < gen_data_t_count; i++) {
         if (pthread_join(data_threads[i], ret) != 0) {
-            println("Error : pthread_join failed on joining thread %ld", i);
+            printf("Error : pthread_join failed on joining thread %ld \n", i);
             return -1;
         }
     }
 
-    println("Sample size = %ld - Number of Threads used: %d", num_kvs, gen_data_t_count);
+    printf("Sample size = %ld - Number of Threads used: %d \n", num_kvs, gen_data_t_count);
     // Print out sample of generated data
-    println("List 10 sample data ");
+    printf("List 10 sample data ");
     for(i=0;i<10;i++){
         if (attr_arr[i]->attr_type == MIQS_AT_INTEGER) {
             int *value = (int *)attr_arr[i]->attribute_value;
-            println("Key = %s - Type = INT - Value = %d",attr_arr[i]->attr_name,*value);
+            printf("Key = %s - Type = INT - Value = %d \n",attr_arr[i]->attr_name,*value);
         } else if (attr_arr[i]->attr_type == MIQS_AT_FLOAT) {
             float *value = (float *)attr_arr[i]->attribute_value;
-            println("Key = %s - Type = FLOAT - Value = %.2f",attr_arr[i]->attr_name,*value);
+            printf("Key = %s - Type = FLOAT - Value = %.2f \n",attr_arr[i]->attr_name,*value);
 
         } else {
             char **value = attr_arr[i]->attribute_value;
-            println("Key = %s - Type = STRING - Value = %s",attr_arr[i]->attr_name,value[0]);
+            printf("Key = %s - Type = STRING - Value = %s \n",attr_arr[i]->attr_name,value[0]);
 
         }
     }
@@ -236,14 +236,14 @@ int main(int argc, char *argv[]) {
         test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
         status = pthread_create(&wr_threads[i], NULL, doIndexing, (void *)tparam);
         if (status != 0) {
-            println("ERROR; return code from pthread_create() is %d", status);
+            printf("ERROR; return code from pthread_create() is %d \n", status);
             exit(-1);
         }
     }
     /* join threads */
     for (i = 0; i < thread_count; i++) {
         if (pthread_join(wr_threads[i], ret) != 0) {
-            println("Error : pthread_join failed on joining thread %ld", i);
+            printf("Error : pthread_join failed on joining thread %ld \n", i);
             return -1;
         }
     }
@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
     double index_duration = (double)timer_delta_ms(&timer_index)/1000;
     double throughputI = (double)num_kvs/index_duration;
     uint64_t responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
-    println("%ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds",
+    printf("%ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
            num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputI,responseI);
 
     // do querying
@@ -262,14 +262,14 @@ int main(int argc, char *argv[]) {
         test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
         status = pthread_create(&rd_threads[i], NULL, doQuery, (void *)tparam);
         if (status != 0) {
-            println("ERROR; return code from pthread_create() is %d\n", status);
+            printf("ERROR; return code from pthread_create() is %d\n", status);
             exit(-1);
         }
     }
     /* join threads */
     for (i = 0; i < thread_count; i++) {
         if (pthread_join(rd_threads[i], ret) != 0) {
-            println("Error : pthread_join failed on joining thread %ld\n", i);
+            printf("Error : pthread_join failed on joining thread %ld\n", i);
             return -1;
         }
     }
@@ -278,8 +278,8 @@ int main(int argc, char *argv[]) {
     timer_pause(&timer_query);
     double query_duration = (double)timer_delta_ms(&timer_query)/1000;
     double throughputQ = (double)num_kvs/query_duration;
-    long responseQ = timer_delta_ns(&timer_query)/num_kvs;
-    println("%ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds",
+    uint64_t responseQ = timer_delta_ns(&timer_query)/num_kvs;
+    printf("%ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
            num_kvs, (double)(timer_delta_ms(&timer_index)/1000),throughputQ,responseQ);
 
     free(attr_arr);
