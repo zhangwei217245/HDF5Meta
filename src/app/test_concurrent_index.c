@@ -90,7 +90,7 @@ void *genData(void *tp){
         }
     }
     timer_pause(tparam->timerWatch);
-    println("t %ld created %ld attributes in "PRIu64" ns.", tparam->tid, n, timer_delta_ns(tparam->timerWatch));
+    println("t %ld created %ld attributes in %"PRIu64" ns.", tparam->tid, n, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)n);
 }
 
@@ -101,18 +101,18 @@ void *doIndexing(void *tp) {
     long c = 0;
     long num_kvs = tparam->n_attrs * tparam->n_avg_attr_vals;
     long num_indexed = 0;
-    timer_start(tparam->timerWatch);
+    // timer_start(tparam->timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
-            // timer_start(tparam->timerWatch);
+            timer_start(tparam->timerWatch);
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
-            // timer_pause(tparam->timerWatch);
-            // num_indexed++;
-            // println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
+            timer_pause(tparam->timerWatch);
+            num_indexed++;
+            println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
         }
     }
-    timer_pause(tparam->timerWatch);
-    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
+    // timer_pause(tparam->timerWatch);
+    // println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)c);
 }
 
