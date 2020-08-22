@@ -68,7 +68,7 @@ find_package(Threads REQUIRED)
 # MIQS concurrency level option
 #-----------------------------------------------------------------------------
 if (NOT DEFINED MIQS_INDEX_CONCURRENT_LEVEL)
-  set(MIQS_INDEX_CONCURRENT_LEVEL 1)
+  set(MIQS_INDEX_CONCURRENT_LEVEL 2)
 endif()
 
 #-----------------------------------------------------------------------------

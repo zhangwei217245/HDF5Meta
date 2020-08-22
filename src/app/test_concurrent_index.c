@@ -87,7 +87,7 @@ void *genData(void *tp){
             c++;
         }
     }
-    println("t %ld created %ld attributes.", tparam->tid, n);
+    // println("t %ld created %ld attributes.", tparam->tid, n);
     pthread_exit((void *)n);
 }
 

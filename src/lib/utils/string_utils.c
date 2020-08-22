@@ -269,36 +269,27 @@ char **gen_uuids_strings(int count){
 }
 
 char **gen_rand_strings(int count, int maxlen){
-    return gen_random_strings(count, maxlen, 26);
+    return gen_random_strings(count, maxlen, 1);
 }
 
-char **gen_random_strings(int count, int maxlen, int alphabet_size){
+char **gen_random_strings(int count, int maxlen, int use_dynamic_length){
     
+    char charset[] = ".-_"
+                     "0123456789"
+                     "abcdefghijklmnopqrstuvwxyz"
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     int c = 0;
     int i = 0;
-    int abc_size = alphabet_size;
-    if (alphabet_size > 26){
-        abc_size = 26;
-    }
     char **result = (char **)calloc(count, sizeof(char*));
     for (c = 0; c < count ; c++) {
-        //int len = maxlen;//rand()%maxlen;
-        int len = rand()%maxlen;
-        char *str = (char *)calloc(len, sizeof(len));
-        for (i = 0; i < len-1; i++) {
-            int randnum = rand();
-            if (randnum < 0) randnum *= -1;
-            char c = (char)32;
-            if (randnum % 3 == 0) {
-                c = (char)((randnum%abc_size)+65);// A-Z
-            } else if (randnum % 3 == 1){
-                c = (char)((randnum%abc_size)+97);// a-z
-            } else if (randnum % 3 == 2) {
-                c = (char)((randnum%10)+48);// 0-9
-            }
-            str[i] = c;
+        int len = use_dynamic_length==1?rand()%maxlen + 1:maxlen;
+        char *str = (char *)calloc(len+1, sizeof(char));
+        for (i = 0; i < len; i++) {
+            size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+            str[i] = charset[index];
         }
-        str[len-1] = '\0';
+        str[len] = '\0';
         //printf("generated %s\n", str);
         result[c] = str;
     }

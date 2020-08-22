@@ -30,13 +30,14 @@ typedef struct {
      * 2, read/write lock on attr name and attr value 
      * 3, node-level read/write locks
      */
-    #if MIQS_INDEX_CONCURRENT_LEVEL==1
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
         pthread_rwlock_t GLOBAL_INDEX_LOCK;
-    #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
         pthread_rwlock_t TOP_ART_LOCK;
-    #else
+        pthread_rwlock_t LOWER_LEVEL_LOCK;
+#else
         /* nothing here for tree-node protection */
-    #endif
+#endif
 
     //Collections of file_paths and object_paths
     //We use tagged entry along with its position
