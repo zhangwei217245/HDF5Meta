@@ -102,15 +102,15 @@ void *doIndexing(void *tp) {
     timer_start(&timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
-            timer_start(&timerWatch);
+            // timer_start(&timerWatch);
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
-            timer_pause(&timerWatch);
+            // timer_pause(&timerWatch);
             num_indexed++;
-            println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(&timerWatch));
+            // println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(&timerWatch));
         }
     }
-    // timer_pause(&timerWatch);
-    // println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(&timerWatch));
+    timer_pause(&timerWatch);
+    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(&timerWatch));
     pthread_exit((void *)c);
 }
 
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
     int thread_count = 4;
     int use_pool = 0;
     long n_attrs = 1000;
-    long n_avg_attr_vals = 100000;
+    long n_avg_attr_vals = 1000;
 
     thread_count = atoi(argv[1]);
     // use_pool = atoi(argv[2]);
