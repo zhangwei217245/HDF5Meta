@@ -13,6 +13,7 @@ typedef struct test_param{
     long n_attrs;
     long n_avg_attr_vals;
     int tid;
+    stopwatch_t *timerWatch;
 } test_param_t;
 
 size_t mem_size;
@@ -33,6 +34,7 @@ test_param_t *gen_test_param(int num_threads, long n_attrs, long n_avg_attr_vals
     rst->n_attrs = n_attrs;
     rst->n_avg_attr_vals = n_avg_attr_vals;
     rst->tid = tid;
+    rst->timerWatch = (stopwatch_t *)calloc(1, sizeof(stopwatch_t));
     return rst;
 }
 
@@ -40,10 +42,11 @@ void *genData(void *tp){
     long c = 0;
     long n = 0;
     long i, j;
-    int l, t;
+    int t = 0;
     test_param_t *tparam = (test_param_t *) tp;
     miqs_attr_type_t attr_types_array[] = {MIQS_AT_INTEGER, MIQS_AT_FLOAT, MIQS_AT_STRING};
     long num_kvs = tparam->n_attrs * tparam->n_avg_attr_vals;
+    timer_start(tparam->timerWatch);
     for (i = 0; i < tparam->n_attrs; i++) {
         char file_path_str[100];
         sprintf(file_path_str,"file_%ld", i);
@@ -55,7 +58,6 @@ void *genData(void *tp){
                 miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
                 char obj_path_str[100];
                 sprintf(obj_path_str,"obj_%ld", j);
-                l = rand() % 31;
                 t = rand() % 3;
 
                 curr_attr->attr_name = (char *)ctr_calloc(strlen(buff), sizeof(char), &mem_size);
@@ -74,7 +76,7 @@ void *genData(void *tp){
                     *_double = ((double) rand() / (double) (RAND_MAX)) * 10.5;
                     _value = (void *)_double;
                 } else {
-                    char **val_temp = gen_rand_strings(1, l+10);
+                    char **val_temp = gen_rand_strings(1, 31);
                     _value = (void *)val_temp;
                     curr_attr->attribute_value_length = 1;
                 }
@@ -87,7 +89,8 @@ void *genData(void *tp){
             c++;
         }
     }
-    // println("t %ld created %ld attributes.", tparam->tid, n);
+    timer_pause(tparam->timerWatch);
+    println("t %ld created %ld attributes in "PRIu64" ns.", tparam->tid, n, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)n);
 }
 
@@ -98,19 +101,18 @@ void *doIndexing(void *tp) {
     long c = 0;
     long num_kvs = tparam->n_attrs * tparam->n_avg_attr_vals;
     long num_indexed = 0;
-    stopwatch_t timerWatch;
-    timer_start(&timerWatch);
+    timer_start(tparam->timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
-            // timer_start(&timerWatch);
+            // timer_start(tparam->timerWatch);
             create_in_mem_index_for_attr(idx_anchor, attr_arr[c]);
-            // timer_pause(&timerWatch);
-            num_indexed++;
-            // println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(&timerWatch));
+            // timer_pause(tparam->timerWatch);
+            // num_indexed++;
+            // println("thread %d indexed the %ld th attribute in %" PRIu64 " ns", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
         }
     }
-    timer_pause(&timerWatch);
-    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(&timerWatch));
+    timer_pause(tparam->timerWatch);
+    println("thread %d indexed %ld attributes in %" PRIu64 " ns", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)c);
 }
 
@@ -123,8 +125,7 @@ void *doQuery(void *tp) {
 
     //Start doing the work here
     
-    stopwatch_t timerWatch;
-    timer_start(&timerWatch);
+    timer_start(tparam->timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
             miqs_meta_attribute_t *meta_attr = attr_arr[c];
@@ -153,9 +154,9 @@ void *doQuery(void *tp) {
             num_queried++;
         }
     }
-    timer_pause(&timerWatch);
+    timer_pause(tparam->timerWatch);
     println("Thread %d execute %ld queries in %"PRIu64" nanoseconds results %ld", 
-        tparam->tid, num_queried, timer_delta_ns(&timerWatch), resultCount);
+        tparam->tid, num_queried, timer_delta_ns(tparam->timerWatch), resultCount);
     pthread_exit((void *)c);
 }
 
