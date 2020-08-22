@@ -85,13 +85,13 @@ void *genData(void *tp){
                 curr_attr->attribute_value = _value;
                 curr_attr->file_path_str = file_path_str;
                 curr_attr->obj_path_str = obj_path_str;
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
+
                 pthread_rwlock_wrlock(&(ATTR_ARRAY_LOCK));
-#endif
+
                 attr_arr[c] = curr_attr;
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
+
                 pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
-#endif
+
                 n++;
             }
             c++;
@@ -113,13 +113,13 @@ void *doIndexing(void *tp) {
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
             timer_start(tparam->timerWatch);
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
+
             pthread_rwlock_rdlock(&(ATTR_ARRAY_LOCK));
-#endif
+
             miqs_meta_attribute_t *attr = attr_arr[c];
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
+
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
-#endif
+
             create_in_mem_index_for_attr(idx_anchor, attr);
             timer_pause(tparam->timerWatch);
             num_indexed++;
@@ -143,13 +143,13 @@ void *doQuery(void *tp) {
     timer_start(tparam->timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
+
             pthread_rwlock_rdlock(&(ATTR_ARRAY_LOCK));
-#endif
+
             miqs_meta_attribute_t *meta_attr = attr_arr[c];
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
+
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
-#endif
+
             if (meta_attr->attr_type == MIQS_AT_INTEGER) {
                 int *value = (int *)meta_attr->attribute_value;
                 power_search_rst_t *rst = int_value_search(meta_attr->attr_name, *value);
