@@ -191,8 +191,8 @@ int main(int argc, char *argv[]) {
 
     int thread_count = 4;
     int use_pool = 0;
-    long n_attrs = 10;
-    long n_avg_attr_vals = 10;
+    long n_attrs = 1000;
+    long n_avg_attr_vals = 1000;
 
     thread_count = atoi(argv[1]);
     // use_pool = atoi(argv[2]);
