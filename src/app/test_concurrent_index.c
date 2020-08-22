@@ -120,7 +120,7 @@ void *doIndexing(void *tp) {
 
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
 
-            create_in_mem_index_for_attr(idx_anchor, attr);
+            // create_in_mem_index_for_attr(idx_anchor, attr);
             timer_pause(tparam->timerWatch);
             num_indexed++;
             printf("thread %d indexed the %ld th attribute in %" PRIu64 " ns \n", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
