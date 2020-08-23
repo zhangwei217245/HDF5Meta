@@ -134,6 +134,8 @@ int init_in_mem_index(){
     #if MIQS_INDEX_CONCURRENT_LEVEL==1
         pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK), NULL);
     #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+        idx_anchor->TOP_ART_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+        idx_anchor->LOWER_LEVEL_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
         pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
         pthread_rwlock_init(&(idx_anchor->LOWER_LEVEL_LOCK), NULL);
     #else
@@ -154,7 +156,9 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
+    while (pthread_rwlock_tryrdlock(&(idx_anchor->TOP_ART_LOCK))!=0){
+        nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+    }
 #else
     /* nothing here for tree-node protection */
 #endif
@@ -165,11 +169,17 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
     pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
 #endif
 
+#if MIQS_INDEX_CONCURRENT_LEVEL==2
+    while (pthread_rwlock_trywrlock(&(idx_anchor->TOP_ART_LOCK))!=0){
+        nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+    }
+#endif
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), get_index_size_ptr());
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-        leaf_cnt->VALUE_TREE_LOCK = (pthread_rwlock_t *)calloc(1, sizeof(pthread_rwlock_t));
-        pthread_rwlock_init(leaf_cnt->VALUE_TREE_LOCK, NULL);
+        // leaf_cnt->VALUE_TREE_LOCK = (pthread_rwlock_t *)calloc(1, sizeof(pthread_rwlock_t));
+        leaf_cnt->VALUE_TREE_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+        pthread_rwlock_init(&(leaf_cnt->VALUE_TREE_LOCK), NULL);
 #endif
         // void *bptr = NULL;
         // leaf_cnt->bpt = (void ***)ctr_calloc(1, sizeof(void **), get_index_size_ptr());
@@ -196,9 +206,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
         }
         if (into_art == 1) {
 
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_wrlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
+
             art_insert(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name), leaf_cnt);
 
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
@@ -214,8 +222,8 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
             attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         case MIQS_AT_FLOAT:
-            indexing_numeric(attr->attr_name, (double *)attr->attribute_value, 
-            attr->attribute_value_length, file_path, obj_path, leaf_cnt);
+            // indexing_numeric(attr->attr_name, (double *)attr->attribute_value, 
+            // attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         case MIQS_AT_STRING:
             indexing_string(attr->attr_name, (char **)attr->attribute_value, 
@@ -300,14 +308,16 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
         }
 
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_rdlock((leaf_cnt->VALUE_TREE_LOCK));
+        if (pthread_rwlock_tryrdlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
+            nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+        }
         // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
 
         int rbt_found = rbt_find(leaf_cnt->rbt, key, k_size, &entry);
 
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_unlock((leaf_cnt->VALUE_TREE_LOCK));
+        pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
         // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
 
@@ -315,12 +325,14 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
             ((value_tree_leaf_content_t *)entry)->file_obj_pair_list = list_create();
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_wrlock((leaf_cnt->VALUE_TREE_LOCK));
+            if (pthread_rwlock_trywrlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
+                nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+            }
             // pthread_rwlock_wrlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
             rbt_add(leaf_cnt->rbt, key, k_size, entry);
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_unlock((leaf_cnt->VALUE_TREE_LOCK));
+            pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
             // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
         }
@@ -348,24 +360,28 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
     for (i = 0; i < attribute_value_length; i++) {
         // char *k = attr_val[i];
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_rdlock((leaf_cnt->VALUE_TREE_LOCK));
+        if (pthread_rwlock_tryrdlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
+            nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+        }
         // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
         value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, 
             (const unsigned char *)attr_val[i], strlen(attr_val[i]));
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_unlock((leaf_cnt->VALUE_TREE_LOCK));
+        pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
         // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
         if (test_cnt == NULL){
             test_cnt = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t) , &index_mem_size);
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_wrlock((leaf_cnt->VALUE_TREE_LOCK));
+            if (pthread_rwlock_trywrlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
+                nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+            }
             // pthread_rwlock_wrlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
             art_insert(leaf_cnt->art, (unsigned char *)attr_val[i], strlen(attr_val[i]), (void *)test_cnt);
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_rdlock((leaf_cnt->VALUE_TREE_LOCK));
+            pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
             // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif
             // test_cnt->file_obj_pair_list = list_create();
@@ -409,13 +425,13 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
 
     void *entry;
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-    // pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
+    pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+    // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif 
     int rbt_found = rbt_find(leaf_cnt->rbt, value_p, value_size, &entry);
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-    // pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
+    pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+    // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif 
     if (rbt_found!=0){//Not found
         return prst;
@@ -468,13 +484,13 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         return prst;
     }
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-    // pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
+    pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
+    // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif   
     value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
-    // pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
+    pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
+    // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
 #endif 
     if (test_cnt == NULL) {
         return prst;
