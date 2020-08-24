@@ -109,10 +109,10 @@ void *doIndexing(void *tp) {
     long c = 0;
     long num_kvs = tparam->n_attrs * tparam->n_avg_attr_vals;
     long num_indexed = 0;
-    // timer_start(tparam->timerWatch);
+    timer_start(tparam->timerWatch);
     for (c = 0; c < num_kvs; c++) {
         if (c % tparam->num_threads == tparam->tid) {
-            timer_start(tparam->timerWatch);
+            // timer_start(tparam->timerWatch);
 
             pthread_rwlock_rdlock(&(ATTR_ARRAY_LOCK));
 
@@ -121,13 +121,13 @@ void *doIndexing(void *tp) {
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
 
             create_in_mem_index_for_attr(idx_anchor, attr);
-            timer_pause(tparam->timerWatch);
+            // timer_pause(tparam->timerWatch);
             num_indexed++;
-            printf("thread %d indexed the %ld th attribute in %" PRIu64 " ns \n", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
+            // printf("thread %d indexed the %ld th attribute in %" PRIu64 " ns \n", tparam->tid, c, timer_delta_ns(tparam->timerWatch));
         }
     }
-    // timer_pause(tparam->timerWatch);
-    // printf("thread %d indexed %ld attributes in %" PRIu64 " ns \n", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
+    timer_pause(tparam->timerWatch);
+    printf("thread %d indexed %ld attributes in %" PRIu64 " ns \n", tparam->tid, num_indexed, timer_delta_ns(tparam->timerWatch));
     pthread_exit((void *)c);
 }
 
