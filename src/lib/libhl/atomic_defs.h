@@ -1,6 +1,8 @@
 #ifndef HL_ATOMIC_DEFS_H
 #define HL_ATOMIC_DEFS_H
 
+
+
 #define ATOMIC_READ(_v) __sync_fetch_and_add(&(_v), 0)
 #define ATOMIC_INCREMENT(_v) (void)__sync_fetch_and_add(&(_v), 1)
 #define ATOMIC_DECREMENT(_v) (void)__sync_fetch_and_sub(&(_v), 1)
@@ -22,6 +24,7 @@
         _o = ATOMIC_READ(_v);\
 }
 
+#undef THREAD_SAFE
 
 #ifdef THREAD_SAFE
 
