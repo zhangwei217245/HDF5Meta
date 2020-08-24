@@ -24,9 +24,6 @@
         _o = ATOMIC_READ(_v);\
 }
 
-#ifdef MIQS_INDEX_CONCURRENT_LEVEL
-    #undef THREAD_SAFE
-#endif
 
 #ifdef THREAD_SAFE
 

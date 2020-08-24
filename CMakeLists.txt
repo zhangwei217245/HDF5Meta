@@ -71,6 +71,13 @@ if (NOT DEFINED MIQS_INDEX_CONCURRENT_LEVEL)
   set(MIQS_INDEX_CONCURRENT_LEVEL 1)
 endif()
 
+option(LIBHL_THREAD_SAFE "Enable thread safe for libhl." ON)
+if (LIBHL_THREAD_SAFE==ON)
+  set(THREAD_SAFE ON)
+elseif(LIBHL_THREAD_SAFE==OFF)
+  set(THREAD_SAFE OFF)
+endif()
+
 #-----------------------------------------------------------------------------
 # HDF5
 #-----------------------------------------------------------------------------
