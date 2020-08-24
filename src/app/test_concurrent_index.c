@@ -14,6 +14,7 @@ typedef struct test_param{
     long n_avg_attr_vals;
     int tid;
     stopwatch_t *timerWatch;
+    int extra_test;
 } test_param_t;
 
 size_t mem_size;
@@ -21,6 +22,8 @@ size_t mem_size;
 pthread_rwlock_t ATTR_ARRAY_LOCK;
 
 miqs_meta_attribute_t **attr_arr;
+
+miqs_meta_attribute_t **attr_arr_2;
 
 index_anchor *idx_anchor;
 
@@ -37,6 +40,7 @@ test_param_t *gen_test_param(int num_threads, long n_attrs, long n_avg_attr_vals
     rst->n_avg_attr_vals = n_avg_attr_vals;
     rst->tid = tid;
     rst->timerWatch = (stopwatch_t *)calloc(1, sizeof(stopwatch_t));
+    rst->extra_test = 0;
     return rst;
 }
 
@@ -87,8 +91,12 @@ void *genData(void *tp){
                 curr_attr->obj_path_str = obj_path_str;
 
                 pthread_rwlock_wrlock(&(ATTR_ARRAY_LOCK));
-
-                attr_arr[c] = curr_attr;
+                
+                if (tparam->extra_test) {
+                    attr_arr_2[c] = curr_attr;
+                } else {
+                    attr_arr[c] = curr_attr;
+                }
 
                 pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
 
@@ -116,7 +124,7 @@ void *doIndexing(void *tp) {
 
             pthread_rwlock_rdlock(&(ATTR_ARRAY_LOCK));
 
-            miqs_meta_attribute_t *attr = attr_arr[c];
+            miqs_meta_attribute_t *attr = tparam->extra_test?attr_arr_2[c]:attr_arr[c];
 
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
 
@@ -146,7 +154,7 @@ void *doQuery(void *tp) {
 
             pthread_rwlock_rdlock(&(ATTR_ARRAY_LOCK));
 
-            miqs_meta_attribute_t *meta_attr = attr_arr[c];
+            miqs_meta_attribute_t *meta_attr = tparam->extra_test?attr_arr_2[c]:attr_arr[c];
 
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
 
@@ -210,6 +218,9 @@ int main(int argc, char *argv[]) {
     idx_anchor = root_idx_anchor();
 
     attr_arr = (miqs_meta_attribute_t **)calloc(num_kvs, sizeof(miqs_meta_attribute_t *));
+
+    attr_arr_2 = (miqs_meta_attribute_t **)calloc(num_kvs, sizeof(miqs_meta_attribute_t *));
+
     pthread_rwlock_init(&ATTR_ARRAY_LOCK, NULL);
 
     printf("preparing dataset... ");
@@ -234,7 +245,7 @@ int main(int argc, char *argv[]) {
 
     printf("Sample size = %ld - Number of Threads used: %d \n", num_kvs, gen_data_t_count);
     // Print out sample of generated data
-    printf("List 10 sample data ");
+    printf("List 10 sample data \n");
     for(i=0;i<10;i++){
         if (attr_arr[i]->attr_type == MIQS_AT_INTEGER) {
             int *value = (int *)attr_arr[i]->attribute_value;
@@ -271,12 +282,12 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     }
-//
+
     timer_pause(&timer_index);
     double index_duration = (double)timer_delta_ms(&timer_index)/1000;
     double throughputI = (double)num_kvs/index_duration;
     uint64_t responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
-    printf("%ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
+    printf("[INDEX] %ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
            num_kvs, index_duration,throughputI,responseI);
 
     // do querying
@@ -297,14 +308,86 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     }
-////
-////
+
+
     timer_pause(&timer_query);
     double query_duration = (double)timer_delta_ms(&timer_query)/1000;
     double throughputQ = (double)num_kvs/query_duration;
     uint64_t responseQ = timer_delta_ns(&timer_query)/num_kvs;
-    printf("%ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
+    printf("[SEARCH] %ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
            num_kvs, query_duration,throughputQ,responseQ);
+
+
+    /** *****************************************************************************
+     *  ****************** Indexing while searching *********************************
+     *  *****************************************************************************/
+    
+    for (i = 0; i < gen_data_t_count; i++) {
+        test_param_t *tparam = gen_test_param(gen_data_t_count, n_attrs, n_avg_attr_vals, i);
+        tparam->extra_test = 1;
+        status = pthread_create(&data_threads[i], NULL, genData, (void *)tparam);
+        if (status != 0) {
+            printf("ERROR; return code from pthread_create() is %d \n", status);
+            exit(-1);
+        }
+    }
+
+    for (i = 0; i < gen_data_t_count; i++) {
+        if (pthread_join(data_threads[i], ret) != 0) {
+            printf("Error : pthread_join failed on joining thread %ld \n", i);
+            return -1;
+        }
+    }
+
+    printf("Another %ld data generated with %d threads. \n", num_kvs, gen_data_t_count);
+
+    timer_start(&timer_query);
+    for (i = 0; i < thread_count; i++) {
+        test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
+        status = pthread_create(&rd_threads[i], NULL, doQuery, (void *)tparam);
+        if (status != 0) {
+            printf("ERROR; return code from pthread_create() is %d\n", status);
+            exit(-1);
+        }
+    }
+
+    timer_start(&timer_index);
+    for (i = 0; i < thread_count; i++) {
+        test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
+        tparam->extra_test = 1;
+        status = pthread_create(&wr_threads[i], NULL, doIndexing, (void *)tparam);
+        if (status != 0) {
+            printf("ERROR; return code from pthread_create() is %d \n", status);
+            exit(-1);
+        }
+    }
+
+    for (i = 0; i < thread_count; i++) {
+        if (pthread_join(rd_threads[i], ret) != 0) {
+            printf("Error : pthread_join failed on joining thread %ld\n", i);
+            return -1;
+        }
+    }
+
+    timer_pause(&timer_query);
+    query_duration = (double)timer_delta_ms(&timer_query)/1000;
+    throughputQ = (double)num_kvs/query_duration;
+    responseQ = timer_delta_ns(&timer_query)/num_kvs;
+    printf("[SEARCH WHEN INDEX] %ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
+           num_kvs, query_duration,throughputQ,responseQ);
+
+    for (i = 0; i < thread_count; i++) {
+        if (pthread_join(wr_threads[i], ret) != 0) {
+            printf("Error : pthread_join failed on joining thread %ld \n", i);
+            return -1;
+        }
+    }
+    timer_pause(&timer_index);
+    index_duration = (double)timer_delta_ms(&timer_index)/1000;
+    throughputI = (double)num_kvs/index_duration;
+    responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
+    printf("[INDEX WHEN SEARCH] %ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
+           num_kvs, index_duration,throughputI,responseI);
 
     pthread_rwlock_destroy(&ATTR_ARRAY_LOCK);
     free(attr_arr);
