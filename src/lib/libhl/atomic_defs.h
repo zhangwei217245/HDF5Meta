@@ -24,7 +24,7 @@
         _o = ATOMIC_READ(_v);\
 }
 
-#undef THREAD_SAFE
+#define THREAD_SAFE
 
 #ifdef THREAD_SAFE
 
