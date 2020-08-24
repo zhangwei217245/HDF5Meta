@@ -25,7 +25,7 @@
 }
 
 #ifdef MIQS_INDEX_CONCURRENT_LEVEL
-    #define THREAD_SAFE
+    #undef THREAD_SAFE
 #endif
 
 #ifdef THREAD_SAFE
