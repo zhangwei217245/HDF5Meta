@@ -1,7 +1,7 @@
 #ifndef HL_ATOMIC_DEFS_H
 #define HL_ATOMIC_DEFS_H
 
-
+#include "../include/config.h"
 
 #define ATOMIC_READ(_v) __sync_fetch_and_add(&(_v), 0)
 #define ATOMIC_INCREMENT(_v) (void)__sync_fetch_and_add(&(_v), 1)
@@ -24,7 +24,9 @@
         _o = ATOMIC_READ(_v);\
 }
 
-#define THREAD_SAFE
+#ifdef MIQS_INDEX_CONCURRENT_LEVEL
+    #define THREAD_SAFE
+#endif
 
 #ifdef THREAD_SAFE
 

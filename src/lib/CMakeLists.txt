@@ -4,7 +4,7 @@ else()
     set(BASE_LIBRARIES m ${UUID_LIBRARIES})
 endif()
 
-ADD_LIBRARY(c_base_utils SHARED include/c_base_stdlib.c include/base_stdlib.h include/c95_stdlib.h include/c99_stdlib.h include/c11_stdlib.h)
+ADD_LIBRARY(c_base_utils SHARED include/c_base_stdlib.c include/config.h include/base_stdlib.h include/c95_stdlib.h include/c99_stdlib.h include/c11_stdlib.h)
 
 ADD_LIBRARY(hash_utils SHARED utils/hash_utils.c utils/hash_utils.h)
 
@@ -70,6 +70,12 @@ ADD_LIBRARY(libhl SHARED
     libhl/trie.h
 )
 TARGET_LINK_LIBRARIES(libhl PUBLIC profile)
+if(THREADS_HAVE_PTHREAD_ARG)
+  target_compile_options(libhl PUBLIC "-pthread")
+endif()
+if(CMAKE_THREAD_LIBS_INIT)
+  target_link_libraries(libhl PUBLIC c_base_utils "${CMAKE_THREAD_LIBS_INIT}")
+endif()
 
 #ADD_LIBRARY(indexds SHARED ds/tsearch_tune.c ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
 
