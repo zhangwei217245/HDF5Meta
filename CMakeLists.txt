@@ -61,8 +61,21 @@ set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
 set(CMAKE_USE_WIN32_THREADS_INIT 0)
 set(CMAKE_USE_PTHREADS_INIT 1)
+set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+
+# interface library for threading
+add_library(foo-threading INTERFACE)
+
+if(THREADS_FOUND)
+    if(THREADS_HAVE_PTHREAD_ARG)
+        target_compile_options(foo-threading INTERFACE
+            $<$<COMPILE_LANGUAGE:C>:-pthread>
+            $<$<COMPILE_LANGUAGE:CXX>:-pthread>)
+    endif()
+    target_link_libraries(foo-threading INTERFACE ${CMAKE_THREAD_LIBS_INIT})
+endif()
 
 #-----------------------------------------------------------------------------
 # MIQS concurrency level option

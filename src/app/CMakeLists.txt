@@ -28,7 +28,7 @@ target_link_libraries(hdf5_set_2_index PRIVATE hdf52index index_spi ${MPI_mpi_LI
 target_include_directories(hdf5_set_2_index PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 
 add_executable(test_concurrent_index test_concurrent_index.c boss_dataset.h)
-target_link_libraries(test_concurrent_index PRIVATE hdf52index index_spi ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
+target_link_libraries(test_concurrent_index PRIVATE hdf52index index_spi foo-threading ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
 target_include_directories(test_concurrent_index PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 
 

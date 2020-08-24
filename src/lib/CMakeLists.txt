@@ -25,7 +25,7 @@ if(THREADS_HAVE_PTHREAD_ARG)
   target_compile_options(thpool PUBLIC "-pthread")
 endif()
 if(CMAKE_THREAD_LIBS_INIT)
-  target_link_libraries(thpool PUBLIC "${CMAKE_THREAD_LIBS_INIT}")
+  target_link_libraries(thpool PUBLIC foo-threading "${CMAKE_THREAD_LIBS_INIT}")
 endif()
 
 ADD_LIBRARY(profile SHARED 
@@ -74,7 +74,7 @@ if(THREADS_HAVE_PTHREAD_ARG)
   target_compile_options(libhl PUBLIC "-pthread")
 endif()
 if(CMAKE_THREAD_LIBS_INIT)
-  target_link_libraries(libhl PUBLIC c_base_utils "${CMAKE_THREAD_LIBS_INIT}")
+  target_link_libraries(libhl PUBLIC c_base_utils foo-threading "${CMAKE_THREAD_LIBS_INIT}")
 endif()
 
 #ADD_LIBRARY(indexds SHARED ds/tsearch_tune.c ds/art.c ds/art.h ds/hashset.c ds/hashset.h ds/hashmap.c ds/hashmap.h ds/vector.c ds/vector.h ds/bplustree.c ds/bplustree.h)
