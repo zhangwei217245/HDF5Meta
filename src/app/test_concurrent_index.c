@@ -54,7 +54,7 @@ void *genData(void *tp){
     long num_kvs = tparam->n_attrs * tparam->n_avg_attr_vals;
     timer_start(tparam->timerWatch);
     for (i = 0; i < tparam->n_attrs; i++) {
-        char file_path_str[100];
+        char *file_path_str = (char *)calloc(100, sizeof(char));
         sprintf(file_path_str,"file_%ld", i);
         
         char *buff = gen_rand_strings(1, 11)[0];
@@ -62,7 +62,7 @@ void *genData(void *tp){
         for (j = 0; j < tparam->n_avg_attr_vals; j++){
             if (c % tparam->num_threads == tparam->tid) {
                 miqs_meta_attribute_t *curr_attr = (miqs_meta_attribute_t *)ctr_calloc(1, sizeof(miqs_meta_attribute_t), &mem_size);
-                char obj_path_str[100];
+                char *obj_path_str = (char *)calloc(100, sizeof(char));
                 sprintf(obj_path_str,"obj_%ld", j);
                 t = rand() % 3;
 
