@@ -524,17 +524,18 @@ int read_attr_values(attr_tree_leaf_content_t *attr_val_node, FILE *stream){
     return rst;
 }
 
-int read_attr_name_node(art_tree *art, FILE *stream){
+int read_attr_name_node(art_tree **art_arr, int parallelism, FILE *stream){
     char *attr_name = miqs_read_string(stream);
+    unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % parallelism;
     attr_tree_leaf_content_t *attr_val_node = 
         (attr_tree_leaf_content_t *)calloc(1, sizeof(attr_tree_leaf_content_t));
-    art_insert(art, (const unsigned char *)attr_name, strlen(attr_name), attr_val_node);
+    art_insert(art_arr[attr_name_hval], (const unsigned char *)attr_name, strlen(attr_name), attr_val_node);
     return read_attr_values(attr_val_node, stream);
 }
 /**
  * return 1 on success;
  */
-int read_into_attr_root_tree(art_tree *art, FILE *stream){
+int read_into_attr_root_tree(art_tree **art_arr, int parallelism, FILE *stream){
     num_kv_pairs_loaded_mdb = 0;
     num_attrs_loaded_mdb = 0;
     uint64_t *num_attrs = miqs_read_uint64(stream);
@@ -542,7 +543,7 @@ int read_into_attr_root_tree(art_tree *art, FILE *stream){
     uint64_t i = 0;
     int rst = 0;
     for (i = 0; i < *num_attrs; i++){
-        rst = rst | read_attr_name_node(art, stream);
+        rst = rst | read_attr_name_node(art_arr, parallelism, stream);
     }
     return rst == 0;
 }

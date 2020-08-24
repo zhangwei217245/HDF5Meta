@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include "hash_utils.h"
 #include "../include/base_stdlib.h"
 #include "../include/c99_stdlib.h"
 
@@ -170,7 +171,7 @@ void println(const char *format, ...);
  * @param format
  * @param ...
  */
-void stderr_println(const char *format, ...);
+void eprintln(const char *format, ...);
 /**
  * Only support expressions like:
  *

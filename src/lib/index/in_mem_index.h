@@ -23,7 +23,8 @@ typedef struct {
     char *file_path;
     char *obj_path;
     void *object_id;
-    art_tree *root_art;
+    int parallelism;
+    art_tree **root_art_array;
 
     /**
      * 1, mutual exclusion on the entire index
@@ -31,7 +32,7 @@ typedef struct {
      * 3, node-level read/write locks
      */
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-        pthread_rwlock_t GLOBAL_INDEX_LOCK;
+        pthread_rwlock_t *GLOBAL_INDEX_LOCK;
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
         pthread_rwlock_t TOP_ART_LOCK;
         pthread_rwlock_t LOWER_LEVEL_LOCK;
@@ -105,7 +106,7 @@ typedef struct {
     size_t num_files;
     // search_result_t **rst_arr;
     linked_list_t *rst_arr;
-}power_search_rst_t;
+} power_search_rst_t;
 
 
 typedef struct{
@@ -121,7 +122,10 @@ size_t *get_index_size_ptr();
 
 size_t get_index_size();
 
-int init_in_mem_index();
+/**
+ * The caller of this function should be the main thread
+ */
+int init_in_mem_index(int _parallelism);
 /**
  * Create index based on given index_record_t.
  */

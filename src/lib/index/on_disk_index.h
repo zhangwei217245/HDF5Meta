@@ -98,7 +98,7 @@ int append_attr_root_tree(art_tree *art, FILE *stream);
 int append_path_list(linked_list_t *list, FILE *stream);
 
 int read_into_path_list(linked_list_t *list, FILE *stream);
-int read_into_attr_root_tree(art_tree *art, FILE *stream);
+int read_into_attr_root_tree(art_tree **art_arr, int parallelism, FILE *stream);
 
 size_t get_num_kv_pairs_loaded_mdb();
 size_t get_num_attrs_loaded_mdb();

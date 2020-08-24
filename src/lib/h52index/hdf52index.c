@@ -21,7 +21,9 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
     return indexing_attr(idx_anchor, attr);
 }
 
-
+/**
+ * 
+ */
 void parse_hdf5_file(char *filepath){
 
     index_anchor *idx_anchor = root_idx_anchor();
@@ -33,13 +35,13 @@ void parse_hdf5_file(char *filepath){
     char *file_path = (char *)ctr_calloc(strlen(filepath)+1, sizeof(char), get_index_size_ptr());
     strncpy(file_path, filepath, strlen(filepath));
 
-    if (idx_anchor->root_art == NULL) {
-        idx_anchor->root_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
+    if (idx_anchor->root_art_array == NULL) {
+        eprintln("[parse_hdf5_file] Please initialize the in-memory index first before calling [parse_hdf5_file].");
+        return;
     }
     
     idx_anchor->file_path = file_path;
     idx_anchor->us_to_index = 0;
-
     idx_anchor->total_num_files+=1;
     
     miqs_metadata_collector_t *meta_collector = (miqs_metadata_collector_t *)ctr_calloc(1, sizeof(miqs_metadata_collector_t), get_index_size_ptr());

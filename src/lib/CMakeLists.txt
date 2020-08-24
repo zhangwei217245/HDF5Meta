@@ -6,8 +6,10 @@ endif()
 
 ADD_LIBRARY(c_base_utils SHARED include/c_base_stdlib.c include/base_stdlib.h include/c95_stdlib.h include/c99_stdlib.h include/c11_stdlib.h)
 
+ADD_LIBRARY(hash_utils SHARED utils/hash_utils.c utils/hash_utils.h)
+
 ADD_LIBRARY(string_utils SHARED utils/string_utils.c utils/string_utils.h)
-TARGET_LINK_LIBRARIES(string_utils PUBLIC c_base_utils ${BASE_LIBRARIES})
+TARGET_LINK_LIBRARIES(string_utils PUBLIC c_base_utils ${BASE_LIBRARIES} hash_utils)
 TARGET_INCLUDE_DIRECTORIES(string_utils PUBLIC ${UUID_INCLUDE_DIRS})
 
 ADD_LIBRARY(cmd_utils SHARED utils/cmd_utils.c utils/cmd_utils.h)

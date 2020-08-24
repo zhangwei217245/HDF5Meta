@@ -232,7 +232,7 @@ void println(const char *format, ...){
     fflush(stdout);
 }
 
-void stderr_println(const char *format, ...){
+void eprintln(const char *format, ...){
     //1. declare argument list
     va_list args;
     //2. starting argument list

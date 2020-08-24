@@ -102,8 +102,8 @@ size_t insert_tagged_value(linked_list_t *list, char *tag){
 int collect_result_from_list(void *item, size_t idx, void *user){
     power_search_rst_t *rst = (power_search_rst_t *)user;
     file_obj_pair_t *fo_pair = (file_obj_pair_t *)item;
-    char *file_path = list_pick_tagged_value(root_idx_anchor()->file_paths_list, fo_pair->file_list_pos)->tag;
-    char *obj_path = list_pick_tagged_value(root_idx_anchor()->object_paths_list, fo_pair->obj_list_pos)->tag;
+    char *file_path = list_pick_tagged_value(idx_anchor->file_paths_list, fo_pair->file_list_pos)->tag;
+    char *obj_path = list_pick_tagged_value(idx_anchor->object_paths_list, fo_pair->obj_list_pos)->tag;
     search_rst_entry_t *entry = (search_rst_entry_t *)calloc(1, sizeof(search_rst_entry_t));
     entry->file_path = file_path;
     entry->obj_path = obj_path;
@@ -111,10 +111,28 @@ int collect_result_from_list(void *item, size_t idx, void *user){
     return 1;
 }
 
-
-int init_in_mem_index(){
+int init_in_mem_index(int _parallelism){
     idx_anchor = (index_anchor *)ctr_calloc(1, sizeof(index_anchor), get_index_size_ptr());
-    idx_anchor->root_art = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
+    int i = 0;
+    idx_anchor->parallelism = _parallelism;
+    idx_anchor->root_art_array = (art_tree **)ctr_calloc(idx_anchor->parallelism, sizeof(art_tree *), get_index_size_ptr());
+    idx_anchor->GLOBAL_INDEX_LOCK = (pthread_rwlock_t *)ctr_calloc(idx_anchor->parallelism, sizeof(pthread_rwlock_t), get_index_size_ptr());
+
+    for (i = 0; i < idx_anchor->parallelism ; i++) {
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+        idx_anchor->root_art_array[i] = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
+        art_tree_init(idx_anchor->root_art_array[i]);
+        idx_anchor->GLOBAL_INDEX_LOCK[i] = (pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+        pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK[i]), NULL);
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+        idx_anchor->TOP_ART_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+        idx_anchor->LOWER_LEVEL_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+        pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
+        pthread_rwlock_init(&(idx_anchor->LOWER_LEVEL_LOCK), NULL);
+#else
+        /* nothing here for tree-node protection */
+#endif
+    }
     idx_anchor->file_path=NULL;
     idx_anchor->obj_path=NULL;
     idx_anchor->file_paths_list=list_create();
@@ -130,23 +148,14 @@ int init_in_mem_index(){
     idx_anchor->total_num_kv_pairs=0;
     idx_anchor->us_to_index=0;
     idx_anchor->us_to_disk_index=0;
-
-    #if MIQS_INDEX_CONCURRENT_LEVEL==1
-        pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK), NULL);
-    #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-        idx_anchor->TOP_ART_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-        idx_anchor->LOWER_LEVEL_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-        pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
-        pthread_rwlock_init(&(idx_anchor->LOWER_LEVEL_LOCK), NULL);
-    #else
-        /* nothing here for tree-node protection */
-    #endif
-
     return 1;
 }
 
 void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_t *attr){
-    art_tree *global_art = idx_anchor->root_art;
+
+    unsigned long attr_name_hval = djb2_hash((unsigned char *)attr->attr_name) % idx_anchor->parallelism;
+
+    art_tree *global_art = idx_anchor->root_art_array[attr_name_hval];
     char *file_path = attr->file_path_str;
     char *obj_path = attr->obj_path_str;
     int into_art = 1;
@@ -154,7 +163,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
     timer_start(&one_attr);
 
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+    pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
     while (pthread_rwlock_tryrdlock(&(idx_anchor->TOP_ART_LOCK))!=0){
         nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
@@ -236,7 +245,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
     }
 
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-            pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+            pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #endif
 
     timer_pause(&one_attr);
@@ -399,8 +408,9 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
 
 
 power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t value_size){
+    unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
@@ -414,7 +424,7 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
     pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
 #endif
     attr_tree_leaf_content_t *leaf_cnt =
-    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
+    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art_array[attr_name_hval], 
     (const unsigned char *)attr_name, strlen(attr_name));
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
     pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
@@ -442,7 +452,7 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
         prst->num_files = list_count(prst->rst_arr);
     }
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #endif
     return prst;
 }
@@ -460,8 +470,9 @@ power_search_rst_t *float_value_search(char *attr_name, double value) {
 }
 
 power_search_rst_t *string_value_search(char *attr_name, char *value) {
+    unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
@@ -475,7 +486,7 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
 #endif
     attr_tree_leaf_content_t *leaf_cnt =
-    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art, 
+    (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art_array[attr_name_hval], 
     (const unsigned char *)attr_name, strlen(attr_name));
 #if MIQS_INDEX_CONCURRENT_LEVEL==2
     pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
@@ -502,7 +513,7 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         list_foreach_value(test_cnt->file_obj_pair_list, collect_result_from_list, prst);
     }
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK));
+    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #endif
     return prst;
 }
@@ -521,8 +532,11 @@ int dump_mdb_index_to_disk(char *filename, index_anchor *idx_anchor){
     linked_list_t *object_list = idx_anchor->object_paths_list;
     append_path_list(object_list, disk_idx_stream);
     //3. append attribute region
-    art_tree *name_art = idx_anchor->root_art;
-    append_attr_root_tree(name_art, disk_idx_stream);
+    int i = 0;
+    for (i = 0; i < idx_anchor->parallelism; i++) {
+        art_tree *name_art = idx_anchor->root_art_array[i];
+        append_attr_root_tree(name_art, disk_idx_stream);
+    }
     fclose(disk_idx_stream);
     return 1;
 }
@@ -550,9 +564,7 @@ int load_mdb_file_to_index(char *filename, index_anchor *idx_anchor){
                 return 0;
             }
 
-            idx_anchor->root_art = (art_tree *)calloc(1, sizeof(art_tree));
-            art_tree_init(idx_anchor->root_art);
-            rst = read_into_attr_root_tree(idx_anchor->root_art, disk_idx_stream);
+            rst = read_into_attr_root_tree(idx_anchor->root_art_array, idx_anchor->parallelism, disk_idx_stream);
             fclose(disk_idx_stream);
             idx_anchor->total_num_kv_pairs += get_num_kv_pairs_loaded_mdb();
             idx_anchor->total_num_attrs += get_num_attrs_loaded_mdb();

@@ -190,16 +190,18 @@ int main(int argc, char *argv[]) {
     int l, t, tid;
 
     int thread_count = 4;
+    int parallelism = 1;
     int use_pool = 0;
     long n_attrs = 1000;
     long n_avg_attr_vals = 1000;
 
     thread_count = atoi(argv[1]);
-    // use_pool = atoi(argv[2]);
-    // n_attrs = atoi(argv[2]);
-    // n_avg_attr_vals = atoi(argv[3]);
+    parallelism = atoi(argv[2]);
+    // use_pool = atoi(argv[3]);
+    // n_attrs = atoi(argv[4]);
+    // n_avg_attr_vals = atoi(argv[5]);
 
-    if (init_in_mem_index() == 0) {
+    if (init_in_mem_index(parallelism) == 0) {
         return 0;
     }
 

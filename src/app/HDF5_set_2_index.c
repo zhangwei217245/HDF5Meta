@@ -209,7 +209,7 @@ main(int argc, char *argv[])
     //  string value = 0, int value = 1, float value = 2
     int search_types[] = {0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0};
     
-    if (init_in_mem_index()==0) {
+    if (init_in_mem_index(4)==0) {
         return 0;
     }
     index_anchor *idx_anchor = root_idx_anchor();
