@@ -198,8 +198,8 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
             attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         case MIQS_AT_FLOAT:
-            // indexing_numeric(attr->attr_name, (double *)attr->attribute_value, 
-            // attr->attribute_value_length, file_path, obj_path, leaf_cnt);
+            indexing_numeric(attr->attr_name, (double *)attr->attribute_value, 
+            attr->attribute_value_length, file_path, obj_path, leaf_cnt);
             break;
         case MIQS_AT_STRING:
             indexing_string(attr->attr_name, (char **)attr->attribute_value, 
@@ -289,14 +289,14 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             ((value_tree_leaf_content_t *)entry)->file_obj_pair_list = list_create();
             rbt_add(leaf_cnt->rbt, key, k_size, entry);
         }
-        size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
-        size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
+        // size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+        // size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
         
-        file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
-        file_obj_pair->file_list_pos = file_pos;
-        file_obj_pair->obj_list_pos = obj_pos;
+        // file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
+        // file_obj_pair->file_list_pos = file_pos;
+        // file_obj_pair->obj_list_pos = obj_pos;
 
-        list_push_value(((value_tree_leaf_content_t *)entry)->file_obj_pair_list, (void *)file_obj_pair);
+        // list_push_value(((value_tree_leaf_content_t *)entry)->file_obj_pair_list, (void *)file_obj_pair);
     }
 }
 
@@ -316,19 +316,17 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
 
         if (test_cnt == NULL){
             test_cnt = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t) , &index_mem_size);
-
-            art_insert(leaf_cnt->art, (unsigned char *)attr_val[i], strlen(attr_val[i]), (void *)test_cnt);
-
             test_cnt->file_obj_pair_list = list_create();
+            art_insert(leaf_cnt->art, (unsigned char *)attr_val[i], strlen(attr_val[i]), (void *)test_cnt);
         }
-        size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
-        size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
+        // size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+        // size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
         
-        file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
-        file_obj_pair->file_list_pos = file_pos;
-        file_obj_pair->obj_list_pos = obj_pos;
+        // file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
+        // file_obj_pair->file_list_pos = file_pos;
+        // file_obj_pair->obj_list_pos = obj_pos;
 
-        list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
+        // list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
     }
 }
 
