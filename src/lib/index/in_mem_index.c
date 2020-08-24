@@ -124,13 +124,13 @@ int init_in_mem_index(int _parallelism){
         art_tree_init(idx_anchor->root_art_array[i]);
         idx_anchor->GLOBAL_INDEX_LOCK[i] = (pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
         pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK[i]), NULL);
-#elif MIQS_INDEX_CONCURRENT_LEVEL==2
-        idx_anchor->TOP_ART_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-        idx_anchor->LOWER_LEVEL_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-        pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
-        pthread_rwlock_init(&(idx_anchor->LOWER_LEVEL_LOCK), NULL);
-#else
-        /* nothing here for tree-node protection */
+// #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+//         idx_anchor->TOP_ART_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+//         idx_anchor->LOWER_LEVEL_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
+//         pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
+//         pthread_rwlock_init(&(idx_anchor->LOWER_LEVEL_LOCK), NULL);
+// #else
+//         /* nothing here for tree-node protection */
 #endif
     }
     idx_anchor->file_path=NULL;
@@ -154,7 +154,9 @@ int init_in_mem_index(int _parallelism){
 void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_t *attr){
 
     unsigned long attr_name_hval = djb2_hash((unsigned char *)attr->attr_name) % idx_anchor->parallelism;
-
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#endif
     art_tree *global_art = idx_anchor->root_art_array[attr_name_hval];
     char *file_path = attr->file_path_str;
     char *obj_path = attr->obj_path_str;
@@ -162,38 +164,10 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
     stopwatch_t one_attr;   
     timer_start(&one_attr);
 
-#if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
-#elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    while (pthread_rwlock_tryrdlock(&(idx_anchor->TOP_ART_LOCK))!=0){
-        nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-    }
-#else
-    /* nothing here for tree-node protection */
-#endif
-
     attr_tree_leaf_content_t *leaf_cnt = (attr_tree_leaf_content_t *)art_search(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name));
-    
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
 
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    while (pthread_rwlock_trywrlock(&(idx_anchor->TOP_ART_LOCK))!=0){
-        nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-    }
-#endif
     if (leaf_cnt == NULL){
         leaf_cnt = (attr_tree_leaf_content_t *)ctr_calloc(1, sizeof(attr_tree_leaf_content_t), get_index_size_ptr());
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-        // leaf_cnt->VALUE_TREE_LOCK = (pthread_rwlock_t *)calloc(1, sizeof(pthread_rwlock_t));
-        leaf_cnt->VALUE_TREE_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-        pthread_rwlock_init(&(leaf_cnt->VALUE_TREE_LOCK), NULL);
-#endif
-        // void *bptr = NULL;
-        // leaf_cnt->bpt = (void ***)ctr_calloc(1, sizeof(void **), get_index_size_ptr());
-        // (leaf_cnt->bpt)[0] = (void **)ctr_calloc(1, sizeof(void *), get_index_size_ptr());
-        // (leaf_cnt->bpt)[0][0] = NULL;
         switch(attr->attr_type) {
             case MIQS_AT_INTEGER:
                 leaf_cnt->rbt = rbt_create(libhl_cmp_keys_int, free);
@@ -214,14 +188,7 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
                 break;
         }
         if (into_art == 1) {
-
-
             art_insert(global_art, (const unsigned char *)attr->attr_name, strlen(attr->attr_name), leaf_cnt);
-
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
-
         }
     }
 
@@ -243,14 +210,13 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
             // into_art = 0;
             break;
     }
-
-#if MIQS_INDEX_CONCURRENT_LEVEL==1
-            pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
-#endif
-
     timer_pause(&one_attr);
     suseconds_t one_attr_duration = timer_delta_us(&one_attr);
     idx_anchor->us_to_index += one_attr_duration;
+
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#endif
 }
 
 
@@ -316,43 +282,21 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
             key = &(_attr_value[i]);
         }
 
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-        if (pthread_rwlock_tryrdlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
-            nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-        }
-        // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
-
         int rbt_found = rbt_find(leaf_cnt->rbt, key, k_size, &entry);
-
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-        // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
 
         if (rbt_found != 0) {// not found
             entry = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t), &index_mem_size);
             ((value_tree_leaf_content_t *)entry)->file_obj_pair_list = list_create();
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-            if (pthread_rwlock_trywrlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
-                nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-            }
-            // pthread_rwlock_wrlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
             rbt_add(leaf_cnt->rbt, key, k_size, entry);
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-            // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
         }
-        // size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
-        // size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
+        size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+        size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
         
-        // file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
-        // file_obj_pair->file_list_pos = file_pos;
-        // file_obj_pair->obj_list_pos = obj_pos;
+        file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
+        file_obj_pair->file_list_pos = file_pos;
+        file_obj_pair->obj_list_pos = obj_pos;
 
-        // list_push_value(((value_tree_leaf_content_t *)entry)->file_obj_pair_list, (void *)file_obj_pair);
+        list_push_value(((value_tree_leaf_content_t *)entry)->file_obj_pair_list, (void *)file_obj_pair);
     }
 }
 
@@ -367,42 +311,24 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
     }
     int i = 0;
     for (i = 0; i < attribute_value_length; i++) {
-        // char *k = attr_val[i];
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-        if (pthread_rwlock_tryrdlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
-            nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-        }
-        // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
         value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, 
             (const unsigned char *)attr_val[i], strlen(attr_val[i]));
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-        // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
+
         if (test_cnt == NULL){
             test_cnt = (value_tree_leaf_content_t *)ctr_calloc(1, sizeof(value_tree_leaf_content_t) , &index_mem_size);
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-            if (pthread_rwlock_trywrlock(&(leaf_cnt->VALUE_TREE_LOCK))!=0) {
-                nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-            }
-            // pthread_rwlock_wrlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
-            art_insert(leaf_cnt->art, (unsigned char *)attr_val[i], strlen(attr_val[i]), (void *)test_cnt);
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-            pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
-            // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif
-            // test_cnt->file_obj_pair_list = list_create();
-        }
-        // size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
-        // size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
-        
-        // file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
-        // file_obj_pair->file_list_pos = file_pos;
-        // file_obj_pair->obj_list_pos = obj_pos;
 
-        // list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
+            art_insert(leaf_cnt->art, (unsigned char *)attr_val[i], strlen(attr_val[i]), (void *)test_cnt);
+
+            test_cnt->file_obj_pair_list = list_create();
+        }
+        size_t file_pos = insert_tagged_value(root_idx_anchor()->file_paths_list, file_path);
+        size_t obj_pos = insert_tagged_value(root_idx_anchor()->object_paths_list, obj_path);
+        
+        file_obj_pair_t *file_obj_pair = (file_obj_pair_t *)calloc(1, sizeof(file_obj_pair_t));
+        file_obj_pair->file_list_pos = file_pos;
+        file_obj_pair->obj_list_pos = obj_pos;
+
+        list_push_value(test_cnt->file_obj_pair_list, (void *)file_obj_pair);
     }
 }
 
@@ -420,29 +346,19 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
     if (idx_anchor== NULL) {
         return prst;
     }
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
+
     attr_tree_leaf_content_t *leaf_cnt =
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art_array[attr_name_hval], 
     (const unsigned char *)attr_name, strlen(attr_name));
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
+
     if (leaf_cnt == NULL || leaf_cnt->rbt == NULL) {
         return prst;
     }
 
     void *entry;
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif 
+
     int rbt_found = rbt_find(leaf_cnt->rbt, value_p, value_size, &entry);
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif 
+
     if (rbt_found!=0){//Not found
         return prst;
     } else {
@@ -482,27 +398,16 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     if (idx_anchor== NULL) {
         return prst;
     }
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_rdlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
     attr_tree_leaf_content_t *leaf_cnt =
     (attr_tree_leaf_content_t *)art_search(idx_anchor->root_art_array[attr_name_hval], 
     (const unsigned char *)attr_name, strlen(attr_name));
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_unlock(&(idx_anchor->TOP_ART_LOCK));
-#endif
+
     if (leaf_cnt == NULL || leaf_cnt->art == NULL) {
         return prst;
     }
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_rdlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    // pthread_rwlock_rdlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif   
+
     value_tree_leaf_content_t *test_cnt = (value_tree_leaf_content_t *)art_search(leaf_cnt->art, (const unsigned char *)value, strlen(value));
-#if MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_rwlock_unlock(&(leaf_cnt->VALUE_TREE_LOCK));
-    // pthread_rwlock_unlock(&(root_idx_anchor()->LOWER_LEVEL_LOCK));
-#endif 
+
     if (test_cnt == NULL) {
         return prst;
     } else {

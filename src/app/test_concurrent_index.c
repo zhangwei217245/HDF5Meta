@@ -322,76 +322,73 @@ int main(int argc, char *argv[]) {
      *  ****************** Indexing while searching *********************************
      *  *****************************************************************************/
     
-    for (i = 0; i < gen_data_t_count; i++) {
-        test_param_t *tparam = gen_test_param(gen_data_t_count, n_attrs, n_avg_attr_vals, i);
-        tparam->extra_test = 1;
-        status = pthread_create(&data_threads[i], NULL, genData, (void *)tparam);
-        if (status != 0) {
-            printf("ERROR; return code from pthread_create() is %d \n", status);
-            exit(-1);
-        }
-    }
+    // for (i = 0; i < gen_data_t_count; i++) {
+    //     test_param_t *tparam = gen_test_param(gen_data_t_count, n_attrs, n_avg_attr_vals, i);
+    //     tparam->extra_test = 1;
+    //     status = pthread_create(&data_threads[i], NULL, genData, (void *)tparam);
+    //     if (status != 0) {
+    //         printf("ERROR; return code from pthread_create() is %d \n", status);
+    //         exit(-1);
+    //     }
+    // }
 
-    for (i = 0; i < gen_data_t_count; i++) {
-        if (pthread_join(data_threads[i], ret) != 0) {
-            printf("Error : pthread_join failed on joining thread %ld \n", i);
-            return -1;
-        }
-    }
+    // for (i = 0; i < gen_data_t_count; i++) {
+    //     if (pthread_join(data_threads[i], ret) != 0) {
+    //         printf("Error : pthread_join failed on joining thread %ld \n", i);
+    //         return -1;
+    //     }
+    // }
 
-    printf("Another %ld data generated with %d threads. \n", num_kvs, gen_data_t_count);
+    // printf("Another %ld data generated with %d threads. \n", num_kvs, gen_data_t_count);
 
-    timer_start(&timer_index);
-    for (i = 0; i < thread_count; i++) {
-        test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
-        tparam->extra_test = 1;
-        status = pthread_create(&wr_threads[i], NULL, doIndexing, (void *)tparam);
-        if (status != 0) {
-            printf("ERROR; return code from pthread_create() is %d \n", status);
-            exit(-1);
-        }
-    }
+    // timer_start(&timer_index);
+    // for (i = 0; i < thread_count; i++) {
+    //     test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
+    //     tparam->extra_test = 1;
+    //     status = pthread_create(&wr_threads[i], NULL, doIndexing, (void *)tparam);
+    //     if (status != 0) {
+    //         printf("ERROR; return code from pthread_create() is %d \n", status);
+    //         exit(-1);
+    //     }
+    // }
 
-    timer_start(&timer_query);
-    for (i = 0; i < thread_count; i++) {
-        test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
-        status = pthread_create(&rd_threads[i], NULL, doQuery, (void *)tparam);
-        if (status != 0) {
-            printf("ERROR; return code from pthread_create() is %d\n", status);
-            exit(-1);
-        }
-    }
+    // timer_start(&timer_query);
+    // for (i = 0; i < thread_count; i++) {
+    //     test_param_t *tparam = gen_test_param(thread_count, n_attrs, n_avg_attr_vals, i);
+    //     status = pthread_create(&rd_threads[i], NULL, doQuery, (void *)tparam);
+    //     if (status != 0) {
+    //         printf("ERROR; return code from pthread_create() is %d\n", status);
+    //         exit(-1);
+    //     }
+    // }
 
-    
-
-
-    for (i = 0; i < thread_count; i++) {
-        if (pthread_join(wr_threads[i], ret) != 0) {
-            printf("Error : pthread_join failed on joining thread %ld \n", i);
-            return -1;
-        }
-    }
-    timer_pause(&timer_index);
-    index_duration = (double)timer_delta_ms(&timer_index)/1000;
-    throughputI = (double)num_kvs/index_duration;
-    responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
-    printf("[INDEX WHEN SEARCH] %ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
-           num_kvs, index_duration,throughputI,responseI);
+    // for (i = 0; i < thread_count; i++) {
+    //     if (pthread_join(wr_threads[i], ret) != 0) {
+    //         printf("Error : pthread_join failed on joining thread %ld \n", i);
+    //         return -1;
+    //     }
+    // }
+    // timer_pause(&timer_index);
+    // index_duration = (double)timer_delta_ms(&timer_index)/1000;
+    // throughputI = (double)num_kvs/index_duration;
+    // responseI = timer_delta_ns(&timer_index)/(uint64_t)num_kvs;
+    // printf("[INDEX WHEN SEARCH] %ld attributes indexed in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
+    //        num_kvs, index_duration,throughputI,responseI);
 
 
-    for (i = 0; i < thread_count; i++) {
-        if (pthread_join(rd_threads[i], ret) != 0) {
-            printf("Error : pthread_join failed on joining thread %ld\n", i);
-            return -1;
-        }
-    }
+    // for (i = 0; i < thread_count; i++) {
+    //     if (pthread_join(rd_threads[i], ret) != 0) {
+    //         printf("Error : pthread_join failed on joining thread %ld\n", i);
+    //         return -1;
+    //     }
+    // }
 
-    timer_pause(&timer_query);
-    query_duration = (double)timer_delta_ms(&timer_query)/1000;
-    throughputQ = (double)num_kvs/query_duration;
-    responseQ = timer_delta_ns(&timer_query)/num_kvs;
-    printf("[SEARCH WHEN INDEX] %ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
-           num_kvs, query_duration,throughputQ,responseQ);
+    // timer_pause(&timer_query);
+    // query_duration = (double)timer_delta_ms(&timer_query)/1000;
+    // throughputQ = (double)num_kvs/query_duration;
+    // responseQ = timer_delta_ns(&timer_query)/num_kvs;
+    // printf("[SEARCH WHEN INDEX] %ld attributes queried in %.2f seconds, overall throughput is %.2f qps, overall average response time is %"PRIu64" nano seconds \n",
+    //        num_kvs, query_duration,throughputQ,responseQ);
 
     pthread_rwlock_destroy(&ATTR_ARRAY_LOCK);
     free(attr_arr);
