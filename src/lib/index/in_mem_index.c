@@ -116,21 +116,20 @@ int init_in_mem_index(int _parallelism){
     int i = 0;
     idx_anchor->parallelism = _parallelism;
     idx_anchor->root_art_array = (art_tree **)ctr_calloc(idx_anchor->parallelism, sizeof(art_tree *), get_index_size_ptr());
-    idx_anchor->GLOBAL_INDEX_LOCK = (pthread_rwlock_t *)ctr_calloc(idx_anchor->parallelism, sizeof(pthread_rwlock_t), get_index_size_ptr());
-
-    for (i = 0; i < idx_anchor->parallelism ; i++) {
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
+    idx_anchor->GLOBAL_INDEX_LOCK = (pthread_rwlock_t *)ctr_calloc(idx_anchor->parallelism, sizeof(pthread_rwlock_t), get_index_size_ptr());
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    idx_anchor->GLOBAL_MUTEX_LOCK = (pthread_mutex_t *)ctr_calloc(idx_anchor->parallelism, sizeof(pthread_mutex_t), get_index_size_ptr());
+#endif
+    for (i = 0; i < idx_anchor->parallelism ; i++) {
         idx_anchor->root_art_array[i] = (art_tree *)ctr_calloc(1, sizeof(art_tree), get_index_size_ptr());
         art_tree_init(idx_anchor->root_art_array[i]);
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
         idx_anchor->GLOBAL_INDEX_LOCK[i] = (pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
         pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK[i]), NULL);
-// #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-//         idx_anchor->TOP_ART_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-//         idx_anchor->LOWER_LEVEL_LOCK=(pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
-//         pthread_rwlock_init(&(idx_anchor->TOP_ART_LOCK), NULL);
-//         pthread_rwlock_init(&(idx_anchor->LOWER_LEVEL_LOCK), NULL);
-// #else
-//         /* nothing here for tree-node protection */
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+        idx_anchor->GLOBAL_MUTEX_LOCK[i]=(pthread_rwlock_t)PTHREAD_MUTEX_INITIALIZER;
+        pthread_mutex_init(&(idx_anchor->GLOBAL_MUTEX_LOCK[i]), NULL);
 #endif
     }
     idx_anchor->file_path=NULL;
@@ -156,6 +155,8 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
     unsigned long attr_name_hval = djb2_hash((unsigned char *)attr->attr_name) % idx_anchor->parallelism;
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_wrlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_mutex_lock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
     art_tree *global_art = idx_anchor->root_art_array[attr_name_hval];
     char *file_path = attr->file_path_str;
@@ -216,6 +217,8 @@ void create_in_mem_index_for_attr(index_anchor *idx_anchor, miqs_meta_attribute_
 
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
 }
 
@@ -335,6 +338,8 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
     unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_mutex_lock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
@@ -367,6 +372,8 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
     }
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
     return prst;
 }
@@ -387,6 +394,8 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_mutex_lock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
@@ -417,6 +426,8 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     }
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
     return prst;
 }
