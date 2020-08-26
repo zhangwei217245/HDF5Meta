@@ -33,10 +33,8 @@ typedef struct {
      */
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
         pthread_rwlock_t *GLOBAL_INDEX_LOCK;
-        pthread_mutex_t *GLOBAL_MUTEX_LOCK;
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-        pthread_rwlock_t TOP_ART_LOCK;
-        pthread_rwlock_t LOWER_LEVEL_LOCK;
+        pthread_mutex_t *GLOBAL_MUTEX_LOCK;
 #else
         /* nothing here for tree-node protection */
 #endif

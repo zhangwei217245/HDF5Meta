@@ -23,10 +23,6 @@ typedef struct {
 
     void *secondary_idx;
 
-// #if MIQS_INDEX_CONCURRENT_LEVEL==2
-//     pthread_rwlock_t VALUE_TREE_LOCK;
-// #endif
-
     // size_t file_path_pos;
     // size_t obj_path_pos;
 } attr_tree_leaf_content_t;
@@ -37,9 +33,6 @@ typedef struct {
     // art_tree *file_path_art;
     linked_list_t *file_obj_pair_list;
 
-// #if MIQS_INDEX_CONCURRENT_LEVEL==2
-//     pthread_rwlock_t VALUE_TREE_LEAF_LOCK;
-// #endif
 } value_tree_leaf_content_t;
 
 typedef struct {
