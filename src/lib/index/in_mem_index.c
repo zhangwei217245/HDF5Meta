@@ -339,22 +339,22 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    int ret = -1;
-    do {
-        ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
-        if (ret == EBUSY){
-            printf("EBUSY: %d\n", ret);
-        } else if (ret == EAGAIN) {
-            printf("EAGAIN: %d\n", ret);
-        } else if (ret == EOWNERDEAD) {
-            printf("EOWNERDEAD: %d\n", ret);
-        } else if (ret == ENOTRECOVERABLE) {
-            printf("ENOTRECOVERABLE: %d\n", ret);
-        } else if (ret == ENOMEM) {
-            printf("ENOMEM: %d\n", ret);
-        }
-        nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
-    } while (ret!=0);
+    // int ret = -1;
+    // do {
+    //     ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
+    //     if (ret == EBUSY){
+    //         printf("EBUSY: %d\n", ret);
+    //     } else if (ret == EAGAIN) {
+    //         printf("EAGAIN: %d\n", ret);
+    //     } else if (ret == EOWNERDEAD) {
+    //         printf("EOWNERDEAD: %d\n", ret);
+    //     } else if (ret == ENOTRECOVERABLE) {
+    //         printf("ENOTRECOVERABLE: %d\n", ret);
+    //     } else if (ret == ENOMEM) {
+    //         printf("ENOMEM: %d\n", ret);
+    //     }
+    //     nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
+    // } while (ret!=0);
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
@@ -388,7 +388,7 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
+    // pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
     return prst;
 }
