@@ -128,7 +128,7 @@ int init_in_mem_index(int _parallelism){
         idx_anchor->GLOBAL_INDEX_LOCK[i] = (pthread_rwlock_t)PTHREAD_RWLOCK_INITIALIZER;
         pthread_rwlock_init(&(idx_anchor->GLOBAL_INDEX_LOCK[i]), NULL);
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
-        idx_anchor->GLOBAL_MUTEX_LOCK[i]=(pthread_rwlock_t)PTHREAD_MUTEX_INITIALIZER;
+        idx_anchor->GLOBAL_MUTEX_LOCK[i]=(pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
         pthread_mutex_init(&(idx_anchor->GLOBAL_MUTEX_LOCK[i]), NULL);
 #endif
     }
