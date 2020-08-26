@@ -342,7 +342,17 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
     int ret = -1;
     do {
         ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
-        printf("ret: %d\n", ret);
+        if (ret == EBUSY){
+            printf("EBUSY: %d\n", ret);
+        } else if (ret == EAGAIN) {
+            printf("EAGAIN: %d\n", ret);
+        } else if (ret == EOWNERDEAD) {
+            printf("EOWNERDEAD: %d\n", ret);
+        } else if (ret == ENOTRECOVERABLE) {
+            printf("ENOTRECOVERABLE: %d\n", ret);
+        } else if (ret == ENOMEM) {
+            printf("ENOMEM: %d\n", ret);
+        }
         nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
     } while (ret!=0);
 #endif
@@ -403,7 +413,17 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
     int ret = -1;
     do {
         ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
-        printf("ret: %d\n", ret);
+        if (ret == EBUSY){
+            printf("EBUSY: %d\n", ret);
+        } else if (ret == EAGAIN) {
+            printf("EAGAIN: %d\n", ret);
+        } else if (ret == EOWNERDEAD) {
+            printf("EOWNERDEAD: %d\n", ret);
+        } else if (ret == ENOTRECOVERABLE) {
+            printf("ENOTRECOVERABLE: %d\n", ret);
+        } else if (ret == ENOMEM) {
+            printf("ENOMEM: %d\n", ret);
+        }
         nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
     } while (ret!=0);
     
