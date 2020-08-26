@@ -334,28 +334,10 @@ char *file_path, char *obj_path, attr_tree_leaf_content_t *leaf_cnt){
 }
 
 
+
+
 power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t value_size){
     unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
-#if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
-#elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    // int ret = -1;
-    // do {
-    //     ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
-    //     if (ret == EBUSY){
-    //         printf("EBUSY: %d\n", ret);
-    //     } else if (ret == EAGAIN) {
-    //         printf("EAGAIN: %d\n", ret);
-    //     } else if (ret == EOWNERDEAD) {
-    //         printf("EOWNERDEAD: %d\n", ret);
-    //     } else if (ret == ENOTRECOVERABLE) {
-    //         printf("ENOTRECOVERABLE: %d\n", ret);
-    //     } else if (ret == ENOMEM) {
-    //         printf("ENOMEM: %d\n", ret);
-    //     }
-    //     nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
-    // } while (ret!=0);
-#endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
 
@@ -385,13 +367,11 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
         list_foreach_value(node->file_obj_pair_list, collect_result_from_list, prst);
         prst->num_files = list_count(prst->rst_arr);
     }
-#if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
-#elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    // pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
-#endif
+
     return prst;
 }
+
+
 
 /**
  * This is key-value exact search
@@ -407,27 +387,6 @@ power_search_rst_t *float_value_search(char *attr_name, double value) {
 
 power_search_rst_t *string_value_search(char *attr_name, char *value) {
     unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
-#if MIQS_INDEX_CONCURRENT_LEVEL==1
-    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
-#elif MIQS_INDEX_CONCURRENT_LEVEL==2
-    // int ret = -1;
-    // do {
-    //     ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
-    //     if (ret == EBUSY){
-    //         printf("EBUSY: %d\n", ret);
-    //     } else if (ret == EAGAIN) {
-    //         printf("EAGAIN: %d\n", ret);
-    //     } else if (ret == EOWNERDEAD) {
-    //         printf("EOWNERDEAD: %d\n", ret);
-    //     } else if (ret == ENOTRECOVERABLE) {
-    //         printf("ENOTRECOVERABLE: %d\n", ret);
-    //     } else if (ret == ENOMEM) {
-    //         printf("ENOMEM: %d\n", ret);
-    //     }
-    //     nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
-    // } while (ret!=0);
-    
-#endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
 
@@ -455,12 +414,49 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         prst->rst_arr = list_create();
         list_foreach_value(test_cnt->file_obj_pair_list, collect_result_from_list, prst);
     }
+    return prst;
+}
+
+power_search_rst_t *metadata_search(char *attr_name, void *attribute_value, miqs_attr_type_t attr_type){
+    power_search_rst_t *rst = NULL;
+    unsigned long attr_name_hval = djb2_hash((unsigned char *)attr_name) % idx_anchor->parallelism;
+#if MIQS_INDEX_CONCURRENT_LEVEL==1
+    pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
+#elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    int ret = -1;
+    do {
+        ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
+        if (ret == EBUSY){
+            printf("EBUSY: %d\n", ret);
+        } else if (ret == EAGAIN) {
+            printf("EAGAIN: %d\n", ret);
+        } else if (ret == EOWNERDEAD) {
+            printf("EOWNERDEAD: %d\n", ret);
+        } else if (ret == ENOTRECOVERABLE) {
+            printf("ENOTRECOVERABLE: %d\n", ret);
+        } else if (ret == ENOMEM) {
+            printf("ENOMEM: %d\n", ret);
+        }
+        nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
+    } while (ret!=0);
+#endif
+
+    if (attr_type == MIQS_AT_INTEGER) {
+        int *value = (int *)attribute_value;
+        rst = int_value_search(attr_name, *value);
+    } else if (attr_type == MIQS_AT_FLOAT) {
+        double *value = (double *)attribute_value;
+        rst = float_value_search(attr_name, *value);
+    } else {
+        char *value = (char *)attribute_value;
+        rst = string_value_search(attr_name, value);
+    }
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_unlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
     pthread_mutex_unlock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
 #endif
-    return prst;
+    return rst;
 }
 
 /**

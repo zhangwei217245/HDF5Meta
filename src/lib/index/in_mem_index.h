@@ -159,6 +159,8 @@ power_search_rst_t *float_value_search(char *attr_name, double value);
 
 power_search_rst_t *string_value_search(char *attr_name, char *value);
 
+power_search_rst_t *metadata_search(char *attr_name, void *attribute_value, miqs_attr_type_t attr_type);
+
 
 void convert_index_record_to_in_mem_parameters(index_anchor *idx_anchor, miqs_meta_attribute_t *attr, index_record_t *ir);
 

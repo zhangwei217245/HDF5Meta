@@ -158,28 +158,11 @@ void *doQuery(void *tp) {
 
             pthread_rwlock_unlock(&(ATTR_ARRAY_LOCK));
 
-            if (meta_attr->attr_type == MIQS_AT_INTEGER) {
-                int *value = (int *)meta_attr->attribute_value;
-                power_search_rst_t *rst = int_value_search(meta_attr->attr_name, *value);
-                if(rst->num_files==0){
-                    // printf("Not found for type INTEGER with value %d", *value);
-                }
-                resultCount += rst->num_files;
-            } else if (meta_attr->attr_type == MIQS_AT_FLOAT) {
-                double *value = (double *)meta_attr->attribute_value;
-                power_search_rst_t *rst = float_value_search(meta_attr->attr_name, *value);
-                if(rst->num_files==0){
-                    // printf("Not found for type FLOAT with value %.2f", *value);
-                }
-                resultCount += rst->num_files;
-            } else {
-                char *value = meta_attr->attribute_value;
-                power_search_rst_t *rst = string_value_search(meta_attr->attr_name, value);
-                if(rst->num_files==0){
-                    // printf("Not found for type STRING with value %s",value);
-                }
-                resultCount += rst->num_files;
+            power_search_rst_t *rst = metadata_search(meta_attr->attr_name, meta_attr->attribute_value, meta_attr->attr_type);
+            if(rst->num_files==0){
+                // printf("Not found for type INTEGER with value %d", *value);
             }
+            resultCount += rst->num_files;
             num_queried++;
         }
     }
