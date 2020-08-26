@@ -339,8 +339,9 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    int ret = -1
     do {
-        int ret  = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
+        ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
         printf("ret: %d\n", ret);
         nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
     } while (ret!=0)
@@ -399,8 +400,9 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
 #if MIQS_INDEX_CONCURRENT_LEVEL==1
     pthread_rwlock_rdlock(&(idx_anchor->GLOBAL_INDEX_LOCK[attr_name_hval]));
 #elif MIQS_INDEX_CONCURRENT_LEVEL==2
+    int ret = -1
     do {
-        int ret  = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
+        ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
         printf("ret: %d\n", ret);
         nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
     } while (ret!=0)
