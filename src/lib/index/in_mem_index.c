@@ -344,7 +344,7 @@ power_search_rst_t *numeric_value_search(char *attr_name, void *value_p, size_t 
         ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
         printf("ret: %d\n", ret);
         nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
-    } while (ret!=0)
+    } while (ret!=0);
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
     prst->num_files=0;
@@ -405,7 +405,7 @@ power_search_rst_t *string_value_search(char *attr_name, char *value) {
         ret = pthread_mutex_trylock(&(idx_anchor->GLOBAL_MUTEX_LOCK[attr_name_hval]));
         printf("ret: %d\n", ret);
         nanosleep((const struct timespec[]){{0, 500000000L}}, NULL);
-    } while (ret!=0)
+    } while (ret!=0);
     
 #endif
     power_search_rst_t *prst =(power_search_rst_t *)calloc(1, sizeof(power_search_rst_t));
