@@ -28,7 +28,7 @@ if (APPLE)
   endif()
 endif()
 
-PROJECT(MIQS)
+PROJECT(MIQS VERSION 0.6.0)
 
 
 string(TOLOWER ${CMAKE_BUILD_TYPE} _type)

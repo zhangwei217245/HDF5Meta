@@ -138,20 +138,20 @@ target_include_directories(miqs PRIVATE ${HDF5_INCLUDE_DIRS} ${MPI_C_INCLUDE_DIR
 
 
 
-add_executable(hdf5_string_index_test index_ess/HDF5_string_index_test.c index_ess/boss_dataset.h)
-target_link_libraries(hdf5_string_index_test PRIVATE miqs_index "${MPI_C_LIBRARIES}")
-target_include_directories(hdf5_string_index_test PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}"
-                            PUBLIC $<BUILD_INTERFACE:${MIQS_PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include>)
+# add_executable(hdf5_string_index_test index_ess/HDF5_string_index_test.c index_ess/boss_dataset.h)
+# target_link_libraries(hdf5_string_index_test PRIVATE miqs_index "${MPI_C_LIBRARIES}")
+# target_include_directories(hdf5_string_index_test PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}"
+#                             PUBLIC $<BUILD_INTERFACE:${MIQS_PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include>)
 
-add_executable(hdf5_number_index_test index_ess/HDF5_number_index_test.c index_ess/boss_dataset.h)
-target_link_libraries(hdf5_number_index_test PRIVATE miqs_index "${MPI_C_LIBRARIES}")
-target_include_directories(hdf5_number_index_test PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}"
-                            PUBLIC $<BUILD_INTERFACE:${MIQS_PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include>)
+# add_executable(hdf5_number_index_test index_ess/HDF5_number_index_test.c index_ess/boss_dataset.h)
+# target_link_libraries(hdf5_number_index_test PRIVATE miqs_index "${MPI_C_LIBRARIES}")
+# target_include_directories(hdf5_number_index_test PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}"
+#                             PUBLIC $<BUILD_INTERFACE:${MIQS_PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include>)
 
 
-add_executable(test_concurrent_index test_concurrent_index.c boss_dataset.h)
-target_link_libraries(test_concurrent_index PRIVATE hdf52index miqs_index foo-threading ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
-target_include_directories(test_concurrent_index PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
+# add_executable(test_concurrent_index test_concurrent_index.c boss_dataset.h)
+# target_link_libraries(test_concurrent_index PRIVATE hdf52index miqs_index foo-threading ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
+# target_include_directories(test_concurrent_index PRIVATE "${HDF5_INCLUDE_DIRS}" "${MPI_C_INCLUDE_DIRS}")
 
 
 
@@ -172,7 +172,6 @@ INSTALL(FILES ${C_BASE_UTILS_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${
 INSTALL(FILES ${FILESYS_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/utils/fs)
 INSTALL(FILES ${MIQS_METADATA_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/metadata)
 INSTALL(FILES ${HDF5_META_EXTRACTOR_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/metadata)
-INSTALL(FILES ${SPI_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/index/spi)
 
 
 INSTALL(EXPORT libmiqs NAMESPACE miqs:: DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/cmake)
