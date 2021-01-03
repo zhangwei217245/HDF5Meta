@@ -1,0 +1,50 @@
+# Project name, title of the doc front page.
+PROJECT_NAME        = "MIQS"
+# Project version number
+PROJECT_NUMBER      = "0.6.0"
+PROJECT_BRIEF          = "000"
+# Doc output directory
+OUTPUT_DIRECTORY    =  docs
+ 
+# input directory 
+INPUT                = @CMAKE_CURRENT_LIST_DIR@/src    
+ 
+# language settings
+OUTPUT_LANGUAGE      = English
+DOXYFILE_ENCODING  = UTF-8
+# only generate docs for headers now
+FILE_PATTERNS        = *.h
+ 
+# recursively visit source code tree and generate documents for each doc.
+RECURSIVE            = NO 
+# Optimize document for C language.
+OPTIMIZE_OUTPUT_FOR_C  = YES
+ 
+# extract information for all, including private and static members
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC        = YES
+# generate docs based on typedef names.
+TYPEDEF_HIDES_STRUCT  = YES
+# For C, we don't have namespace, so YES. For C++, we can choose NO as there is the concept of namespace in C++
+HIDE_SCOPE_NAMES      = YES
+# Only print messages when errors or warning happens
+QUIET  = YES
+# recursively visit example program source tree and generate documents.
+EXAMPLE_RECURSIVE      = NO
+# Allow showing caller/callee relationship in the doc
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
+# Do not generate doc in Latex format.
+GENERATE_LATEX        = NO
+# Allow graphic representation on the doc.
+HAVE_DOT              = NO
+CALL_GRAPH            = NO
+CALLER_GRAPH          = NO
+# include source code in the final document.
+SOURCE_BROWSER        = YES
+# Generate HTML
+GENERATE_HTML         = YES
+# provide a tree view in the final doc
+GENERATE_TREEVIEW      ＝ NO
