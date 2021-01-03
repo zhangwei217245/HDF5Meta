@@ -1,7 +1,12 @@
 CMakeFiles
-src/lib/include/config.h
+target
+include
+lib
+**/miqs_config.h
 *.cmake
 build
 cmake-build
 .vscode
 .ipynb_checkpoints/
+apps/bin
+apps/lib

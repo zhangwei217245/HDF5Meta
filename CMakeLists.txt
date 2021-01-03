@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 # Setup cmake policies.
 foreach(p
@@ -29,6 +29,21 @@ if (APPLE)
 endif()
 
 PROJECT(MIQS)
+
+
+string(TOLOWER ${CMAKE_BUILD_TYPE} _type)
+if (_type STREQUAL debug)
+  set(MIQS_BUILD_MODE "debug")
+else()
+  set(MIQS_BUILD_MODE "release")
+endif()
+
+
+if(APPLE)
+    set(SHARED_LIB_SUFFIX dylib)
+else()
+    set(SHARED_LIB_SUFFIX so)
+endif()
 
 
 #-----------------------------------------------------------------------------
@@ -80,14 +95,18 @@ endif()
 #-----------------------------------------------------------------------------
 # MIQS concurrency level option
 #-----------------------------------------------------------------------------
-if (NOT DEFINED MIQS_INDEX_CONCURRENT_LEVEL)
-  set(MIQS_INDEX_CONCURRENT_LEVEL 1)
+option(MIQS_INDEX_PARALLELIZATION "Enable parallelized metadata index." ON)
+set(MIQS_INDEX_PARALLELIZATION OFF)
+if (MIQS_INDEX_PARALLELIZATION)
+  set(MIQS_PARALLELED_INDEX ON)
+else()
+  set(MIQS_PARALLELED_INDEX OFF)
 endif()
 
 option(LIBHL_THREAD_SAFE "Enable thread safe for libhl." ON)
-if (LIBHL_THREAD_SAFE==ON)
+if (LIBHL_THREAD_SAFE)
   set(THREAD_SAFE ON)
-elseif(LIBHL_THREAD_SAFE==OFF)
+else()
   set(THREAD_SAFE OFF)
 endif()
 
@@ -96,6 +115,7 @@ endif()
 #-----------------------------------------------------------------------------
 find_package(HDF5 REQUIRED)
 
+# message(${HDF5_VERSION})
 string(REGEX MATCH "^[1]\\.(10|12)" HDF5_MAJOR_MINOR ${HDF5_VERSION})
 string(COMPARE EQUAL ${HDF5_MAJOR_MINOR} "1.12" NEED_HDF5_COMPATIBLE_API)
 
@@ -103,20 +123,17 @@ if(NEED_HDF5_COMPATIBLE_API)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DH5_USE_110_API")
 endif()
 
-#-----------------------------------------------------------------------------
-# using pkgconfig for json-c and uuid
-#-----------------------------------------------------------------------------
-set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/src/lib/json-c/build/json_c_lib;${CMAKE_PREFIX_PATH}")
-find_package(PkgConfig REQUIRED)
-pkg_search_module(UUID REQUIRED uuid)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-find_package(JSON-C REQUIRED)
+SET(MIQS_PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
-# pkg_check_modules(JSON-C REQUIRED IMPORTED_TARGET GLOBAL json-c)
+
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/cmake/miqs_config.h.cmake ${MIQS_PROJECT_INCLUDE_DIR}/miqs_config.h @ONLY)
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(tests)
-ADD_SUBDIRECTORY(docs)
-ADD_SUBDIRECTORY(scripts)
+# ADD_SUBDIRECTORY(tests)
+
+# ADD_SUBDIRECTORY(apps)
+
+# ADD_SUBDIRECTORY(docs)
+# ADD_SUBDIRECTORY(scripts)
