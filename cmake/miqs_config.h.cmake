@@ -1,0 +1,2 @@
+#cmakedefine MIQS_PARALLELED_INDEX
+#cmakedefine THREAD_SAFE
