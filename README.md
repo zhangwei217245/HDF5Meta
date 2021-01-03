@@ -13,6 +13,39 @@ git submodule init
 git submodule update
 ```
 
+
+### Compile and install the MIQS library
+
+On Cori supercomputer, you can run the following to make sure dynamic linking is enabled:
+
+```bash
+export CRAYPE_LINK_TYPE=dynamic 
+```
+
+For other platforms, you can enable dynamic linking using platform-specific methods. 
+
+```bash
+cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -H${MIQS_HOME} -B${MIQS_HOME}/build -G "Unix Makefiles"
+cmake --build ${MIQS_HOME}/build --config Debug --target install -- -j 14
+```
+
+You can change your CMake build type from `Debug` to one of the following
+
+* Release
+* MinSizeRel
+* RelWithDebInfo
+* BetaTest
+* RelWithDebug
+
+If your build type is Debug, the library will be installed into `${MIQS_HOME}/target/debug/`, otherwise, the library will be installed into `${MIQS_HOME}/target/release/`
+
+### Compile and install the MIQS demo program
+
+
+
+
+
+
 ## Ensure Compilation Environment
 On Cori, run the following command:
 
@@ -58,28 +91,7 @@ cmake -DCMAKE_INSTALL_PREFIX=./json_c_lib ../
 make -j 14 && make install
 ```
 
-### Compile the MIQS software prototype
 
-On Cori supercomputer, you can run the following to make sure dynamic linking is enabled:
-
-```bash
-export CRAYPE_LINK_TYPE=dynamic 
-```
-
-For other platforms, you can enable dynamic linking using platform-specific methods. 
-
-```bash
-cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -H${MIQS_HOME} -B${MIQS_HOME}/build -G "Unix Makefiles"
-cmake --build ${MIQS_HOME}/build --config Debug --target all -- -j 14
-```
-
-You can change your CMake build type from `Debug` to one of the following
-
-* Release
-* MinSizeRel
-* RelWithDebInfo
-* BetaTest
-* RelWithDebug
 
 
 
