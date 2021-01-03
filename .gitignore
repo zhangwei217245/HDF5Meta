@@ -11,3 +11,4 @@ cmake-build
 apps/bin
 apps/lib
 extern
+docs

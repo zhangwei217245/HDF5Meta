@@ -137,3 +137,7 @@ ADD_SUBDIRECTORY(src)
 
 # ADD_SUBDIRECTORY(docs)
 # ADD_SUBDIRECTORY(scripts)
+
+message(STATUS "Build documentation open")
+include(${PROJECT_SOURCE_DIR}/cmake/build_doxygen.cmake)
+build_doxygen()
