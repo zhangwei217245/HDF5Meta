@@ -10,3 +10,4 @@ cmake-build
 .ipynb_checkpoints/
 apps/bin
 apps/lib
+extern
