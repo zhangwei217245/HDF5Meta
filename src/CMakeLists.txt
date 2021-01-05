@@ -51,7 +51,7 @@ ADD_LIBRARY(miqs_utils SHARED
                                 ${FILESYS_SRC}
                                 ${FILESYS_HEADER})
 target_link_libraries(miqs_utils PUBLIC miqs_utils_thpool)
-target_include_directories(miqs_utils PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
+target_include_directories(miqs_utils PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 #  ${CMAKE_CURRENT_SOURCE_DIR}/cbase ${CMAKE_CURRENT_SOURCE_DIR}/utils, ${CMAKE_CURRENT_SOURCE_DIR}/utils/profile, 
 #  ${CMAKE_CURRENT_SOURCE_DIR}/utils/thread)
 
@@ -60,7 +60,8 @@ file(GLOB MIQS_METADATA_SRC           ${CMAKE_CURRENT_SOURCE_DIR}/metadata/miqs_
 file(GLOB MIQS_METADATA_HEADER        ${CMAKE_CURRENT_SOURCE_DIR}/metadata/miqs_meta*.h) 
 ADD_LIBRARY(miqs_metadata SHARED  ${MIQS_METADATA_SRC} ${MIQS_METADATA_HEADER})
 target_link_libraries(miqs_metadata PUBLIC miqs_utils)
-target_include_directories(miqs_metadata PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(miqs_metadata PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                                                $<INSTALL_INTERFACE:include>)
 
 
 # Index
@@ -117,14 +118,14 @@ ADD_LIBRARY(miqs_hdf5_meta_extractor SHARED
 )
 target_link_libraries(miqs_hdf5_meta_extractor PUBLIC m miqs_index ${HDF5_LIBRARIES})
 target_include_directories(miqs_hdf5_meta_extractor PUBLIC "${HDF5_INCLUDE_DIRS}"
-                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
 
 FILE(GLOB HDF52INDEX_SRC ${CMAKE_CURRENT_SOURCE_DIR}/h52index/*.c)
 FILE(GLOB HDF52INDEX_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/h52index/*.h)
 
 ADD_LIBRARY(miqs_hdf52index SHARED ${HDF52INDEX_SRC} ${HDF52INDEX_HEADER})
 target_link_libraries(miqs_hdf52index PUBLIC miqs_utils miqs_index miqs_hdf5_meta_extractor)
-target_include_directories(miqs_hdf52index PUBLIC "${HDF5_INCLUDE_DIRS}" $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(miqs_hdf52index PUBLIC "${HDF5_INCLUDE_DIRS}" $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
 
 
 file(GLOB MIQS_INTERFACE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
