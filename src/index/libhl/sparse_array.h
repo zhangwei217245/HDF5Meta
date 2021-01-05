@@ -33,7 +33,8 @@ typedef enum {
  * @brief Create a new sparse array descriptor
  * @param initial_size : initial size of the sparse array; if 0 SPA_SIZE_MIN will be used as initial size
  * @param max_size     : maximum size the sparse array can be grown up to
- * @param free_item_cb : the callback to use when an item needs to be released
+ * @param cb : the callback to use when an item needs to be released
+ * @param locate_cb: the callback for locating the item.
  * @return a newly allocated and initialized sparse array
  *
  * The sparse array will be expanded if necessary

@@ -95,6 +95,9 @@ typedef int (*graph_node_chooser_callback_t)(graph_node_t *node, void *context);
  *              end of the connection
  * @param chooser If provided the callback will be called to determine if the
  *                connection is selectable 
+ * @param context An optional pointer to some private context which can be
+ *                used by the caller to determine if the node should be
+ *                selected or not when calling graph_node_connection_select()
  */
 int graph_node_connect(graph_node_t *node1,
                         graph_node_t *node2,

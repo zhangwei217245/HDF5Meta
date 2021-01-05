@@ -219,7 +219,7 @@ int ht_set_if_not_exists(hashtable_t *table, void *key, size_t klen, void *data,
  * @param match_size : The value of the data to match
  * @param prev_data : If not NULL the pointer will be set to point to the previous data
  * @param prev_len : If not NULL the integer pointer will be set to the size of the previous data
- * @node If the prev_data pointer is provided, the caller will be responsible of relasing
+ * @note If the prev_data pointer is provided, the caller will be responsible of relasing
  *       the resources pointed after the call. If not provided (NULL) the free_value callback
  *       will be eventually used (if defined)
  * @return 0 on success;\n
@@ -272,6 +272,9 @@ int ht_delete_if_equals(hashtable_t *table, void *key, size_t klen, void *match,
  * @param table : A valid pointer to an hashtable_t structure
  * @param key : The key to use
  * @param klen : The length of the key
+ * @param value: a pointer to the value 
+ * @param vlen : the length of the value
+ * @param user: user-defined argument
  * @return 0 on success
  *         1 on success and the item must be removed from the hashtable
  *        -1 on error

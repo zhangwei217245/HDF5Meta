@@ -367,7 +367,10 @@ tagged_value_t *list_get_tagged_value(linked_list_t *list, char *tag);
  *        contains values with the same tag, the first occurrence will be replaced with the new value
  *        (but still at the same index in the list)
  * @param list: The list used as value
- * @param tval: The new tagged value to insert to the list 
+ * @param tag: the tag of the item
+ * @param value: the value pointer
+ * @param len: the length of the value
+ * @param copy: leave a copy or not.
  * @return The previous tagged_value_t matching the given tag if any; NULL otherwise
  * @note If a tagged value with the same tag is already contained in the list, 
  *       this function will replace the old tagged_value_t structure with the

@@ -13,10 +13,10 @@ INPUT                = @CMAKE_CURRENT_LIST_DIR@/src
 OUTPUT_LANGUAGE      = English
 DOXYFILE_ENCODING  = UTF-8
 # only generate docs for headers now
-FILE_PATTERNS        = *.h
+FILE_PATTERNS        = *.h *.c
  
 # recursively visit source code tree and generate documents for each doc.
-RECURSIVE            = NO 
+RECURSIVE            = YES 
 # Optimize document for C language.
 OPTIMIZE_OUTPUT_FOR_C  = YES
  

@@ -65,8 +65,8 @@ int avlt_remove(avlt_t *tree, void *key, size_t klen, void **value);
 /**
  * @brief Callback called for each node when walking the tree
  * @param tree  A valid pointer to an initialized avlt_t structure
- * @param k     The key of the node where to store the new value
- * @param ksize The size of the key
+ * @param key     The key of the node where to store the new value
+ * @param klen The size of the key
  * @param value The new value to store
  * @param priv  The private pointer passed to either avlt_walk() or avlt_walk_sorted()
  * @return 1 If the walker can go ahead visiting the next node,

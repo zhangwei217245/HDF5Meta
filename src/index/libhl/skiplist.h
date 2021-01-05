@@ -23,7 +23,7 @@ typedef struct _skiplist_s skiplist_t;
  * @brief Callback that, if provided, will be called to release the value
  *        resources when an item is being overwritten or when removed from
  *        the tree
- * @param v the pointer to free
+ * @param value the pointer to free
  */
 typedef void (*skiplist_free_value_callback_t)(void *value);
 

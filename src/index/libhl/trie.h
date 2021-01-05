@@ -31,7 +31,7 @@ trie_t *trie_create(trie_free_value_callback_t free_value_cb);
 
 /**
  * @brief Release all the resources used by a trie
- * @param A valid pointer to a trie structure
+ * @param trie A valid pointer to a trie structure
  */
 void trie_destroy(trie_t *trie);
 
