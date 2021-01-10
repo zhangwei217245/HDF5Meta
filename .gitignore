@@ -11,3 +11,5 @@ cmake-build
 apps/bin
 apps/lib
 docs
+.idea/
+cmake-build-debug/
