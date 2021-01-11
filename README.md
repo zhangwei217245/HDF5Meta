@@ -14,7 +14,19 @@ git submodule update
 ```
 
 ## Ensure Compilation Environment
-On Cori, run the following command:
+
+To compile MIQS software, you need the following dependencies:
+
+```bash
+GCC
+HDF5 libraries 1.10+
+Cmake 3.14+
+```
+
+On Linux or MacOS, check out the manual of your software package management tools for installing the above dependencies.
+
+
+On Cori, run the following command to ensure the compilation environment:
 
 
 ```bash
