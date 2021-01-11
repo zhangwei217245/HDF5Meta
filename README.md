@@ -108,6 +108,3 @@ cd build
 cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -H${MIQS_HOME}/apps -B${MIQS_HOME}/apps/build -G "Unix Makefiles"
 cmake --build ${MIQS_HOME}/apps/build --config Debug --target install -- -j 14
 ```
-
-
-
