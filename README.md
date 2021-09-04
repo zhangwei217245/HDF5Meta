@@ -91,7 +91,7 @@ if you choose the build type to be Release, just add `--release` after `cargo bu
 ### Compile the Json-C library
 
 ```bash
-cd ${MIQS_HOME}/extern/json-c
+cd ${MIQS_HOME}/extern/json-c 
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=./json_c_lib ../

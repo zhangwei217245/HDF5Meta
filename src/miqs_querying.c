@@ -128,4 +128,22 @@ power_search_rst_t *exact_metadata_search(char *attr_name, void *attribute_value
  * ----------------------------------------------------------------------
  * The code above implemented on-disk search is currently ignored. 
  * ----------------------------------------------------------------------
+
+
+/**
+ * 1. name="PID*"/"*ID*"/"*.gz"
+ *      func(char *attr_name, char *value_prefix)
+ *      func("name", "PID")
+ * "miqs.txt" "txt.sqim" "miqs.txt" "iqs.txt", "qs.txt", "s.txt"... "t"
+ *  func(char *attr_name, char *value_infix)
+ * func(char *attr_name, char *value_suffix)
+ * func("name", ".gz")
+ * 
+ * 2. batch_num=5-7 <NULL=infinity>
+ * func(char *attr_name, void *left_bound, void *right_bound)
+ * [8,9)
+ * func(char *attr_name, char *range_exp)
+ * 
+ * 3. "n*"/"*e"/"*m*"="PID*"/"*ID*"/"*.gz"/5-7
+ * 
  */

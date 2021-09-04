@@ -27,7 +27,7 @@ if(THREADS_HAVE_PTHREAD_ARG)
   target_compile_options(miqs_utils_thpool PUBLIC "-pthread")
 endif()
 if(CMAKE_THREAD_LIBS_INIT)
-  target_link_libraries(miqs_utils_thpool PUBLIC foo-threading "${CMAKE_THREAD_LIBS_INIT}")
+  target_link_libraries(miqs_utils_thpool PUBLIC "${CMAKE_THREAD_LIBS_INIT}")
 endif()
 # target_include_directories(thpool PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/utils/thread)
 
