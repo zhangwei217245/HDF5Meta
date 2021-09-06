@@ -29,6 +29,7 @@ endif()
 if(CMAKE_THREAD_LIBS_INIT)
   target_link_libraries(miqs_utils_thpool PUBLIC "${CMAKE_THREAD_LIBS_INIT}")
 endif()
+# target_include_directories(miqs_utils_thpool PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 # target_include_directories(thpool PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/utils/thread)
 
 # Profiling
@@ -60,8 +61,7 @@ file(GLOB MIQS_METADATA_SRC           ${CMAKE_CURRENT_SOURCE_DIR}/metadata/miqs_
 file(GLOB MIQS_METADATA_HEADER        ${CMAKE_CURRENT_SOURCE_DIR}/metadata/miqs_meta*.h) 
 ADD_LIBRARY(miqs_metadata SHARED  ${MIQS_METADATA_SRC} ${MIQS_METADATA_HEADER})
 target_link_libraries(miqs_metadata PUBLIC miqs_utils)
-target_include_directories(miqs_metadata PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-                                                $<INSTALL_INTERFACE:include>)
+target_include_directories(miqs_metadata PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
 
 
 # Index
@@ -158,21 +158,27 @@ target_include_directories(miqs PRIVATE ${HDF5_INCLUDE_DIRS} ${MPI_C_INCLUDE_DIR
 
 set_target_properties(miqs PROPERTIES PUBLIC_HEADER "${MIQS_INTERFACE_HEADER};${MIQS_PROJECT_INCLUDE_DIR}/miqs_config.h")
 
-# INSTALL(FILES ${MIQS_INTERFACE_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include )
-
 INSTALL(TARGETS miqs miqs_utils_thpool miqs_utils miqs_metadata miqs_hdf5_meta_extractor miqs_hdf52index miqs_index
         EXPORT libmiqs
         LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/lib
         ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/lib
         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/bin
-        # PUBLIC_HEADER DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include
+        PUBLIC_HEADER DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include
 )
+
 
 # INSTALL(FILES ${UTILS_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/utils)
 # INSTALL(FILES ${C_BASE_UTILS_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/utils/cbase)
 # INSTALL(FILES ${FILESYS_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/utils/fs)
+# INSTALL(FILES ${PROFILING_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/utils/profile)
+# INSTALL(FILES ${UTILS_THREAD_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/utils/thread)
 # INSTALL(FILES ${MIQS_METADATA_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/metadata)
 # INSTALL(FILES ${HDF5_META_EXTRACTOR_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/include/metadata)
 
+# INSTALL(FILES ${LIBHL_HEADER} 
+# INSTALL(FILES ${ART_HEADER} 
+# INSTALL(FILES ${SPI_HEADER}
+# INSTALL(FILES ${STORAGE_HEADER}
+# INSTALL(FILES ${INDEX_HEADER})
 
 INSTALL(EXPORT libmiqs NAMESPACE miqs:: DESTINATION ${PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/cmake)

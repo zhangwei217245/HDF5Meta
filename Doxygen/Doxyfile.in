@@ -41,8 +41,8 @@ REFERENCES_LINK_SOURCE = YES
 GENERATE_LATEX        = NO
 # Allow graphic representation on the doc.
 HAVE_DOT              = YES
-CALL_GRAPH            = YES
-CALLER_GRAPH          = YES
+CALL_GRAPH            = NO
+CALLER_GRAPH          = NO
 # include source code in the final document.
 SOURCE_BROWSER        = YES
 # Generate HTML

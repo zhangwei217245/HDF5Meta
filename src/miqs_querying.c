@@ -128,7 +128,7 @@ power_search_rst_t *exact_metadata_search(char *attr_name, void *attribute_value
  * ----------------------------------------------------------------------
  * The code above implemented on-disk search is currently ignored. 
  * ----------------------------------------------------------------------
-
+ */
 
 /**
  * 1. name="PID*"/"*ID*"/"*.gz"

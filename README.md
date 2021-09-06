@@ -39,6 +39,15 @@ module load openmpi/3.1.3
 module load llvm/10.0.0
 ```
 
+On nocona cluster at HPCC@TTU, please load the following modules
+```
+module load git
+module load gcc
+module load cmake
+module load openmpi
+module load hdf5
+```
+
 ### Compile and install the MIQS library
 
 On Cori supercomputer, you can run the following to make sure dynamic linking is enabled:
