@@ -7,7 +7,7 @@
 #include "miqs_indexing.h"
 #include "miqs_querying.h"
 #include "utils/timer_utils.h"
-// #include "string_utils.h"
+#include "utils/string_utils.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
