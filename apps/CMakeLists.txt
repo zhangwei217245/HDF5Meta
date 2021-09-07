@@ -63,11 +63,7 @@ endif()
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(UUID REQUIRED uuid)
-if(UUID_FOUND)
-  set(MIQS_UUID_ENABLED 1)
-else()
-  set(MIQS_UUID_ENABLED 0)
-endif()
+
 
 
 # ##### Note : currently comment off mongodb demo as the rust mongo driver needs to be updated
