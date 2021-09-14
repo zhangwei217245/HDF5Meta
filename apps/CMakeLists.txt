@@ -63,9 +63,9 @@ endif()
 #-----------------------------------------------------------------------------
 # using pkgconfig for uuid
 #-----------------------------------------------------------------------------
-set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-find_package(PkgConfig REQUIRED)
-pkg_search_module(UUID REQUIRED uuid)
+# set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
+find_package(UUID REQUIRED)
+# pkg_search_module(UUID REQUIRED uuid)
 
 
 

@@ -7,6 +7,11 @@ endif()
 
 include_directories(${MIQS_PROJECT_INCLUDE_DIR})
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
+find_package(UUID REQUIRED)
+find_package(Threads REQUIRED)
+
 
 # C_BASE_UTILS
 file(GLOB C_BASE_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/utils/cbase/c_base_stdlib.c)
@@ -22,7 +27,7 @@ file(GLOB UTILS_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.h)
 file(GLOB UTILS_THREAD_SRC ${CMAKE_CURRENT_SOURCE_DIR}/utils/thread/thpool.c)
 file(GLOB UTILS_THREAD_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/utils/thread/thpool.h)
 
-ADD_LIBRARY(miqs_utils_thpool SHARED ${UTILS_THREAD_SRC} ${UTILS_THREAD_HEADER})
+ADD_LIBRARY(miqs_utils_thpool SHARED ${UTILS_THREAD_SRC} ${UTILS_THREAD_HEADER} UUID)
 if(THREADS_HAVE_PTHREAD_ARG)
   target_compile_options(miqs_utils_thpool PUBLIC "-pthread")
 endif()
@@ -50,8 +55,8 @@ ADD_LIBRARY(miqs_utils SHARED
                                 ${PROFILING_HEADER}
                                 ${FILESYS_SRC}
                                 ${FILESYS_HEADER})
-target_link_libraries(miqs_utils PUBLIC miqs_utils_thpool)
-target_include_directories(miqs_utils PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+target_link_libraries(miqs_utils PUBLIC miqs_utils_thpool UUID_LIBRARIES)
+target_include_directories(miqs_utils PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include> UUID_INCLUDE_DIRS)
 
 
 file(GLOB MIQS_METADATA_SRC           ${CMAKE_CURRENT_SOURCE_DIR}/metadata/miqs_meta*.c)
