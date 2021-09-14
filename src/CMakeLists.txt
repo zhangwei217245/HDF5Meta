@@ -3,9 +3,9 @@ find_package(UUID REQUIRED)
 find_package(Threads REQUIRED)
 
 if(APPLE)
-    set(BASE_LIBRARIES m ${UUID_LIBRARIES})
+    set(BASE_LIBRARIES m ${UUID_LIBRARY})
 else()
-    set(BASE_LIBRARIES m ${UUID_LIBRARIES})
+    set(BASE_LIBRARIES m ${UUID_LIBRARY})
 endif()
 
 
@@ -58,8 +58,8 @@ ADD_LIBRARY(miqs_utils SHARED
                                 ${PROFILING_HEADER}
                                 ${FILESYS_SRC}
                                 ${FILESYS_HEADER})
-target_link_libraries(miqs_utils PUBLIC miqs_utils_thpool ${UUID_LIBRARIES})
-target_include_directories(miqs_utils PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include> ${UUID_INCLUDE_DIRS})
+target_link_libraries(miqs_utils PUBLIC miqs_utils_thpool ${UUID_LIBRARY})
+target_include_directories(miqs_utils PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include> ${UUID_INCLUDE_DIR})
 
 
 file(GLOB MIQS_METADATA_SRC           ${CMAKE_CURRENT_SOURCE_DIR}/metadata/miqs_meta*.c)
