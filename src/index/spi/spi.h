@@ -2,6 +2,22 @@
 #define MIQS_DS_SPI_H
 
 
+#include "../../utils/cbase/base_stdlib.h"
+#include "../../utils/string_utils.h"
+#include "../libhl/comparators.h"
+#include "../libhl/linklist.h"
+#include "../../utils/profile/mem_perf.h"
+
+#include "hash_table_string_index.h"
+#include "rbtree_string_index.h"
+#include "trie_string_index.h"
+#include "art_string_index.h"
+
+
+#include "sparse_array_number_index.h"
+#include "rbtree_number_index.h"
+#include "skiplist_number_index.h"
+#include "tsearch_number_index.h"
 
 
 #define MIQS_STRING_IDX_VAR_NAME "MIQS_STR_IDX_IMPL"

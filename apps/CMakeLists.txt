@@ -37,6 +37,9 @@ set(MIQS_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/..")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${MIQS_PROJECT_SOURCE_DIR}/cmake")
 
+
+
+
 #-----------------------------------------------------------------------------
 # hdf5
 #-----------------------------------------------------------------------------
@@ -70,9 +73,6 @@ pkg_search_module(UUID REQUIRED uuid)
 # add_subdirectory(mongodb_demo)
 
 add_subdirectory(miqs_demo)
-# add_subdirectory(index_ess)
-
-
-
-
-
+add_subdirectory(index_ess)
+add_subdirectory(concurrent_index)
+add_subdirectory(metadata_extractor)

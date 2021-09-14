@@ -40,7 +40,7 @@ REFERENCES_LINK_SOURCE = YES
 # Do not generate doc in Latex format.
 GENERATE_LATEX        = NO
 # Allow graphic representation on the doc.
-HAVE_DOT              = YES
+HAVE_DOT              = NO
 CALL_GRAPH            = NO
 CALLER_GRAPH          = NO
 # include source code in the final document.
