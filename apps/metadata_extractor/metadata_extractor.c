@@ -18,11 +18,11 @@ main (int argc, char **argv)
     int rank = 0, size = 1;
     int rst = 1;
 
-    #ifdef ENABLE_MPI
-        MPI_Init(&argc, &argv);
-        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-        MPI_Comm_size(MPI_COMM_WORLD, &size);
-    #endif
+#ifdef ENABLE_MPI
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+#endif
 
     printf("size=%d, rank=%d\n", size, rank);
 

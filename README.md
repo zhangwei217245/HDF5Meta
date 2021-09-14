@@ -117,3 +117,16 @@ cd build
 cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -H${MIQS_HOME}/apps -B${MIQS_HOME}/apps/build -G "Unix Makefiles"
 cmake --build ${MIQS_HOME}/apps/build --config Debug --target install -- -j 14
 ```
+
+
+### Running MIQS demo apps:
+
+Put the following code in your job script, before executing the actual executable.
+
+```bash
+cd <path/to/miqs_home>
+MIQS_HOME=`pwd`
+LD_LIBRARY_PATH=${MIQS_HOME}/target/debug/lib/:${LD_LIBRARY_PATH}
+```
+
+Change `debug` here to `release` according to your release type.
