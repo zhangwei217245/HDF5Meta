@@ -18,20 +18,22 @@
 #include <stdlib.h>
 
 int on_obj(void *opdata, miqs_data_object_t *obj){
-    index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
-    size_t path_len = strlen(obj->obj_name)+1;
-    idx_anchor->obj_path = (char *)ctr_calloc(path_len+1, sizeof(char), get_index_size_ptr());
-    strncpy(idx_anchor->obj_path, obj->obj_name, path_len);
-    idx_anchor->object_id = (void *)obj->obj_id;
-    idx_anchor->total_num_objects+=1;
+    // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
+    // size_t path_len = strlen(obj->obj_name)+1;
+    // idx_anchor->obj_path = (char *)ctr_calloc(path_len+1, sizeof(char), get_index_size_ptr());
+    // strncpy(idx_anchor->obj_path, obj->obj_name, path_len);
+    // idx_anchor->object_id = (void *)obj->obj_id;
+    // idx_anchor->total_num_objects+=1;
     return 1;
 }
 
 int on_attr(void *opdata, miqs_meta_attribute_t *attr){
-    index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
-    attr->file_path_str = idx_anchor->file_path;
-    attr->obj_path_str = idx_anchor->obj_path;
-    return indexing_attr(idx_anchor, attr);
+    // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
+    // attr->file_path_str = idx_anchor->file_path;
+    // attr->obj_path_str = idx_anchor->obj_path;
+    int rst = 0;
+    // rst = indexing_attr(idx_anchor, attr);
+    return rst;
 }
 
 
