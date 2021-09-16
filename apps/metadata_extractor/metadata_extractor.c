@@ -26,29 +26,38 @@
 typedef struct {
     int rank;                               /** < rank of the current MPI process */
     int size;                               /** < number of all MPI processes */
-    int current_file_count;                 /** < The number of files current process have gone through */
-    int topk;                               /** < The number of first few files that will be scanned */
-    char *input_path;                     /** <path to the input directory */
-    char *output_path;                   /** <path to the output directory */
+    int current_file_count;                 /** < The number of files current process has encountered */
+    int processed_file_count;               /** < The number of files current process has processed */
+
+    char *h5_obj_path;
+    char *h5_file_path;
+
+    long total_num_attr_names;                  /** total number of distinct attribute names */
+    long total_num_attr_kv_pairs;               /** total number of distinct attribute key-value pairs*/
+    long total_num_objs;                        /** total number of distinct objects*/
+    
+    FILE *output_file;                     /** the file handle that refers to the text file. We should append every attribute kv pair into this file. */
 } extractor_config_t;
 
 
 
 int on_obj(void *opdata, miqs_data_object_t *obj){
-    // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
-    // size_t path_len = strlen(obj->obj_name)+1;
-    // idx_anchor->obj_path = (char *)ctr_calloc(path_len+1, sizeof(char), get_index_size_ptr());
-    // strncpy(idx_anchor->obj_path, obj->obj_name, path_len);
-    // idx_anchor->object_id = (void *)obj->obj_id;
-    // idx_anchor->total_num_objects+=1;
+    extractor_config_t *ex_config = (extractor_config_t *)opdata;
+    size_t path_len = strlen(obj->obj_name)+1;
+    ex_config->h5_obj_path = (char *)calloc(path_len+1, sizeof(char));
+    strncpy(ex_config->h5_obj_path, obj->obj_name, path_len);
+    ex_config->total_num_objs+=1;
     return 1;
 }
 
 
 int on_attr(void *opdata, miqs_meta_attribute_t *attr){
-    // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
-    // attr->file_path_str = idx_anchor->file_path;
-    // attr->obj_path_str = idx_anchor->obj_path;
+    extractor_config_t *ex_config = (extractor_config_t *)opdata;
+    attr->file_path_str = ex_config->file_path;
+    attr->obj_path_str = ex_config->obj_path;
+
+    ex_config->total_num_attr_names+=1;
+
     char *attr_name = attr->attr_name;
     int rst = 0;
     if (attr->attr_type == MIQS_AT_INTEGER) {
@@ -56,26 +65,28 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int len = attr->attribute_value_length;
         int c = 0;
         for (c = 0; c < len; c++) {
-            printf("%s %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
+            ex_config->total_num_attr_kv_pairs+=1;
+            fprintf(ex_config->output_file, "%s INT %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_FLOAT) {
         double *float_value = (double *)attribute_value;
         int len = attr->attribute_value_length;
         int c = 0;
         for (c = 0; c < len; c++) {
-            printf("%s %.3f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
+            ex_config->total_num_attr_kv_pairs+=1;
+            printf("%s FLT %.8f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_STRING) {
         char **string_value = (char **)attribute_value;
         int len = attr->attribute_value_length;
         int c = 0;
         for (c = 0; c < len; c++) {
-            printf("%s %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
+            ex_config->total_num_attr_kv_pairs+=1;
+            printf("%s STR %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else {
-
+        // just ignore any unknown type for now.
     }
-    // rst = indexing_attr(idx_anchor, attr);
     return rst;
 }
 
@@ -86,10 +97,14 @@ int scan_single_hdf5_file(char *file_path, void *args){
         return 0;
     }
 
+    pargs->h5_file_path=(char *)calloc(strlen(file_path)+1, sizeof(char)); 
+    strncpy(pargs->file_path, file_path, strlen(file_path));
+    
     miqs_metadata_collector_t *meta_collector = (miqs_metadata_collector_t *)calloc(1, sizeof(miqs_metadata_collector_t));
-    init_metadata_collector(meta_collector, 0, NULL, NULL, on_obj, on_attr);
+    init_metadata_collector(meta_collector, 0, args, NULL, on_obj, on_attr);
 
     scan_hdf5(file_path, meta_collector, 0);
+    pargs->processed_file_count+=1;
 }
 
 
@@ -131,8 +146,13 @@ int scan_files_in_dir(char *path, const int topk, void *args) {
     return 0;
 }
 
-
-
+void init_extractor_config_t(extractor_config_t *config){
+    config->current_file_count=0;
+    config->processed_file_count=0;
+    config->total_num_attr_names = 0;                  /** total number of distinct attribute names */
+    config->total_num_attr_kv_pairs = 0;               /** total number of distinct attribute key-value pairs*/
+    config->total_num_objs = 0;                        /** total number of distinct objects*/
+}
 
 
 int
@@ -150,29 +170,38 @@ main (int argc, char **argv)
     printf("%d out of %d\n", rank, size);
 
     if (argc < 3) {
-        printf("metadata_extractor <INPUT_PATH> <OUTPUT_PATH>\n");
+        printf("metadata_extractor <INPUT_DIR> <OUTPUT_DIR> <TOPK>\n");
         return 1;
     }
 
-    char *INPUT_PATH = argv[1];
-    char *OUTPUT_PATH = argv[2];
+    char *INPUT_DIR = argv[1];
+    char *OUTPUT_DIR = argv[2];
 
     extractor_config_t *param = (extractor_config_t *)calloc(1, sizeof(extractor_config_t));
-    param->current_file_count=0;
-    param->size=size;
-    param->rank=rank;
+    init_extractor_config_t(param);
 
-    // creat a text file 
-
-    if (is_regular_file(INPUT_PATH)) {
-        scan_single_hdf5_file((char *)INPUT_PATH, param);
-        rst = 0;
-    } else {
-        rst = scan_files_in_dir((char *)INPUT_PATH, -1, param);
+    int topk = -1;
+    if (argc > 3) {
+        topk = atoi(argv[3]);
     }
 
+    param->size=size;
+    param->rank=rank;
+    
+    char *output_file_path=(char *)calloc(1000, sizeof(char));
+    sprintf(output_file_path, "%s/rank%d_out.txt", OUTPUT_DIR, rank);
+    param->output_file = fopen(output_file_path, "w");
+
+    if (is_regular_file(INPUT_DIR)) {
+        scan_single_hdf5_file((char *)INPUT_DIR, param);
+        rst = 0;
+    } else {
+        rst = scan_files_in_dir((char *)INPUT_DIR, topk, param);
+    }
 
     // generate or print the statistic
+    fprintf(param->output_file, "file_count: %d obj_count: %d attr_name_count: %d attr_kv_pair_count %d\n", 
+        param->processed_file_count, param->total_num_objs, param->total_num_attr_names, param->total_num_attr_kv_pairs);
 
 #ifdef ENABLE_MPI
     MPI_Finalize();
