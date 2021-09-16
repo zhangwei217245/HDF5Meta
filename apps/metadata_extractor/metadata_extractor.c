@@ -8,6 +8,7 @@
 #include "miqs_querying.h"
 #include "utils/timer_utils.h"
 #include "utils/string_utils.h"
+#include "utils/fs/fs_ops.h"
 
 #include "metadata/miqs_metadata.h"
 #include "metadata/miqs_meta_collector.h"
@@ -16,6 +17,21 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+
+#define PATH_DELIMITER "/"
+#define INDEX_FILE_NAME_TEMPLATE "index_miqs_%d.%s"
+
+
+typedef struct {
+    int rank;                               /** < rank of the current MPI process */
+    int size;                               /** < number of all MPI processes */
+    int current_file_count;                 /** < The number of files current process have gone through */
+    int topk;                               /** < The number of first few files that will be scanned */
+    char *input_path;                     /** <path to the input directory */
+    char *output_path;                   /** <path to the output directory */
+} extractor_config_t;
+
 
 int on_obj(void *opdata, miqs_data_object_t *obj){
     // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
@@ -31,10 +47,90 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
     // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
     // attr->file_path_str = idx_anchor->file_path;
     // attr->obj_path_str = idx_anchor->obj_path;
+    char *attr_name = attr->attr_name;
     int rst = 0;
+    if (attr->attr_type == MIQS_AT_INTEGER) {
+        int *int_value = (int *)attribute_value;
+        int len = attr->attribute_value_length;
+        int c = 0;
+        for (c = 0; c < len; c++) {
+            printf("%s %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
+        }
+    } else if(attr->attr_type == MIQS_AT_FLOAT) {
+        double *float_value = (double *)attribute_value;
+        int len = attr->attribute_value_length;
+        int c = 0;
+        for (c = 0; c < len; c++) {
+            printf("%s %.3f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
+        }
+    } else if(attr->attr_type == MIQS_AT_STRING) {
+        char **string_value = (char **)attribute_value;
+        int len = attr->attribute_value_length;
+        int c = 0;
+        for (c = 0; c < len; c++) {
+            printf("%s %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
+        }
+    } else {
+        
+    }
     // rst = indexing_attr(idx_anchor, attr);
     return rst;
 }
+
+int scan_single_hdf5_file(char *file_path, void *args){
+    extractor_config_t *pargs = (extractor_config_t *)args;
+    pargs->current_file_count = pargs->current_file_count+1;
+    if (pargs->current_file_count % pargs->size != pargs->rank) {
+        return 0;
+    }
+
+    miqs_metadata_collector_t *meta_collector = (miqs_metadata_collector_t *)calloc(1, sizeof(miqs_metadata_collector_t));
+    init_metadata_collector(meta_collector, 0, NULL, NULL, on_obj, on_attr);
+
+    scan_hdf5(file_path, meta_collector, 0);
+}
+
+
+
+int is_hdf5(const struct dirent *entry){
+    if (strcmp(entry->d_name, ".")==0 || strcmp(entry->d_name, "..")==0) {
+        return 0;
+    }
+    if (entry->d_type == DT_DIR){
+        return 1;
+    }
+    if( endsWith(entry->d_name, ".hdf5") || endsWith(entry->d_name, ".h5")) {
+        return 1;
+    }
+    return 0;
+}
+
+
+int on_file(struct dirent *f_entry, const char *parent_path, void *arg) {
+
+    char *filepath = (char *)calloc(512, sizeof(char));
+
+    sprintf(filepath, "%s/%s", parent_path, f_entry->d_name);
+    
+    scan_single_hdf5_file(filepath, arg);
+
+    return 1;
+}
+
+int on_dir(struct dirent *d_entry, const char *parent_path, void *arg) {
+    // char *dirpath = (char *)calloc(512, sizeof(char));
+    // sprintf(dirpath, "%s/%s", parent_path, d_entry->d_name);
+    // Nothing to do here currently.
+    return 1;
+}
+
+int scan_files_in_dir(char *path, const int topk, void *args) {
+    collect_dir(path, is_hdf5, alphasort, ASC, topk, on_file, on_dir, args, NULL, NULL);
+    return 0;
+}
+
+
+
 
 
 int
@@ -51,18 +147,28 @@ main (int argc, char **argv)
 
     printf("%d out of %d\n", rank, size);
 
-    int i = 0;
-    for (i = 0; i < argc; i++) {
-        printf("%d %s\n", i, argv[i]);
+    if (argc < 3) {
+        printf("metadata_extractor <INPUT_PATH> <OUTPUT_PATH>\n");
+        return 1;
     }
 
-    // miqs_metadata_collector_t *meta_collector = (miqs_metadata_collector_t *)ctr_calloc(1, sizeof(miqs_metadata_collector_t), get_index_size_ptr());
-    // init_metadata_collector(meta_collector, 0, (void *)root_idx_anchor(), NULL, on_obj, on_attr);
+    char *INPUT_PATH = argv[1];
+    char *OUTPUT_PATH = argv[2];
 
-    // scan_hdf5(filepath, meta_collector, 0);
+    extractor_config_t *param = (extractor_config_t *)calloc(1, sizeof(extractor_config_t));
+    param->current_file_count=0;
+    param->size=size;
+    param->rank=rank;
+
+    if (is_regular_file(INPUT_PATH)) {
+        scan_single_hdf5_file((char *)INPUT_PATH, param);
+        rst = 0;
+    } else {
+        rst = scan_files_in_dir((char *)INPUT_PATH, -1, param);
+    }
 
 #ifdef ENABLE_MPI
-    rst = MPI_Finalize();
+    MPI_Finalize();
 #endif
     return rst;
 }
