@@ -33,6 +33,7 @@ typedef struct {
 } extractor_config_t;
 
 
+
 int on_obj(void *opdata, miqs_data_object_t *obj){
     // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
     // size_t path_len = strlen(obj->obj_name)+1;
@@ -42,6 +43,7 @@ int on_obj(void *opdata, miqs_data_object_t *obj){
     // idx_anchor->total_num_objects+=1;
     return 1;
 }
+
 
 int on_attr(void *opdata, miqs_meta_attribute_t *attr){
     // index_anchor_t *idx_anchor = (index_anchor_t *)opdata;
@@ -71,7 +73,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
             printf("%s %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else {
-        
+
     }
     // rst = indexing_attr(idx_anchor, attr);
     return rst;
@@ -160,12 +162,17 @@ main (int argc, char **argv)
     param->size=size;
     param->rank=rank;
 
+    // creat a text file 
+
     if (is_regular_file(INPUT_PATH)) {
         scan_single_hdf5_file((char *)INPUT_PATH, param);
         rst = 0;
     } else {
         rst = scan_files_in_dir((char *)INPUT_PATH, -1, param);
     }
+
+
+    // generate or print the statistic
 
 #ifdef ENABLE_MPI
     MPI_Finalize();
