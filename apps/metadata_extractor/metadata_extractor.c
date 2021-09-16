@@ -61,7 +61,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
     char *attr_name = attr->attr_name;
     int rst = 0;
     if (attr->attr_type == MIQS_AT_INTEGER) {
-        int *int_value = (int *)attribute_value;
+        int *int_value = (int *)attr->attribute_value;
         int len = attr->attribute_value_length;
         int c = 0;
         for (c = 0; c < len; c++) {
@@ -69,7 +69,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
             fprintf(ex_config->output_file, "%s INT %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_FLOAT) {
-        double *float_value = (double *)attribute_value;
+        double *float_value = (double *)attr->attribute_value;
         int len = attr->attribute_value_length;
         int c = 0;
         for (c = 0; c < len; c++) {
@@ -77,7 +77,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
             printf("%s FLT %.8f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_STRING) {
-        char **string_value = (char **)attribute_value;
+        char **string_value = (char **)attr->attribute_value;
         int len = attr->attribute_value_length;
         int c = 0;
         for (c = 0; c < len; c++) {
@@ -98,7 +98,7 @@ int scan_single_hdf5_file(char *file_path, void *args){
     }
 
     pargs->h5_file_path=(char *)calloc(strlen(file_path)+1, sizeof(char)); 
-    strncpy(pargs->file_path, file_path, strlen(file_path));
+    strncpy(pargs->h5_file_path, file_path, strlen(file_path));
     
     miqs_metadata_collector_t *meta_collector = (miqs_metadata_collector_t *)calloc(1, sizeof(miqs_metadata_collector_t));
     init_metadata_collector(meta_collector, 0, args, NULL, on_obj, on_attr);
