@@ -203,6 +203,9 @@ main (int argc, char **argv)
     fprintf(param->output_file, "file_count: %d obj_count: %d attr_name_count: %d attr_kv_pair_count %d\n", 
         param->processed_file_count, param->total_num_objs, param->total_num_attr_names, param->total_num_attr_kv_pairs);
 
+    fflush(param->output_file);
+    fclose(param->output_file);
+    
 #ifdef ENABLE_MPI
     MPI_Finalize();
 #endif
