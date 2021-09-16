@@ -66,7 +66,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int c = 0;
         for (c = 0; c < len; c++) {
             ex_config->total_num_attr_kv_pairs+=1;
-            fprintf(ex_config->output_file, "%s INT %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
+            fprintf(ex_config->output_file, "[ATTR] %s [INT] %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_FLOAT) {
         double *float_value = (double *)attr->attribute_value;
@@ -74,7 +74,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int c = 0;
         for (c = 0; c < len; c++) {
             ex_config->total_num_attr_kv_pairs+=1;
-            fprintf(ex_config->output_file, "%s FLT %.8f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
+            fprintf(ex_config->output_file, "[ATTR] %s [FLT] %.8f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_STRING) {
         char **string_value = (char **)attr->attribute_value;
@@ -82,7 +82,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int c = 0;
         for (c = 0; c < len; c++) {
             ex_config->total_num_attr_kv_pairs+=1;
-            fprintf(ex_config->output_file, "%s STR %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
+            fprintf(ex_config->output_file, "[ATTR] %s [STR] %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else {
         // just ignore any unknown type for now.
@@ -190,7 +190,8 @@ main (int argc, char **argv)
     
     char *output_file_path=(char *)calloc(1000, sizeof(char));
     sprintf(output_file_path, "%s/rank%d_out.txt", OUTPUT_DIR, rank);
-    param->output_file = stdout;//fopen(output_file_path, "w");
+    // param->output_file = stdout;
+    param->output_file = fopen(output_file_path, "w");
 
     if (is_regular_file(INPUT_DIR)) {
         scan_single_hdf5_file((char *)INPUT_DIR, param);
@@ -204,7 +205,7 @@ main (int argc, char **argv)
 #endif
 
     // generate or print the statistic
-    fprintf(param->output_file, "file_count: %d obj_count: %d attr_name_count: %d attr_kv_pair_count %d\n", 
+    fprintf(param->output_file, "[STATISTICS] file_count: %d obj_count: %d attr_name_count: %d attr_kv_pair_count %d\n", 
         param->processed_file_count, param->total_num_objs, param->total_num_attr_names, param->total_num_attr_kv_pairs);
 
     fflush(param->output_file);
