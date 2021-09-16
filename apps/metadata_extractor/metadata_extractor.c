@@ -211,6 +211,8 @@ main (int argc, char **argv)
     fflush(param->output_file);
     fclose(param->output_file);
 
+    println("rank %d finished", rank);
+
 #ifdef ENABLE_MPI
     MPI_Finalize();
 #endif
