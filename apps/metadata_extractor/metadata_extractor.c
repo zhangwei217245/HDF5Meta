@@ -53,8 +53,8 @@ int on_obj(void *opdata, miqs_data_object_t *obj){
 
 int on_attr(void *opdata, miqs_meta_attribute_t *attr){
     extractor_config_t *ex_config = (extractor_config_t *)opdata;
-    attr->file_path_str = ex_config->file_path;
-    attr->obj_path_str = ex_config->obj_path;
+    attr->file_path_str = ex_config->h5_file_path;
+    attr->obj_path_str = ex_config->h5_obj_path;
 
     ex_config->total_num_attr_names+=1;
 
