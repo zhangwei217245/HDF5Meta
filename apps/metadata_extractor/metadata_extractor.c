@@ -190,7 +190,7 @@ main (int argc, char **argv)
     
     char *output_file_path=(char *)calloc(1000, sizeof(char));
     sprintf(output_file_path, "%s/rank%d_out.txt", OUTPUT_DIR, rank);
-    param->output_file = fopen(output_file_path, "w");
+    param->output_file = stdout;//fopen(output_file_path, "w");
 
     if (is_regular_file(INPUT_DIR)) {
         scan_single_hdf5_file((char *)INPUT_DIR, param);
@@ -199,13 +199,17 @@ main (int argc, char **argv)
         rst = scan_files_in_dir((char *)INPUT_DIR, topk, param);
     }
 
+#ifdef ENABLE_MPI
+    MPI_Barrier(MPI_COMM_WORLD);
+#endif
+
     // generate or print the statistic
     fprintf(param->output_file, "file_count: %d obj_count: %d attr_name_count: %d attr_kv_pair_count %d\n", 
         param->processed_file_count, param->total_num_objs, param->total_num_attr_names, param->total_num_attr_kv_pairs);
 
     fflush(param->output_file);
     fclose(param->output_file);
-    
+
 #ifdef ENABLE_MPI
     MPI_Finalize();
 #endif
