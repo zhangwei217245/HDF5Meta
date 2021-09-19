@@ -86,6 +86,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         }
     } else {
         // just ignore any unknown type for now.
+        fprintf(ex_config->output_file, "[ATTR] %s [UKN]  %s %s %s\n", attr_name, "N/A", attr->file_path_str, attr->obj_path_str);
     }
     return rst;
 }
