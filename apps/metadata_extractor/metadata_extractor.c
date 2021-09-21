@@ -66,7 +66,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int c = 0;
         for (c = 0; c < len; c++) {
             ex_config->total_num_attr_kv_pairs+=1;
-            fprintf(ex_config->output_file, "[ATTR] %s [INT] %d %s %s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
+            fprintf(ex_config->output_file, "[ATTR]|%s|[INT]|%d|%s|%s\n", attr_name, int_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_FLOAT) {
         double *float_value = (double *)attr->attribute_value;
@@ -74,7 +74,7 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int c = 0;
         for (c = 0; c < len; c++) {
             ex_config->total_num_attr_kv_pairs+=1;
-            fprintf(ex_config->output_file, "[ATTR] %s [FLT] %.8f %s %s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
+            fprintf(ex_config->output_file, "[ATTR]|%s|[FLT]|%.8f|%s|%s\n", attr_name, float_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else if(attr->attr_type == MIQS_AT_STRING) {
         char **string_value = (char **)attr->attribute_value;
@@ -82,11 +82,11 @@ int on_attr(void *opdata, miqs_meta_attribute_t *attr){
         int c = 0;
         for (c = 0; c < len; c++) {
             ex_config->total_num_attr_kv_pairs+=1;
-            fprintf(ex_config->output_file, "[ATTR] %s [STR] %s %s %s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
+            fprintf(ex_config->output_file, "[ATTR]|%s|[STR]|%s|%s|%s\n", attr_name, string_value[c], attr->file_path_str, attr->obj_path_str);
         }
     } else {
         // just ignore any unknown type for now.
-        fprintf(ex_config->output_file, "[ATTR] %s [UKN]  %s %s %s\n", attr_name, "N/A", attr->file_path_str, attr->obj_path_str);
+        fprintf(ex_config->output_file, "[ATTR]|%s|[UKN]|%s|%s|%s\n", attr_name, "N/A", attr->file_path_str, attr->obj_path_str);
     }
     return rst;
 }
