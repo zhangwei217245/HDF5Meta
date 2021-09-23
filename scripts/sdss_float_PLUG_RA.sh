@@ -7,6 +7,10 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH --time=48:00:00
 ##SBATCH --mem-per-cpu=8192MB  ##3.9GB, Modify based on needs
+#SBATCH --mail-type=begin        # send email when job begins
+#SBATCH --mail-type=end          # send email when job ends
+#SBATCH --mail-type=fail         # send email if job fails
+#SBATCH --mail-user=x-spirit.zhang@ttu.edu
 
 module load gcc
 module load cmake
