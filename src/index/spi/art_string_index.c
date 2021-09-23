@@ -40,6 +40,9 @@ int search_string_in_art(void *index_root, char *key, size_t len, void **out){
 
 int infix_callback(void *data, const unsigned char *key, uint32_t key_len, void *value) {
     infix_iter_arg_t *args = (infix_iter_arg_t *)data;
+    if (args->infix == NULL || key == NULL) {
+        return 0;
+    }
     if (contains((const char *)key, args->infix)) {
         return list_push_value(args->rst, value);
     }
