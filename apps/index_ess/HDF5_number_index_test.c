@@ -24,7 +24,7 @@ long *generating_skew_numbers(int count){
     return generating_even_numbers(count);
 }
 
-int main(int argc, const char *argv[]){
+int main(int argc, char **argv){
 
     int i, j; 
     int rank = 0, size = 1;
