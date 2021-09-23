@@ -5,6 +5,7 @@
 #include "utils/timer_utils.h"
 #include "utils/string_utils.h"
 #include "boss_dataset.h"
+#include "sdss_dataset.h"
 
 #ifdef ENABLE_MPI
 #include "mpi.h"
@@ -99,6 +100,21 @@ int main(int argc, char **argv){
     } else if (strcmp(dataset_name, "EXPID02")== 0){
         len_key_arr = len_string_vals[3];
         keys = string_EXPID02;
+    } else if (strcmp(dataset_name, "SDSSNAME")==0){
+        len_key_arr = sdss_len_string_ATTR_NAMES;
+        keys = sdss_string_ATTR_NAMES;
+    } else if (strcmp(dataset_name, "SPEC_ID")== 0){
+        len_key_arr = sdss_len_string_vals[0];
+        keys = sdss_string_SPEC_ID;
+    } else if (strcmp(dataset_name, "DATASUM_COMMENT")== 0){
+        len_key_arr = sdss_len_string_vals[1];
+        keys = sdss_string_DATASUM_COMMENT;
+    } else if (strcmp(dataset_name, "SBJFILE")== 0){
+        len_key_arr = sdss_len_string_vals[2];
+        keys = sdss_string_OBJFILE;
+    } else if (strcmp(dataset_name, "CHECKSUM")== 0){
+        len_key_arr = sdss_len_string_vals[3];
+        keys = sdss_string_CHECKSUM;
     } else {
         len_key_arr = len_string_ATTR_NAMES;
         keys = string_ATTR_NAMES;

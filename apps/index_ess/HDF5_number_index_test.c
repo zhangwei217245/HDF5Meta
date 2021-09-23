@@ -5,6 +5,7 @@
 #include "utils/timer_utils.h"
 #include "utils/string_utils.h"
 #include "boss_dataset.h"
+#include "sdss_dataset.h"
 
 #ifdef ENABLE_MPI
 #include "mpi.h"
@@ -91,6 +92,26 @@ int main(int argc, const char *argv[]){
         dt = LONG;
         int_keys = int_TILEID;
         len_key_arr = len_int_vals[3];
+    } else if (strcmp(dataset_name, "FIBERID")==0){
+        cmp_callback = libhl_cmp_keys_long; 
+        dt = LONG;
+        int_keys = sdss_int_FIBERID;
+        len_key_arr = sdss_len_int_vals[0];
+    } else if (strcmp(dataset_name, "IMAGE_MINMAXRANGE")==0){
+        cmp_callback = libhl_cmp_keys_long;
+        dt = LONG;
+        int_keys = sdss_int_IMAGE_MINMAXRANGE;
+        len_key_arr = sdss_len_int_vals[1];
+    } else if (strcmp(dataset_name, "COLUMN_ID")==0){
+        cmp_callback = libhl_cmp_keys_long;
+        dt = LONG;
+        int_keys = sdss_int_COLUMN_ID;
+        len_key_arr = sdss_len_int_vals[2];
+    } else if (strcmp(dataset_name, "MJD")==0){
+        cmp_callback = libhl_cmp_keys_long;
+        dt = LONG;
+        int_keys = sdss_int_MJD;
+        len_key_arr = sdss_len_int_vals[3];
     } else if (strcmp(dataset_name, "DEREDSN2")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
@@ -115,6 +136,30 @@ int main(int argc, const char *argv[]){
         dt = DOUBLE;
         float_keys = float_RMSOFF20;
         len_key_arr = len_float_vals[3];
+    } else if (strcmp(dataset_name, "PLUG_DEC")==0){
+        is_float=1;
+        cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
+        float_keys = sdss_float_PLUG_DEC;
+        len_key_arr = sdss_len_float_vals[0];
+    } else if (strcmp(dataset_name, "PLUG_RA")==0){
+        is_float=1;
+        cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
+        float_keys = sdss_float_PLUG_RA;
+        len_key_arr = sdss_len_float_vals[1];
+    } else if (strcmp(dataset_name, "IMAGE_MINMAXRANGE")==0){
+        is_float=1;
+        cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
+        float_keys = sdss_float_IMAGE_MINMAXRANGE;
+        len_key_arr = sdss_len_float_vals[2];
+    } else if (strcmp(dataset_name, "SKYCHI2")==0){
+        is_float=1;
+        cmp_callback = libhl_cmp_keys_double;
+        dt = DOUBLE;
+        float_keys = sdss_float_SKYCHI2;
+        len_key_arr = sdss_len_float_vals[3];
     } else {
         int_keys = generating_even_numbers(count);
         dt = INT;

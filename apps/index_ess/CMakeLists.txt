@@ -6,7 +6,7 @@ include(${MIQS_PROJECT_SOURCE_DIR}/target/${MIQS_BUILD_MODE}/cmake/libmiqs.cmake
 # message(STATUS "abc ${MIQS_INCLUDE_DIRS}")
 
 
-add_executable (HDF5_number_index_test ${CMAKE_CURRENT_SOURCE_DIR}/boss_dataset.h ${CMAKE_CURRENT_SOURCE_DIR}/HDF5_number_index_test.c)
+add_executable (HDF5_number_index_test ${CMAKE_CURRENT_SOURCE_DIR}/boss_dataset.h ${CMAKE_CURRENT_SOURCE_DIR}/sdss_dataset.h ${CMAKE_CURRENT_SOURCE_DIR}/HDF5_number_index_test.c)
 target_link_libraries(HDF5_number_index_test PRIVATE miqs::miqs ${MPI_mpi_LIBRARY} "${MPI_C_LIBRARIES}")
 target_include_directories(HDF5_number_index_test PRIVATE  
                                             "${HDF5_INCLUDE_DIRS}" 
