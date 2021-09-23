@@ -64,7 +64,8 @@ linked_list_t *search_affix_in_art(void *index_root, pattern_type_t afx_type, ch
     if (afx_type == PATTERN_PREFIX || afx_type == PATTERN_SUFFIX) {
         art_iter_prefix(art, (const unsigned char *)affix, strlen(affix), prefix_callback, rst);
     } else if (afx_type == PATTERN_MIDDLE) {
-        art_iter(art, infix_callback, art);
+        infix_iter_arg_t *infix_itr_arg = (infix_iter_arg_t *)calloc(1, sizeof(infix_iter_arg_t));
+        art_iter(art, infix_callback, (void *)infix_itr_arg);
     } else {
         void *out = NULL;
         search_string_in_art(index_root, affix, strlen(affix), &out);
