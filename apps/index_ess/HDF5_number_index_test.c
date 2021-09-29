@@ -148,7 +148,7 @@ int main(int argc, char **argv){
         dt = DOUBLE;
         float_keys = sdss_float_PLUG_RA;
         len_key_arr = sdss_len_float_vals[1];
-    } else if (strcmp(dataset_name, "IMAGE_MINMAXRANGE")==0){
+    } else if (strcmp(dataset_name, "FIMAGE_MINMAXRANGE")==0){
         is_float=1;
         cmp_callback = libhl_cmp_keys_double;
         dt = DOUBLE;
